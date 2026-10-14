@@ -1,0 +1,130 @@
+{
+  "evidence_id": "ev_c577b492cfdad1d55a0db700c17804f0a3154fe48febe3124bfd2983f1c10e04",
+  "subject": {
+    "name": "D:\\meus documentos\\Steam\\.rea-reference\\media",
+    "digest": {
+      "sha256": "bd3df7cfd59850716e901be596c71654fbee3226e4a3431ad9babbebed9ffe15"
+    },
+    "format": "directory",
+    "architecture": null,
+    "local_path": "D:\\meus documentos\\Steam\\.rea-reference\\media"
+  },
+  "provider": {
+    "id": "rea-analysis-view",
+    "name": "REA analysis view projection",
+    "version": "1"
+  },
+  "analysis_profile": null,
+  "predicate_type": "rea.analysis-view",
+  "operation": "inspect_analysis_view",
+  "parameters": {
+    "parent_evidence_id": "ev_42218777213cbb84b843e6e8d9ecd606f68f90d5c083cad70e53c919bf8b90bb",
+    "view": {
+      "kind": "summary"
+    }
+  },
+  "raw_result": null,
+  "normalized_result": {
+    "kind": "summary",
+    "view": {
+      "kind": "summary"
+    },
+    "summary": {
+      "input_path": "D:\\meus documentos\\Steam\\.rea-reference\\media",
+      "format": "directory",
+      "root_artifact_sha256": "bd3df7cfd59850716e901be596c71654fbee3226e4a3431ad9babbebed9ffe15",
+      "statistics": {
+        "relevant_files": 3,
+        "nested_asar_containers": 0,
+        "text_bytes_read": 987436,
+        "invalid_utf8_files": 0,
+        "parsed_javascript_files": 2,
+        "visited_ast_nodes": 8816,
+        "findings": 3,
+        "modules": 1,
+        "parse_failures": 0
+      },
+      "electron": {
+        "browser_windows": 0,
+        "explicit_web_preferences": 0,
+        "preload_entrypoints": 0,
+        "context_bridge_apis": 0,
+        "exposed_api_members": 0,
+        "ipc": {
+          "operations": 0,
+          "literal_channels": 0,
+          "dynamic_channel_operations": 0,
+          "renderer_transmissions": 0,
+          "renderer_listeners": 0,
+          "main_handlers": 0,
+          "paired_renderer_transmissions": 0,
+          "ambiguous_renderer_transmissions": 0,
+          "unpaired_literal_renderer_transmissions": 0
+        },
+        "sender_validation_observations": 0,
+        "utility_processes": 0,
+        "resolved_utility_entrypoints": 0,
+        "native_addon_bindings": 0,
+        "resolved_native_addon_bindings": 0
+      },
+      "coverage": {
+        "application": {
+          "status": "complete",
+          "truncated": false,
+          "omitted_count": 0,
+          "limits": []
+        },
+        "semantic": {
+          "status": "unknown",
+          "truncated": false,
+          "omitted_nodes": 0,
+          "omitted_relations": 0,
+          "limits": [],
+          "families": [
+            { "family": "boundary", "status": "partial", "retained_relations": 3, "omitted_relations": 0, "unknown_count": 0 },
+            { "family": "call-flow", "status": "partial", "retained_relations": 82, "omitted_relations": 0, "unknown_count": 554 },
+            { "family": "child-process", "status": "partial", "retained_relations": 0, "omitted_relations": 0, "unknown_count": 0 },
+            { "family": "closure", "status": "partial", "retained_relations": 781, "omitted_relations": 0, "unknown_count": 0 },
+            { "family": "configuration", "status": "partial", "retained_relations": 0, "omitted_relations": 0, "unknown_count": 0 },
+            { "family": "data-flow", "status": "partial", "retained_relations": 5598, "omitted_relations": 0, "unknown_count": 604 },
+            { "family": "event", "status": "partial", "retained_relations": 0, "omitted_relations": 0, "unknown_count": 0 },
+            { "family": "object-flow", "status": "partial", "retained_relations": 864, "omitted_relations": 0, "unknown_count": 964 },
+            { "family": "promise-ownership", "status": "partial", "retained_relations": 8, "omitted_relations": 0, "unknown_count": 8 },
+            { "family": "request", "status": "partial", "retained_relations": 0, "omitted_relations": 0, "unknown_count": 0 },
+            { "family": "resource-lifecycle", "status": "partial", "retained_relations": 0, "omitted_relations": 0, "unknown_count": 0 },
+            { "family": "timer", "status": "partial", "retained_relations": 0, "omitted_relations": 0, "unknown_count": 0 }
+          ]
+        },
+        "application_unknowns": 0,
+        "semantic_unknowns": 2130
+      },
+      "limitation_count": 5
+    },
+    "parent_evidence_id": "ev_42218777213cbb84b843e6e8d9ecd606f68f90d5c083cad70e53c919bf8b90bb",
+    "parent_operation": "analyze_javascript_application",
+    "parent_digest": "42218777213cbb84b843e6e8d9ecd606f68f90d5c083cad70e53c919bf8b90bb",
+    "view_digest": "42eaf8209ed8a2620334fc4e89c4359752ba41cddfe7e6c83fd419809ddac4d6",
+    "artifact": {
+      "path": "D:\\meus documentos\\Steam\\.rea-reference\\media",
+      "sha256": "bd3df7cfd59850716e901be596c71654fbee3226e4a3431ad9babbebed9ffe15"
+    },
+    "coverage": {
+      "status": "complete-within-view",
+      "examined": 6,
+      "total": 10,
+      "next_offset": null,
+      "exhausted": true
+    }
+  },
+  "confidence": "derived",
+  "authority": "shipped-artifact",
+  "locations": [
+    {
+      "kind": "artifact-path",
+      "path": "D:\\meus documentos\\Steam\\.rea-reference\\media"
+    }
+  ],
+  "evidence_links": [
+    "ev_42218777213cbb84b843e6e8d9ecd606f68f90d5c083cad70e53c919bf8b90bb"
+  ]
+}

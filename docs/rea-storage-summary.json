@@ -1,0 +1,34 @@
+{
+  "parent_evidence_id": "ev_ae8a432211245c65c9ed54be9ddd2ad4396c41d1fee40166482c3b4f4e13a868",
+  "summary_view_evidence_id": "ev_2d920ba71cd9e678c38dc1ed5a6bfe956c0f09856ef7f2e54efc57e05186be66",
+  "modules_page_evidence_id": "ev_b91eb834f7be5faef9632425a88e557798ea86857f685e8e7a82cd2a11cefe37",
+  "module_item_evidence_id": "ev_bbf0c62d5a035ed7e651f053160d989f20231c3aaff8dfd76598e13c1e1c3cf1",
+  "target_directory": "d:/meus documentos/Steam/.rea-reference/storage",
+  "target_sha256": "68c83655fd833a0216575e6e792de5f4f38482fcf7359428ae127e12fec23238",
+  "source_bundle": "D:/Steam/steamui/sp.js",
+  "source_sha256": "5a28c25041d07e69cf591a414519e0cf970b6884c1a0106659dcd9f1fb9586f9",
+  "modules": {
+    "66572": {
+      "file": "storage-manager-module.js",
+      "sha256": "0cca7d790f584570893b93d8b13d072d7832acd7b5ee61b01d15da1112b27bf8",
+      "range": { "start": 13920395, "end": 13954778, "unit": "UTF-16 code units" },
+      "role": "ContentManagement / Storage Manager primary component, drive tabs, capacity breakdown, game inventory table, multi-selection, sort, and settings menu"
+    },
+    "21845": {
+      "file": "move-apps-module.js",
+      "sha256": "78bc213c824987e3a30c9140fdff318fe9251e38ef722ab5c54f22a8eae93471",
+      "range": { "start": 13990223, "end": 13995730, "unit": "UTF-16 code units" },
+      "role": "ContentManagement Move Apps modal dialog with destination drive selector and progress indicator"
+    },
+    "69242": {
+      "file": "drive-types-module.js",
+      "sha256": "91e93a2543442f65cc488469868e402428c755f2312a9913939c7838ce5727ef",
+      "range": { "start": 13984295, "end": 13985312, "unit": "UTF-16 code units" },
+      "role": "Drive type descriptors (Fixed, Removable, MicroSD, Internal Storage)"
+    }
+  },
+  "localization": {
+    "file": "steamui_brazilian-json.js",
+    "sha256": "ff24218d912cbf4acfcf768eea7579dd68240e030c12e8bea579b6da681b15ea"
+  }
+}
