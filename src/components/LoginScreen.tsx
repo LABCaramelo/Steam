@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useAuth } from "../auth";
 import { IconClose, IconMark, IconMaximize, IconMinimize } from "./Icons";
 
-type LoginMode = "password" | "signup" | "magic";
+type LoginMode = "password" | "signup";
 
 function formatAuthError(msg: string): string {
   const lower = msg.toLowerCase();
@@ -22,7 +22,7 @@ function formatAuthError(msg: string): string {
 }
 
 export function LoginScreen() {
-  const { loginWithPassword, signUp, loginWithOtp } = useAuth();
+  const { loginWithPassword, signUp } = useAuth();
   const [mode, setMode] = useState<LoginMode>("password");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,18 +40,6 @@ export function LoginScreen() {
 
     if (!email.trim() || !email.includes("@")) {
       setErrorMsg("Insira um endereço de e-mail válido.");
-      return;
-    }
-
-    if (mode === "magic") {
-      setSubmitting(true);
-      const res = await loginWithOtp(email);
-      setSubmitting(false);
-      if (res.ok) {
-        setSuccessMsg("Link mágico enviado! Verifique sua caixa de entrada para entrar diretamente.");
-      } else {
-        setErrorMsg(formatAuthError(res.error || "Falha ao enviar link de acesso."));
-      }
       return;
     }
 
@@ -109,10 +97,7 @@ export function LoginScreen() {
               <IconMark size={46} />
             </div>
             <h1 id="login-title" className="login-modal__title font-display">INICIAR SESSÃO NO LAB</h1>
-            <p className="login-modal__subtitle">
-              Acesso exclusivo para membros autenticados via Supabase.
-            </p>
-            <span className="cm-handwritten" style={{ fontSize: "16px", marginTop: "2px" }}>
+            <span className="cm-handwritten" style={{ fontSize: "17px", marginTop: "4px" }}>
               "menos ferramenta, mais sistema."
             </span>
           </div>
@@ -144,19 +129,6 @@ export function LoginScreen() {
               }}
             >
               Criar Conta
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === "magic"}
-              className={`login-modal__mode-btn ${mode === "magic" ? "is-active" : ""}`}
-              onClick={() => {
-                setMode("magic");
-                setErrorMsg(null);
-                setSuccessMsg(null);
-              }}
-            >
-              Link Mágico
             </button>
           </div>
 
@@ -224,38 +196,36 @@ export function LoginScreen() {
             <span className="cm-field__beam" aria-hidden="true" />
           </div>
 
-          {/* Campo Senha (Para Password e Signup) */}
-          {mode !== "magic" && (
-            <div className="login-field cm-field">
-              <label className="login-field__label" htmlFor="lab-password">
-                SENHA
-              </label>
-              <div className="login-field__input-wrap">
-                <input
-                  id="lab-password"
-                  type={showPassword ? "text" : "password"}
-                  className={`login-field__input cm-field__input ${errorMsg ? "is-error" : ""}`}
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    if (errorMsg) setErrorMsg(null);
-                  }}
-                  placeholder="Sua senha"
-                  autoComplete={mode === "signup" ? "new-password" : "current-password"}
-                  required
-                />
-                <button
-                  type="button"
-                  className="login-field__eye-btn"
-                  onClick={() => setShowPassword(!showPassword)}
-                  title={showPassword ? "Ocultar senha" : "Exibir senha"}
-                >
-                  {showPassword ? "Ocultar" : "Exibir"}
-                </button>
-              </div>
-              <span className="cm-field__beam" aria-hidden="true" />
+          {/* Campo Senha */}
+          <div className="login-field cm-field">
+            <label className="login-field__label" htmlFor="lab-password">
+              SENHA
+            </label>
+            <div className="login-field__input-wrap">
+              <input
+                id="lab-password"
+                type={showPassword ? "text" : "password"}
+                className={`login-field__input cm-field__input ${errorMsg ? "is-error" : ""}`}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errorMsg) setErrorMsg(null);
+                }}
+                placeholder="Sua senha"
+                autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                required
+              />
+              <button
+                type="button"
+                className="login-field__eye-btn"
+                onClick={() => setShowPassword(!showPassword)}
+                title={showPassword ? "Ocultar senha" : "Exibir senha"}
+              >
+                {showPassword ? "Ocultar" : "Exibir"}
+              </button>
             </div>
-          )}
+            <span className="cm-field__beam" aria-hidden="true" />
+          </div>
 
           {/* Lembrar neste navegador */}
           <label className="login-checkbox">
@@ -278,33 +248,19 @@ export function LoginScreen() {
               className="cm-glitch"
               data-text={
                 submitting
-                  ? "CONECTANDO AO SUPABASE…"
+                  ? "CONECTANDO…"
                   : mode === "signup"
                   ? "CRIAR CONTA"
-                  : mode === "magic"
-                  ? "ENVIAR LINK MÁGICO"
                   : "INICIAR SESSÃO"
               }
             >
               {submitting
-                ? "CONECTANDO AO SUPABASE…"
+                ? "CONECTANDO…"
                 : mode === "signup"
                 ? "CRIAR CONTA"
-                : mode === "magic"
-                ? "ENVIAR LINK MÁGICO"
                 : "INICIAR SESSÃO"}
             </span>
           </button>
-
-          <div className="login-modal__footer">
-            <div className="login-modal__guard">
-              <span className="login-modal__guard-dot" />
-              <span>Autenticação Supabase • Acesso estrito por credencial</span>
-            </div>
-            <div className="login-modal__disclaimer">
-              Um Cara Caramelo — Laboratório de Interação • Projeto autoral de estudo.
-            </div>
-          </div>
         </form>
       </div>
     </div>
