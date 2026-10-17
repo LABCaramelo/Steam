@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useReducer,
 import { createDownloadSession, downloadReducer, type DownloadSession, type RunState } from "./downloads";
 import fallbackSnapshot from "./fallbackSnapshot.json";
 import type { Achievement, ArtKind, LibraryApp, LibrarySnapshot, UserCollection } from "./types";
+import { useAuth } from "./auth";
 
 export const artUrl = (appid: number, kind: ArtKind) => `/api/art/${appid}/${kind}`;
 
@@ -63,6 +64,7 @@ function saveLocal(c: UserCollection[]) {
 }
 
 export function LibraryProvider({ children }: { children: ReactNode }) {
+  const { user, profile } = useAuth();
   const [snapshot, setSnapshot] = useState<LibrarySnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [collections, setCollections] = useState<UserCollection[]>([]);
@@ -224,12 +226,27 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       return a;
     });
 
+    const personaName =
+      profile?.nickname ||
+      profile?.name ||
+      (user?.user_metadata?.nickname as string | undefined) ||
+      (user?.user_metadata?.name as string | undefined) ||
+      user?.email?.split("@")[0];
+
+    const userObj = snapshot.user
+      ? {
+          ...snapshot.user,
+          personaName: personaName || snapshot.user.personaName,
+        }
+      : snapshot.user;
+
     return {
       ...snapshot,
+      user: userObj,
       libraryFolders,
       apps,
     };
-  }, [snapshot, appPathOverrides, extraFolders, removedFolderPaths, folderLabels]);
+  }, [snapshot, appPathOverrides, extraFolders, removedFolderPaths, folderLabels, user, profile]);
 
   const value = useMemo<LibraryState>(() => {
     const byId = new Map(effectiveSnapshot?.apps.map((a) => [a.appid, a]));

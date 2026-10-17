@@ -38,7 +38,22 @@ if (typeof window !== "undefined") {
 }
 
 function AuthGatekeeper() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="login-screen" style={{ display: "grid", placeItems: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "14px" }}>
+          <div className="login-modal__badge" style={{ width: "56px", height: "56px", borderRadius: "14px", animation: "pulse 1.5s infinite" }}>
+            <span style={{ fontFamily: "Montserrat", fontWeight: 900, fontSize: "24px", color: "#FFF4E8" }}>C.</span>
+          </div>
+          <span style={{ fontFamily: "Montserrat", fontSize: "11px", fontWeight: 700, letterSpacing: "0.18em", color: "rgb(var(--cm-fg-muted))" }}>
+            CARREGANDO SESSÃO…
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (

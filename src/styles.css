@@ -3124,6 +3124,43 @@ select {
   line-height: 1.4;
 }
 
+.login-modal__modes {
+  display: flex;
+  background: rgba(16, 16, 20, 0.65);
+  border: 1px solid rgb(var(--cm-line));
+  border-radius: var(--cm-radius-sm, 6px);
+  padding: 3px;
+  gap: 3px;
+}
+
+.login-modal__mode-btn {
+  flex: 1;
+  padding: 7px 10px;
+  font-family: var(--caramelo-font-display);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(var(--cm-fg-muted));
+  background: transparent;
+  border: none;
+  border-radius: var(--cm-radius-xs, 4px);
+  cursor: pointer;
+  transition: all 180ms ease;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.login-modal__mode-btn:hover {
+  color: rgb(var(--cm-fg));
+}
+
+.login-modal__mode-btn.is-active {
+  background: rgb(var(--cm-surface-3));
+  color: rgb(var(--cm-accent));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
 .login-modal__error {
   background: rgba(255, 61, 141, 0.15);
   border: 1px solid rgb(var(--cm-danger));
@@ -3135,6 +3172,18 @@ select {
   align-items: center;
   gap: 10px;
   animation: shake 0.3s ease-in-out;
+}
+
+.login-modal__success {
+  background: rgba(61, 220, 151, 0.15);
+  border: 1px solid rgb(var(--cm-success));
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #6ee7b7;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .login-modal__error-icon {
