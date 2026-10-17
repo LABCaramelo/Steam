@@ -12,24 +12,26 @@ import "./styles.css";
 function AuthGatekeeper() {
   const { isAuthenticated } = useAuth();
 
-  return (
-    <>
-      {/* Rastro interativo oficial de figurinhas Caramelo */}
-      <PointerTrail />
-      {!isAuthenticated ? (
+  if (!isAuthenticated) {
+    return (
+      <>
+        {/* Rastro interativo oficial de figurinhas Caramelo exclusivo da tela de login */}
+        <PointerTrail />
         <LoginScreen />
-      ) : (
-        <BrowserRouter>
-          <UiProvider>
-            <LibraryProvider>
-              <RunProvider>
-                <App />
-              </RunProvider>
-            </LibraryProvider>
-          </UiProvider>
-        </BrowserRouter>
-      )}
-    </>
+      </>
+    );
+  }
+
+  return (
+    <BrowserRouter>
+      <UiProvider>
+        <LibraryProvider>
+          <RunProvider>
+            <App />
+          </RunProvider>
+        </LibraryProvider>
+      </UiProvider>
+    </BrowserRouter>
   );
 }
 
