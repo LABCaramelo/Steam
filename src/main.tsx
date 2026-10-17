@@ -5,7 +5,6 @@ import { LibraryProvider, RunProvider } from "./api";
 import { App } from "./App";
 import { AuthProvider, useAuth } from "./auth";
 import { LoginScreen } from "./components/LoginScreen";
-import { PointerTrail } from "./components/PointerTrail";
 import { UiProvider } from "./ui";
 import "./styles.css";
 
@@ -56,13 +55,7 @@ function AuthGatekeeper() {
   }
 
   if (!isAuthenticated) {
-    return (
-      <>
-        {/* Rastro interativo oficial de figurinhas Caramelo exclusivo da tela de login */}
-        <PointerTrail />
-        <LoginScreen />
-      </>
-    );
+    return <LoginScreen />;
   }
 
   return (

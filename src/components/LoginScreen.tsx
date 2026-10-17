@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, useRef, useEffect, type FormEvent, type KeyboardEvent } from "react";
 import { useAuth } from "../auth";
 import { IconClose, IconMark, IconMaximize, IconMinimize } from "./Icons";
 
@@ -32,6 +32,45 @@ export function LoginScreen() {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const [tabIndicator, setTabIndicator] = useState({ left: 0, width: 0, opacity: 0 });
+
+  useEffect(() => {
+    const updateIndicator = () => {
+      if (!tabsRef.current) return;
+      const activeBtn = tabsRef.current.querySelector<HTMLElement>(".login-modal__mode-btn.is-active");
+      if (activeBtn) {
+        const parentRect = tabsRef.current.getBoundingClientRect();
+        const rect = activeBtn.getBoundingClientRect();
+        setTabIndicator({
+          left: rect.left - parentRect.left,
+          width: rect.width,
+          opacity: 1,
+        });
+      } else {
+        setTabIndicator((prev) => ({ ...prev, opacity: 0 }));
+      }
+    };
+
+    updateIndicator();
+    const id = setTimeout(updateIndicator, 40);
+    window.addEventListener("resize", updateIndicator);
+    return () => {
+      clearTimeout(id);
+      window.removeEventListener("resize", updateIndicator);
+    };
+  }, [mode]);
+
+  const handleTabKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      const nextMode: LoginMode = mode === "password" ? "signup" : "password";
+      setMode(nextMode);
+      setErrorMsg(null);
+      setSuccessMsg(null);
+    }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -102,12 +141,29 @@ export function LoginScreen() {
             </span>
           </div>
 
-          {/* Abas de Modo de Autenticação */}
-          <div className="login-modal__modes" role="tablist" aria-label="Modo de autenticação">
+          {/* Abas com Spotlight Deslizante (MCP Caramelo) */}
+          <div
+            ref={tabsRef}
+            className="login-modal__modes cm-spotlight-tabs"
+            role="tablist"
+            aria-label="Modo de autenticação"
+            onKeyDown={handleTabKeyDown}
+          >
+            <span
+              className="cm-spotlight-tabs__indicator"
+              style={{
+                transform: `translateX(${tabIndicator.left}px)`,
+                width: `${tabIndicator.width}px`,
+                opacity: tabIndicator.opacity,
+              }}
+              aria-hidden="true"
+            />
             <button
               type="button"
               role="tab"
+              id="login-tab-password"
               aria-selected={mode === "password"}
+              tabIndex={mode === "password" ? 0 : -1}
               className={`login-modal__mode-btn ${mode === "password" ? "is-active" : ""}`}
               onClick={() => {
                 setMode("password");
@@ -120,7 +176,9 @@ export function LoginScreen() {
             <button
               type="button"
               role="tab"
+              id="login-tab-signup"
               aria-selected={mode === "signup"}
+              tabIndex={mode === "signup" ? 0 : -1}
               className={`login-modal__mode-btn ${mode === "signup" ? "is-active" : ""}`}
               onClick={() => {
                 setMode("signup");
@@ -150,15 +208,15 @@ export function LoginScreen() {
 
           {/* Campo Nome (Apenas em Cadastro) */}
           {mode === "signup" && (
-            <div className="login-field cm-field">
+            <div className="login-field">
               <label className="login-field__label" htmlFor="lab-name">
                 NOME OU APELIDO
               </label>
-              <div className="login-field__input-wrap">
+              <div className="login-field__input-wrap cm-field">
                 <input
                   id="lab-name"
                   type="text"
-                  className="login-field__input cm-field__input"
+                  className="login-field__input"
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
@@ -167,21 +225,21 @@ export function LoginScreen() {
                   placeholder="Seu nome autoral"
                   autoComplete="name"
                 />
+                <span className="cm-field__beam" aria-hidden="true" />
               </div>
-              <span className="cm-field__beam" aria-hidden="true" />
             </div>
           )}
 
           {/* Campo E-mail */}
-          <div className="login-field cm-field">
+          <div className="login-field">
             <label className="login-field__label" htmlFor="lab-email">
               E-MAIL
             </label>
-            <div className="login-field__input-wrap">
+            <div className={`login-field__input-wrap cm-field ${errorMsg && !email.trim() ? "is-invalid" : ""}`}>
               <input
                 id="lab-email"
                 type="email"
-                className="login-field__input cm-field__input"
+                className="login-field__input"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -192,20 +250,20 @@ export function LoginScreen() {
                 autoComplete="email"
                 required
               />
+              <span className="cm-field__beam" aria-hidden="true" />
             </div>
-            <span className="cm-field__beam" aria-hidden="true" />
           </div>
 
           {/* Campo Senha */}
-          <div className="login-field cm-field">
+          <div className="login-field">
             <label className="login-field__label" htmlFor="lab-password">
               SENHA
             </label>
-            <div className="login-field__input-wrap">
+            <div className={`login-field__input-wrap cm-field ${errorMsg && !password.trim() ? "is-invalid" : ""}`}>
               <input
                 id="lab-password"
                 type={showPassword ? "text" : "password"}
-                className={`login-field__input cm-field__input ${errorMsg ? "is-error" : ""}`}
+                className="login-field__input"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -223,8 +281,8 @@ export function LoginScreen() {
               >
                 {showPassword ? "Ocultar" : "Exibir"}
               </button>
+              <span className="cm-field__beam" aria-hidden="true" />
             </div>
-            <span className="cm-field__beam" aria-hidden="true" />
           </div>
 
           {/* Lembrar neste navegador */}
