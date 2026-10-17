@@ -12,8 +12,13 @@ export interface UserProfile {
   nickname?: string | null;
 }
 
-const AUTH_STORAGE_KEY = "steam-recriada:auth";
-const VALID_PASSWORD = (import.meta.env.VITE_ACCESS_PASSWORD as string | undefined) || "3451";
+// Expurgar qualquer chave de bypass legado do navegador
+try {
+  localStorage.removeItem("steam-recriada:auth");
+  sessionStorage.removeItem("steam-recriada:auth");
+} catch {
+  // localStorage restrito
+}
 
 export interface AuthContextType {
   isAuthenticated: boolean;
@@ -24,10 +29,9 @@ export interface AuthContextType {
   loginWithPassword: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
   signUp: (email: string, password: string, name?: string, nickname?: string) => Promise<{ ok: boolean; error?: string; message?: string }>;
   loginWithOtp: (email: string) => Promise<{ ok: boolean; error?: string }>;
-  loginWithMasterPassword: (password: string, remember?: boolean) => boolean;
   logout: () => Promise<void>;
-  /** Compatibilidade com implementações legadas */
-  login: (emailOrPassword: string, passwordOrRemember?: string | boolean) => boolean | Promise<{ ok: boolean; error?: string }>;
+  /** Atalho para login com e-mail e senha */
+  login: (email: string, password?: string) => Promise<{ ok: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -51,17 +55,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [isMasterAuthenticated, setIsMasterAuthenticated] = useState<boolean>(() => {
-    try {
-      const stored = localStorage.getItem(AUTH_STORAGE_KEY);
-      return stored === "authenticated" || stored === VALID_PASSWORD;
-    } catch {
-      return false;
-    }
-  });
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Carrega e sincroniza a sessão Supabase
+  // Carrega e sincroniza estritamente a sessão Supabase
   useEffect(() => {
     let mounted = true;
 
@@ -75,9 +71,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(initialSession.user);
           const prof = await fetchUserProfile(initialSession.user.id);
           if (mounted) setProfile(prof);
+        } else {
+          setSession(null);
+          setUser(null);
+          setProfile(null);
         }
       } catch {
-        // Sem rede ou erro de inicialização
+        if (mounted) {
+          setSession(null);
+          setUser(null);
+          setProfile(null);
+        }
       } finally {
         if (mounted) setIsLoading(false);
       }
@@ -115,7 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { ok: false, error: error.message };
       }
 
-      if (data.session) {
+      if (data.session && data.user) {
         setSession(data.session);
         setUser(data.user);
         const prof = await fetchUserProfile(data.user.id);
@@ -123,9 +127,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { ok: true };
       }
 
-      return { ok: false, error: "Nenhuma sessão retornada pelo servidor." };
+      return { ok: false, error: "Nenhuma sessão retornada pelo Supabase." };
     } catch (err) {
-      return { ok: false, error: err instanceof Error ? err.message : "Erro desconhecido ao autenticar." };
+      return { ok: false, error: err instanceof Error ? err.message : "Erro ao autenticar no Supabase." };
     }
   }, []);
 
@@ -147,29 +151,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return { ok: false, error: error.message };
         }
 
-        if (data.session) {
+        if (data.session && data.user) {
           setSession(data.session);
           setUser(data.user);
-          if (data.user) {
-            const prof = await fetchUserProfile(data.user.id);
-            setProfile(prof);
-          }
+          const prof = await fetchUserProfile(data.user.id);
+          setProfile(prof);
           return { ok: true, message: "Conta criada com sucesso! Entrando…" };
         }
 
-        // Se o Supabase não retornou a sessão diretamente no signUp, autentica imediatamente
+        // Tenta autenticação imediata caso o Supabase não tenha retornado a sessão no signUp
         const loginRes = await supabase.auth.signInWithPassword({
           email: email.trim(),
           password: password.trim(),
         });
 
-        if (loginRes.data?.session) {
+        if (loginRes.data?.session && loginRes.data?.user) {
           setSession(loginRes.data.session);
           setUser(loginRes.data.user);
-          if (loginRes.data.user) {
-            const prof = await fetchUserProfile(loginRes.data.user.id);
-            setProfile(prof);
-          }
+          const prof = await fetchUserProfile(loginRes.data.user.id);
+          setProfile(prof);
           return { ok: true, message: "Conta criada com sucesso! Entrando…" };
         }
 
@@ -203,30 +203,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const loginWithMasterPassword = useCallback((password: string, remember = true): boolean => {
-    if (password.trim() === VALID_PASSWORD) {
-      if (remember) {
-        try {
-          localStorage.setItem(AUTH_STORAGE_KEY, "authenticated");
-        } catch {
-          // localStorage indisponível
-        }
-      }
-      setIsMasterAuthenticated(true);
-      return true;
-    }
-    return false;
-  }, []);
-
   const logout = useCallback(async () => {
     try {
-      localStorage.removeItem(AUTH_STORAGE_KEY);
-      sessionStorage.removeItem(AUTH_STORAGE_KEY);
+      localStorage.removeItem("steam-recriada:auth");
+      sessionStorage.removeItem("steam-recriada:auth");
       await supabase.auth.signOut();
     } catch {
       // Ignora erro de rede no logout
     } finally {
-      setIsMasterAuthenticated(false);
       setSession(null);
       setUser(null);
       setProfile(null);
@@ -234,19 +218,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback(
-    (emailOrPassword: string, passwordOrRemember?: string | boolean) => {
-      // Se passado com senha ou formato de email, usa Supabase
-      if (typeof passwordOrRemember === "string") {
-        return loginWithPassword(emailOrPassword, passwordOrRemember);
-      }
-      // Caso contrário, tenta como senha mestra
-      const remember = typeof passwordOrRemember === "boolean" ? passwordOrRemember : true;
-      return loginWithMasterPassword(emailOrPassword, remember);
+    (email: string, password = "") => {
+      return loginWithPassword(email, password);
     },
-    [loginWithPassword, loginWithMasterPassword]
+    [loginWithPassword]
   );
 
-  const isAuthenticated = Boolean(session || user || isMasterAuthenticated);
+  // Apenas e estritamente sessões reais ativas do Supabase concedem autenticação
+  const isAuthenticated = Boolean(session?.user);
 
   return (
     <AuthContext.Provider
@@ -259,7 +238,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loginWithPassword,
         signUp,
         loginWithOtp,
-        loginWithMasterPassword,
         logout,
         login,
       }}

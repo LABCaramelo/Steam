@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useAuth } from "../auth";
 import { IconClose, IconMark, IconMaximize, IconMinimize } from "./Icons";
 
-type LoginMode = "password" | "signup" | "magic" | "master";
+type LoginMode = "password" | "signup" | "magic";
 
 function formatAuthError(msg: string): string {
   const lower = msg.toLowerCase();
@@ -22,7 +22,7 @@ function formatAuthError(msg: string): string {
 }
 
 export function LoginScreen() {
-  const { loginWithPassword, signUp, loginWithOtp, loginWithMasterPassword } = useAuth();
+  const { loginWithPassword, signUp, loginWithOtp } = useAuth();
   const [mode, setMode] = useState<LoginMode>("password");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,22 +37,6 @@ export function LoginScreen() {
     e.preventDefault();
     setErrorMsg(null);
     setSuccessMsg(null);
-
-    if (mode === "master") {
-      if (!password.trim()) {
-        setErrorMsg("Insira a chave de acesso.");
-        return;
-      }
-      setSubmitting(true);
-      setTimeout(() => {
-        const ok = loginWithMasterPassword(password, remember);
-        if (!ok) {
-          setErrorMsg("Chave de acesso incorreta. Tente novamente.");
-          setSubmitting(false);
-        }
-      }, 200);
-      return;
-    }
 
     if (!email.trim() || !email.includes("@")) {
       setErrorMsg("Insira um endereço de e-mail válido.");
@@ -126,7 +110,7 @@ export function LoginScreen() {
             </div>
             <h1 id="login-title" className="login-modal__title font-display">INICIAR SESSÃO NO LAB</h1>
             <p className="login-modal__subtitle">
-              Autenticação unificada do ecossistema Caramelo via Supabase.
+              Acesso exclusivo para membros autenticados via Supabase.
             </p>
             <span className="cm-handwritten" style={{ fontSize: "16px", marginTop: "2px" }}>
               "menos ferramenta, mais sistema."
@@ -174,19 +158,6 @@ export function LoginScreen() {
             >
               Link Mágico
             </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === "master"}
-              className={`login-modal__mode-btn ${mode === "master" ? "is-active" : ""}`}
-              onClick={() => {
-                setMode("master");
-                setErrorMsg(null);
-                setSuccessMsg(null);
-              }}
-            >
-              Chave
-            </button>
           </div>
 
           {/* Feedback de Erro */}
@@ -229,37 +200,35 @@ export function LoginScreen() {
             </div>
           )}
 
-          {/* Campo E-mail (Para Password, Signup e Magic Link) */}
-          {mode !== "master" && (
-            <div className="login-field cm-field">
-              <label className="login-field__label" htmlFor="lab-email">
-                E-MAIL SUPABASE
-              </label>
-              <div className="login-field__input-wrap">
-                <input
-                  id="lab-email"
-                  type="email"
-                  className="login-field__input cm-field__input"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (errorMsg) setErrorMsg(null);
-                  }}
-                  placeholder="exemplo@caramelo.com"
-                  autoFocus
-                  autoComplete="email"
-                  required
-                />
-              </div>
-              <span className="cm-field__beam" aria-hidden="true" />
+          {/* Campo E-mail */}
+          <div className="login-field cm-field">
+            <label className="login-field__label" htmlFor="lab-email">
+              E-MAIL
+            </label>
+            <div className="login-field__input-wrap">
+              <input
+                id="lab-email"
+                type="email"
+                className="login-field__input cm-field__input"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (errorMsg) setErrorMsg(null);
+                }}
+                placeholder="seuemail@exemplo.com"
+                autoFocus
+                autoComplete="email"
+                required
+              />
             </div>
-          )}
+            <span className="cm-field__beam" aria-hidden="true" />
+          </div>
 
-          {/* Campo Senha (Para Password, Signup e Master Key) */}
+          {/* Campo Senha (Para Password e Signup) */}
           {mode !== "magic" && (
             <div className="login-field cm-field">
               <label className="login-field__label" htmlFor="lab-password">
-                {mode === "master" ? "CHAVE DE ACESSO" : "SENHA"}
+                SENHA
               </label>
               <div className="login-field__input-wrap">
                 <input
@@ -271,7 +240,7 @@ export function LoginScreen() {
                     setPassword(e.target.value);
                     if (errorMsg) setErrorMsg(null);
                   }}
-                  placeholder={mode === "master" ? "Senha de acesso do laboratório" : "Sua senha"}
+                  placeholder="Sua senha"
                   autoComplete={mode === "signup" ? "new-password" : "current-password"}
                   required
                 />
@@ -330,7 +299,7 @@ export function LoginScreen() {
           <div className="login-modal__footer">
             <div className="login-modal__guard">
               <span className="login-modal__guard-dot" />
-              <span>Conectado ao Supabase • Sessão segura e persistente</span>
+              <span>Autenticação Supabase • Acesso estrito por credencial</span>
             </div>
             <div className="login-modal__disclaimer">
               Um Cara Caramelo — Laboratório de Interação • Projeto autoral de estudo.
