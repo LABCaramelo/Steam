@@ -207,11 +207,20 @@ export function LibraryHome() {
             )}
           />
         </div>
-        <div className="grid">
-          {sortApps(apps, sort).map((a) => (
-            <Capsule key={a.appid} app={a} size="sm" caption={sortCaption(a, sort)} />
-          ))}
-        </div>
+        {apps.length === 0 ? (
+          <div className="home__empty" style={{ padding: "48px 24px", textAlign: "center", background: "rgba(24, 24, 29, 0.4)", borderRadius: "var(--cm-radius-lg)", border: "1px dashed rgb(var(--cm-line))", marginTop: "16px" }}>
+            <p style={{ color: "rgb(var(--cm-warm))", fontSize: "16px", fontWeight: 600, marginBottom: "8px" }}>Nenhuma ferramenta no catálogo</p>
+            <p className="muted" style={{ fontSize: "13px", maxWidth: "440px", margin: "0 auto" }}>
+              Todos os jogos foram removidos do projeto. O catálogo do LAB está limpo e pronto para o cadastro das suas ferramentas.
+            </p>
+          </div>
+        ) : (
+          <div className="grid">
+            {sortApps(apps, sort).map((a) => (
+              <Capsule key={a.appid} app={a} size="sm" caption={sortCaption(a, sort)} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

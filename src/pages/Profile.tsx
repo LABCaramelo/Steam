@@ -69,13 +69,14 @@ export function ProfilePage() {
             <section className="profile__box">
               <h2>Atividade recente</h2>
               <p className="muted small">{formatPlaytime(stats.totalMin)} registradas em {stats.played} títulos</p>
+              {recent.length === 0 && <p className="muted small" style={{ marginTop: "12px" }}>Nenhuma atividade registrada.</p>}
               {recent.map((a) => (
                 <button key={a.appid} className="profile__recent" onClick={() => nav(`/library/app/${a.appid}`)}>
                   <AppArt app={a} kind="header" />
                   <div>
                     <div className="profile__recent-name">{a.name}</div>
                     <div className="muted small">
-                      {formatPlaytime(a.playtimeMinutes)} no total • jogado pela última vez em {formatDate(a.lastPlayed)}
+                      {formatPlaytime(a.playtimeMinutes)} no total • utilizado pela última vez em {formatDate(a.lastPlayed)}
                     </div>
                     {a.achievements && (
                       <div className="profile__ach">

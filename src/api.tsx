@@ -105,14 +105,18 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
         if (!s || !Array.isArray(s.apps)) throw new Error("Invalid snapshot format");
         setSnapshot(s);
         setError(null);
-        setCollections((prev) => (prev.length ? prev : (loadLocal() ?? s.collections)));
+        const validIds = new Set(s.apps.map((a) => a.appid));
+        const rawCol = loadLocal() ?? s.collections;
+        setCollections(rawCol.map((c) => ({ ...c, appids: c.appids.filter((id) => validIds.has(id)) })));
       })
       .catch(() => {
         // Fallback resiliente para o snapshot embutido quando servido sem backend local (Vercel)
         const fallback = fallbackSnapshot as unknown as LibrarySnapshot;
         setSnapshot(fallback);
         setError(null);
-        setCollections((prev) => (prev.length ? prev : (loadLocal() ?? fallback.collections)));
+        const validIds = new Set(fallback.apps.map((a) => a.appid));
+        const rawCol = loadLocal() ?? fallback.collections;
+        setCollections(rawCol.map((c) => ({ ...c, appids: c.appids.filter((id) => validIds.has(id)) })));
       });
   }, []);
 

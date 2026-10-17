@@ -83,7 +83,7 @@ export function AppPropertiesModal({ onClose }: { onClose: () => void }) {
             <dt>Desenvolvedor</dt>
             <dd>{a.developer ?? "—"}</dd>
           </dl>
-          <Toggle label="Ativar a sobreposição LAB durante o jogo" checked onChange={() => ui.toast("Preferência salva só nesta sessão.")} />
+          <Toggle label="Ativar a sobreposição LAB durante a execução" checked onChange={() => ui.toast("Preferência salva só nesta sessão.")} />
           <label className="field field--column">
             <div className="field__label">Opções de inicialização</div>
             <input className="input mono" placeholder="ex.: -novid -console" />

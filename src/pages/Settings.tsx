@@ -120,7 +120,7 @@ function SettingsPage({ slug }: { slug: string }) {
           <Toggle label="Exibir ícones das ferramentas na lista lateral" checked={ui.settings.showGameIconsInList} onChange={(v) => ui.setSetting("showGameIconsInList", v)} />
           <Toggle
             label="Iniciar e instalar via steam://"
-            desc="Quando ativado, os botões Jogar/Instalar enviam o pedido ao cliente LAB real instalado neste PC. Desativado = simulação."
+            desc="Quando ativado, os botões Abrir/Instalar enviam o pedido ao cliente LAB real instalado neste PC. Desativado = simulação."
             checked={ui.settings.launchViaSteamProtocol}
             onChange={(v) => ui.setSetting("launchViaSteamProtocol", v)}
           />
@@ -165,8 +165,8 @@ function SettingsPage({ slug }: { slug: string }) {
     case "ingame":
       body = (
         <>
-          {flag("overlay", "Ativar a sobreposição LAB durante o jogo", undefined, true)}
-          {flag("fps", "Contador de FPS no jogo")}
+          {flag("overlay", "Ativar a sobreposição LAB durante a execução", undefined, true)}
+          {flag("fps", "Contador de taxa de quadros (FPS)")}
         </>
       );
       break;

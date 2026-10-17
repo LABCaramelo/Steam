@@ -156,7 +156,7 @@ function GameListEntry({ app, onContext }: { app: LibraryApp; onContext: (t: Con
     >
       {ui.settings.showGameIconsInList && <AppIcon app={app} />}
       <span className="gamelist-entry__name">{app.name}</span>
-      {run.kind === "running" && <span className="gamelist-entry__tag">Jogando</span>}
+      {run.kind === "running" && <span className="gamelist-entry__tag">Em uso</span>}
       {run.kind === "installing" && <span className="gamelist-entry__tag">{run.paused ? "Em pausa" : `${Math.round(run.progress * 100)}%`}</span>}
       {app.download?.state === "update_required" && <span className="gamelist-entry__tag">Atualização</span>}
     </div>

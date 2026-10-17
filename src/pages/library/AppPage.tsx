@@ -60,7 +60,7 @@ function AppDetails({ app }: { app: LibraryApp }) {
         )}
         <div className="playbar__stats">
           {play.variant === "running" ? (
-            <Stat label="Estado" value="Jogando agora (simulação)" accent />
+            <Stat label="Estado" value="Em execução agora (simulação)" accent />
           ) : (
             <>
               <Stat label={t("AppDetails_SectionTitle_LastPlayed")} value={formatLastPlayed(app.lastPlayed)} />
@@ -110,7 +110,7 @@ function AppDetails({ app }: { app: LibraryApp }) {
               {app.lastPlayed > 0 && (
                 <li>
                   <span className="activity__date">{formatDate(app.lastPlayed)}</span>
-                  Você jogou <b>{app.name}</b> pela última vez. Total acumulado: {formatPlaytime(app.playtimeMinutes)}.
+                  Você utilizou <b>{app.name}</b> pela última vez. Total acumulado: {formatPlaytime(app.playtimeMinutes)}.
                 </li>
               )}
               {app.installed && app.lastUpdated && (
@@ -168,7 +168,7 @@ function AppDetails({ app }: { app: LibraryApp }) {
         <div className="appdetails__col appdetails__col--side">
           <section className="panel">
             <h3 className="panel__title">{t("AppDetails_SectionTitle_Friends")}</h3>
-            <p className="muted">Nenhum amigo seu joga isto — ou a lista de amigos não está disponível offline.</p>
+            <p className="muted">Nenhum amigo seu utiliza esta ferramenta — ou a lista de amigos não está disponível offline.</p>
           </section>
 
           {ach && ach.total > 0 && (

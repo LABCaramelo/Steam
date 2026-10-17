@@ -32,7 +32,7 @@ export function usePlayAction(app: LibraryApp): PlayAction {
     };
   }
   if (run.kind === "launching") return { variant: "busy", label: "Iniciando…", onClick: () => {} };
-  if (run.kind === "running") return { variant: "running", label: "Parar", sub: "Jogando agora", onClick: () => setRun(settled) };
+  if (run.kind === "running") return { variant: "running", label: "Parar", sub: "Em execução agora", onClick: () => setRun(settled) };
 
   const d = app.download;
   if (d && !downloads.isInstalled(app.appid)) {
@@ -49,7 +49,7 @@ export function usePlayAction(app: LibraryApp): PlayAction {
   if (app.installed || downloads.isInstalled(app.appid) || run.kind === "installed") {
     return {
       variant: "play",
-      label: "Jogar",
+      label: "Abrir",
       onClick: () => {
         if (real && app.installed) {
           window.location.href = `steam://rungameid/${app.appid}`;

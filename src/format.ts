@@ -2,7 +2,7 @@ const dateFmt = new Intl.DateTimeFormat("pt-BR", { day: "numeric", month: "short
 const shortDateFmt = new Intl.DateTimeFormat("pt-BR", { day: "numeric", month: "short" });
 
 export function formatPlaytime(minutes: number): string {
-  if (minutes <= 0) return "Nunca jogado";
+  if (minutes <= 0) return "Nunca utilizado";
   if (minutes < 60) return `${minutes} minuto${minutes === 1 ? "" : "s"}`;
   const h = minutes / 60;
   const shown = h >= 100 ? Math.round(h).toLocaleString("pt-BR") : h.toLocaleString("pt-BR", { maximumFractionDigits: 1 });

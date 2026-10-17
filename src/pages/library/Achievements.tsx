@@ -67,7 +67,7 @@ export function AchievementsPage() {
                 {x.image ? <img src={x.image} alt="" loading="lazy" /> : <span className="ach-row__ph" />}
                 <div className="ach-row__text">
                   <div className="ach-row__name">{x.hidden && !x.achieved ? "Conquista oculta" : x.name}</div>
-                  <div className="ach-row__desc">{x.hidden && !x.achieved ? "Continue jogando para descobrir." : x.description}</div>
+                  <div className="ach-row__desc">{x.hidden && !x.achieved ? "Continue utilizando para descobrir." : x.description}</div>
                   {x.progress && !x.achieved && (
                     <div className="ach-row__progress">
                       <span className="mini-progress">
@@ -79,7 +79,7 @@ export function AchievementsPage() {
                 </div>
                 <div className="ach-row__meta">
                   {x.achieved && x.unlocked ? <span>Desbloqueada em {formatDate(x.unlocked)}</span> : <span>Bloqueada</span>}
-                  {x.globalPercent !== undefined && <span className="muted">{x.globalPercent.toFixed(1)}% dos jogadores</span>}
+                  {x.globalPercent !== undefined && <span className="muted">{x.globalPercent.toFixed(1)}% dos usuários</span>}
                 </div>
               </li>
             ))}

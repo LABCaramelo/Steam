@@ -37,7 +37,7 @@ export function Capsule({ app, size = "md", caption }: { app: LibraryApp; size?:
             {play.variant === "play" ? <IconPlay size={18} /> : <IconDownload size={18} />}
           </button>
         )}
-        {play.variant === "running" && <span className="capsule__badge">Jogando</span>}
+        {play.variant === "running" && <span className="capsule__badge">Em execução</span>}
         {play.variant === "busy" && <span className="capsule__badge">{play.label}</span>}
       </div>
       {caption && <div className="capsule__caption">{caption}</div>}

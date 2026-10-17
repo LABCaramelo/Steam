@@ -105,7 +105,7 @@ export function StorePage() {
           )}
 
           <section className="store__section">
-            <h2 className="store__heading">{view === "charts" ? "Mais jogados por você" : "Da sua biblioteca"}</h2>
+            <h2 className="store__heading">{view === "charts" ? "Mais utilizadas" : "Da sua biblioteca"}</h2>
             <StoreRows apps={[...apps].sort((a, b) => b.playtimeMinutes - a.playtimeMinutes)} ranked={view === "charts"} />
           </section>
         </>
@@ -116,6 +116,9 @@ export function StorePage() {
 
 function StoreRows({ apps, ranked }: { apps: LibraryApp[]; ranked?: boolean }) {
   const nav = useNavigate();
+  if (apps.length === 0) {
+    return <p className="muted" style={{ padding: "16px 0" }}>Nenhuma ferramenta no catálogo da biblioteca no momento.</p>;
+  }
   return (
     <div className="store__rows">
       {apps.map((a, i) => (

@@ -45,6 +45,8 @@ export function CommunityPage() {
             Abra <a href={TAB_URL[tab]} target="_blank" rel="noopener noreferrer">{TAB_URL[tab]}</a> para ver esta seção.
           </p>
         </div>
+      ) : apps.length === 0 ? (
+        <p className="muted" style={{ padding: "24px 0" }}>Nenhuma ferramenta no catálogo para exibir centrais da comunidade.</p>
       ) : (
         <div className="community__grid">
           {apps.map((a) => (

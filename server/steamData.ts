@@ -415,32 +415,17 @@ export function buildSnapshot(steamPath: string | null): LibrarySnapshot {
   }
 
   apps.sort((a, b) => a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" }));
-  return { steamPath, user, apps, collections: readCollections(userdata), libraryFolders: folders, source: "local", generatedAt: Date.now() };
+  const collections = readCollections(userdata).map((c) => ({ ...c, appids: [] }));
+  return { steamPath, user, apps: [], collections, libraryFolders: folders, source: "local", generatedAt: Date.now() };
 }
 
 /** Used when no Steam installation is found, so the UI still renders. */
 export function demoSnapshot(): LibrarySnapshot {
-  const now = Math.floor(Date.now() / 1000);
-  const mk = (appid: number, name: string, installed: boolean, hours: number, daysAgo: number): LibraryApp => ({
-    appid,
-    name,
-    type: "game",
-    installed,
-    sizeOnDisk: installed ? 12_000_000_000 : 0,
-    lastPlayed: daysAgo >= 0 ? now - daysAgo * 86400 : 0,
-    playtimeMinutes: hours * 60,
-    art: { capsule: false, hero: false, heroBlur: false, logo: false, header: false, icon: false },
-  });
   return {
     steamPath: null,
-    user: { personaName: "Jogador", hasAvatar: false },
-    apps: [
-      mk(1, "Aventura Espacial", true, 42, 1),
-      mk(2, "Corrida Noturna", false, 7, 20),
-      mk(3, "Fazenda Tranquila", true, 120, 3),
-      mk(4, "Masmorra Infinita", false, 0, -1),
-    ],
-    collections: [{ id: "favorite", name: "Favoritos", appids: [1, 3], dynamic: false }],
+    user: { personaName: "LAB", hasAvatar: false },
+    apps: [],
+    collections: [{ id: "favorite", name: "Favoritos", appids: [], dynamic: false }],
     libraryFolders: [],
     source: "demo",
     generatedAt: Date.now(),
