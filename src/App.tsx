@@ -15,7 +15,6 @@ import { CollectionsPage, CollectionView } from "./pages/library/Collections";
 import { DownloadsPage } from "./pages/library/Downloads";
 import { LibraryHome } from "./pages/library/Home";
 import { LibraryLayout } from "./pages/library/LibraryLayout";
-import { MediaPage } from "./pages/Media";
 import { ProfilePage } from "./pages/Profile";
 import { SettingsModal } from "./pages/Settings";
 import { StorePage } from "./pages/Store";
@@ -56,9 +55,6 @@ export function App() {
             <Route path="collection/:collectionid/:appid" element={<AppPage />} />
             <Route path="downloads" element={<DownloadsPage />} />
           </Route>
-          <Route path="/media" element={<Navigate to="/media/grid" replace />} />
-          <Route path="/media/grid" element={<MediaPage />} />
-          <Route path="/media/list" element={<MediaPage />} />
           <Route path="/store" element={<StorePage />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/profile" element={<ProfilePage />} />

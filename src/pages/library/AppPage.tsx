@@ -200,18 +200,6 @@ function AppDetails({ app }: { app: LibraryApp }) {
 
           <Notes appid={app.appid} />
 
-          <section className="panel">
-            <h3 className="panel__title">
-              <Link to={`/media?app=${app.appid}`}>{t("AppDetails_SectionTitle_Media")}</Link>
-            </h3>
-            <p className="muted small">Veja ou capture novos momentos e clipes desta ferramenta.</p>
-            <div className="btn-row">
-              <Link className="btn btn--sm" to={`/media?app=${app.appid}`}>
-                {t("AppDetails_GoToMedia")}
-              </Link>
-            </div>
-          </section>
-
           {app.installed && (
             <section className="panel">
               <h3 className="panel__title">Arquivos locais</h3>

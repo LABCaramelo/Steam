@@ -55,7 +55,6 @@ export function CommunityPage() {
                 <div className="hub-card__links">
                   <span>{t("Menu_Discussions")}</span>
                   <span>Guias</span>
-                  <span>{t("Menu_Screenshots")}</span>
                   {a.appid === 570 || a.appid === 730 || a.appid === 440 ? <span>{t("Menu_Workshop")}</span> : null}
                 </div>
               </div>

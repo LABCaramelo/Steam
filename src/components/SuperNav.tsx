@@ -68,15 +68,6 @@ export function SuperNav() {
         { label: t("Menu_Inventory"), onSelect: () => nav("/profile?tab=inventory") },
       ],
     },
-    {
-      label: "GRAVAÇÕES & MÍDIA",
-      to: "/media/grid",
-      match: (p) => p.startsWith("/media"),
-      items: [
-        { label: "Grade de capturas", onSelect: () => nav("/media/grid") },
-        { label: "Lista detalhada", onSelect: () => nav("/media/list") },
-      ],
-    },
   ];
 
   return (

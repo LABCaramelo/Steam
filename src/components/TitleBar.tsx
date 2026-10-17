@@ -38,7 +38,6 @@ export function TitleBar() {
         { label: t("Menu_Library"), onSelect: () => nav("/library/home") },
         { label: t("Menu_Collections"), onSelect: () => nav("/library/collections") },
         { label: t("Menu_Downloads"), onSelect: () => nav("/library/downloads") },
-        { label: t("Menu_Screenshots_New"), onSelect: () => nav("/media") },
         { kind: "separator" },
         { label: t("Menu_HiddenGames"), onSelect: () => nav("/library/collection/hidden") },
         { kind: "separator" },

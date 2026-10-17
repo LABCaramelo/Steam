@@ -18,7 +18,6 @@ const PAGES: { slug: string; key: LocKey }[] = [
   { slug: "storage", key: "Settings_Page_Storage" },
   { slug: "cloud", key: "Settings_Page_Cloud" },
   { slug: "ingame", key: "Settings_Page_InGame" },
-  { slug: "gamerecording", key: "Settings_Page_GameRecording" },
   { slug: "friends", key: "Settings_Page_Friends" },
   { slug: "controller", key: "Settings_Page_Controller" },
   { slug: "voice", key: "Settings_Page_Voice" },
@@ -168,61 +167,11 @@ function SettingsPage({ slug }: { slug: string }) {
         <>
           {flag("overlay", "Ativar a sobreposição LAB durante o jogo", undefined, true)}
           {flag("fps", "Contador de FPS no jogo")}
-          {flag("screenshotSound", "Tocar som ao capturar tela", undefined, true)}
         </>
       );
       break;
     case "cloud":
       body = flag("cloud", "Ativar o LAB Cloud nos aplicativos compatíveis", "Os arquivos salvos são sincronizados automaticamente.", true);
-      break;
-    case "gamerecording":
-      body = (
-        <>
-          <Select
-            label="Modo de gravação"
-            value={flags["mode"] ?? "background"}
-            options={[
-              { value: "off", label: "Desativado" },
-              { value: "background", label: "Gravar em segundo plano" },
-              { value: "manual", label: "Gravar manualmente" },
-            ]}
-            onChange={(v) => setFlag("mode", v)}
-          />
-          <Select
-            label="Duração máxima da gravação em segundo plano"
-            value={flags["duration"] ?? 120}
-            options={[
-              { value: 30, label: "30 minutos" },
-              { value: 60, label: "60 minutos" },
-              { value: 120, label: "120 minutos (recomendado)" },
-              { value: 240, label: "240 minutos" },
-            ]}
-            onChange={(v) => setFlag("duration", v)}
-          />
-          <Select
-            label="Limite de espaço no disco"
-            value={flags["storageLimitGb"] ?? 24}
-            options={[
-              { value: 10, label: "10 GB" },
-              { value: 24, label: "24 GB" },
-              { value: 50, label: "50 GB" },
-              { value: 100, label: "100 GB" },
-            ]}
-            onChange={(v) => setFlag("storageLimitGb", v)}
-          />
-          {flag("audioGameOnly", "Gravar apenas o áudio da ferramenta", "Ignora áudios de outros programas abertos no sistema.", true)}
-          {flag("timelineMarkers", "Exibir marcadores e conquistas na barra cronológica", "Adiciona automaticamente ícones de conquistas e eventos nas gravações.", true)}
-          {flag("overlayIndicator", "Exibir indicador de gravação na sobreposição", undefined, true)}
-          <dl className="info-grid">
-            <dt>Atalho para clipe recente</dt>
-            <dd className="mono">Ctrl + F11</dd>
-            <dt>Atalho para adicionar marcador</dt>
-            <dd className="mono">Ctrl + F12</dd>
-            <dt>Atalho para captura de tela</dt>
-            <dd className="mono">F12</dd>
-          </dl>
-        </>
-      );
       break;
     default:
       body = (
