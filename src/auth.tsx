@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
 
 const AUTH_STORAGE_KEY = "steam-recriada:auth";
-const VALID_PASSWORD = "3451";
+const VALID_PASSWORD = (import.meta.env.VITE_ACCESS_PASSWORD as string | undefined) || "3451";
 
 interface AuthContextType {
   isAuthenticated: boolean;
