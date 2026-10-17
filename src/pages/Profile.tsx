@@ -39,7 +39,7 @@ export function ProfilePage() {
           <div className="profile__counters">
             <div>
               <b>{apps.length}</b>
-              <span>Jogos</span>
+              <span>Ferramentas</span>
             </div>
             <div>
               <b>{Math.round(stats.totalMin / 60).toLocaleString("pt-BR")}</b>
@@ -56,7 +56,7 @@ export function ProfilePage() {
           <div>
             {favApps.length > 0 && (
               <section className="profile__box">
-                <h2>Jogos favoritos</h2>
+                <h2>Ferramentas favoritas</h2>
                 <div className="profile__favs">
                   {favApps.map((a) => (
                     <button key={a.appid} onClick={() => nav(`/library/app/${a.appid}`)} title={a.name}>

@@ -72,7 +72,7 @@ export function GameContextMenu({ target, onClose }: { target: ContextTarget; on
       </div>
       <div className="menu__sep" />
       <button className="ctxmenu__item" onClick={act(() => nav(`/library/app/${app.appid}`))}>
-        Detalhes do jogo
+        Detalhes da ferramenta
       </button>
       <button className="ctxmenu__item" onClick={act(() => window.open(`https://store.steampowered.com/app/${app.appid}/`, "_blank", "noopener"))}>
         Página na loja

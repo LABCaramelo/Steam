@@ -32,7 +32,7 @@ export function AchievementsPage() {
       {!data ? (
         <p className="muted">Carregando…</p>
       ) : data.total === 0 ? (
-        <p className="muted">Este jogo não tem conquistas registradas no cache local.</p>
+        <p className="muted">Esta ferramenta não tem conquistas registradas no cache local.</p>
       ) : (
         <>
           <div className="ach-summary ach-summary--big">

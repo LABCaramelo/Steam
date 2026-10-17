@@ -33,7 +33,7 @@ export function BottomBar() {
     <footer className="bottombar">
       <Menu
         items={[
-          { label: t("BottomBar_AddNonSteam"), onSelect: () => ui.toast("Jogos não LAB não fazem parte desta recriação.") },
+          { label: t("BottomBar_AddNonSteam"), onSelect: () => ui.toast("Ferramentas não LAB não fazem parte desta recriação.") },
           { label: t("BottomBar_ActivateProduct"), onSelect: () => ui.toast("Ativação de produtos não faz parte desta recriação.") },
           { label: t("BottomBar_BrowseStore"), onSelect: () => nav("/store") },
         ]}

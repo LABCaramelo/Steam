@@ -12,7 +12,7 @@ import type { ContextTarget } from "./GameContextMenu";
 import { usePlayAction } from "./play";
 
 type TypeFilter = "games" | "software" | "all";
-const TYPE_LABEL: Record<TypeFilter, string> = { games: "Jogos", software: "Software", all: "Jogos e software" };
+const TYPE_LABEL: Record<TypeFilter, string> = { games: "Ferramentas", software: "Software", all: "Ferramentas e software" };
 
 function matchesType(a: LibraryApp, f: TypeFilter) {
   if (f === "all") return true;
@@ -120,7 +120,7 @@ export function Sidebar({ onContext }: { onContext: (t: ContextTarget) => void }
             {!collapsed[s.key] && s.apps.map((a) => <GameListEntry key={a.appid} app={a} onContext={onContext} />)}
           </section>
         ))}
-        {snapshot && sections.length === 0 && <div className="sidebar__loading">Nenhum jogo corresponde ao filtro.</div>}
+        {snapshot && sections.length === 0 && <div className="sidebar__loading">Nenhuma ferramenta corresponde ao filtro.</div>}
       </div>
     </aside>
   );

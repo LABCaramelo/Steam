@@ -30,7 +30,7 @@ export function CommunityPage() {
     <div className="community">
       <div className="community__header">
         <h1>Atividade da comunidade</h1>
-        <p className="muted">Centrais da comunidade dos seus jogos. O conteúdo em si (capturas, guias, discussões) é carregado do site oficial.</p>
+        <p className="muted">Centrais da comunidade das suas ferramentas. O conteúdo em si (capturas, guias, discussões) é carregado do site oficial.</p>
         <div className="tabs">
           {TABS.map(([k, label]) => (
             <button key={k} className={`tabs__tab ${tab === k ? "is-active" : ""}`} onClick={() => setParams(k ? { tab: k } : {})}>

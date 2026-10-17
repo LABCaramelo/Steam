@@ -572,7 +572,7 @@ function MediaViewerModal({ item, onClose }: { item: MediaItem; onClose: () => v
 
         <div className="media-viewer__details">
           <dl className="info-grid info-grid--compact">
-            <dt>Jogo</dt>
+            <dt>Ferramenta</dt>
             <dd>{item.appName}</dd>
             <dt>Data</dt>
             <dd>{formatDate(item.timestamp)}</dd>

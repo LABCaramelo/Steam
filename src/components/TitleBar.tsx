@@ -7,7 +7,7 @@ import { Avatar } from "./Avatar";
 import { IconBell, IconChevronDown, IconClose, IconMark, IconMaximize, IconMinimize } from "./Icons";
 import { Menu, type MenuItem } from "./Menu";
 
-/** Top strip: client menus (Steam / Exibir / Amigos / Jogos / Ajuda), notifications, account and window controls. */
+/** Top strip: client menus (LAB / Exibir / Amigos / Ferramentas / Ajuda), notifications, account and window controls. */
 export function TitleBar() {
   const nav = useNavigate();
   const ui = useUi();
@@ -68,7 +68,7 @@ export function TitleBar() {
         { label: t("Menu_ActivateRetail"), onSelect: soon("Ativação de produtos") },
         { label: t("Menu_RedeemWallet"), onSelect: soon("Códigos da Carteira") },
         { label: t("Menu_ManageGifts"), onSelect: soon("Presentes") },
-        { label: t("Menu_AddNonSteam"), onSelect: soon("Jogos não LAB") },
+        { label: t("Menu_AddNonSteam"), onSelect: soon("Ferramentas não LAB") },
       ],
     },
     {

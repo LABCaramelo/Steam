@@ -81,7 +81,7 @@ function DownloadRow({ entry }: { entry: DownloadEntry }) {
         {simulated && pending ? <>
           <button title={controlLabel} aria-label={controlLabel} onClick={() => paused ? downloads.resume(app.appid) : downloads.pause(app.appid)}>{paused ? <IconPlay size={16} /> : <IconPause size={16} />}</button>
           <button title={t("Downloads_RemoveFromQueue_Tooltip")} aria-label={`Remover download de ${app.name}`} onClick={() => downloads.cancel(app.appid)}><IconClose size={16} /></button>
-        </> : pending ? <button title="Gerenciar no LAB" aria-label={`Gerenciar download de ${app.name} no LAB`} onClick={openSteam}><IconDownload size={16} /></button> : <button title="Ir ao jogo" aria-label={`Ir ao jogo ${app.name}`} onClick={() => nav(`/library/app/${app.appid}`)}><IconPlay size={16} /></button>}
+        </> : pending ? <button title="Gerenciar no LAB" aria-label={`Gerenciar download de ${app.name} no LAB`} onClick={openSteam}><IconDownload size={16} /></button> : <button title="Ir à ferramenta" aria-label={`Ir à ferramenta ${app.name}`} onClick={() => nav(`/library/app/${app.appid}`)}><IconPlay size={16} /></button>}
       </div>
     </article>
   );

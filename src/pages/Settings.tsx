@@ -118,7 +118,7 @@ function SettingsPage({ slug }: { slug: string }) {
     case "library":
       body = (
         <>
-          <Toggle label="Exibir ícones dos jogos na lista lateral" checked={ui.settings.showGameIconsInList} onChange={(v) => ui.setSetting("showGameIconsInList", v)} />
+          <Toggle label="Exibir ícones das ferramentas na lista lateral" checked={ui.settings.showGameIconsInList} onChange={(v) => ui.setSetting("showGameIconsInList", v)} />
           <Toggle
             label="Iniciar e instalar via steam://"
             desc="Quando ativado, os botões Jogar/Instalar enviam o pedido ao cliente LAB real instalado neste PC. Desativado = simulação."
@@ -210,7 +210,7 @@ function SettingsPage({ slug }: { slug: string }) {
             ]}
             onChange={(v) => setFlag("storageLimitGb", v)}
           />
-          {flag("audioGameOnly", "Gravar apenas o áudio do jogo", "Ignora áudios de outros programas abertos no sistema.", true)}
+          {flag("audioGameOnly", "Gravar apenas o áudio da ferramenta", "Ignora áudios de outros programas abertos no sistema.", true)}
           {flag("timelineMarkers", "Exibir marcadores e conquistas na barra cronológica", "Adiciona automaticamente ícones de conquistas e eventos nas gravações.", true)}
           {flag("overlayIndicator", "Exibir indicador de gravação na sobreposição", undefined, true)}
           <dl className="info-grid">

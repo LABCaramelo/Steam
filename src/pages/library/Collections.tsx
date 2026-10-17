@@ -14,7 +14,7 @@ export function CollectionsPage() {
   const nav = useNavigate();
   const apps = snapshot?.apps ?? [];
   const tiles = [
-    { id: "all", name: "Todos os jogos", appids: apps.map((a) => a.appid) },
+    { id: "all", name: "Todas as ferramentas", appids: apps.map((a) => a.appid) },
     ...collections.filter((c) => c.id !== "hidden").map((c) => ({ id: c.id, name: c.id === "favorite" ? t("GameList_Category_Favorites") : c.name, appids: c.appids })),
     { id: "installed", name: t("GameList_Category_ReadyToPlay"), appids: apps.filter((a) => a.installed).map((a) => a.appid) },
     { id: "hidden", name: t("GameList_Category_Hidden"), appids: collections.find((c) => c.id === "hidden")?.appids ?? [] },
@@ -67,7 +67,7 @@ export function CollectionView() {
   const apps = snapshot?.apps ?? [];
   let name = "";
   let list = apps;
-  if (collectionid === "all") name = "Todos os jogos";
+  if (collectionid === "all") name = "Todas as ferramentas";
   else if (collectionid === "installed") {
     name = t("GameList_Category_ReadyToPlay");
     list = apps.filter((a) => a.installed);

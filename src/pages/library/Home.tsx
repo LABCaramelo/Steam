@@ -122,7 +122,7 @@ export function LibraryHome() {
       <section className="home__recent">
         {bg && <div className="home__recent-bg" style={{ backgroundImage: `url(${artUrl(bg.appid, bg.art.heroBlur ? "heroBlur" : "hero")})` }} />}
         <h2 className="shelf-title">
-          Jogos recentes <span className="shelf-title__count">{recent.length}</span>
+          Ferramentas recentes <span className="shelf-title__count">{recent.length}</span>
         </h2>
         {recent.length === 0 ? (
           <p className="muted">Nenhuma atividade registrada ainda.</p>
@@ -195,7 +195,7 @@ export function LibraryHome() {
       <section className="home__shelf">
         <div className="shelf-head">
           <h2 className="shelf-title">
-            Todos os jogos <span className="shelf-title__count">({apps.length})</span>
+            Todas as ferramentas <span className="shelf-title__count">({apps.length})</span>
           </h2>
           <Menu
             align="right"

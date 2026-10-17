@@ -105,7 +105,7 @@ function AppDetails({ app }: { app: LibraryApp }) {
         <div className="appdetails__col appdetails__col--main">
           <section className="panel">
             <h3 className="panel__title">{t("AppDetails_SectionTitle_Activity")}</h3>
-            <textarea className="activity-input" placeholder="Diga algo sobre este jogo aos seus amigos…" rows={2} />
+            <textarea className="activity-input" placeholder="Diga algo sobre esta ferramenta aos seus amigos…" rows={2} />
             <ul className="activity">
               {app.lastPlayed > 0 && (
                 <li>
@@ -204,7 +204,7 @@ function AppDetails({ app }: { app: LibraryApp }) {
             <h3 className="panel__title">
               <Link to={`/media?app=${app.appid}`}>{t("AppDetails_SectionTitle_Media")}</Link>
             </h3>
-            <p className="muted small">Veja ou capture novos momentos e clipes deste jogo.</p>
+            <p className="muted small">Veja ou capture novos momentos e clipes desta ferramenta.</p>
             <div className="btn-row">
               <Link className="btn btn--sm" to={`/media?app=${app.appid}`}>
                 {t("AppDetails_GoToMedia")}
@@ -244,7 +244,7 @@ function Stat({ label, value, icon, accent }: { label: string; value: string; ic
 }
 
 function typeLabel(type: string) {
-  return ({ game: "Jogo", application: "Software", demo: "Demonstração", beta: "Playtest/Beta" } as Record<string, string>)[type] ?? type;
+  return ({ game: "Ferramenta", application: "Software", demo: "Demonstração", beta: "Playtest/Beta" } as Record<string, string>)[type] ?? type;
 }
 
 /** Game notes are stored per app in localStorage (the real client syncs them to Steam Cloud). */
@@ -270,7 +270,7 @@ function Notes({ appid }: { appid: number }) {
   return (
     <section className="panel">
       <h3 className="panel__title">{t("AppDetails_SectionTitle_GameNotes")}</h3>
-      <textarea className="notes" placeholder="Escreva suas anotações sobre o jogo…" value={text} onChange={(e) => setText(e.target.value)} rows={4} />
+      <textarea className="notes" placeholder="Escreva suas anotações sobre a ferramenta…" value={text} onChange={(e) => setText(e.target.value)} rows={4} />
     </section>
   );
 }

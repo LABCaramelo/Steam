@@ -52,7 +52,7 @@ export function AppPropertiesModal({ onClose }: { onClose: () => void }) {
           </div>
         </>
       ) : (
-        <p className="muted">Este jogo não está instalado.</p>
+        <p className="muted">Esta ferramenta não está instalada.</p>
       );
       break;
     case "updates":
@@ -62,7 +62,7 @@ export function AppPropertiesModal({ onClose }: { onClose: () => void }) {
             label="Atualizações automáticas"
             value="always"
             options={[
-              { value: "always", label: "Sempre manter este jogo atualizado" },
+              { value: "always", label: "Sempre manter esta ferramenta atualizada" },
               { value: "launch", label: "Só atualizar ao iniciar" },
               { value: "priority", label: "Alta prioridade" },
             ]}
