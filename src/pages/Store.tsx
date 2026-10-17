@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useLibrary } from "../api";
 import { AppArt } from "../components/AppArt";
@@ -6,6 +6,13 @@ import { IconChevronRight, IconSearch } from "../components/Icons";
 import { formatPlaytime } from "../format";
 import { t } from "../i18n";
 import type { LibraryApp } from "../types";
+
+const STORE_TABS = [
+  { id: "store", label: "Sua loja", to: "/store" },
+  { id: "wishlist", label: t("Menu_Wishlist"), to: "/store?view=wishlist" },
+  { id: "points", label: t("Menu_PointsShop"), to: "/store?view=points" },
+  { id: "news", label: t("Menu_News"), to: "/store?view=news" },
+];
 
 /**
  * The real store is a web page (store.steampowered.com) hosted inside the client. Prices and the
@@ -20,6 +27,9 @@ export function StorePage() {
   const apps = snapshot?.apps ?? [];
   const featured = useMemo(() => apps.filter((a) => a.art.hero).sort((a, b) => b.playtimeMinutes - a.playtimeMinutes).slice(0, 6), [apps]);
   const [slide, setSlide] = useState(0);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const [indicator, setIndicator] = useState<{ left: number; width: number; opacity: number }>({ left: 0, width: 0, opacity: 0 });
+
   useEffect(() => {
     if (featured.length < 2) return;
     const id = setInterval(() => setSlide((s) => (s + 1) % featured.length), 6000);
@@ -27,25 +37,95 @@ export function StorePage() {
   }, [featured.length]);
 
   const view = params.get("view");
+  const activeTabId = view ?? "store";
   const results = query.trim() ? apps.filter((a) => a.name.toLowerCase().includes(query.trim().toLowerCase())) : [];
   const cur = featured[slide];
+
+  useEffect(() => {
+    const updateIndicator = () => {
+      if (!tabsRef.current) return;
+      const activeEl = tabsRef.current.querySelector<HTMLElement>(".store__nav-tab.is-active");
+      if (activeEl) {
+        const parentRect = tabsRef.current.getBoundingClientRect();
+        const rect = activeEl.getBoundingClientRect();
+        setIndicator({
+          left: rect.left - parentRect.left,
+          width: rect.width,
+          opacity: 1,
+        });
+      } else {
+        setIndicator((prev) => ({ ...prev, opacity: 0 }));
+      }
+    };
+
+    updateIndicator();
+    const id = setTimeout(updateIndicator, 40);
+    window.addEventListener("resize", updateIndicator);
+    return () => {
+      clearTimeout(id);
+      window.removeEventListener("resize", updateIndicator);
+    };
+  }, [view]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!tabsRef.current) return;
+    const tabs = Array.from(tabsRef.current.querySelectorAll<HTMLButtonElement>(".store__nav-tab"));
+    const currentIndex = tabs.findIndex((el) => el.classList.contains("is-active"));
+    let nextIndex = currentIndex;
+
+    if (e.key === "ArrowRight") {
+      nextIndex = (currentIndex + 1) % tabs.length;
+    } else if (e.key === "ArrowLeft") {
+      nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+    } else if (e.key === "Home") {
+      nextIndex = 0;
+    } else if (e.key === "End") {
+      nextIndex = tabs.length - 1;
+    } else {
+      return;
+    }
+
+    e.preventDefault();
+    tabs[nextIndex]?.focus();
+    const targetTab = STORE_TABS[nextIndex];
+    if (targetTab) nav(targetTab.to);
+  };
 
   return (
     <div className="store">
       <div className="store__nav">
-        <div className="store__nav-links">
-          <button className={!view ? "is-active" : ""} onClick={() => nav("/store")}>
-            Sua loja
-          </button>
-          <button className={view === "wishlist" ? "is-active" : ""} onClick={() => nav("/store?view=wishlist")}>
-            {t("Menu_Wishlist")}
-          </button>
-          <button className={view === "points" ? "is-active" : ""} onClick={() => nav("/store?view=points")}>
-            {t("Menu_PointsShop")}
-          </button>
-          <button className={view === "news" ? "is-active" : ""} onClick={() => nav("/store?view=news")}>
-            {t("Menu_News")}
-          </button>
+        <div
+          className="store__nav-links cm-spotlight-tabs"
+          ref={tabsRef}
+          role="tablist"
+          aria-label="Navegação da Loja"
+          onKeyDown={handleKeyDown}
+        >
+          <span
+            className="cm-spotlight-tabs__indicator"
+            style={{
+              transform: `translateX(${indicator.left}px)`,
+              width: `${indicator.width}px`,
+              opacity: indicator.opacity,
+            }}
+            aria-hidden="true"
+          />
+          {STORE_TABS.map((tab) => {
+            const isActive = activeTabId === tab.id;
+            return (
+              <button
+                key={tab.id}
+                role="tab"
+                id={`store-tab-${tab.id}`}
+                aria-selected={isActive}
+                tabIndex={isActive ? 0 : -1}
+                className={`store__nav-tab ${isActive ? "is-active" : ""}`}
+                onClick={() => nav(tab.to)}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
         <label className="store__search">
           <input placeholder="buscar" value={query} onChange={(e) => setQuery(e.target.value)} />
