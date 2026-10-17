@@ -5,27 +5,31 @@ import { LibraryProvider, RunProvider } from "./api";
 import { App } from "./App";
 import { AuthProvider, useAuth } from "./auth";
 import { LoginScreen } from "./components/LoginScreen";
+import { PointerTrail } from "./components/PointerTrail";
 import { UiProvider } from "./ui";
 import "./styles.css";
 
 function AuthGatekeeper() {
   const { isAuthenticated } = useAuth();
 
-  // Se o navegador não estiver autenticado, exibe estritamente a tela de login
-  if (!isAuthenticated) {
-    return <LoginScreen />;
-  }
-
   return (
-    <BrowserRouter>
-      <UiProvider>
-        <LibraryProvider>
-          <RunProvider>
-            <App />
-          </RunProvider>
-        </LibraryProvider>
-      </UiProvider>
-    </BrowserRouter>
+    <>
+      {/* Rastro interativo oficial de figurinhas Caramelo */}
+      <PointerTrail />
+      {!isAuthenticated ? (
+        <LoginScreen />
+      ) : (
+        <BrowserRouter>
+          <UiProvider>
+            <LibraryProvider>
+              <RunProvider>
+                <App />
+              </RunProvider>
+            </LibraryProvider>
+          </UiProvider>
+        </BrowserRouter>
+      )}
+    </>
   );
 }
 

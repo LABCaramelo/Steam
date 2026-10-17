@@ -1,33 +1,105 @@
-/* Design tokens observed in steamui/css (sp.css, chunk~2dcc5aaf7.css, library.css).
-   Frequencies: #8b929a 2651, #3d4450 2272, #23262e 1801, #67707b 1420, #0e141b 880, #1a9fff 489, #dcdedf 464.
-   Gradients: play  linear-gradient(to right,#70d61d 0%,#01a75b 60%)
-              blue  linear-gradient(to right,#47bfff 0%,#1a44c2 60%) */
+/* ==========================================================================
+   CARAMELO DESIGN SYSTEM — MANUAL V1 (2026)
+   Um Cara Caramelo — Laboratório de Interação
+   ========================================================================== */
+
+@font-face {
+  font-family: "Covered By Your Grace";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/covered-by-your-grace-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/inter-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700 900;
+  font-display: swap;
+  src: url("/fonts/montserrat-latin.woff2") format("woff2");
+}
+
 :root {
-  --c-darkest: #0e141b;
-  --c-chrome: #171d25;
-  --c-panel: #23262e;
-  --c-panel-2: #25282e;
-  --c-main: #1b1e24;
-  --c-line: #3d4450;
-  --c-line-hover: #525b6a;
-  --c-text: #dcdedf;
-  --c-text-2: #b8bcbf;
-  --c-text-3: #8b929a;
-  --c-text-4: #67707b;
-  --c-white: #ffffff;
-  --c-accent: #1a9fff;
-  --c-accent-hover: #00bbff;
-  --c-online: #6dcff6;
-  --c-ingame: #90ba3c;
-  --c-away: #6dcff6;
-  --c-offline: #7b7f85;
-  --g-play: linear-gradient(to right, #70d61d 0%, #01a75b 60%);
-  --g-blue: linear-gradient(to right, #47bfff 0%, #1a44c2 60%);
-  --g-store: #1b2838;
-  --store-accent: #66c0f4;
-  --font: "Motiva Sans", "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
-  --radius: 3px;
   color-scheme: dark;
+
+  /* Caramelo Base Tokens (RGB) */
+  --caramelo-color-ink: #101014;
+  --cm-stage: 10 10 13;          /* #0a0a0d - Fundo mais profundo */
+  --cm-surface-1: 16 16 20;      /* #101014 - Ink Black (Base principal) */
+  --cm-surface-2: 24 24 29;      /* #18181d - Painéis e superfícies */
+  --cm-surface-3: 31 31 38;      /* #1f1f26 - Superfícies elevadas */
+  --cm-line-soft: 26 26 32;
+  --cm-line: 39 39 47;           /* #27272f - Divisores */
+  --cm-line-strong: 58 58 68;    /* #3a3a44 - Linhas de destaque */
+  --cm-fg: 255 244 232;          /* #FFF4E8 - Warm Cream (Base clara humana) */
+  --cm-fg-2: 217 211 204;        /* #d9d3cc - Texto secundário */
+  --cm-fg-muted: 163 163 176;    /* #a3a3b0 - Muted */
+  --cm-fg-dim: 139 139 152;
+  --cm-fg-faint: 90 90 102;      /* #5a5a66 - Faint */
+
+  /* Paleta Oficial de Cores Caramelo */
+  --cm-accent: 255 112 26;       /* #FF701A - Caramel Orange (Assinatura) */
+  --cm-accent-bright: 255 138 61;/* #ff8a3d */
+  --cm-focus: 37 191 255;        /* #25BFFF - Electric Sky */
+  --cm-success: 61 220 151;      /* #3ddc97 */
+  --cm-warning: 255 213 42;      /* #FFD52A - Acid Yellow */
+  --cm-danger: 255 61 141;       /* #FF3D8D - Hot Pink */
+  --cm-violet: 118 87 255;       /* #7657FF - Electric Violet */
+
+  /* Espectro e Gradientes Caramelo */
+  --cm-spectrum-gradient: linear-gradient(110deg, #FF701A 0%, #FF3D8D 24%, #7657FF 48%, #25BFFF 72%, #FFD52A 100%);
+  --cm-spectrum-glow: 0 0 16px rgba(255, 112, 26, 0.18), 4px 0 20px rgba(255, 61, 141, 0.14), -4px 0 20px rgba(37, 191, 255, 0.14);
+  --cm-glow-strong: 0 0 24px rgba(255, 112, 26, 0.28), 6px 0 28px rgba(255, 61, 141, 0.2);
+
+  /* Curvas de Motion Caramelo */
+  --cm-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --cm-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --cm-dur-instant: 80ms;
+  --cm-dur-quick: 240ms;
+  --cm-dur-base: 320ms;
+
+  /* Tipografia em Três Vozes */
+  --caramelo-font-display: "Montserrat", "Inter", system-ui, sans-serif;
+  --caramelo-font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --caramelo-font-handwriting: "Covered By Your Grace", cursive;
+  --caramelo-font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  /* Mapeamento de Compatibilidade para a Interface */
+  --c-darkest: rgb(var(--cm-stage));
+  --c-chrome: rgb(var(--cm-surface-1));       /* #101014 Ink Black */
+  --c-panel: rgb(var(--cm-surface-2));        /* #18181d */
+  --c-panel-2: rgb(var(--cm-surface-3));      /* #1f1f26 */
+  --c-main: rgb(var(--cm-stage));             /* #0a0a0d */
+  --c-line: rgb(var(--cm-line));              /* #27272f */
+  --c-line-hover: rgb(var(--cm-line-strong)); /* #3a3a44 */
+  --c-text: rgb(var(--cm-fg));                /* #FFF4E8 Warm Cream */
+  --c-text-2: rgb(var(--cm-fg-2));
+  --c-text-3: rgb(var(--cm-fg-muted));
+  --c-text-4: rgb(var(--cm-fg-faint));
+  --c-white: #ffffff;
+  --c-accent: rgb(var(--cm-accent));          /* #FF701A Caramel Orange */
+  --c-accent-hover: rgb(var(--cm-accent-bright));
+  --c-online: rgb(var(--cm-focus));           /* #25BFFF Electric Sky */
+  --c-ingame: rgb(var(--cm-accent));          /* #FF701A */
+  --c-away: rgb(var(--cm-warning));           /* #FFD52A Acid Yellow */
+  --c-offline: rgb(var(--cm-fg-faint));
+  --g-play: linear-gradient(90deg, #FF701A 0%, #FF3D8D 100%);
+  --g-blue: linear-gradient(90deg, #FF701A 0%, #25BFFF 100%);
+  --g-spectrum: var(--cm-spectrum-gradient);
+  --g-store: rgb(var(--cm-surface-1));
+  --store-accent: rgb(var(--cm-accent));
+  --font: var(--caramelo-font-sans);
+  --font-display: var(--caramelo-font-display);
+  --font-hand: var(--caramelo-font-handwriting);
+  --radius: 4px;
 }
 
 * {
@@ -54,10 +126,15 @@ button {
   border: 0;
   cursor: pointer;
   padding: 0;
+  transition: transform var(--cm-dur-instant) var(--cm-ease-out), filter var(--cm-dur-quick) var(--cm-ease-out);
+}
+button:active:not(:disabled) {
+  transform: scale(0.98);
 }
 a {
   color: var(--c-accent);
   text-decoration: none;
+  transition: color var(--cm-dur-quick) var(--cm-ease-out);
 }
 a:hover {
   color: var(--c-white);
@@ -73,20 +150,69 @@ select {
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #3d4450;
+  background: rgb(var(--cm-line));
   border-radius: 6px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #525b6a;
+  background-color: rgb(var(--cm-line-strong));
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 :focus-visible {
-  outline: 2px solid var(--c-accent);
-  outline-offset: 1px;
+  outline: 2px solid rgb(var(--cm-focus)) !important;
+  outline-offset: 2px !important;
+}
+
+/* ==========================================================================
+   Caramelo Pointer Trail & Micro-interactions
+   ========================================================================== */
+.cm-pointer-trail {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99999;
+  overflow: hidden;
+}
+
+.cm-pointer-trail__item {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
+  animation: cm-trail-anim 1.1s cubic-bezier(0.2, 0.65, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes cm-trail-anim {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.65) rotate(0deg);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05) rotate(0deg);
+  }
+  35% {
+    opacity: 0.95;
+    transform: translate(-50%, -46%) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 28px)) scale(0.85) rotate(6deg);
+  }
+}
+
+.cm-handwritten {
+  font-family: var(--font-hand);
+  font-size: 1.25em;
+  color: rgb(var(--cm-warning));
+  letter-spacing: 0.03em;
+  transform: rotate(-1.5deg);
+  display: inline-block;
 }
 .low-perf *,
 .low-perf *::before,
@@ -377,18 +503,19 @@ select {
 }
 .supernav__tab.is-active {
   color: var(--c-accent);
-  text-shadow: 0 0 1px var(--c-accent);
+  text-shadow: 0 0 16px rgba(255, 112, 26, 0.4);
 }
 .supernav__dropdown {
   position: absolute;
   top: calc(100% - 10px);
   left: 6px;
   min-width: 180px;
-  background: #3d4450;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
-  padding: 4px 0;
+  background: rgb(var(--cm-surface-2));
+  border: 1px solid rgb(var(--cm-line));
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65), var(--cm-spectrum-glow);
+  padding: 6px 0;
   display: none;
-  border-radius: 2px;
+  border-radius: var(--radius);
 }
 .supernav__tab-wrap:hover .supernav__dropdown {
   display: block;
@@ -400,11 +527,12 @@ select {
   padding: 7px 14px;
   font-size: 13px;
   text-transform: uppercase;
-  color: var(--c-text);
+  color: rgb(var(--cm-fg-2));
+  letter-spacing: 0.04em;
 }
 .supernav__dropdown button:hover {
-  background: #dcdedf;
-  color: #3d4450;
+  background: rgb(var(--cm-line));
+  color: rgb(var(--cm-accent));
 }
 
 /* bottom bar */
@@ -780,11 +908,12 @@ select {
   padding-bottom: 40px;
 }
 .shelf-title {
+  font-family: var(--font-display);
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--c-text);
+  letter-spacing: 0.08em;
+  color: rgb(var(--cm-fg));
   margin: 0 0 12px;
   display: flex;
   align-items: baseline;
@@ -1382,26 +1511,39 @@ select {
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 8px 14px;
-  background: #3d4450;
-  color: #fff;
-  border-radius: 2px;
+  padding: 8px 16px;
+  background: rgb(var(--cm-surface-3));
+  color: rgb(var(--cm-fg));
+  border-radius: var(--radius);
   font-size: 13px;
+  font-weight: 600;
+  border: 1px solid rgb(var(--cm-line));
+  transition: all var(--cm-dur-instant) var(--cm-ease-out);
 }
 .btn:hover {
-  background: #525b6a;
+  background: rgb(var(--cm-line-strong));
+  color: #fff;
+  border-color: rgb(var(--cm-line-strong));
 }
 .btn--blue {
-  background: var(--c-accent);
+  background: rgb(var(--cm-accent));
+  color: #101014;
+  font-weight: 700;
+  border-color: rgb(var(--cm-accent));
+  box-shadow: 0 4px 14px rgba(255, 112, 26, 0.35);
 }
 .btn--blue:hover {
-  background: var(--c-accent-hover);
+  background: rgb(var(--cm-accent-bright));
+  color: #101014;
+  box-shadow: 0 6px 18px rgba(255, 112, 26, 0.45);
 }
 .btn--ghost {
   background: transparent;
-  color: var(--c-text-3);
+  color: rgb(var(--cm-fg-muted));
   padding-left: 0;
+  border: 0;
 }
 .btn--ghost:hover {
   background: transparent;
@@ -2233,19 +2375,23 @@ select {
   height: min(640px, calc(100vh - 48px));
   display: flex;
   flex-direction: column;
-  background: #23262e;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-  border: 1px solid #0e141b;
+  background: rgb(var(--cm-surface-2));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), var(--cm-spectrum-glow);
+  border: 1px solid rgb(var(--cm-line));
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 .modal-window__titlebar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 34px;
+  height: 36px;
   padding: 0 4px 0 14px;
-  background: #171d25;
+  background: rgb(var(--cm-surface-1));
+  border-bottom: 1px solid rgb(var(--cm-line));
   font-size: 13px;
-  color: var(--c-text-3);
+  font-weight: 600;
+  color: rgb(var(--cm-fg-2));
 }
 .modal-window__titlebar button {
   width: 34px;
@@ -2898,7 +3044,7 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0e141b;
+  background: rgb(var(--cm-stage));
   overflow: hidden;
   z-index: 9999;
   font-family: var(--font);
@@ -2907,7 +3053,7 @@ select {
 .login-screen__ambient {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 30%, rgba(37, 191, 255, 0.12) 0%, rgba(26, 68, 194, 0.08) 40%, transparent 75%);
+  background: radial-gradient(circle at 50% 25%, rgba(255, 112, 26, 0.15) 0%, rgba(37, 191, 255, 0.09) 35%, transparent 70%);
   pointer-events: none;
 }
 
@@ -2915,22 +3061,22 @@ select {
   position: relative;
   width: 100%;
   max-width: 440px;
-  background: linear-gradient(180deg, #1b2838 0%, #171d25 100%);
-  border: 1px solid #3d4450;
-  border-radius: 4px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  background: linear-gradient(180deg, rgb(var(--cm-surface-2)) 0%, rgb(var(--cm-surface-1)) 100%);
+  border: 1px solid rgb(var(--cm-line));
+  border-radius: var(--radius);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), var(--cm-spectrum-glow);
   overflow: hidden;
   animation: login-pop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .login-modal__titlebar {
-  height: 32px;
-  background: #10141a;
+  height: 34px;
+  background: rgb(var(--cm-stage));
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 10px;
-  border-bottom: 1px solid #232931;
+  border-bottom: 1px solid rgb(var(--cm-line));
   user-select: none;
 }
 
@@ -2938,9 +3084,10 @@ select {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--c-text-3);
+  color: rgb(var(--cm-fg-muted));
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 .login-modal__controls {
@@ -2952,17 +3099,18 @@ select {
   width: 28px;
   display: grid;
   place-items: center;
-  color: var(--c-text-4);
+  color: rgb(var(--cm-fg-faint));
   cursor: default;
 }
 
 .login-modal__controls span:hover {
-  color: var(--c-white);
-  background: #3d4450;
+  color: rgb(var(--cm-fg));
+  background: rgb(var(--cm-line));
 }
 
 .login-modal__controls span.is-close:hover {
-  background: #c42b1c;
+  background: rgb(var(--cm-danger));
+  color: #fff;
 }
 
 .login-modal__content {
@@ -2983,36 +3131,37 @@ select {
 .login-modal__badge {
   width: 72px;
   height: 72px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #25bfff 0%, #1a44c2 100%);
+  border-radius: 18px;
+  background: rgb(var(--cm-accent));
   display: grid;
   place-items: center;
-  box-shadow: 0 8px 24px rgba(26, 68, 194, 0.4);
+  box-shadow: 0 8px 26px rgba(255, 112, 26, 0.45);
   margin-bottom: 4px;
 }
 
 .login-modal__title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
+  font-size: 17px;
+  font-weight: 800;
+  color: rgb(var(--cm-fg));
   letter-spacing: 0.08em;
+  font-family: var(--font-display);
 }
 
 .login-modal__subtitle {
   margin: 0;
   font-size: 13px;
-  color: var(--c-text-3);
+  color: rgb(var(--cm-fg-muted));
   line-height: 1.4;
 }
 
 .login-modal__error {
-  background: rgba(224, 60, 49, 0.15);
-  border: 1px solid #e03c31;
-  border-radius: 3px;
+  background: rgba(255, 61, 141, 0.15);
+  border: 1px solid rgb(var(--cm-danger));
+  border-radius: var(--radius);
   padding: 10px 14px;
   font-size: 13px;
-  color: #ff857d;
+  color: #ff85b6;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -3037,10 +3186,11 @@ select {
 
 .login-field__label {
   font-size: 11px;
-  font-weight: 700;
-  color: #67c1f5;
-  letter-spacing: 0.06em;
+  font-weight: 800;
+  color: rgb(var(--cm-accent));
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  font-family: var(--font-display);
 }
 
 .login-field__input-wrap {
@@ -3052,23 +3202,23 @@ select {
 .login-field__input {
   width: 100%;
   height: 42px;
-  background: #232a35;
-  border: 1px solid #323b49;
-  border-radius: 3px;
+  background: rgb(var(--cm-surface-3));
+  border: 1px solid rgb(var(--cm-line));
+  border-radius: var(--radius);
   padding: 0 70px 0 14px;
-  color: #fff;
+  color: rgb(var(--cm-fg));
   font-size: 14px;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color var(--cm-dur-instant), box-shadow var(--cm-dur-instant);
 }
 
 .login-field__input:focus {
-  border-color: #66c0f4;
+  border-color: rgb(var(--cm-accent));
   outline: none;
-  box-shadow: 0 0 0 2px rgba(102, 192, 244, 0.25);
+  box-shadow: 0 0 0 2px rgba(255, 112, 26, 0.3);
 }
 
 .login-field__input.is-error {
-  border-color: #e03c31;
+  border-color: rgb(var(--cm-danger));
 }
 
 .login-field__eye-btn {
@@ -3078,7 +3228,7 @@ select {
   padding: 0 10px;
   background: transparent;
   border: 0;
-  color: var(--c-text-3);
+  color: rgb(var(--cm-fg-muted));
   font-size: 12px;
   cursor: pointer;
   border-radius: 2px;
@@ -3096,7 +3246,7 @@ select {
   cursor: pointer;
   user-select: none;
   font-size: 13px;
-  color: var(--c-text-2);
+  color: rgb(var(--cm-fg-2));
 }
 
 .login-checkbox input {
@@ -3109,25 +3259,25 @@ select {
 .login-checkbox__box {
   width: 18px;
   height: 18px;
-  background: #232a35;
-  border: 1px solid #3d4450;
+  background: rgb(var(--cm-surface-3));
+  border: 1px solid rgb(var(--cm-line));
   border-radius: 3px;
   display: grid;
   place-items: center;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background var(--cm-dur-instant), border-color var(--cm-dur-instant);
   flex: 0 0 auto;
 }
 
 .login-checkbox input:checked + .login-checkbox__box {
-  background: #1a9fff;
-  border-color: #1a9fff;
+  background: rgb(var(--cm-accent));
+  border-color: rgb(var(--cm-accent));
 }
 
 .login-checkbox input:checked + .login-checkbox__box::after {
   content: "";
   width: 4px;
   height: 8px;
-  border: solid #fff;
+  border: solid #101014;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg) translate(-1px, -1px);
   display: block;
@@ -3136,16 +3286,17 @@ select {
 .login-modal__submit {
   height: 44px;
   width: 100%;
-  background: linear-gradient(90deg, #25bfff 0%, #1a44c2 100%);
+  background: linear-gradient(90deg, #FF701A 0%, #FF3D8D 100%);
   border: 0;
-  border-radius: 3px;
+  border-radius: var(--radius);
   color: #fff;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.08em;
+  font-family: var(--font-display);
   cursor: pointer;
-  transition: filter 0.15s, transform 0.08s;
-  box-shadow: 0 4px 16px rgba(26, 68, 194, 0.35);
+  transition: filter var(--cm-dur-instant), transform var(--cm-dur-instant);
+  box-shadow: 0 4px 18px rgba(255, 112, 26, 0.35);
   display: grid;
   place-items: center;
 }

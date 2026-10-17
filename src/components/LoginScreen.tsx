@@ -35,8 +35,8 @@ export function LoginScreen() {
         {/* Title bar simulando o client Steam */}
         <div className="login-modal__titlebar">
           <div className="login-modal__brand">
-            <IconMark size={16} />
-            <span>Steam</span>
+            <IconMark size={18} />
+            <span>Steam • Laboratório de Interação</span>
           </div>
           <div className="login-modal__controls" aria-hidden="true">
             <span><IconMinimize size={12} /></span>
@@ -49,12 +49,15 @@ export function LoginScreen() {
         <form className="login-modal__content" onSubmit={handleSubmit}>
           <div className="login-modal__header">
             <div className="login-modal__badge">
-              <IconMark size={44} />
+              <IconMark size={46} />
             </div>
             <h1 id="login-title" className="login-modal__title">INICIAR SESSÃO NO STEAM</h1>
             <p className="login-modal__subtitle">
               Insira a senha de acesso para liberar a visualização desta recriação.
             </p>
+            <span className="cm-handwritten" style={{ fontSize: "14px", marginTop: "2px" }}>
+              "menos ferramenta, mais sistema."
+            </span>
           </div>
 
           {error && (
@@ -117,7 +120,7 @@ export function LoginScreen() {
               <span>Protegido por chave de acesso • Sessão salva localmente</span>
             </div>
             <div className="login-modal__disclaimer">
-              Recriação de estudo sem afiliação com a Valve Corporation.
+              Um Cara Caramelo — Laboratório de Interação • Projeto autoral de estudo.
             </div>
           </div>
         </form>

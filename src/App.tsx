@@ -6,6 +6,7 @@ import { FriendsPanel } from "./components/FriendsPanel";
 import { ModalWindow } from "./components/Modal";
 import { SuperNav } from "./components/SuperNav";
 import { TitleBar } from "./components/TitleBar";
+import { IconMark } from "./components/Icons";
 import { AppPropertiesModal } from "./pages/AppProperties";
 import { CommunityPage } from "./pages/Community";
 import { AchievementsPage } from "./pages/library/Achievements";
@@ -98,29 +99,45 @@ function StartRedirect() {
 function AboutModal({ onClose }: { onClose: () => void }) {
   const { snapshot } = useLibrary();
   useEffect(() => {
-    document.title = "Sobre — Steam (recriação)";
+    document.title = "Sobre — Steam (Caramelo)";
     return () => {
-      document.title = "Steam (recriação)";
+      document.title = "Steam — Um Cara Caramelo";
     };
   }, []);
   return (
     <ModalWindow title="Sobre esta recriação" onClose={onClose}>
       <div className="settings-page about">
-        <h2 className="settings-page__title">Steam — recriação de estudo</h2>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+          <IconMark size={32} />
+          <div>
+            <h2 className="settings-page__title" style={{ margin: 0, fontSize: 16, letterSpacing: "0.06em" }}>
+              UM CARA CARAMELO
+            </h2>
+            <span style={{ fontSize: 12, color: "var(--c-accent)", fontWeight: 600, letterSpacing: "0.08em" }}>
+              LABORATÓRIO DE INTERAÇÃO
+            </span>
+          </div>
+        </div>
+
         <p>
-          Interface reconstruída a partir da análise estática (REA) da pasta <code>steamui</code> do cliente instalado: tabela de rotas, rótulos pt-BR,
-          paleta e tipografia vieram dos arquivos enviados pela Valve. O código e os ícones daqui foram escritos do zero; nada do código minificado
-          original foi copiado.
+          Interface reconstruída a partir da análise técnica e estática (REA) da <code>steamui</code>, adaptada integralmente para o sistema de design e interação oficial do <strong>Um Cara Caramelo</strong> (Paleta V1: Ink Black, Warm Cream, Caramel Orange e Electric Sky; tipografia em 3 vozes e rastro de figurinhas urbanas).
         </p>
+
         <dl className="info-grid">
           <dt>Fonte de dados</dt>
-          <dd>{snapshot?.source === "local" ? `Instalação local em ${snapshot.steamPath}` : "Modo demonstração (Steam não encontrada)"}</dd>
-          <dt>Apps lidos</dt>
+          <dd>{snapshot?.source === "local" ? `Instalação local em ${snapshot.steamPath}` : "Modo nuvem / demonstração"}</dd>
+          <dt>Apps integrados</dt>
           <dd>{snapshot?.apps.length ?? 0}</dd>
-          <dt>Escrita na Steam</dt>
-          <dd>Nenhuma — todo acesso ao disco é só leitura</dd>
+          <dt>Identidade visual</dt>
+          <dd>Caramelo Design System V1 (2026)</dd>
+          <dt>Acesso ao disco</dt>
+          <dd>Somente leitura (seguro)</dd>
         </dl>
-        <p className="muted small">Projeto sem afiliação com a Valve Corporation. “Steam” é marca da Valve.</p>
+
+        <p className="cm-handwritten" style={{ margin: "14px 0 6px" }}>
+          "Estratégia precisa ser sentida. Menos ferramenta, mais sistema."
+        </p>
+        <p className="muted small">Projeto de estudo autoral sem afiliação corporativa com a Valve Corporation.</p>
       </div>
     </ModalWindow>
   );
