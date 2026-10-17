@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useLibrary } from "../api";
+import { useAuth } from "../auth";
 import { t } from "../i18n";
 import { STATUS_LABEL, useUi, type PersonaStatus } from "../ui";
 import { Avatar } from "./Avatar";
@@ -10,6 +11,7 @@ import { Menu, type MenuItem } from "./Menu";
 export function TitleBar() {
   const nav = useNavigate();
   const ui = useUi();
+  const { logout } = useAuth();
   const { snapshot, refresh } = useLibrary();
   const soon = (what: string) => () => ui.toast(`${what} não faz parte desta recriação.`);
 
@@ -17,8 +19,8 @@ export function TitleBar() {
     {
       label: t("Menu_Steam"),
       items: [
-        { label: t("Menu_ChangeAccount"), onSelect: soon("Trocar conta") },
-        { label: t("Menu_SignOut"), onSelect: soon("Finalizar sessão") },
+        { label: t("Menu_ChangeAccount"), onSelect: () => logout() },
+        { label: t("Menu_SignOut"), onSelect: () => logout() },
         { label: t("Menu_GoOffline"), onSelect: () => ui.setStatus("offline") },
         { kind: "separator" },
         { label: t("Menu_CheckForSteamUpdates"), onSelect: () => (refresh(), ui.toast("Dados da biblioteca recarregados do disco.")) },
@@ -102,8 +104,8 @@ export function TitleBar() {
             { label: `Detalhes da conta: ${snapshot?.user?.personaName ?? ""}`, onSelect: () => nav("/settings/account") },
             { label: t("Menu_StorePreferences"), onSelect: () => nav("/settings/store") },
             { kind: "separator" },
-            { label: t("Menu_ChangeAccount"), onSelect: soon("Trocar conta") },
-            { label: t("Menu_SignOut"), onSelect: soon("Finalizar sessão") },
+            { label: t("Menu_ChangeAccount"), onSelect: () => logout() },
+            { label: t("Menu_SignOut"), onSelect: () => logout() },
           ]}
           trigger={(open) => (
             <span className={`titlebar__account ${open ? "is-open" : ""}`}>

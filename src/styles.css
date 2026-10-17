@@ -2888,3 +2888,317 @@ select {
   font-size: 12px;
   padding: 2px 6px;
 }
+
+/* ==========================================================================
+   Login Screen (Steam Client Gatekeeper)
+   ========================================================================== */
+.login-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0e141b;
+  overflow: hidden;
+  z-index: 9999;
+  font-family: var(--font);
+}
+
+.login-screen__ambient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(37, 191, 255, 0.12) 0%, rgba(26, 68, 194, 0.08) 40%, transparent 75%);
+  pointer-events: none;
+}
+
+.login-modal {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: linear-gradient(180deg, #1b2838 0%, #171d25 100%);
+  border: 1px solid #3d4450;
+  border-radius: 4px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  animation: login-pop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.login-modal__titlebar {
+  height: 32px;
+  background: #10141a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  border-bottom: 1px solid #232931;
+  user-select: none;
+}
+
+.login-modal__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--c-text-3);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.login-modal__controls {
+  display: flex;
+  height: 100%;
+}
+
+.login-modal__controls span {
+  width: 28px;
+  display: grid;
+  place-items: center;
+  color: var(--c-text-4);
+  cursor: default;
+}
+
+.login-modal__controls span:hover {
+  color: var(--c-white);
+  background: #3d4450;
+}
+
+.login-modal__controls span.is-close:hover {
+  background: #c42b1c;
+}
+
+.login-modal__content {
+  padding: 32px 36px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-modal__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.login-modal__badge {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #25bfff 0%, #1a44c2 100%);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 8px 24px rgba(26, 68, 194, 0.4);
+  margin-bottom: 4px;
+}
+
+.login-modal__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.08em;
+}
+
+.login-modal__subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--c-text-3);
+  line-height: 1.4;
+}
+
+.login-modal__error {
+  background: rgba(224, 60, 49, 0.15);
+  border: 1px solid #e03c31;
+  border-radius: 3px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #ff857d;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: shake 0.3s ease-in-out;
+}
+
+.login-modal__error-icon {
+  font-weight: 700;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login-field__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #67c1f5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.login-field__input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-field__input {
+  width: 100%;
+  height: 42px;
+  background: #232a35;
+  border: 1px solid #323b49;
+  border-radius: 3px;
+  padding: 0 70px 0 14px;
+  color: #fff;
+  font-size: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.login-field__input:focus {
+  border-color: #66c0f4;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(102, 192, 244, 0.25);
+}
+
+.login-field__input.is-error {
+  border-color: #e03c31;
+}
+
+.login-field__eye-btn {
+  position: absolute;
+  right: 8px;
+  height: 28px;
+  padding: 0 10px;
+  background: transparent;
+  border: 0;
+  color: var(--c-text-3);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.login-field__eye-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.login-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 13px;
+  color: var(--c-text-2);
+}
+
+.login-checkbox input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.login-checkbox__box {
+  width: 18px;
+  height: 18px;
+  background: #232a35;
+  border: 1px solid #3d4450;
+  border-radius: 3px;
+  display: grid;
+  place-items: center;
+  transition: background 0.15s, border-color 0.15s;
+  flex: 0 0 auto;
+}
+
+.login-checkbox input:checked + .login-checkbox__box {
+  background: #1a9fff;
+  border-color: #1a9fff;
+}
+
+.login-checkbox input:checked + .login-checkbox__box::after {
+  content: "";
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+  display: block;
+}
+
+.login-modal__submit {
+  height: 44px;
+  width: 100%;
+  background: linear-gradient(90deg, #25bfff 0%, #1a44c2 100%);
+  border: 0;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.08s;
+  box-shadow: 0 4px 16px rgba(26, 68, 194, 0.35);
+  display: grid;
+  place-items: center;
+}
+
+.login-modal__submit:hover {
+  filter: brightness(1.15);
+}
+
+.login-modal__submit:active {
+  transform: scale(0.99);
+}
+
+.login-modal__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-modal__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.login-modal__guard {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--c-text-3);
+}
+
+.login-modal__guard-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #90ba3c;
+}
+
+.login-modal__disclaimer {
+  font-size: 11px;
+  color: var(--c-text-4);
+  text-align: center;
+}
+
+@keyframes login-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

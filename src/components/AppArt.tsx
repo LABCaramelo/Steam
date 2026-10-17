@@ -1,5 +1,5 @@
 import { useState, type CSSProperties } from "react";
-import { artUrl } from "../api";
+import { artUrl, steamCdnArtUrl } from "../api";
 import type { ArtKind, LibraryApp } from "../types";
 
 /** Hue derived from the appid so placeholder art is stable per game. */
@@ -19,26 +19,69 @@ interface Props {
 }
 
 export function AppArt({ app, kind, className, fallbackLabel = true }: Props) {
+  const [triedCdn, setTriedCdn] = useState(false);
   const [failed, setFailed] = useState(false);
-  const has = app.art[kind] && !failed;
-  if (!has) {
+
+  const handleError = () => {
+    if (!triedCdn) {
+      setTriedCdn(true);
+    } else {
+      setFailed(true);
+    }
+  };
+
+  if (failed) {
     return (
       <div className={`art-fallback ${className ?? ""}`} style={placeholderStyle(app.appid)}>
         {fallbackLabel && <span>{app.name}</span>}
       </div>
     );
   }
-  return <img className={className} src={artUrl(app.appid, kind)} alt={kind === "logo" ? app.name : ""} draggable={false} onError={() => setFailed(true)} />;
+
+  // Tenta primeiro a URL da API local; se falhar (ex: Vercel), o handleError muda para o CDN oficial do Steam
+  const src = triedCdn ? steamCdnArtUrl(app.appid, kind) : artUrl(app.appid, kind);
+
+  return (
+    <img
+      className={className}
+      src={src}
+      alt={kind === "logo" ? app.name : ""}
+      draggable={false}
+      onError={handleError}
+    />
+  );
 }
 
 export function AppIcon({ app, size = 16 }: { app: LibraryApp; size?: number }) {
+  const [triedCdn, setTriedCdn] = useState(false);
   const [failed, setFailed] = useState(false);
-  if (!app.art.icon || failed) {
+
+  const handleError = () => {
+    if (!triedCdn) {
+      setTriedCdn(true);
+    } else {
+      setFailed(true);
+    }
+  };
+
+  if (failed) {
     return (
       <span className="app-icon app-icon--fallback" style={{ width: size, height: size, ...placeholderStyle(app.appid) }}>
         {app.name.charAt(0)}
       </span>
     );
   }
-  return <img className="app-icon" width={size} height={size} src={artUrl(app.appid, "icon")} alt="" onError={() => setFailed(true)} />;
+
+  const src = triedCdn ? steamCdnArtUrl(app.appid, "icon") : artUrl(app.appid, "icon");
+
+  return (
+    <img
+      className="app-icon"
+      width={size}
+      height={size}
+      src={src}
+      alt=""
+      onError={handleError}
+    />
+  );
 }

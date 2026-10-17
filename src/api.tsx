@@ -1,8 +1,24 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState, type ReactNode } from "react";
 import { createDownloadSession, downloadReducer, type DownloadSession, type RunState } from "./downloads";
+import fallbackSnapshot from "./fallbackSnapshot.json";
 import type { Achievement, ArtKind, LibraryApp, LibrarySnapshot, UserCollection } from "./types";
 
 export const artUrl = (appid: number, kind: ArtKind) => `/api/art/${appid}/${kind}`;
+
+export const steamCdnArtUrl = (appid: number, kind: ArtKind) => {
+  switch (kind) {
+    case "capsule":
+      return `https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/${appid}/library_600x900_2x.jpg`;
+    case "hero":
+    case "heroBlur":
+      return `https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/${appid}/library_hero.jpg`;
+    case "logo":
+      return `https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/${appid}/logo.png`;
+    case "header":
+    default:
+      return `https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`;
+  }
+};
 
 interface LibraryState {
   snapshot: LibrarySnapshot | null;
@@ -81,13 +97,23 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
 
   const load = useCallback((fresh: boolean) => {
     fetch(`/api/library${fresh ? "?refresh" : ""}`)
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then((s: LibrarySnapshot) => {
+        if (!s || !Array.isArray(s.apps)) throw new Error("Invalid snapshot format");
         setSnapshot(s);
         setError(null);
         setCollections((prev) => (prev.length ? prev : (loadLocal() ?? s.collections)));
       })
-      .catch((e: Error) => setError(e.message));
+      .catch(() => {
+        // Fallback resiliente para o snapshot embutido quando servido sem backend local (Vercel)
+        const fallback = fallbackSnapshot as unknown as LibrarySnapshot;
+        setSnapshot(fallback);
+        setError(null);
+        setCollections((prev) => (prev.length ? prev : (loadLocal() ?? fallback.collections)));
+      });
   }, []);
 
   useEffect(() => {
