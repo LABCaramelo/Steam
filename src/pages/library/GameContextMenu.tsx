@@ -74,8 +74,8 @@ export function GameContextMenu({ target, onClose }: { target: ContextTarget; on
       <button className="ctxmenu__item" onClick={act(() => nav(`/library/app/${app.appid}`))}>
         Detalhes da ferramenta
       </button>
-      <button className="ctxmenu__item" onClick={act(() => window.open(`https://store.steampowered.com/app/${app.appid}/`, "_blank", "noopener"))}>
-        Página na loja
+      <button className="ctxmenu__item" onClick={act(() => window.open("https://umcaracaramelo.com.br", "_blank", "noopener"))}>
+        Página no LAB
       </button>
       <button className="ctxmenu__item" onClick={act(() => nav(`/app/${app.appid}/properties/general`))}>
         Propriedades…

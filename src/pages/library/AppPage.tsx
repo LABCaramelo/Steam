@@ -94,11 +94,11 @@ function AppDetails({ app }: { app: LibraryApp }) {
       </div>
 
       <nav className="appdetails__links">
-        <button onClick={ext(`https://store.steampowered.com/app/${app.appid}/`)}>Página na loja</button>
-        <button onClick={ext(`https://steamcommunity.com/app/${app.appid}`)}>Central da comunidade</button>
-        <button onClick={ext(`https://steamcommunity.com/app/${app.appid}/discussions/`)}>Discussões</button>
-        <button onClick={ext(`https://steamcommunity.com/app/${app.appid}/guides/`)}>Guias</button>
-        <button onClick={ext(`https://help.steampowered.com/wizard/HelpWithGame/?appid=${app.appid}`)}>Suporte</button>
+        <button onClick={ext("https://umcaracaramelo.com.br")}>Página no LAB</button>
+        <button onClick={ext("https://umcaracaramelo.com.br")}>Central da comunidade</button>
+        <button onClick={ext("https://umcaracaramelo.com.br")}>Discussões</button>
+        <button onClick={ext("https://umcaracaramelo.com.br")}>Guias</button>
+        <button onClick={ext("https://umcaracaramelo.com.br")}>Suporte</button>
       </nav>
 
       <div className="appdetails__body">

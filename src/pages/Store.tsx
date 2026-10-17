@@ -15,9 +15,7 @@ const STORE_TABS = [
 ];
 
 /**
- * The real store is a web page (store.steampowered.com) hosted inside the client. Prices and the
- * catalog come from Valve's servers, so this storefront only features titles already in the local
- * library — each card is marked "Na biblioteca" and no price is invented.
+ * Catálogo e vitrine de ferramentas do LAB.
  */
 export function StorePage() {
   const { snapshot } = useLibrary();
@@ -36,7 +34,9 @@ export function StorePage() {
     return () => clearInterval(id);
   }, [featured.length]);
 
-  const view = params.get("view");
+  const rawView = params.get("view");
+  const isValidView = rawView === "wishlist" || rawView === "points" || rawView === "news";
+  const view = isValidView ? rawView : null;
   const activeTabId = view ?? "store";
   const results = query.trim() ? apps.filter((a) => a.name.toLowerCase().includes(query.trim().toLowerCase())) : [];
   const cur = featured[slide];
@@ -217,12 +217,6 @@ function StoreRows({ apps, ranked }: { apps: LibraryApp[]; ranked?: boolean }) {
 function storeViewTitle(v: string) {
   return ({ wishlist: t("Menu_Wishlist"), points: t("Menu_PointsShop"), news: t("Menu_News") } as Record<string, string>)[v] ?? "Loja";
 }
-function storeViewUrl(v: string) {
-  return (
-    ({
-      wishlist: "https://store.steampowered.com/wishlist/",
-      points: "https://store.steampowered.com/points/shop/",
-      news: "https://store.steampowered.com/news/",
-    } as Record<string, string>)[v] ?? "https://store.steampowered.com/"
-  );
+function storeViewUrl(_v: string) {
+  return "https://umcaracaramelo.com.br";
 }

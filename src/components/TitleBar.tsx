@@ -73,9 +73,9 @@ export function TitleBar() {
     {
       label: t("Menu_Help"),
       items: [
-        { label: t("Menu_Support"), onSelect: () => window.open("https://help.steampowered.com/", "_blank", "noopener") },
-        { label: t("Menu_PrivacyPolicy"), onSelect: () => window.open("https://store.steampowered.com/privacy_agreement/", "_blank", "noopener") },
-        { label: t("Menu_SSA"), onSelect: () => window.open("https://store.steampowered.com/subscriber_agreement/", "_blank", "noopener") },
+        { label: t("Menu_Support"), onSelect: () => window.open("https://umcaracaramelo.com.br", "_blank", "noopener") },
+        { label: t("Menu_PrivacyPolicy"), onSelect: () => window.open("https://umcaracaramelo.com.br", "_blank", "noopener") },
+        { label: t("Menu_SSA"), onSelect: () => window.open("https://umcaracaramelo.com.br", "_blank", "noopener") },
         { kind: "separator" },
         { label: t("Menu_SystemInfo"), onSelect: () => ui.toast(`Navegador: ${navigator.userAgent.split(") ")[0]})`) },
         { label: "Sobre esta recriação", onSelect: () => ui.setAboutOpen(true) },
