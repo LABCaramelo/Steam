@@ -20,7 +20,7 @@ export function DownloadsPage() {
   return (
     <div className="downloads">
       <header className="downloads__toolbar">
-        <div><h1>Downloads</h1><p className="muted small">Gerencie suas instalações simuladas e acompanhe os registros da Steam.</p></div>
+        <div><h1>Downloads</h1><p className="muted small">Gerencie suas instalações simuladas e acompanhe os registros do LAB.</p></div>
         <div className="downloads__controls">
           <button className="downloads__control" disabled={!hasRunning} onClick={downloads.pauseAll}><IconPause size={14} /> {t("Downloads_Pause")}</button>
           <button className="downloads__control" disabled={!hasPaused} onClick={downloads.resumeAll}><IconPlay size={14} /> {t("Downloads_Resume")}</button>
@@ -61,7 +61,7 @@ function DownloadRow({ entry }: { entry: DownloadEntry }) {
   const paused = state === "paused";
   const openSteam = () => {
     if (ui.settings.launchViaSteamProtocol) window.location.href = "steam://open/downloads";
-    else ui.toast("Ative “Iniciar e instalar via steam://” nas configurações da biblioteca para abrir os downloads da Steam.");
+    else ui.toast("Ative “Iniciar e instalar via steam://” nas configurações da biblioteca para abrir os downloads do LAB.");
   };
   const status = state === "downloading" ? "Baixando" : paused ? "Em pausa" : state === "queued" ? "Aguardando na fila" : state === "update_required" ? "Atualização necessária" : "Concluído";
   const controlLabel = `${paused ? t("Downloads_Resume_Tooltip") : t("Downloads_Pause_Tooltip")} de ${app.name}`;
@@ -70,7 +70,7 @@ function DownloadRow({ entry }: { entry: DownloadEntry }) {
       <button className="dl-row__art" aria-label={`Ver ${app.name} na biblioteca`} onClick={() => nav(`/library/app/${app.appid}`)}><AppArt app={app} kind="header" /></button>
       <div className="dl-row__info">
         <button className="dl-row__name" onClick={() => nav(`/library/app/${app.appid}`)}>{app.name}</button>
-        <div className="dl-row__status"><span className={paused ? "dl-row__paused" : ""}>{status}</span><span className="dl-row__source">{simulated ? "Simulação local" : "Steam · registro local"}</span></div>
+        <div className="dl-row__status"><span className={paused ? "dl-row__paused" : ""}>{status}</span><span className="dl-row__source">{simulated ? "Simulação local" : "LAB · registro local"}</span></div>
         {pending && (state === "downloading" || paused) && <div className="dl-row__bar" role="progressbar" aria-label={`Progresso de ${app.name}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}><span style={{ width: `${progress * 100}%` }} /></div>}
         <div className="dl-row__meta">
           {pending ? <span>{Math.round(progress * 100)}%{!simulated && app.download ? ` · ${formatBytes(app.download.bytesDownloaded)} de ${formatBytes(app.download.bytesToDownload)}` : ""}</span> : <span>{`${simulated ? "Instalado" : "Atualizado"} em ${formatDate(entry.completedAt === undefined ? app.lastUpdated : entry.completedAt / 1000)}`}</span>}
@@ -81,7 +81,7 @@ function DownloadRow({ entry }: { entry: DownloadEntry }) {
         {simulated && pending ? <>
           <button title={controlLabel} aria-label={controlLabel} onClick={() => paused ? downloads.resume(app.appid) : downloads.pause(app.appid)}>{paused ? <IconPlay size={16} /> : <IconPause size={16} />}</button>
           <button title={t("Downloads_RemoveFromQueue_Tooltip")} aria-label={`Remover download de ${app.name}`} onClick={() => downloads.cancel(app.appid)}><IconClose size={16} /></button>
-        </> : pending ? <button title="Gerenciar na Steam" aria-label={`Gerenciar download de ${app.name} na Steam`} onClick={openSteam}><IconDownload size={16} /></button> : <button title="Ir ao jogo" aria-label={`Ir ao jogo ${app.name}`} onClick={() => nav(`/library/app/${app.appid}`)}><IconPlay size={16} /></button>}
+        </> : pending ? <button title="Gerenciar no LAB" aria-label={`Gerenciar download de ${app.name} no LAB`} onClick={openSteam}><IconDownload size={16} /></button> : <button title="Ir ao jogo" aria-label={`Ir ao jogo ${app.name}`} onClick={() => nav(`/library/app/${app.appid}`)}><IconPlay size={16} /></button>}
       </div>
     </article>
   );
@@ -116,7 +116,7 @@ function NetworkGraph({ simulatedTransfers, hasSteamTransfers }: { simulatedTran
       <div className="netgraph__stats">
         <div><span className="playbar__stat-label">Rede atual</span><b>{hasSteamTransfers && !simulatedTransfers ? "Indisponível" : `${current.toFixed(1)} MB/s`}</b></div>
         <div><span className="playbar__stat-label">Pico da simulação</span><b>{Math.max(...samples).toFixed(1)} MB/s</b></div>
-        <div><span className="playbar__stat-label">Origem</span><b>{simulatedTransfers ? "Simulação local" : hasSteamTransfers ? "Steam · sem telemetria" : "Ocioso"}</b></div>
+        <div><span className="playbar__stat-label">Origem</span><b>{simulatedTransfers ? "Simulação local" : hasSteamTransfers ? "LAB · sem telemetria" : "Ocioso"}</b></div>
       </div>
     </div>
   );

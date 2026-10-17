@@ -99,9 +99,9 @@ function StartRedirect() {
 function AboutModal({ onClose }: { onClose: () => void }) {
   const { snapshot } = useLibrary();
   useEffect(() => {
-    document.title = "Sobre — Steam (Caramelo)";
+    document.title = "Sobre — LAB (Caramelo)";
     return () => {
-      document.title = "Steam — Um Cara Caramelo";
+      document.title = "LAB — Um Cara Caramelo";
     };
   }, []);
   return (

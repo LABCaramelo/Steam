@@ -88,12 +88,12 @@ function SettingsPage({ slug }: { slug: string }) {
           <dl className="info-grid">
             <dt>Nome de perfil</dt>
             <dd>{snapshot?.user?.personaName}</dd>
-            <dt>SteamID</dt>
+            <dt>LAB ID</dt>
             <dd className="mono">{snapshot?.user?.steamId64 ?? "—"}</dd>
-            <dt>Pasta da Steam</dt>
+            <dt>Pasta do LAB</dt>
             <dd className="mono">{snapshot?.steamPath ?? "não encontrada (modo demonstração)"}</dd>
           </dl>
-          <p className="muted small">E-mail, senha e saldo da carteira ficam nos servidores da Steam e não são lidos por esta recriação.</p>
+          <p className="muted small">E-mail, senha e saldo da carteira ficam nos servidores do LAB e não são lidos por esta recriação.</p>
         </>
       );
       break;
@@ -121,7 +121,7 @@ function SettingsPage({ slug }: { slug: string }) {
           <Toggle label="Exibir ícones dos jogos na lista lateral" checked={ui.settings.showGameIconsInList} onChange={(v) => ui.setSetting("showGameIconsInList", v)} />
           <Toggle
             label="Iniciar e instalar via steam://"
-            desc="Quando ativado, os botões Jogar/Instalar enviam o pedido ao cliente Steam real instalado neste PC. Desativado = simulação."
+            desc="Quando ativado, os botões Jogar/Instalar enviam o pedido ao cliente LAB real instalado neste PC. Desativado = simulação."
             checked={ui.settings.launchViaSteamProtocol}
             onChange={(v) => ui.setSetting("launchViaSteamProtocol", v)}
           />
@@ -166,14 +166,14 @@ function SettingsPage({ slug }: { slug: string }) {
     case "ingame":
       body = (
         <>
-          {flag("overlay", "Ativar a sobreposição Steam durante o jogo", undefined, true)}
+          {flag("overlay", "Ativar a sobreposição LAB durante o jogo", undefined, true)}
           {flag("fps", "Contador de FPS no jogo")}
           {flag("screenshotSound", "Tocar som ao capturar tela", undefined, true)}
         </>
       );
       break;
     case "cloud":
-      body = flag("cloud", "Ativar o Steam Cloud nos aplicativos compatíveis", "Os arquivos salvos são sincronizados automaticamente.", true);
+      body = flag("cloud", "Ativar o LAB Cloud nos aplicativos compatíveis", "Os arquivos salvos são sincronizados automaticamente.", true);
       break;
     case "gamerecording":
       body = (
@@ -255,7 +255,7 @@ function StoragePage() {
   const apps = snapshot?.apps ?? [];
 
   const addFolder = () => {
-    const path = window.prompt("Caminho da nova pasta da biblioteca (ex.: E:\\SteamLibrary):")?.trim();
+    const path = window.prompt("Caminho da nova pasta da biblioteca (ex.: E:\\LABLibrary):")?.trim();
     if (!path) return;
     if (folders.some((f) => samePath(f.path, path))) return ui.toast("Essa pasta já faz parte da biblioteca.");
     addLibraryFolder(path, window.prompt(t("ContentManagement_RenameDriveText"), "")?.trim() || undefined);
@@ -281,7 +281,7 @@ function StoragePage() {
                 <div className="muted small mono">{f.path}</div>
               </div>
               <span className="muted small">
-                {formatBytes(used)} usados pela Steam • {f.freeBytes !== undefined ? `${formatBytes(f.freeBytes)} livres` : "espaço livre desconhecido"}
+                {formatBytes(used)} usados pelo LAB • {f.freeBytes !== undefined ? `${formatBytes(f.freeBytes)} livres` : "espaço livre desconhecido"}
               </span>
               <div className="storage__actions">
                 {!isDefault && <button onClick={() => setDefaultFolder(f.path)}>{t("ContentManagement_MakeDefault")}</button>}
@@ -295,7 +295,7 @@ function StoragePage() {
                 </button>
                 <button
                   disabled={isSteamRoot}
-                  title={isSteamRoot ? "A pasta onde a Steam está instalada não pode ser removida." : undefined}
+                  title={isSteamRoot ? "A pasta onde o LAB está instalado não pode ser removida." : undefined}
                   onClick={() => {
                     if (!window.confirm(t("ContentManagement_RemoveDrive_ConfirmDesc", f.path))) return;
                     removeLibraryFolder(f.path);
@@ -306,7 +306,7 @@ function StoragePage() {
                 </button>
               </div>
             </div>
-            <div className="storage__bar" title={total ? `${Math.round((used / total) * 100)}% ocupado pela Steam` : undefined}>
+            <div className="storage__bar" title={total ? `${Math.round((used / total) * 100)}% ocupado pelo LAB` : undefined}>
               <span style={{ width: `${total ? (used / total) * 100 : 0}%` }} />
             </div>
             {driveApps.length === 0 ? (
@@ -352,7 +352,7 @@ function StoragePage() {
           {t("ContentManagement_AddDriveDropdownOption")}
         </button>
       </div>
-      <p className="muted small">Alterações feitas aqui ficam salvas só neste navegador: nenhum arquivo é movido e a configuração da Steam não é alterada.</p>
+      <p className="muted small">Alterações feitas aqui ficam salvas só neste navegador: nenhum arquivo é movido e a configuração do LAB não é alterada.</p>
     </div>
   );
 }

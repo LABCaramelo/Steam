@@ -36,7 +36,7 @@ export function LoginScreen() {
         <div className="login-modal__titlebar">
           <div className="login-modal__brand">
             <IconMark size={18} />
-            <span>Steam • Laboratório de Interação</span>
+            <span>LAB • Laboratório de Interação</span>
           </div>
           <div className="login-modal__controls" aria-hidden="true">
             <span><IconMinimize size={12} /></span>
@@ -51,7 +51,7 @@ export function LoginScreen() {
             <div className="login-modal__badge">
               <IconMark size={46} />
             </div>
-            <h1 id="login-title" className="login-modal__title">INICIAR SESSÃO NO STEAM</h1>
+            <h1 id="login-title" className="login-modal__title">INICIAR SESSÃO NO LAB</h1>
             <p className="login-modal__subtitle">
               Insira a senha de acesso para liberar a visualização desta recriação.
             </p>
@@ -68,12 +68,12 @@ export function LoginScreen() {
           )}
 
           <div className="login-field">
-            <label className="login-field__label" htmlFor="steam-password">
+            <label className="login-field__label" htmlFor="lab-password">
               SENHA DE ACESSO
             </label>
             <div className="login-field__input-wrap">
               <input
-                id="steam-password"
+                id="lab-password"
                 type={showPassword ? "text" : "password"}
                 className={`login-field__input ${error ? "is-error" : ""}`}
                 value={password}

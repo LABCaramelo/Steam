@@ -41,7 +41,7 @@ export function usePlayAction(app: LibraryApp): PlayAction {
       label: d.state === "update_required" ? "Atualizar" : d.state === "paused" ? "Retomar" : "Downloads",
       onClick: () => {
         if (real) window.location.href = "steam://open/downloads";
-        else ui.toast("Abra a Steam de verdade para gerenciar esta atualização.");
+        else ui.toast("Abra o LAB de verdade para gerenciar esta atualização.");
       },
     };
   }
@@ -53,7 +53,7 @@ export function usePlayAction(app: LibraryApp): PlayAction {
       onClick: () => {
         if (real && app.installed) {
           window.location.href = `steam://rungameid/${app.appid}`;
-          ui.toast(`Pedido enviado à Steam: iniciar ${app.name}.`);
+          ui.toast(`Pedido enviado ao LAB: iniciar ${app.name}.`);
         } else setRun({ kind: "launching", since: Date.now() });
       },
     };
@@ -65,7 +65,7 @@ export function usePlayAction(app: LibraryApp): PlayAction {
     onClick: () => {
       if (real) {
         window.location.href = `steam://install/${app.appid}`;
-        ui.toast(`Pedido enviado à Steam: instalar ${app.name}.`);
+        ui.toast(`Pedido enviado ao LAB: instalar ${app.name}.`);
       } else {
         ui.toast("Simulação: nada é baixado de verdade.");
         downloads.start(app.appid);

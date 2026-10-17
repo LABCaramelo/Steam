@@ -68,7 +68,7 @@ export function TitleBar() {
         { label: t("Menu_ActivateRetail"), onSelect: soon("Ativação de produtos") },
         { label: t("Menu_RedeemWallet"), onSelect: soon("Códigos da Carteira") },
         { label: t("Menu_ManageGifts"), onSelect: soon("Presentes") },
-        { label: t("Menu_AddNonSteam"), onSelect: soon("Jogos não Steam") },
+        { label: t("Menu_AddNonSteam"), onSelect: soon("Jogos não LAB") },
       ],
     },
     {

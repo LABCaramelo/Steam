@@ -65,7 +65,7 @@ export function FriendsPanel() {
           </section>
         ))}
         <p className="friends__note">
-          A lista de amigos fica nos servidores da Steam e não é salva no disco, por isso esta recriação não consegue exibi-la.
+          A lista de amigos fica nos servidores do LAB e não é salva no disco, por isso esta recriação não consegue exibi-la.
         </p>
       </div>
     </aside>

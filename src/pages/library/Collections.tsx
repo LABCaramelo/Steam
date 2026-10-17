@@ -54,7 +54,7 @@ export function CollectionsPage() {
           );
         })}
       </div>
-      <p className="muted small">Alterações em coleções ficam salvas só neste navegador — nada é enviado à sua conta Steam.</p>
+      <p className="muted small">Alterações em coleções ficam salvas só neste navegador — nada é enviado à sua conta LAB.</p>
     </div>
   );
 }

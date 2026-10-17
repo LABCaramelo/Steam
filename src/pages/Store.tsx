@@ -68,7 +68,7 @@ export function StorePage() {
         <section className="store__section store__placeholder">
           <h2 className="store__heading">{storeViewTitle(view)}</h2>
           <p>
-            Esta seção depende do catálogo online da Steam. Abra no site oficial:{" "}
+            Esta seção depende do catálogo online do LAB. Abra no site oficial:{" "}
             <a href={storeViewUrl(view)} target="_blank" rel="noopener noreferrer">
               {storeViewUrl(view)}
             </a>

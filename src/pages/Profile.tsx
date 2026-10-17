@@ -34,7 +34,7 @@ export function ProfilePage() {
             <div className="profile__status" style={{ color: STATUS_COLOR[ui.status] }}>
               {STATUS_LABEL[ui.status]}
             </div>
-            {snapshot?.user?.steamId64 && <div className="muted small mono">SteamID {snapshot.user.steamId64}</div>}
+            {snapshot?.user?.steamId64 && <div className="muted small mono">LAB ID {snapshot.user.steamId64}</div>}
           </div>
           <div className="profile__counters">
             <div>
@@ -105,7 +105,7 @@ export function ProfilePage() {
               <h2>Perfil público</h2>
               {snapshot?.user?.steamId64 ? (
                 <a href={`https://steamcommunity.com/profiles/${snapshot.user.steamId64}`} target="_blank" rel="noopener noreferrer">
-                  Abrir no Steam Community
+                  Abrir no LAB Community
                 </a>
               ) : (
                 <span className="muted">Indisponível</span>

@@ -58,7 +58,7 @@ export function AchievementsPage() {
           </div>
           {data.list.length < data.total && (
             <p className="muted small">
-              O cache local guarda só um resumo ({data.list.length} de {data.total}); a lista completa fica nos servidores da Steam.
+              O cache local guarda só um resumo ({data.list.length} de {data.total}); a lista completa fica nos servidores do LAB.
             </p>
           )}
           <ul className="ach-list">
