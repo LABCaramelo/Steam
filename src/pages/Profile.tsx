@@ -30,11 +30,14 @@ export function ProfilePage() {
         <header className="profile__header">
           <Avatar size={164} />
           <div className="profile__id">
-            <h1>{snapshot?.user?.personaName}</h1>
+            <h1 className="font-display">{snapshot?.user?.personaName}</h1>
             <div className="profile__status" style={{ color: STATUS_COLOR[ui.status] }}>
               {STATUS_LABEL[ui.status]}
             </div>
             {snapshot?.user?.steamId64 && <div className="muted small mono">LAB ID {snapshot.user.steamId64}</div>}
+            <span className="cm-handwritten" style={{ fontSize: "16px", marginTop: "6px" }}>
+              "elegância + pequena confissão patética"
+            </span>
           </div>
           <div className="profile__counters">
             <div>
@@ -55,7 +58,7 @@ export function ProfilePage() {
         <div className="profile__cols">
           <div>
             {favApps.length > 0 && (
-              <section className="profile__box">
+              <section className="profile__box cm-surface--spotlight">
                 <h2>Ferramentas favoritas</h2>
                 <div className="profile__favs">
                   {favApps.map((a) => (

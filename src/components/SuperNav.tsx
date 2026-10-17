@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useLibrary } from "../api";
 import { t } from "../i18n";
@@ -12,14 +13,16 @@ interface Tab {
 }
 
 /**
- * The large uppercase navigation row ("SuperNav"). Typography and colors follow the shipped CSS:
- * 18px / weight 500 / uppercase, #dcdedf idle, #fff hover, #1a9fff + glow when active.
+ * The large uppercase navigation row ("SuperNav").
+ * Implements Caramelo spotlight-tabs with spatial continuity and chromatic-glitch.
  */
 export function SuperNav() {
   const nav = useNavigate();
   const { pathname } = useLocation();
   const { snapshot } = useLibrary();
   const persona = snapshot?.user?.personaName ?? "Perfil";
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const [indicator, setIndicator] = useState<{ left: number; width: number; opacity: number }>({ left: 0, width: 0, opacity: 0 });
 
   const tabs: Tab[] = [
     {
@@ -70,6 +73,32 @@ export function SuperNav() {
     },
   ];
 
+  useEffect(() => {
+    const updateIndicator = () => {
+      if (!tabsRef.current) return;
+      const activeEl = tabsRef.current.querySelector<HTMLElement>(".supernav__tab.is-active");
+      if (activeEl) {
+        const parentRect = tabsRef.current.getBoundingClientRect();
+        const rect = activeEl.getBoundingClientRect();
+        setIndicator({
+          left: rect.left - parentRect.left,
+          width: rect.width,
+          opacity: 1,
+        });
+      } else {
+        setIndicator((prev) => ({ ...prev, opacity: 0 }));
+      }
+    };
+
+    updateIndicator();
+    const id = setTimeout(updateIndicator, 50);
+    window.addEventListener("resize", updateIndicator);
+    return () => {
+      clearTimeout(id);
+      window.removeEventListener("resize", updateIndicator);
+    };
+  }, [pathname, persona]);
+
   return (
     <nav className="supernav">
       <div className="supernav__arrows">
@@ -80,24 +109,36 @@ export function SuperNav() {
           <IconForward size={20} />
         </button>
       </div>
-      <div className="supernav__tabs">
-        {tabs.map((tab) => (
-          <div key={tab.to} className="supernav__tab-wrap">
-            <NavLink to={tab.to} className={() => `supernav__tab ${tab.match(pathname) ? "is-active" : ""}`}>
-              {tab.label}
-            </NavLink>
-            {/* hover submenu, like the client's SuperNav dropdowns */}
-            <div className="supernav__dropdown" role="menu">
-              {tab.items.map((it, i) =>
-                it.kind === "separator" ? null : (
-                  <button key={i} role="menuitem" onClick={it.onSelect}>
-                    {it.label}
-                  </button>
-                ),
-              )}
+      <div className="supernav__tabs cm-spotlight-tabs" ref={tabsRef}>
+        <span
+          className="cm-spotlight-tabs__indicator"
+          style={{
+            transform: `translateX(${indicator.left}px)`,
+            width: `${indicator.width}px`,
+            opacity: indicator.opacity,
+          }}
+          aria-hidden="true"
+        />
+        {tabs.map((tab) => {
+          const isActive = tab.match(pathname);
+          return (
+            <div key={tab.to} className="supernav__tab-wrap">
+              <NavLink to={tab.to} className={() => `supernav__tab cm-spectrum-trigger ${isActive ? "is-active" : ""}`}>
+                <span className="cm-glitch" data-text={tab.label}>{tab.label}</span>
+              </NavLink>
+              {/* hover submenu com blur-glide-menu */}
+              <div className="supernav__dropdown cm-blur-glide-menu" role="menu">
+                {tab.items.map((it, i) =>
+                  it.kind === "separator" ? null : (
+                    <button key={i} role="menuitem" className="supernav__dropdown-item" onClick={it.onSelect}>
+                      {it.label}
+                    </button>
+                  ),
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </nav>
   );

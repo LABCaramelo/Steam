@@ -31,12 +31,12 @@ export function LoginScreen() {
   return (
     <div className="login-screen">
       <div className="login-screen__ambient" />
-      <div className="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
+      <div className="login-modal cm-surface--spotlight" role="dialog" aria-modal="true" aria-labelledby="login-title">
         {/* Title bar simulando o client Steam */}
         <div className="login-modal__titlebar">
-          <div className="login-modal__brand">
+          <div className="login-modal__brand cm-spectrum-trigger">
             <IconMark size={18} />
-            <span>LAB • Laboratório de Interação</span>
+            <span className="cm-glitch" data-text="LAB • Laboratório de Interação">LAB • Laboratório de Interação</span>
           </div>
           <div className="login-modal__controls" aria-hidden="true">
             <span><IconMinimize size={12} /></span>
@@ -51,11 +51,11 @@ export function LoginScreen() {
             <div className="login-modal__badge">
               <IconMark size={46} />
             </div>
-            <h1 id="login-title" className="login-modal__title">INICIAR SESSÃO NO LAB</h1>
+            <h1 id="login-title" className="login-modal__title font-display">INICIAR SESSÃO NO LAB</h1>
             <p className="login-modal__subtitle">
               Insira a senha de acesso para liberar a visualização desta recriação.
             </p>
-            <span className="cm-handwritten" style={{ fontSize: "14px", marginTop: "2px" }}>
+            <span className="cm-handwritten" style={{ fontSize: "16px", marginTop: "4px" }}>
               "menos ferramenta, mais sistema."
             </span>
           </div>
@@ -67,7 +67,7 @@ export function LoginScreen() {
             </div>
           )}
 
-          <div className="login-field">
+          <div className="login-field cm-field">
             <label className="login-field__label" htmlFor="lab-password">
               SENHA DE ACESSO
             </label>
@@ -75,13 +75,13 @@ export function LoginScreen() {
               <input
                 id="lab-password"
                 type={showPassword ? "text" : "password"}
-                className={`login-field__input ${error ? "is-error" : ""}`}
+                className={`login-field__input cm-field__input ${error ? "is-error" : ""}`}
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   if (error) setError(false);
                 }}
-                placeholder="Digite a senha"
+                placeholder=" "
                 autoFocus
                 autoComplete="current-password"
               />
@@ -94,6 +94,7 @@ export function LoginScreen() {
                 {showPassword ? "Ocultar" : "Exibir"}
               </button>
             </div>
+            <span className="cm-field__beam" aria-hidden="true" />
           </div>
 
           <label className="login-checkbox">
@@ -108,10 +109,12 @@ export function LoginScreen() {
 
           <button
             type="submit"
-            className="login-modal__submit"
+            className="login-modal__submit cm-spectrum-trigger"
             disabled={submitting}
           >
-            {submitting ? "VERIFICANDO CREDENCIAIS…" : "INICIAR SESSÃO"}
+            <span className="cm-glitch" data-text={submitting ? "VERIFICANDO CREDENCIAIS…" : "INICIAR SESSÃO"}>
+              {submitting ? "VERIFICANDO CREDENCIAIS…" : "INICIAR SESSÃO"}
+            </span>
           </button>
 
           <div className="login-modal__footer">
