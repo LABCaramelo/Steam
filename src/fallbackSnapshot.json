@@ -143,12 +143,7 @@
       "developer": "Valve",
       "publisher": "Valve",
       "reviewPercentage": 80,
-      "metacritic": 90,
-      "download": {
-        "state": "update_required",
-        "bytesDownloaded": 0,
-        "bytesToDownload": 66156033
-      }
+      "metacritic": 90
     },
     {
       "appid": 920490,
