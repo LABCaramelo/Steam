@@ -6,7 +6,6 @@ import { STATUS_LABEL, useUi, type PersonaStatus } from "../ui";
 import { Avatar } from "./Avatar";
 import { IconBell, IconChevronDown, IconClose, IconMark, IconMaximize, IconMinimize } from "./Icons";
 import { Menu, type MenuItem } from "./Menu";
-import { ThemeToggle } from "./ThemeToggle";
 
 /** Top strip: client menus (LAB / Exibir / Amigos / Ferramentas / Ajuda), notifications, account and window controls. */
 export function TitleBar() {
@@ -87,9 +86,8 @@ export function TitleBar() {
   return (
     <header className="titlebar">
       <div className="titlebar__left">
-        <div className="titlebar__brand cm-spectrum-trigger" title="LAB • Laboratório de Interação">
+        <div className="titlebar__mark-wrap" title="LAB • Laboratório de Interação">
           <IconMark className="titlebar__mark" />
-          <span className="titlebar__brand-text cm-glitch" data-text="LAB">LAB</span>
         </div>
         {menus.map((m) => (
           <Menu key={m.label} items={m.items} trigger={(open) => <span className={`titlebar__menu ${open ? "is-open" : ""}`}>{m.label}</span>} />
@@ -97,7 +95,6 @@ export function TitleBar() {
       </div>
       <div className="titlebar__drag" />
       <div className="titlebar__right">
-        <ThemeToggle />
         <button className="titlebar__btn" title="Notificações" onClick={() => ui.toast("Nenhuma notificação nova.")}>
           <IconBell size={15} />
         </button>

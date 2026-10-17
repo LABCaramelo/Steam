@@ -526,9 +526,25 @@ select {
   background: rgb(var(--cm-surface-2));
 }
 .supernav__tabs {
+  position: relative;
   display: flex;
   align-items: center;
   height: 100%;
+  gap: 2px;
+}
+.supernav__baseline-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--cm-spectrum-gradient);
+  border-radius: 3px 3px 0 0;
+  box-shadow: 0 0 14px rgba(255, 112, 26, 0.7), 0 -2px 8px rgba(255, 61, 141, 0.4);
+  pointer-events: none;
+  z-index: 5;
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+              width 320ms cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 200ms ease;
 }
 .supernav__tab-wrap {
   position: relative;
@@ -537,26 +553,31 @@ select {
   align-items: center;
 }
 .supernav__tab {
-  font-size: 18px;
-  font-weight: 500;
+  position: relative;
+  z-index: 2;
+  font-family: var(--caramelo-font-display);
+  font-size: 14px;
+  font-weight: 800;
   text-transform: uppercase;
-  color: var(--c-text);
-  padding: 0 10px;
-  letter-spacing: 0.01em;
-  transition:
-    color 0.15s ease-out,
-    text-shadow 0.15s ease-out;
-  max-width: 260px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: rgb(var(--cm-fg-muted));
+  padding: 0 16px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.05em;
+  transition: color 200ms cubic-bezier(0.16, 1, 0.3, 1), text-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  background: transparent;
+  border: none;
+  cursor: pointer;
   white-space: nowrap;
 }
 .supernav__tab:hover {
-  color: var(--c-white);
+  color: rgb(var(--cm-fg));
 }
 .supernav__tab.is-active {
-  color: var(--c-accent);
-  text-shadow: 0 0 16px rgba(255, 112, 26, 0.4);
+  color: rgb(var(--cm-fg));
+  font-weight: 900;
+  text-shadow: 0 0 16px rgba(255, 244, 232, 0.25);
 }
 .supernav__dropdown {
   position: absolute;
@@ -3422,24 +3443,6 @@ h1, h2, h3, .page-title, .shelf-title {
               opacity 200ms ease;
 }
 
-.supernav__tabs.cm-spotlight-tabs {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 4px 6px;
-  background: rgba(16, 16, 20, 0.5);
-  border-radius: var(--cm-radius-pill, 9999px);
-  border: 1px solid rgb(var(--cm-line-soft));
-  backdrop-filter: blur(12px);
-}
-
-.supernav__tab {
-  position: relative;
-  z-index: 2;
-  font-family: var(--caramelo-font-display);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
 
 /* --------------------------------------------------------------------------
    4. blur-glide-menu — Menu com Deslize e Desfoque (320ms entrada / 160ms saída)
@@ -3658,60 +3661,99 @@ h1, h2, h3, .page-title, .shelf-title {
   }
 }
 
-.theme-toggle {
+/* --------------------------------------------------------------------------
+   7. Home — Empty State Hero (Laboratório de Interação)
+   -------------------------------------------------------------------------- */
+.home--empty-canvas {
+  min-height: calc(100vh - 160px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+.home-hero {
+  position: relative;
+  max-width: 660px;
+  width: 100%;
+  padding: 56px 44px;
+  background: radial-gradient(120% 120% at 50% 0%, rgba(31, 31, 38, 0.7) 0%, rgba(16, 16, 20, 0.95) 100%);
+  border: 1px solid rgb(var(--cm-line-strong));
+  border-radius: var(--cm-radius-lg, 16px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.home-hero__badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(31, 31, 38, 0.7);
-  border: 1px solid rgb(var(--cm-line));
+  justify-content: center;
+  width: 52px;
+  height: 52px;
   border-radius: var(--cm-radius-pill, 9999px);
-  padding: 4px 10px;
-  color: rgb(var(--cm-fg));
+  background: linear-gradient(135deg, rgba(255, 112, 26, 0.22) 0%, rgba(255, 61, 141, 0.16) 100%);
+  border: 1px solid rgba(255, 112, 26, 0.45);
+  box-shadow: var(--cm-spectrum-glow);
+  margin-bottom: 22px;
+}
+
+.home-hero__mark {
   font-family: var(--caramelo-font-display);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: all 240ms var(--cm-ease-out);
-}
-
-.theme-toggle:hover {
-  background: rgba(255, 112, 26, 0.15);
-  border-color: rgb(var(--cm-accent));
+  font-size: 24px;
+  font-weight: 900;
   color: rgb(var(--cm-accent));
-  box-shadow: 0 0 12px rgba(255, 112, 26, 0.25);
-}
-
-.theme-toggle__icon {
-  font-size: 13px;
   line-height: 1;
 }
 
-/* Tokens do Tema Claro (Print / Cream) */
-[data-caramelo-theme="lumen-light"] {
-  color-scheme: light;
-  --cm-stage: 245 230 212;        /* #F5E6D4 */
-  --cm-surface-1: 255 244 232;    /* #FFF4E8 Warm Cream */
-  --cm-surface-2: 253 247 240;    /* #FDF7F0 */
-  --cm-surface-3: 255 255 255;    /* #FFFFFF */
-  --cm-line-soft: 236 220 204;
-  --cm-line: 232 210 187;         /* #E8D2BB */
-  --cm-line-strong: 209 184 158;  /* #D1B89E */
-  --cm-fg: 16 16 20;              /* #101014 Ink Black */
-  --cm-fg-2: 43 43 51;            /* #2B2B33 */
-  --cm-fg-muted: 110 110 122;     /* #6E6E7A */
-  --cm-fg-dim: 140 140 152;
-  --cm-fg-faint: 175 165 155;
-  --c-darkest: rgb(var(--cm-stage));
-  --c-chrome: rgb(var(--cm-surface-1));
-  --c-panel: rgb(var(--cm-surface-2));
-  --c-panel-2: rgb(var(--cm-surface-3));
-  --c-main: rgb(var(--cm-stage));
-  --c-line: rgb(var(--cm-line));
-  --c-line-hover: rgb(var(--cm-line-strong));
-  --c-text: rgb(var(--cm-fg));
-  --c-text-2: rgb(var(--cm-fg-2));
-  --c-text-3: rgb(var(--cm-fg-muted));
-  --c-text-4: rgb(var(--cm-fg-faint));
+.home-hero__eyebrow {
+  font-family: var(--caramelo-font-display);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(var(--cm-accent));
+  margin-bottom: 12px;
 }
+
+.home-hero__title {
+  font-family: var(--caramelo-font-display);
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: rgb(var(--cm-fg));
+  margin: 0 0 16px;
+  line-height: 1.15;
+}
+
+.home-hero__lead {
+  font-family: var(--caramelo-font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgb(var(--cm-fg-2));
+  max-width: 500px;
+  margin: 0 0 28px;
+}
+
+.home-hero__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.home-hero__quote {
+  font-family: var(--caramelo-font-handwriting);
+  font-size: 22px;
+  color: rgb(var(--cm-accent));
+  transform: rotate(-1.5deg);
+  opacity: 0.88;
+  letter-spacing: 0.02em;
+}
+
 

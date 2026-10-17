@@ -109,9 +109,9 @@ export function SuperNav() {
           <IconForward size={20} />
         </button>
       </div>
-      <div className="supernav__tabs cm-spotlight-tabs" ref={tabsRef}>
+      <div className="supernav__tabs" ref={tabsRef}>
         <span
-          className="cm-spotlight-tabs__indicator"
+          className="supernav__baseline-indicator"
           style={{
             transform: `translateX(${indicator.left}px)`,
             width: `${indicator.width}px`,

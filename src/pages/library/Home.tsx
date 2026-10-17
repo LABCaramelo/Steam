@@ -117,6 +117,40 @@ export function LibraryHome() {
 
   if (!snapshot) return <div className="page-loading">Carregando…</div>;
 
+  if (apps.length === 0) {
+    return (
+      <div className="home home--empty-canvas">
+        <div className="home-hero cm-surface--spotlight">
+          <div className="home-hero__badge">
+            <span className="home-hero__mark">C.</span>
+          </div>
+          <span className="home-hero__eyebrow">UM CARA CARAMELO • LABORATÓRIO DE INTERAÇÃO</span>
+          <h1 className="home-hero__title font-display">BIBLIOTECA DE FERRAMENTAS</h1>
+          <p className="home-hero__lead">
+            Todos os jogos foram removidos do projeto. O catálogo está limpo e pronto para receber suas ferramentas, automações e sistemas autorais.
+          </p>
+          <div className="home-hero__actions">
+            <button
+              className="btn btn--primary cm-spectrum-trigger"
+              onClick={() => nav("/store")}
+            >
+              <span className="cm-glitch" data-text="EXPLORAR CATÁLOGO">EXPLORAR CATÁLOGO</span>
+            </button>
+            <button
+              className="btn btn--ghost"
+              onClick={() => nav("/library/collections")}
+            >
+              COLEÇÕES
+            </button>
+          </div>
+          <span className="cm-handwritten home-hero__quote">
+            "menos ferramenta, mais sistema."
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="home">
       <section className="home__recent">

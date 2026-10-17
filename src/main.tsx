@@ -9,11 +9,11 @@ import { PointerTrail } from "./components/PointerTrail";
 import { UiProvider } from "./ui";
 import "./styles.css";
 
-// Inicializa o tema e registra o rastreador de cursor para spotlight-surface (Caramelo Lumen)
+// O aplicativo opera soberanamente no material Lumen Dark (#101014 Ink Black)
 if (typeof window !== "undefined") {
+  document.documentElement.setAttribute("data-caramelo-theme", "lumen-dark");
   try {
-    const savedTheme = localStorage.getItem("caramelo:theme") || "lumen-dark";
-    document.documentElement.setAttribute("data-caramelo-theme", savedTheme);
+    localStorage.removeItem("caramelo:theme");
   } catch {}
 
   window.addEventListener(
