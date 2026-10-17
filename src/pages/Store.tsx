@@ -37,9 +37,6 @@ export function StorePage() {
           <button className={!view ? "is-active" : ""} onClick={() => nav("/store")}>
             Sua loja
           </button>
-          <button className={view === "queue" ? "is-active" : ""} onClick={() => nav("/store?view=queue")}>
-            {t("Menu_DiscoveryQueue")}
-          </button>
           <button className={view === "wishlist" ? "is-active" : ""} onClick={() => nav("/store?view=wishlist")}>
             {t("Menu_Wishlist")}
           </button>
@@ -48,9 +45,6 @@ export function StorePage() {
           </button>
           <button className={view === "news" ? "is-active" : ""} onClick={() => nav("/store?view=news")}>
             {t("Menu_News")}
-          </button>
-          <button className={view === "charts" ? "is-active" : ""} onClick={() => nav("/store?view=charts")}>
-            {t("Menu_Stats")}
           </button>
         </div>
         <label className="store__search">
@@ -64,7 +58,7 @@ export function StorePage() {
           <h2 className="store__heading">Resultados para “{query}”</h2>
           {results.length === 0 ? <p className="muted">Nada encontrado na sua biblioteca.</p> : <StoreRows apps={results} />}
         </section>
-      ) : view && view !== "charts" ? (
+      ) : view ? (
         <section className="store__section store__placeholder">
           <h2 className="store__heading">{storeViewTitle(view)}</h2>
           <p>
@@ -76,7 +70,7 @@ export function StorePage() {
         </section>
       ) : (
         <>
-          {cur && view !== "charts" && (
+          {cur && (
             <section className="store__section">
               <h2 className="store__heading">Destaques e recomendados</h2>
               <div className="store__carousel">
@@ -105,8 +99,8 @@ export function StorePage() {
           )}
 
           <section className="store__section">
-            <h2 className="store__heading">{view === "charts" ? "Mais utilizadas" : "Da sua biblioteca"}</h2>
-            <StoreRows apps={[...apps].sort((a, b) => b.playtimeMinutes - a.playtimeMinutes)} ranked={view === "charts"} />
+            <h2 className="store__heading">Da sua biblioteca</h2>
+            <StoreRows apps={[...apps].sort((a, b) => b.playtimeMinutes - a.playtimeMinutes)} />
           </section>
         </>
       )}
@@ -141,12 +135,11 @@ function StoreRows({ apps, ranked }: { apps: LibraryApp[]; ranked?: boolean }) {
 }
 
 function storeViewTitle(v: string) {
-  return ({ queue: t("Menu_DiscoveryQueue"), wishlist: t("Menu_Wishlist"), points: t("Menu_PointsShop"), news: t("Menu_News") } as Record<string, string>)[v] ?? "Loja";
+  return ({ wishlist: t("Menu_Wishlist"), points: t("Menu_PointsShop"), news: t("Menu_News") } as Record<string, string>)[v] ?? "Loja";
 }
 function storeViewUrl(v: string) {
   return (
     ({
-      queue: "https://store.steampowered.com/explore/",
       wishlist: "https://store.steampowered.com/wishlist/",
       points: "https://store.steampowered.com/points/shop/",
       news: "https://store.steampowered.com/news/",

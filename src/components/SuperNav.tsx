@@ -31,11 +31,9 @@ export function SuperNav() {
       match: (p) => p.startsWith("/store"),
       items: [
         { label: t("Menu_Featured"), onSelect: () => nav("/store") },
-        { label: t("Menu_DiscoveryQueue"), onSelect: () => nav("/store?view=queue") },
         { label: t("Menu_Wishlist"), onSelect: () => nav("/store?view=wishlist") },
         { label: t("Menu_PointsShop"), onSelect: () => nav("/store?view=points") },
         { label: t("Menu_News"), onSelect: () => nav("/store?view=news") },
-        { label: t("Menu_Stats"), onSelect: () => nav("/store?view=charts") },
       ],
     },
     {
