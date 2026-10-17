@@ -154,12 +154,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const prof = await fetchUserProfile(data.user.id);
             setProfile(prof);
           }
-          return { ok: true, message: "Conta criada com sucesso!" };
+          return { ok: true, message: "Conta criada com sucesso! Entrando…" };
+        }
+
+        // Se o Supabase não retornou a sessão diretamente no signUp, autentica imediatamente
+        const loginRes = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password: password.trim(),
+        });
+
+        if (loginRes.data?.session) {
+          setSession(loginRes.data.session);
+          setUser(loginRes.data.user);
+          if (loginRes.data.user) {
+            const prof = await fetchUserProfile(loginRes.data.user.id);
+            setProfile(prof);
+          }
+          return { ok: true, message: "Conta criada com sucesso! Entrando…" };
         }
 
         return {
           ok: true,
-          message: "Cadastro realizado! Verifique seu e-mail para confirmar a conta, caso necessário.",
+          message: "Conta criada com sucesso!",
         };
       } catch (err) {
         return { ok: false, error: err instanceof Error ? err.message : "Erro ao criar conta." };

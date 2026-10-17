@@ -15,9 +15,6 @@ function formatAuthError(msg: string): string {
   if (lower.includes("password should be at least")) {
     return "A senha deve ter no mínimo 6 caracteres.";
   }
-  if (lower.includes("email not confirmed")) {
-    return "E-mail ainda não confirmado. Verifique sua caixa de entrada.";
-  }
   if (lower.includes("rate limit")) {
     return "Muitas tentativas em sequência. Aguarde alguns instantes.";
   }
@@ -88,7 +85,7 @@ export function LoginScreen() {
       const res = await signUp(email, password, name);
       setSubmitting(false);
       if (res.ok) {
-        setSuccessMsg(res.message || "Conta criada com sucesso! Verifique seu e-mail.");
+        setSuccessMsg(res.message || "Conta criada com sucesso! Conectando…");
       } else {
         setErrorMsg(formatAuthError(res.error || "Não foi possível criar a conta."));
       }
