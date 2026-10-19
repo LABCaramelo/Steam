@@ -1,3 +1,4 @@
+import { CopyButton, FocusField, MagneticButton } from "@caramelo/design-system";
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAchievements, useLibrary, useRun } from "../../api";
@@ -48,10 +49,11 @@ function AppDetails({ app }: { app: LibraryApp }) {
       </div>
 
       <div className={`playbar ${scrolled ? "is-stuck" : ""}`}>
-        <button className={`playbar__btn playbar__btn--${play.variant}`} onClick={play.onClick} title={play.sub}>
+        {/* magnetic-fill: Abrir/Instalar é o único CTA da cena. */}
+        <MagneticButton className={`playbar__btn playbar__btn--${play.variant}`} onClick={play.onClick} title={play.sub}>
           {play.variant === "install" ? <IconDownload size={20} /> : play.variant === "play" ? <IconPlay size={18} /> : null}
           <span>{play.label.toUpperCase()}</span>
-        </button>
+        </MagneticButton>
         {run.kind === "installing" && (
           <div className="playbar__install">
             <div className="playbar__install-bar">
@@ -105,9 +107,9 @@ function AppDetails({ app }: { app: LibraryApp }) {
 
       <div className="appdetails__body">
         <div className="appdetails__col appdetails__col--main">
-          <section className="panel">
+          <section className="panel cm-surface--spotlight">
             <h3 className="panel__title">{t("AppDetails_SectionTitle_Activity")}</h3>
-            <textarea className="activity-input" aria-label="Diga algo sobre esta ferramenta aos seus amigos" placeholder="Diga algo sobre esta ferramenta aos seus amigos…" rows={2} />
+            <FocusField multiline containerClassName="activity-input" label="Diga algo sobre esta ferramenta aos seus amigos" rows={2} />
             <ul className="activity">
               {app.lastPlayed > 0 && (
                 <li>
@@ -138,7 +140,7 @@ function AppDetails({ app }: { app: LibraryApp }) {
             </ul>
           </section>
 
-          <section className="panel">
+          <section className="panel cm-surface--spotlight">
             <h3 className="panel__title">{t("AppDetails_Tab_GameInfo")}</h3>
             <dl className="info-grid">
               <dt>Desenvolvedor</dt>
@@ -162,7 +164,10 @@ function AppDetails({ app }: { app: LibraryApp }) {
                 </>
               ) : null}
               <dt>ID do app</dt>
-              <dd>{app.appid}</dd>
+              <dd className="copy-row">
+                {app.appid}
+                <CopyButton value={String(app.appid)} aria-label="Copiar ID do app" />
+              </dd>
             </dl>
           </section>
         </div>
@@ -211,6 +216,7 @@ function AppDetails({ app }: { app: LibraryApp }) {
                 <dt>Pasta</dt>
                 <dd className="mono">{app.installdir}</dd>
               </dl>
+              <CopyButton value={`${app.libraryPath}\\steamapps\\common\\${app.installdir}`} label="Copiar caminho" />
               <button className="btn btn--ghost" onClick={() => ui.toast(`${app.libraryPath}\\steamapps\\common\\${app.installdir}`)}>
                 Mostrar caminho
               </button>
@@ -260,7 +266,7 @@ function Notes({ appid }: { appid: number }) {
   return (
     <section className="panel">
       <h3 className="panel__title">{t("AppDetails_SectionTitle_GameNotes")}</h3>
-      <textarea className="notes" aria-label="Anotações sobre a ferramenta" placeholder="Escreva suas anotações sobre a ferramenta…" value={text} onChange={(e) => setText(e.target.value)} rows={4} />
+      <FocusField multiline containerClassName="notes" label="Anotações sobre a ferramenta" hint="Salvas neste navegador." value={text} onChange={(e) => setText(e.target.value)} rows={4} />
     </section>
   );
 }

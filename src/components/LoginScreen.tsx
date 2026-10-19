@@ -1,8 +1,15 @@
-import { useState, useRef, useEffect, type FormEvent, type KeyboardEvent } from "react";
+import { FocusField, MagneticButton, SpotlightTabs, TiltSurface } from "@caramelo/design-system";
+import { useState, type FormEvent } from "react";
 import { useAuth } from "../auth";
-import { IconClose, IconMark, IconMaximize, IconMinimize } from "./Icons";
+import { IconMark } from "./Icons";
 
 type LoginMode = "password" | "signup";
+type FieldErrors = { email?: string; password?: string };
+
+const MODES = [
+  { id: "password", label: "Entrar" },
+  { id: "signup", label: "Criar Conta" },
+];
 
 function formatAuthError(msg: string): string {
   const lower = msg.toLowerCase();
@@ -32,69 +39,32 @@ export function LoginScreen() {
   const [name, setName] = useState("");
   const [remember, setRemember] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const tabsRef = useRef<HTMLDivElement>(null);
-  const [tabIndicator, setTabIndicator] = useState({ left: 0, width: 0, opacity: 0 });
-
-  useEffect(() => {
-    const updateIndicator = () => {
-      if (!tabsRef.current) return;
-      const activeBtn = tabsRef.current.querySelector<HTMLElement>(".login-modal__mode-btn.is-active");
-      if (activeBtn) {
-        const parentRect = tabsRef.current.getBoundingClientRect();
-        const rect = activeBtn.getBoundingClientRect();
-        setTabIndicator({
-          left: rect.left - parentRect.left,
-          width: rect.width,
-          opacity: 1,
-        });
-      } else {
-        setTabIndicator((prev) => ({ ...prev, opacity: 0 }));
-      }
-    };
-
-    updateIndicator();
-    const id = setTimeout(updateIndicator, 40);
-    window.addEventListener("resize", updateIndicator);
-    return () => {
-      clearTimeout(id);
-      window.removeEventListener("resize", updateIndicator);
-    };
-  }, [mode]);
-
-  const handleTabKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-      e.preventDefault();
-      const nextMode: LoginMode = mode === "password" ? "signup" : "password";
-      setMode(nextMode);
-      setErrorMsg(null);
-      setSuccessMsg(null);
-    }
+  const clearFeedback = () => {
+    setErrorMsg(null);
+    setSuccessMsg(null);
+    setFieldErrors({});
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setErrorMsg(null);
-    setSuccessMsg(null);
+    clearFeedback();
 
-    if (!email.trim() || !email.includes("@")) {
-      setErrorMsg("Insira um endereço de e-mail válido.");
-      return;
-    }
-
-    if (!password.trim()) {
-      setErrorMsg("Insira sua senha.");
+    // Erros de preenchimento ficam no próprio campo (FocusField: aria-invalid + tremida curta).
+    const errors: FieldErrors = {};
+    if (!email.trim() || !email.includes("@")) errors.email = "Insira um endereço de e-mail válido.";
+    if (!password.trim()) errors.password = "Insira sua senha.";
+    else if (mode === "signup" && password.length < 6) errors.password = "A senha deve conter no mínimo 6 caracteres.";
+    if (errors.email || errors.password) {
+      setFieldErrors(errors);
       return;
     }
 
     if (mode === "signup") {
-      if (password.length < 6) {
-        setErrorMsg("A senha deve conter no mínimo 6 caracteres.");
-        return;
-      }
       setSubmitting(true);
       const res = await signUp(email, password, name);
       setSubmitting(false);
@@ -121,20 +91,16 @@ export function LoginScreen() {
       <div className="login-modal cm-surface--spotlight" role="dialog" aria-modal="true" aria-labelledby="login-title">
         {/* Title bar simulando o client Steam */}
         <div className="login-modal__titlebar">
-          <div className="login-modal__brand cm-spectrum-trigger">
+          <div className="login-modal__brand">
             <IconMark size={18} />
-            <span className="cm-glitch" data-text="LAB • Laboratório de Interação">LAB • Laboratório de Interação</span>
-          </div>
-          <div className="login-modal__controls" aria-hidden="true">
-            <span><IconMinimize size={12} /></span>
-            <span><IconMaximize size={10} /></span>
-            <span className="is-close"><IconClose size={12} /></span>
+            <span className="cm-glitch">LAB • Laboratório de Interação</span>
           </div>
         </div>
 
         {/* Corpo do Login */}
-        <form className="login-modal__content" onSubmit={handleSubmit}>
-          <div className="login-modal__header">
+        <form className="login-modal__content" onSubmit={handleSubmit} noValidate>
+          {/* pointer-tilt: o cartaz da marca inclina com o ponteiro; os controles ficam fora dele. */}
+          <TiltSurface max={3} className="login-modal__header">
             <div className="login-modal__badge">
               <IconMark size={46} />
             </div>
@@ -142,58 +108,20 @@ export function LoginScreen() {
             <span className="cm-handwritten" style={{ fontSize: "17px", marginTop: "4px" }}>
               "menos ferramenta, mais sistema."
             </span>
-          </div>
+          </TiltSurface>
 
-          {/* Abas com Spotlight Deslizante (MCP Caramelo) */}
-          <div
-            ref={tabsRef}
-            className="login-modal__modes cm-spotlight-tabs"
-            role="tablist"
-            aria-label="Modo de autenticação"
-            onKeyDown={handleTabKeyDown}
-          >
-            <span
-              className="cm-spotlight-tabs__indicator"
-              style={{
-                transform: `translateX(${tabIndicator.left}px)`,
-                width: `${tabIndicator.width}px`,
-                opacity: tabIndicator.opacity,
-              }}
-              aria-hidden="true"
-            />
-            <button
-              type="button"
-              role="tab"
-              id="login-tab-password"
-              aria-selected={mode === "password"}
-              tabIndex={mode === "password" ? 0 : -1}
-              className={`login-modal__mode-btn ${mode === "password" ? "is-active" : ""}`}
-              onClick={() => {
-                setMode("password");
-                setErrorMsg(null);
-                setSuccessMsg(null);
-              }}
-            >
-              Entrar
-            </button>
-            <button
-              type="button"
-              role="tab"
-              id="login-tab-signup"
-              aria-selected={mode === "signup"}
-              tabIndex={mode === "signup" ? 0 : -1}
-              className={`login-modal__mode-btn ${mode === "signup" ? "is-active" : ""}`}
-              onClick={() => {
-                setMode("signup");
-                setErrorMsg(null);
-                setSuccessMsg(null);
-              }}
-            >
-              Criar Conta
-            </button>
-          </div>
+          <SpotlightTabs
+            ariaLabel="Modo de autenticação"
+            className="login-modal__modes"
+            items={MODES}
+            value={mode}
+            onValueChange={(next) => {
+              setMode(next as LoginMode);
+              clearFeedback();
+            }}
+          />
 
-          {/* Feedback de Erro */}
+          {/* Feedback do servidor */}
           {errorMsg && (
             <div className="login-modal__error" role="alert">
               <span className="login-modal__error-icon">✕</span>
@@ -201,7 +129,6 @@ export function LoginScreen() {
             </div>
           )}
 
-          {/* Feedback de Sucesso */}
           {successMsg && (
             <div className="login-modal__success" role="status">
               <span style={{ fontWeight: 800 }}>✓</span>
@@ -209,83 +136,56 @@ export function LoginScreen() {
             </div>
           )}
 
-          {/* Campo Nome (Apenas em Cadastro) */}
           {mode === "signup" && (
-            <div className="login-field">
-              <label className="login-field__label" htmlFor="lab-name">
-                NOME OU APELIDO
-              </label>
-              <div className="login-field__input-wrap cm-field">
-                <input
-                  id="lab-name"
-                  type="text"
-                  className="login-field__input"
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                    if (errorMsg) setErrorMsg(null);
-                  }}
-                  placeholder="Seu nome autoral"
-                  autoComplete="name"
-                />
-                <span className="cm-field__beam" aria-hidden="true" />
-              </div>
-            </div>
+            <FocusField
+              id="lab-name"
+              label="Nome ou apelido"
+              hint="Como você aparece no LAB."
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoComplete="name"
+            />
           )}
 
-          {/* Campo E-mail */}
-          <div className="login-field">
-            <label className="login-field__label" htmlFor="lab-email">
-              E-MAIL
-            </label>
-            <div className={`login-field__input-wrap cm-field ${errorMsg && !email.trim() ? "is-invalid" : ""}`}>
-              <input
-                id="lab-email"
-                type="email"
-                className="login-field__input"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (errorMsg) setErrorMsg(null);
-                }}
-                placeholder="seuemail@exemplo.com"
-                autoFocus
-                autoComplete="email"
-                required
-              />
-              <span className="cm-field__beam" aria-hidden="true" />
-            </div>
-          </div>
+          <FocusField
+            id="lab-email"
+            label="E-mail"
+            type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (fieldErrors.email) setFieldErrors((f) => ({ ...f, email: undefined }));
+            }}
+            error={fieldErrors.email}
+            autoFocus
+            autoComplete="email"
+            required
+          />
 
-          {/* Campo Senha */}
-          <div className="login-field">
-            <label className="login-field__label" htmlFor="lab-password">
-              SENHA
-            </label>
-            <div className={`login-field__input-wrap cm-field ${errorMsg && !password.trim() ? "is-invalid" : ""}`}>
-              <input
-                id="lab-password"
-                type={showPassword ? "text" : "password"}
-                className="login-field__input"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (errorMsg) setErrorMsg(null);
-                }}
-                placeholder="Sua senha"
-                autoComplete={mode === "signup" ? "new-password" : "current-password"}
-                required
-              />
-              <button
-                type="button"
-                className="login-field__eye-btn"
-                onClick={() => setShowPassword(!showPassword)}
-                title={showPassword ? "Ocultar senha" : "Exibir senha"}
-              >
-                {showPassword ? "Ocultar" : "Exibir"}
-              </button>
-              <span className="cm-field__beam" aria-hidden="true" />
-            </div>
+          <div className="login-field login-field--password">
+            <FocusField
+              id="lab-password"
+              label="Senha"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (fieldErrors.password) setFieldErrors((f) => ({ ...f, password: undefined }));
+              }}
+              error={fieldErrors.password}
+              autoComplete={mode === "signup" ? "new-password" : "current-password"}
+              required
+            />
+            <button
+              type="button"
+              className="login-field__eye-btn"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-pressed={showPassword}
+              aria-controls="lab-password"
+            >
+              {showPassword ? "Ocultar" : "Exibir"}
+            </button>
           </div>
 
           {/* Lembrar neste navegador */}
@@ -299,29 +199,10 @@ export function LoginScreen() {
             <span className="login-checkbox__label">Lembrar sessão neste navegador</span>
           </label>
 
-          {/* Botão de Envio com Micro-Interação Glitch */}
-          <button
-            type="submit"
-            className="login-modal__submit cm-spectrum-trigger"
-            disabled={submitting}
-          >
-            <span
-              className="cm-glitch"
-              data-text={
-                submitting
-                  ? "CONECTANDO…"
-                  : mode === "signup"
-                  ? "CRIAR CONTA"
-                  : "INICIAR SESSÃO"
-              }
-            >
-              {submitting
-                ? "CONECTANDO…"
-                : mode === "signup"
-                ? "CRIAR CONTA"
-                : "INICIAR SESSÃO"}
-            </span>
-          </button>
+          {/* magnetic-fill: o CTA da cena puxa o cursor e se preenche de baixo para cima. */}
+          <MagneticButton type="submit" variant="accent" size="lg" block className="login-modal__submit" disabled={submitting}>
+            {submitting ? "CONECTANDO…" : mode === "signup" ? "CRIAR CONTA" : "INICIAR SESSÃO"}
+          </MagneticButton>
         </form>
       </div>
     </div>

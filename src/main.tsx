@@ -7,30 +7,24 @@ import { AuthProvider, useAuth } from "./auth";
 import { IconMark } from "./components/Icons";
 import { LoginScreen } from "./components/LoginScreen";
 import { UiProvider } from "./ui";
+import "@caramelo/design-system/styles.css";
 import "./styles.css";
 
-// O aplicativo opera soberanamente no material Lumen Dark (#101014 Ink Black)
+// spotlight-surface: a mesma escrita de --mx/--my do usePointerVars do pacote, delegada para
+// qualquer .cm-surface--spotlight (cartões, painéis e modais que não são <Surface>).
 if (typeof window !== "undefined") {
-  document.documentElement.setAttribute("data-caramelo-theme", "lumen-dark");
-  try {
-    localStorage.removeItem("caramelo:theme");
-  } catch {}
-
+  let frame = 0;
   window.addEventListener(
     "pointermove",
     (e) => {
-      const targets = document.querySelectorAll<HTMLElement>(".cm-surface--spotlight, .cm-surface-spotlight");
-      targets.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        if (
-          e.clientX >= rect.left - 80 &&
-          e.clientX <= rect.right + 80 &&
-          e.clientY >= rect.top - 80 &&
-          e.clientY <= rect.bottom + 80
-        ) {
-          el.style.setProperty("--mx", `${e.clientX - rect.left}px`);
-          el.style.setProperty("--my", `${e.clientY - rect.top}px`);
-        }
+      if (e.pointerType === "touch" || !(e.target instanceof Element)) return;
+      const surface = e.target.closest<HTMLElement>(".cm-surface--spotlight");
+      if (!surface) return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const rect = surface.getBoundingClientRect();
+        surface.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+        surface.style.setProperty("--my", `${e.clientY - rect.top}px`);
       });
     },
     { passive: true },

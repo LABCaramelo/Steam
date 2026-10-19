@@ -1,9 +1,11 @@
+import { CopyButton, ThemeToggle } from "@caramelo/design-system";
 import { useState, type ReactNode } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { useLibrary } from "../api";
 import { ModalWindow, Select, Toggle } from "../components/Modal";
 import { formatBytes } from "../format";
 import { t, type LocKey } from "../i18n";
+import { useCarameloTheme } from "../theme";
 import { useUi } from "../ui";
 
 // Page slugs follow the client's route table (sp.js module 80344: Settings.* -> /settings/<slug>).
@@ -73,6 +75,7 @@ function SettingsPage({ slug }: { slug: string }) {
   const ui = useUi();
   const { snapshot } = useLibrary();
   const [flags, setFlag] = useLocalFlags(slug);
+  const theme = useCarameloTheme();
   const page = PAGES.find((p) => p.slug === slug);
   const title = page ? t(page.key) : "Configurações";
   const flag = (k: string, label: string, desc?: string, def = false) => (
@@ -88,7 +91,10 @@ function SettingsPage({ slug }: { slug: string }) {
             <dt>Nome de perfil</dt>
             <dd>{snapshot?.user?.personaName}</dd>
             <dt>LAB ID</dt>
-            <dd className="mono">{snapshot?.user?.steamId64 ?? "—"}</dd>
+            <dd className="mono copy-row">
+              {snapshot?.user?.steamId64 ?? "—"}
+              {snapshot?.user?.steamId64 && <CopyButton value={snapshot.user.steamId64} aria-label="Copiar LAB ID" />}
+            </dd>
             <dt>Pasta do LAB</dt>
             <dd className="mono">{snapshot?.steamPath ?? "não encontrada (modo demonstração)"}</dd>
           </dl>
@@ -99,6 +105,13 @@ function SettingsPage({ slug }: { slug: string }) {
     case "interface":
       body = (
         <>
+          <div className="field">
+            <div className="field__text">
+              <div className="field__label">Tema</div>
+              <div className="field__desc">{theme === "dark" ? "Escuro (Ink Black)" : "Claro (Warm Cream)"}. A troca vale para o LAB, a biblioteca de prompts e o site.</div>
+            </div>
+            <ThemeToggle theme={theme} />
+          </div>
           <Select
             label="Página inicial do cliente"
             value={ui.settings.startPage}

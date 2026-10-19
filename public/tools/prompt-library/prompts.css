@@ -45,11 +45,6 @@
 .select-menu [aria-selected=true]::after{content:'✓';position:absolute;right:14px;color:var(--orange)}
 .select-menu [aria-selected=true].active::after{color:var(--ink)}
 .search-row{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:16px}
-.search-shell{display:flex;align-items:center;gap:16px;padding:18px 22px;border:1px solid var(--line);border-radius:99px;color:var(--muted);min-width:0;transition:border-color var(--cm-dur-micro) var(--cm-ease-standard),box-shadow var(--cm-dur-micro) var(--cm-ease-standard)}
-.search-shell:focus-within{border-color:rgb(var(--cm-accent) / .7);box-shadow:0 0 0 3px rgb(var(--cm-accent) / .15)}.search-shell input:focus-visible{outline:0}
-.search-shell input{min-width:0;width:100%;outline:0;border:0;color:var(--cream);background:transparent;font-size:14px}
-.search-shell input::placeholder{color:var(--muted)}
-.search-shell kbd{border:1px solid var(--line);border-radius:5px;padding:3px 7px;font-size:11px}
 .category-control .select-trigger{height:100%}
 .result-line{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:24px}
 .result-line p,.popularity-note{font-size:11px;color:var(--muted);line-height:1.5;margin:0}
@@ -116,7 +111,7 @@ html.prompt-open,html.prompt-open body{overflow:hidden!important;overscroll-beha
 .prompt-dialog .toast.show{transform:translateY(0)}
 @media(hover:hover){.prompt-card:hover .card-image,.prompt-card:hover .card-video{transform:scale(1.025)}}
 @media(max-width:1099px){.prompt-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.prompt-card h2{font-size:24px}.library-hero h1{font-size:clamp(46px,7vw,72px)}.library-toolbar{flex-wrap:wrap}.toolbar-options{margin-left:auto}}
-@media(max-width:700px){.library-hero{padding:114px 0 34px;min-height:100svh}.library-hero-media img,.library-hero-media video{object-position:53% 16%}.library-hero::after{background:linear-gradient(0deg,var(--ink),transparent 38%),linear-gradient(90deg,rgb(var(--cm-surface-1) / 0.93),rgb(var(--cm-surface-1) / 0.72) 55%,rgb(var(--cm-surface-1) / 0.27))}.library-hero .section-meta{margin-bottom:28px}.library-hero h1{font-size:clamp(32px,10.8vw,76px)}.library-hero .hero-bottom{align-items:flex-start;gap:20px;flex-direction:column}.library-hero .hero-bottom p{font-size:14px}.library-toolbar{gap:22px;padding:24px 0}.toolbar-options{width:100%;justify-content:space-between;gap:16px}.sort-control>span{display:none}.select-trigger{padding:12px 16px;font-size:11px!important}.animation-toggle{font-size:10px!important}.tab{font-size:11px!important;padding:12px 16px}.search-row{grid-template-columns:1fr;gap:12px}.search-shell{padding:16px}.search-shell input{font-size:12px}.search-shell kbd{display:none}.category-control .select-menu{width:100%}.prompt-grid{grid-template-columns:1fr;gap:38px}.card-visual{aspect-ratio:16/10}.prompt-card h2{font-size:25px}.library{padding-bottom:60px}.library-footer{flex-wrap:wrap;gap:16px}.library-footer>span{order:3;width:100%}.dialog-panel{padding:26px 20px}.prompt-dialog{width:100%;border:0}.prompt-toolbar .button{padding:12px 16px;font-size:11px!important}.reference-link{margin-left:0}.dialog-head h2{font-size:34px}.dialog-head{gap:16px}}
+@media(max-width:700px){.library-hero{padding:114px 0 34px;min-height:100svh}.library-hero-media img,.library-hero-media video{object-position:53% 16%}.library-hero::after{background:linear-gradient(0deg,var(--ink),transparent 38%),linear-gradient(90deg,rgb(var(--cm-surface-1) / 0.93),rgb(var(--cm-surface-1) / 0.72) 55%,rgb(var(--cm-surface-1) / 0.27))}.library-hero .section-meta{margin-bottom:28px}.library-hero h1{font-size:clamp(32px,10.8vw,76px)}.library-hero .hero-bottom{align-items:flex-start;gap:20px;flex-direction:column}.library-hero .hero-bottom p{font-size:14px}.library-toolbar{gap:22px;padding:24px 0}.toolbar-options{width:100%;justify-content:space-between;gap:16px}.sort-control>span{display:none}.select-trigger{padding:12px 16px;font-size:11px!important}.animation-toggle{font-size:10px!important}.tab{font-size:11px!important;padding:12px 16px}.search-row{grid-template-columns:1fr;gap:12px}.category-control .select-menu{width:100%}.prompt-grid{grid-template-columns:1fr;gap:38px}.card-visual{aspect-ratio:16/10}.prompt-card h2{font-size:25px}.library{padding-bottom:60px}.library-footer{flex-wrap:wrap;gap:16px}.library-footer>span{order:3;width:100%}.dialog-panel{padding:26px 20px}.prompt-dialog{width:100%;border:0}.prompt-toolbar .button{padding:12px 16px;font-size:11px!important}.reference-link{margin-left:0}.dialog-head h2{font-size:34px}.dialog-head{gap:16px}}
 @media(prefers-reduced-motion:reduce){.prompt-library-page *{transition:none!important;scroll-behavior:auto!important}}
 
 /* The LAB supplies its own navigation when this complete page is embedded. */
@@ -147,3 +142,33 @@ html[data-embedded] .library{scroll-margin-top:20px;padding-bottom:48px}
 .tab:active:not(:disabled),.animation-toggle:active:not(:disabled),.select-trigger:active:not(:disabled),.save-prompt:active:not(:disabled),.icon-button:active:not(:disabled),.result-line button:active:not(:disabled),.card-actions .card-copy:active:not(:disabled),.button:active:not(:disabled),.load-more:active:not(:disabled){transform:scale(.97);transition-duration:var(--cm-dur-instant)}
 .button:focus-visible,.load-more:focus-visible,.result-line button:focus-visible{outline:2px solid rgb(var(--cm-focus));outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.tab:active:not(:disabled),.animation-toggle:active:not(:disabled),.select-trigger:active:not(:disabled),.save-prompt:active:not(:disabled),.icon-button:active:not(:disabled),.result-line button:active:not(:disabled),.card-actions .card-copy:active:not(:disabled),.button:active:not(:disabled),.load-more:active:not(:disabled){transform:none}}
+
+/* Microinterações de @caramelo/design-system (/caramelo/styles.css + /assets/js/caramelo-interactions.js). */
+.header-actions .cm-theme-toggle{border-radius:50%;background:transparent;border-color:var(--line);box-shadow:none;color:var(--cream)}
+/* spotlight-tabs: o indicador desliza entre "Explorar acervo" e "Salvos". */
+.tabs.cm-tabs{display:inline-flex;flex-wrap:nowrap;gap:2px;border-color:var(--line)}
+.tabs .cm-tabs__tab{height:auto;font-family:inherit}
+.tabs.cm-tabs .tab[aria-pressed=true]{background:transparent}
+.tabs .cm-tabs__indicator{background:var(--cream);box-shadow:var(--cm-glow-sm)}
+.tabs .cm-tabs__indicator::after{display:none}
+/* focus-field: a busca ganha rótulo flutuante e o traço de luz no topo. */
+.search-field .cm-field__input{height:62px;padding:24px 64px 8px 58px;border-color:var(--line);border-radius:99px;background:transparent;font-size:14px}
+.search-field .cm-field__input::-webkit-search-cancel-button{margin-right:28px}
+.search-field .cm-field__label{left:59px;top:20px;max-width:calc(100% - 130px);overflow:hidden;font-size:14px;text-overflow:ellipsis;white-space:nowrap}
+.search-field .cm-field__beam{left:42px;right:42px}
+.search-field__icon{position:absolute;left:22px;top:50%;translate:0 -50%;color:var(--muted);pointer-events:none}
+.search-field kbd{position:absolute;right:22px;top:50%;translate:0 -50%;border:1px solid var(--line);border-radius:5px;padding:3px 7px;font-size:11px;color:var(--muted)}
+/* magnetic-fill: um CTA por cena (copiar no prompt aberto, carregar mais no fim da lista). */
+:is(.button,.load-more).cm-btn--fill{position:relative;isolation:isolate;overflow:hidden}
+:is(.button,.load-more).cm-magnetic{translate:var(--cm-mag-x,0px) var(--cm-mag-y,0px);transition:transform var(--cm-dur-micro) var(--cm-ease-out),background-color var(--cm-dur-micro) var(--cm-ease-out),border-color var(--cm-dur-micro) var(--cm-ease-out),box-shadow var(--cm-dur-micro) var(--cm-ease-out),color var(--cm-dur-micro) var(--cm-ease-out),translate var(--cm-dur-base) var(--cm-ease-out)}
+:is(.button,.load-more) .cm-btn__label{gap:inherit}
+:is(.button,.load-more).cm-btn--fill:is(:hover,:focus-visible):not(:disabled){color:var(--cm-btn-fill-fg)}
+#copyDialogPrompt{--cm-btn-fill:#101014;--cm-btn-fill-fg:#fff4e8}
+.load-more{--cm-btn-fill:var(--cm-spectrum-soft);--cm-btn-fill-fg:#101014}
+/* copy-swap: o botão mantém a aparência da biblioteca; só os ícones trocam. */
+.button.cm-copy{width:auto;height:auto}
+.card-actions .card-copy.cm-copy{width:100%;height:auto}
+/* spotlight-surface nos cartões; pointer-tilt no título-cartaz. */
+.card-shell.cm-surface--spotlight{isolation:isolate}
+.hero-title-tilt{max-width:700px}
+@media(max-width:700px){.search-field .cm-field__input{height:56px;padding:22px 16px 6px 50px;font-size:12px}.search-field .cm-field__label{left:51px;top:18px;max-width:calc(100% - 70px);font-size:12px}.search-field__icon{left:18px}.search-field kbd{display:none}}

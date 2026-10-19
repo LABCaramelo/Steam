@@ -26,11 +26,14 @@ function configureOffer() {
   } catch { /* Keep the honest contact fallback for invalid configuration. */ }
   if (checkout) {
     link.href = checkout;
-    link.firstChild.textContent = `Quero participar por ${currency(workshop.lots[lot])}`;
+    link.querySelector('[data-enrollment-label]').textContent = `Quero participar por ${currency(workshop.lots[lot])}`;
     document.querySelector('[data-enrollment-note]').textContent = 'Confira as condições da turma na página de inscrição.';
   } else {
     const subject = encodeURIComponent('Workshop Sites que se sentem · 13 e 14 de novembro');
     link.href = `mailto:${workshop.contactEmail}?subject=${subject}`;
+    // Quem não tem um aplicativo de e-mail configurado copia o endereço.
+    document.querySelector('[data-contact-email]').textContent = workshop.contactEmail;
+    document.querySelector('[data-contact-copy]').dataset.value = workshop.contactEmail;
   }
   document.querySelectorAll('.lot-steps > span').forEach((node, index) => node.classList.toggle('current', index === lot));
 }

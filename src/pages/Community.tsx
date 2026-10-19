@@ -1,3 +1,4 @@
+import { SpotlightTabs } from "@caramelo/design-system";
 import { useSearchParams } from "react-router-dom";
 import { useLibrary } from "../api";
 import { AppArt } from "../components/AppArt";
@@ -31,13 +32,13 @@ export function CommunityPage() {
       <div className="community__header">
         <h1>Atividade da comunidade</h1>
         <p className="muted">Centrais da comunidade das suas ferramentas. O conteúdo em si (capturas, guias, discussões) é carregado do site oficial.</p>
-        <div className="tabs">
-          {TABS.map(([k, label]) => (
-            <button key={k} className={`tabs__tab ${tab === k ? "is-active" : ""}`} onClick={() => setParams(k ? { tab: k } : {})}>
-              {label}
-            </button>
-          ))}
-        </div>
+        <SpotlightTabs
+          ariaLabel="Seções da comunidade"
+          className="tabs"
+          items={TABS.map(([k, label]) => ({ id: k || "home", label }))}
+          value={tab || "home"}
+          onValueChange={(id) => setParams(id === "home" ? {} : { tab: id })}
+        />
       </div>
       {tab ? (
         <div className="store__placeholder">

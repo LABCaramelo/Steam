@@ -1,3 +1,4 @@
+import { SpotlightTabs } from "@caramelo/design-system";
 import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAchievements, useLibrary } from "../../api";
@@ -43,19 +44,17 @@ export function AchievementsPage() {
               <span style={{ width: `${(data.achieved / data.total) * 100}%` }} />
             </span>
           </div>
-          <div className="tabs">
-            {(
-              [
-                ["all", "Todas"],
-                ["unlocked", "Desbloqueadas"],
-                ["locked", "Bloqueadas"],
-              ] as const
-            ).map(([k, l]) => (
-              <button key={k} className={`tabs__tab ${filter === k ? "is-active" : ""}`} onClick={() => setFilter(k)}>
-                {l}
-              </button>
-            ))}
-          </div>
+          <SpotlightTabs
+            ariaLabel="Filtrar conquistas"
+            className="tabs"
+            items={[
+              { id: "all", label: "Todas" },
+              { id: "unlocked", label: "Desbloqueadas" },
+              { id: "locked", label: "Bloqueadas" },
+            ]}
+            value={filter}
+            onValueChange={(id) => setFilter(id as Filter)}
+          />
           {data.list.length < data.total && (
             <p className="muted small">
               O cache local guarda só um resumo ({data.list.length} de {data.total}); a lista completa fica nos servidores do LAB.

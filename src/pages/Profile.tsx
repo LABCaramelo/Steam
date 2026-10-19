@@ -1,3 +1,4 @@
+import { CopyButton } from "@caramelo/design-system";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { artUrl, useLibrary } from "../api";
@@ -34,7 +35,12 @@ export function ProfilePage() {
             <div className="profile__status" style={{ color: STATUS_COLOR[ui.status] }}>
               {STATUS_LABEL[ui.status]}
             </div>
-            {snapshot?.user?.steamId64 && <div className="muted small mono">LAB ID {snapshot.user.steamId64}</div>}
+            {snapshot?.user?.steamId64 && (
+              <div className="muted small mono copy-row">
+                LAB ID {snapshot.user.steamId64}
+                <CopyButton value={snapshot.user.steamId64} aria-label="Copiar LAB ID" />
+              </div>
+            )}
             <span className="cm-handwritten" style={{ fontSize: "16px", marginTop: "6px" }}>
               "elegância + pequena confissão patética"
             </span>
@@ -69,7 +75,7 @@ export function ProfilePage() {
                 </div>
               </section>
             )}
-            <section className="profile__box">
+            <section className="profile__box cm-surface--spotlight">
               <h2>Atividade recente</h2>
               <p className="muted small">{formatPlaytime(stats.totalMin)} registradas em {stats.played} títulos</p>
               {recent.length === 0 && <p className="muted small" style={{ marginTop: "12px" }}>Nenhuma atividade registrada.</p>}
@@ -95,7 +101,7 @@ export function ProfilePage() {
             </section>
           </div>
           <aside className="profile__side">
-            <div className="profile__box">
+            <div className="profile__box cm-surface--spotlight">
               <h2>Coleções</h2>
               {collections
                 .filter((c) => c.id !== "hidden")
@@ -105,7 +111,7 @@ export function ProfilePage() {
                   </button>
                 ))}
             </div>
-            <div className="profile__box">
+            <div className="profile__box cm-surface--spotlight">
               <h2>Perfil público</h2>
               {snapshot?.user?.steamId64 ? (
                 <a href={`https://steamcommunity.com/profiles/${snapshot.user.steamId64}`} target="_blank" rel="noopener noreferrer">
