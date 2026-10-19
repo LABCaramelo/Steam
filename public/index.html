@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UM CARA CARAMELO® — Luiz · Head de Interação</title>
-  <meta name="description" content="Estratégia precisa ser sentida. Conteúdo, direção criativa e experiências digitais por Luiz, Head de Interação.">
+  <title>UM CARA CARAMELO® — Comece com uma referência. Termine com algo seu.</title>
+  <meta name="description" content="Explore prompts, referências e experimentos para transformar suas ideias em sites e interfaces com IA.">
   <meta name="theme-color" content="#101014">
   <link rel="icon" type="image/svg+xml" href="./assets/icons/caramelo-mark.svg?v=2">
   <link rel="stylesheet" href="./fonts.css">
   <link rel="stylesheet" href="./editorial.css">
   <link rel="stylesheet" href="./hero.css">
   <link rel="stylesheet" href="./motion-cinematic.css">
+  <link rel="stylesheet" href="./archive.css">
   <link rel="stylesheet" href="./work.css">
   <link rel="stylesheet" href="./maker.css">
-  <link rel="stylesheet" href="./offers.css">
   <link rel="stylesheet" href="./pointer-trail.css">
   <script>
     // Retornos de autenticação do Supabase (confirmação de e-mail, link mágico) pertencem ao LAB.
@@ -21,37 +21,34 @@
   </script>
 </head>
 <body>
-  <a class="skip-link" href="#work">Ir para os trabalhos</a>
+  <a class="skip-link" href="#arquivo">Ir para o conteúdo</a>
   <header class="site-header" id="site-header">
     <div class="container header-inner">
       <a href="#hero-track" class="brand-link" aria-label="Um Cara Caramelo, início"><img class="brand-isotype" src="./assets/icons/caramelo-mark.svg?v=2" alt="" width="36" height="36"><span class="brand-wordmark">UM CARA<br>CARAMELO<sup>®</sup></span></a>
       <nav class="nav-desktop" aria-label="Navegação principal">
-        <a href="#work">Work</a><a href="#sobre">Luiz</a><a href="#ofertas">Trabalhar / Aprender</a><a href="./aula-head/">Aula Head</a>
+        <a href="#arquivo">Arquivo</a><a href="#experimentos">Experimentos</a><a href="#sobre">Caramelo</a><a href="#comunidade">Comunidade</a><a href="./aula-head/">Aula Head</a>
       </nav>
-      <div class="header-actions"><a href="/library/home" class="pill pill-small pill-outline">Entrar no LAB</a><a href="#contato" class="pill pill-small">Vamos conversar ↗</a><button id="mobile-toggle" class="mobile-nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-drawer"><span></span><span></span></button></div>
+      <div class="header-actions"><a href="/library/home" class="pill pill-small pill-outline">Entrar no LAB</a><a href="/prompts" class="pill pill-small">Explorar o arquivo ↗</a><button id="mobile-toggle" class="mobile-nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-drawer"><span></span><span></span></button></div>
     </div>
   </header>
   <nav class="mobile-drawer" id="mobile-drawer" aria-label="Navegação mobile" aria-hidden="true">
-    <a href="#work">Work</a><a href="#sobre">Luiz</a><a href="#ofertas">Trabalhar / Aprender</a><a href="./aula-head/">Aula Head</a><a href="/library/home">Entrar no LAB</a><a href="#contato">Vamos conversar ↗</a>
+    <a href="#arquivo">Arquivo</a><a href="#experimentos">Experimentos</a><a href="#sobre">Caramelo</a><a href="#comunidade">Comunidade</a><a href="./aula-head/">Aula Head</a><a href="/library/home">Entrar no LAB</a><a href="/prompts">Explorar o arquivo ↗</a>
   </nav>
   <div class="scroll-progress" aria-hidden="true"><div class="scroll-progress-fill"></div></div>
   <nav class="scene-nav" aria-label="Cenas da experiência">
     <a class="scene-dot" data-scene-target="hero-track" href="#hero-track" aria-label="01 · Início"><i aria-hidden="true"></i><span class="scene-name">Início</span></a>
-    <a class="scene-dot" data-scene-target="work" href="#work" aria-label="02 · Work"><i aria-hidden="true"></i><span class="scene-name">Work</span></a>
-    <a class="scene-dot" data-scene-target="sobre" href="#sobre" aria-label="03 · Luiz"><i aria-hidden="true"></i><span class="scene-name">Luiz</span></a>
-    <a class="scene-dot" data-scene-target="portas" href="#portas" aria-label="04 · Duas portas"><i aria-hidden="true"></i><span class="scene-name">Duas portas</span></a>
-    <a class="scene-dot" data-scene-target="ofertas" href="#ofertas" aria-label="05 · Trabalhar / Aprender"><i aria-hidden="true"></i><span class="scene-name">Trabalhar / Aprender</span></a>
-    <a class="scene-dot" data-scene-target="metodo" href="#metodo" aria-label="06 · Método"><i aria-hidden="true"></i><span class="scene-name">Método</span></a>
-    <a class="scene-dot" data-scene-target="faq" href="#faq" aria-label="07 · Perguntas"><i aria-hidden="true"></i><span class="scene-name">Perguntas</span></a>
-    <a class="scene-dot" data-scene-target="contato" href="#contato" aria-label="08 · Vamos conversar"><i aria-hidden="true"></i><span class="scene-name">Vamos conversar</span></a>
+    <a class="scene-dot" data-scene-target="arquivo" href="#arquivo" aria-label="02 · Arquivo"><i aria-hidden="true"></i><span class="scene-name">Arquivo</span></a>
+    <a class="scene-dot" data-scene-target="experimentos" href="#experimentos" aria-label="03 · Experimentos"><i aria-hidden="true"></i><span class="scene-name">Experimentos</span></a>
+    <a class="scene-dot" data-scene-target="sobre" href="#sobre" aria-label="04 · Caramelo"><i aria-hidden="true"></i><span class="scene-name">Caramelo</span></a>
+    <a class="scene-dot" data-scene-target="comunidade" href="#comunidade" aria-label="05 · Comunidade"><i aria-hidden="true"></i><span class="scene-name">Comunidade</span></a>
   </nav>
   <main>
     <section id="hero-track" class="hero-section" aria-labelledby="hero-title">
       <div class="container">
-        <div class="section-meta"><span>ESTÚDIO CRIATIVO INDEPENDENTE</span><span>LUIZ · HEAD DE INTERAÇÃO</span></div>
+        <div class="section-meta"><span>PRA QUEM OLHA UMA REFERÊNCIA E PENSA: “QUERIA FAZER ISSO.”</span></div>
         <h1 class="hero-title" id="hero-title">
           <span class="hero-row hero-row-top">
-            <span class="hero-word hero-word-first">UM CARA</span>
+            <span class="hero-word hero-word-first">COMECE COM UMA<br>REFERÊNCIA.</span>
             <span class="hero-film hero-film-main" aria-hidden="true">
               <video loop muted playsinline preload="none" poster="./assets/images/video-posters/work-03.webp" src="./assets/videos/work-03.mp4"></video>
             </span>
@@ -61,18 +58,46 @@
               <span class="hero-film hero-film-wonder"><video loop muted playsinline preload="none" poster="./assets/images/video-posters/work-01.webp" src="./assets/videos/work-01.mp4"></video></span>
               <span class="hero-film hero-film-motion"><video loop muted playsinline preload="none" poster="./assets/images/video-posters/work-02.webp" src="./assets/videos/work-02.mp4"></video></span>
             </span>
-            <span class="hero-word hero-word-second">CARAMELO<sup>®</sup></span>
+            <span class="hero-word hero-word-second">TERMINE COM<br><span class="accent">ALGO SEU.</span></span>
           </span>
         </h1>
-        <div class="hero-bottom"><p>Transformo estratégia em conteúdo,<br class="desktop-break"> direção e experiências digitais.</p><div class="hero-cta-group"><a href="#work" class="pill pill-accent">Ver o que eu faço <span>↓</span></a><a href="./workshop.html" class="pill pill-outline">Aprender comigo <span>↗</span></a></div></div>
-        <div class="hero-footnote"><span class="handwritten">Ideias que fazem fazer.</span><a href="#work" aria-label="Rolar para Work">ROLE PARA SENTIR <span>↓</span></a></div>
+        <div class="hero-bottom"><p>Explore prompts, referências e experimentos para transformar suas ideias em sites e interfaces com IA.</p><div class="hero-cta-group"><a href="/prompts" class="pill pill-accent">Explorar o arquivo <span>↗</span></a><a href="#experimentos" class="pill pill-outline">Ver projetos <span>↓</span></a></div></div>
+        <div class="hero-footnote"><span class="handwritten">382 prompts para explorar.</span><a href="#arquivo" aria-label="Rolar para o arquivo">ROLE PARA COMEÇAR <span>↓</span></a></div>
       </div>
     </section>
 
-    <section id="work" class="work-section section-pad" aria-labelledby="work-title">
+    <section id="arquivo" class="archive-section section-pad" aria-labelledby="archive-title">
       <div class="container">
-        <div class="section-meta section-context"><span>CONTEÚDO · DIREÇÃO · WEB</span></div>
-        <div class="work-intro"><h2 id="work-title" class="display">MENOS EXPLICAÇÃO.<br><span class="muted">MAIS EXPERIÊNCIA.</span></h2></div>
+        <div class="section-meta section-context"><span>O ARQUIVO</span></div>
+        <h2 id="archive-title" class="display archive-title">A PARTE EM QUE VOCÊ<br>PARA DE SALVAR REFERÊNCIA<br><span class="accent">E COMEÇA A CONSTRUIR.</span></h2>
+        <div class="archive-layout">
+          <div class="archive-copy">
+            <p>Sabe aquela pasta cheia de sites bonitos, interfaces absurdas e ideias que você prometeu testar algum dia?</p>
+            <p class="archive-beat handwritten">Então.</p>
+            <p>Este arquivo existe para ajudar você a transformar algumas delas em projetos reais.</p>
+            <p>Aqui você encontra prompts, referências curadas e experimentos para testar, adaptar e criar do seu jeito.</p>
+            <p class="archive-statement"><strong>Não é sobre copiar uma referência. É sobre descobrir o que você consegue construir a partir dela.</strong></p>
+          </div>
+          <ol class="archive-steps">
+            <li><span aria-hidden="true">01</span><div><h3>Encontre uma referência.</h3><p>Explore algo que desperte aquela vontade de dizer: “eu queria fazer isso”.</p></div></li>
+            <li><span aria-hidden="true">02</span><div><h3>Adapte para sua ideia.</h3><p>Use os prompts e as referências como ponto de partida. Mude, combine, experimente.</p></div></li>
+            <li><span aria-hidden="true">03</span><div><h3>Faça virar alguma coisa.</h3><p>Teste, ajuste, erre, melhore e construa algo que seja seu.</p></div></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="experimentos" class="work-section section-pad" aria-labelledby="work-title">
+      <div class="container">
+        <div class="section-meta section-context"><span>EXPERIMENTOS</span></div>
+        <div class="work-intro">
+          <h2 id="work-title" class="display">FEITO PARA QUEM<br><span class="muted">APRENDE FAZENDO.</span></h2>
+          <div class="work-intro-copy">
+            <p>Não precisa conhecer todas as ferramentas.<br>Nem entender tudo de código.<br>Muito menos esperar até se sentir pronto.</p>
+            <p>Escolha alguma coisa interessante e comece.<br>O resto a gente vai descobrindo no caminho.</p>
+            <a href="/library/home" class="pill pill-outline">Explorar os experimentos <span>↗</span></a>
+          </div>
+        </div>
         <div class="work-showcase">
           <div class="work-stage" data-work-mode="flow">
             <div class="work-toolbar"><div class="work-project-status"><span>EM EXIBIÇÃO</span><span class="work-counter" aria-hidden="true">01 / 04</span></div><div class="work-selection" aria-label="Escolher projeto" hidden><button type="button" data-work-index="0" aria-label="Exibir Banco de Prompts" aria-controls="work-project-1" aria-pressed="false">01</button><button type="button" data-work-index="1" aria-label="Exibir Treinamento Head com IA" aria-controls="work-project-2" aria-pressed="false">02</button><button type="button" data-work-index="2" aria-label="Exibir Conselho Head" aria-controls="work-project-3" aria-pressed="false">03</button><button type="button" data-work-index="3" aria-label="Exibir Beat Borges" aria-controls="work-project-4" aria-pressed="false">04</button></div><button type="button" id="work-play-toggle" class="work-play-toggle" hidden>Pausar prévias</button></div>
@@ -103,84 +128,38 @@
     <section id="sobre" class="maker-section section-pad" aria-labelledby="maker-title">
       <div class="maker-sticky-stage">
       <div class="container">
-        <div class="section-meta section-context"><span>VÁRIAS DISCIPLINAS. UMA DIREÇÃO.</span></div>
+        <div class="section-meta section-context"><span>SOBRE O CRIADOR</span></div>
         <div class="maker-composition">
           <div class="maker-intro">
-            <h2 id="maker-title" class="maker-title">LUIZ<span class="maker-dot">.</span></h2>
-            <span class="maker-note handwritten">Primeiro a intenção.<br>Depois a ferramenta.</span>
+            <h2 id="maker-title" class="maker-title">TENHO UMA MANIA DE TENTAR COISAS QUE AINDA NÃO SEI FAZER.</h2>
+            <div class="maker-hello">
+              <span class="maker-note handwritten">Oi, eu sou o Caramelo.</span>
+              <p>Comecei pelo design e, de alguma forma, fui parar em conteúdo, sites, tecnologia, IA e sistemas.</p>
+              <p>Sempre gostei de encontrar uma coisa interessante e tentar descobrir como ela funciona.</p>
+            </div>
           </div>
           <div class="maker-workbench">
             <div class="maker-art" aria-hidden="true">
               <div class="maker-scroll-shell"><div class="maker-pointer-shell">
-                <div class="maker-words"><span class="maker-word" data-word-active="true">HEAD DE<br>INTERAÇÃO</span></div>
+                <div class="maker-words"><span class="maker-word" data-word-active="true">DESIGN</span></div>
                 <div class="maker-direction"><div class="maker-direction-fan"><i class="maker-beam"></i><i class="maker-beam"></i><i class="maker-beam"></i><i class="maker-beam"></i><i class="maker-beam"></i><i class="maker-beam"></i><i class="maker-beam"></i><span class="maker-direction-point"></span></div></div>
                 <img class="maker-signature" src="./assets/icons/caramelo-mark.svg?v=2" alt="" width="72" height="72">
                 <div class="maker-art-line"></div>
               </div></div>
             </div>
-            <p class="maker-credits">HEAD DE INTERAÇÃO / CONTEÚDO / DIREÇÃO CRIATIVA / DESIGN / NARRATIVA / WEB / TECNOLOGIA</p>
+            <p class="maker-credits">DESIGN / CONTEÚDO / SITES / TECNOLOGIA / IA / SISTEMAS / CURIOSIDADE</p>
           </div>
         </div>
-        <div class="maker-bottom"><p>Eu não faço várias coisas.<br>Uso várias disciplinas para resolver o mesmo problema.</p><a href="#metodo" class="pill pill-dark">Conheça o jeito de pensar <span>↓</span></a></div>
+        <div class="maker-bottom"><p>Esse site é uma extensão dessa curiosidade. Um lugar para organizar referências, compartilhar experimentos e mostrar como algumas ideias saem da cabeça e viram coisas reais.</p><p class="maker-closing">Às vezes dá certo de primeira.<br>Geralmente não.<br><strong>Mas é justamente essa a graça.</strong></p></div>
       </div>
       </div>
     </section>
 
-
-    <section id="portas" class="doors-section section-pad" aria-labelledby="doors-title">
-      <div class="container">
-        <div class="section-meta section-context"><span>SUA PRÓXIMA AÇÃO</span></div>
-        <h2 id="doors-title" class="display doors-title">QUAL É O SEU<br>PRÓXIMO MOVIMENTO?</h2>
-        <div id="doors-split" class="doors-split">
-          <article id="door-work" class="door-panel"><div class="door-top"><span>01 / PARA NEGÓCIOS</span><span aria-hidden="true">↗</span></div><h3>TRABALHAR<br>COMIGO.</h3><p>Seu trabalho já é bom.<br>Vamos fazer ele parecer tão valioso quanto realmente é.</p><a href="#trabalhar" class="door-link">Quero elevar minha marca <span>↗</span></a></article>
-          <article id="door-learn" class="door-panel learn"><div class="door-top"><span>02 / PARA CRIATIVOS</span><span aria-hidden="true">↗</span></div><h3>APRENDER<br>COMIGO.</h3><p>Mais direção e repertório.<br>Para sair da execução comum.</p><a href="./workshop.html" class="door-link">Quero elevar minha entrega <span>↗</span></a></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="ofertas" class="offers-section section-pad" aria-labelledby="offers-title">
-      <div class="container">
-        <div class="section-meta section-context"><span>DA IDEIA À EXPERIÊNCIA</span></div>
-        <h2 id="offers-title" class="display offers-title">UMA INTENÇÃO.<br>VÁRIAS FORMAS.</h2>
-        <div class="offers-grid">
-          <article id="trabalhar" class="offer-column"><div class="offer-heading"><span class="offer-symbol" aria-hidden="true">↗</span><h3>PARA SUA MARCA.</h3></div><ul class="offer-list"><li><span>01</span><div><h4>Diagnóstico de interação</h4><p>Onde sua marca perde atenção e valor percebido.</p></div></li><li><span>02</span><div><h4>Sprint de interação</h4><p>Uma ideia aplicada em conteúdo, campanha ou web.</p></div></li><li><span>03</span><div><h4>Head de Interação</h4><p>Direção contínua para conectar as peças.</p></div></li></ul><button type="button" class="pill pill-accent open-modal" data-target="negocio">Conversar sobre meu projeto <span>↗</span></button></article>
-          <article id="aprender" class="offer-column"><div class="offer-heading"><span class="offer-symbol" aria-hidden="true">✳</span><h3>PARA SUA ENTREGA.</h3></div><ul class="offer-list"><li><span>01</span><div><h4>Conteúdo gratuito</h4><p>Ideias, bastidores e repertório para começar.</p></div></li><li><span>02</span><div><h4>Workshops</h4><p>Do pensamento à prática, com direção.</p></div></li><li><span>03</span><div><h4>Formação</h4><p>De executor a criativo multidisciplinar.</p></div></li></ul><a href="./workshop.html" class="pill pill-outline">Quero saber como aprender <span>↗</span></a></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="metodo" class="metodo-scroll-track" aria-labelledby="method-title">
-      <div class="metodo-sticky-stage">
-        <div class="container method-layout">
-          <div class="method-copy"><h2 id="method-title" class="display">NADA SE<br>MOVE<br><span class="accent">POR ACASO.</span></h2><p>Uma intenção vira ação.<br>A resposta constrói percepção.</p><div class="method-controls" aria-label="Etapas do método I.A.R.P."><button type="button" data-phase-index="0" aria-controls="iarp-phase-1" aria-label="Intenção">I</button><button type="button" data-phase-index="1" aria-controls="iarp-phase-2" aria-label="Ação">A</button><button type="button" data-phase-index="2" aria-controls="iarp-phase-3" aria-label="Resposta">R</button><button type="button" data-phase-index="3" aria-controls="iarp-phase-4" aria-label="Percepção">P</button></div><span class="method-hint">I.A.R.P. <span>· ROLE OU ESCOLHA UMA LETRA</span></span></div>
-          <div class="iarp-space"><div id="iarp-stage-box" class="iarp-stage-box" data-phase="0">
-            <div class="method-card-top"><span>LABORATÓRIO DE INTERAÇÃO</span><span aria-hidden="true">↗</span></div>
-            <div class="method-route" aria-hidden="true"><span class="method-route-fill"></span><i></i><i></i><i></i><i></i></div>
-            <div id="iarp-phase-1" class="iarp-phase-display active"><span class="iarp-letter-display" aria-hidden="true">I</span><div class="phase-caption"><span>01 / INTENÇÃO</span><h3>O que precisa<br>ser percebido?</h3></div></div>
-            <div id="iarp-phase-2" class="iarp-phase-display"><span class="iarp-letter-display" aria-hidden="true">A</span><div class="phase-caption"><span>02 / AÇÃO</span><h3>O que queremos<br>que a pessoa faça?</h3></div></div>
-            <div id="iarp-phase-3" class="iarp-phase-display"><span class="iarp-letter-display" aria-hidden="true">R</span><div class="phase-caption"><span>03 / RESPOSTA</span><h3>Como a<br>experiência reage?</h3></div></div>
-            <div id="iarp-phase-4" class="iarp-phase-display"><span class="iarp-letter-display" aria-hidden="true">P</span><div class="phase-caption"><span>04 / PERCEPÇÃO</span><h3>O que fica<br>depois?</h3></div></div>
-          </div></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="faq" class="faq-section section-pad" aria-labelledby="faq-title">
-      <div class="container faq-layout"><div><h2 id="faq-title" class="display">BOAS<br>PERGUNTAS.</h2><p class="handwritten">Vamos tirar isso da frente.</p></div><div class="faq-list">
-        <details><summary>Já tenho designer ou social media. Faz sentido?<span aria-hidden="true">+</span></summary><p>Sim. A direção conecta conteúdo, forma e experiência à mesma intenção. Podemos trabalhar com sua equipe.</p></details>
-        <details><summary>Você faz só sites?<span aria-hidden="true">+</span></summary><p>Conteúdo, direção criativa e experiências digitais fazem parte do trabalho. A ideia define o formato.</p></details>
-        <details><summary>Isso é só estética?<span aria-hidden="true">+</span></summary><p>Forma, conteúdo e interação trabalham para a estratégia. O objetivo é fazer o valor ser percebido.</p></details>
-        <details><summary>Preciso saber programar para aprender?<span aria-hidden="true">+</span></summary><p>O ponto de partida é intenção, repertório e direção. O conhecimento técnico necessário depende do formato de aprendizado.</p></details>
-        <details><summary>Como começamos um projeto?<span aria-hidden="true">+</span></summary><p>Conte o contexto, a ideia e o que precisa mudar. A conversa define escopo, formato e próximos passos.</p></details>
-      </div></div>
-    </section>
-
-    <section id="contato" class="contact-section section-pad" aria-labelledby="contact-title">
-      <div class="container"><div class="section-meta section-context"><span>IDEIA BOA PEDE DIREÇÃO</span></div><img class="contact-identity" src="./assets/icons/caramelo-mark.svg?v=2" alt="" aria-hidden="true" width="160" height="160"><h2 id="contact-title" class="contact-title">TRABALHO BOM<br>NÃO DEVERIA<br><span class="contact-emphasis">PARECER COMUM.</span></h2><div class="contact-bottom"><p>Sua próxima ideia pode<br>começar com uma conversa.</p><button type="button" class="pill pill-dark open-modal" data-target="negocio">Vamos tirar isso do comum <span>↗</span></button></div></div>
+    <section id="comunidade" class="contact-section community-section section-pad" aria-labelledby="community-title">
+      <div class="container"><div class="section-meta section-context"><span>COMUNIDADE GRATUITA</span></div><img class="contact-identity" src="./assets/icons/caramelo-mark.svg?v=2" alt="" aria-hidden="true" width="160" height="160"><h2 id="community-title" class="contact-title">TEM INTERNET<br>DEMAIS PRA FUÇAR<br><span class="contact-emphasis">SOZINHO.</span></h2><div class="contact-bottom"><div class="community-copy"><p>Tem ferramenta nova todo dia, referência demais para salvar e muita coisa interessante para construir.</p><p>Então criei um espaço gratuito para juntar gente que também gosta de testar, aprender e trocar ideias.</p><p class="community-beats">Para compartilhar descobertas.<br>Mostrar experimentos.<br>Pedir uma ajuda.</p><p>E descobrir até onde dá para chegar com criatividade e tecnologia.</p></div><a href="https://chat.whatsapp.com/Ct6zFrGPh6HDC67G4SAYVm" class="pill pill-dark" target="_blank" rel="noopener">Entrar no grupo gratuito <span>↗</span></a></div></div>
     </section>
   </main>
-  <footer class="site-footer"><div class="container"><div class="footer-top"><a href="#hero-track" class="footer-brand">UM CARA<br>CARAMELO®</a><div class="footer-links"><a href="#work">Work</a><a href="#sobre">Luiz</a><a href="#trabalhar">Trabalhar</a><a href="./workshop.html">Aprender</a><a href="./aula-head/">Aula Head</a><a href="/library/home">LAB</a><a href="#faq">FAQ</a><a href="#hero-track">Voltar ao topo ↑</a></div></div><div class="footer-bottom"><span>© UM CARA CARAMELO®</span><span>ESTRATÉGIA PRECISA SER SENTIDA.</span><span>FEITO PARA PERCORRER.</span></div></div></footer>
-  <div class="dialog-backdrop" id="contact-dialog" data-lenis-prevent role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="dialog-title" aria-describedby="dialog-desc"><div class="dialog-window"><button type="button" class="dialog-close" id="dialog-close" aria-label="Fechar janela">×</button><span class="section-meta" id="dialog-eyebrow">VAMOS CONVERSAR</span><h2 id="dialog-title">CONECTAR COM O CARAMELO</h2><p id="dialog-desc">Conte sua ideia e vamos encontrar a direção.</p><div class="dialog-actions"><a href="mailto:contato@umcaracaramelo.com?subject=Conversa%20sobre%20Interação" class="pill pill-accent">Abrir meu e-mail <span>↗</span></a></div></div></div>
+  <footer class="site-footer"><div class="container"><div class="footer-top"><div class="footer-signature"><a href="#hero-track" class="footer-brand">UM CARA<br>CARAMELO®</a><p>Transformando curiosidade em coisas reais.</p><span class="handwritten">Feito por alguém que claramente abre abas demais.</span></div><div class="footer-links"><a href="/prompts">Arquivo</a><a href="#experimentos">Experimentos</a><a href="#sobre">Caramelo</a><a href="#comunidade">Comunidade</a><a href="./workshop.html">Aprender</a><a href="./aula-head/">Aula Head</a><a href="/library/home">LAB</a><a href="#hero-track">Voltar ao topo ↑</a></div></div><div class="footer-bottom"><span>© UM CARA CARAMELO®</span></div></div></footer>
   <script src="./assets/js/lenis.min.js"></script><script src="./assets/js/gsap.min.js"></script><script src="./assets/js/ScrollTrigger.min.js"></script><script type="module" src="./assets/js/app.js"></script>
 </body>
 </html>

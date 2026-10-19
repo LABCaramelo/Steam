@@ -1,4 +1,5 @@
-/* Hero composition: one headline, three visual cuts, independent row proportions. */
+/* Hero composition: one two-sentence headline, three visual cuts. Each sentence keeps its
+   natural width and the films take the rest of the row. */
 .hero-section{
   padding:136px 0 62px;
   background-image:radial-gradient(rgba(255,244,232,.1) .65px,transparent .8px);
@@ -8,11 +9,11 @@
 .hero-section .section-meta{margin-bottom:42px}
 .hero-section .hero-title{display:grid;gap:20px;font-size:inherit;line-height:.88;letter-spacing:normal}
 .hero-section .hero-row{display:grid;align-items:center;gap:24px}
-.hero-section .hero-row-top{grid-template-columns:minmax(0,1fr) minmax(0,.4fr)}
-.hero-section .hero-row-bottom{grid-template-columns:minmax(0,.37fr) minmax(0,1fr)}
-.hero-section .hero-word{display:block;white-space:nowrap;font-weight:900;letter-spacing:-.073em}
-.hero-section .hero-word-first{font-size:clamp(90px,12.9vw,194px)}
-.hero-section .hero-word-second{font-size:clamp(80px,11.25vw,172px)}
+.hero-section .hero-row-top{grid-template-columns:auto minmax(0,1fr)}
+.hero-section .hero-row-bottom{grid-template-columns:minmax(0,1fr) auto}
+.hero-section .hero-word{display:block;white-space:nowrap;font-weight:900;line-height:.92;letter-spacing:-.073em}
+/* "COMECE COM UMA" is ~9.2em wide: the size keeps it inside its row at every width. */
+.hero-section .hero-word-first,.hero-section .hero-word-second{font-size:calc(7.5vw - 9px)}
 .hero-section .hero-word sup{font-size:.18em;margin-left:.1em;top:.25em}
 .hero-section .hero-film{display:block;position:relative;overflow:hidden;border-radius:10px;height:clamp(116px,12.35vw,188px);background:#20252a}
 .hero-section .hero-film video{width:100%;height:100%;object-fit:cover}
@@ -27,8 +28,7 @@
 .hero-section .hero-footnote{border:0;padding-top:9px}
 .hero-section .hero-footnote .handwritten{font-size:28px}
 @media(min-width:1600px){
-  .hero-section .hero-word-first{font-size:206px}
-  .hero-section .hero-word-second{font-size:183px}
+  .hero-section .hero-word-first,.hero-section .hero-word-second{font-size:112px}
   .hero-section .hero-film{height:200px}
 }
 @media(min-width:1000px) and (max-height:800px){
@@ -40,8 +40,7 @@
   .hero-section>.container{width:calc(100% - 64px)}
   .hero-section .hero-row{gap:18px}
   .hero-section .hero-title{gap:16px}
-  .hero-section .hero-word-first{font-size:12.7vw}
-  .hero-section .hero-word-second{font-size:11vw}
+  .hero-section .hero-word-first,.hero-section .hero-word-second{font-size:calc(7.5vw - 6px)}
   .hero-section .hero-film{height:12.5vw;border-radius:7px}
   .hero-section .hero-preview-pair{gap:12px}
   .hero-section .hero-cta-group .pill{min-width:0;min-height:50px;padding:14px 22px;font-size:11px}
@@ -50,8 +49,6 @@
 @media(max-width:999px){
   .hero-section{padding-top:125px;padding-bottom:50px}
   .hero-section .section-meta{margin-bottom:36px}
-  .hero-section .hero-row-top{grid-template-columns:minmax(0,1fr) minmax(0,.36fr)}
-  .hero-section .hero-row-bottom{grid-template-columns:minmax(0,.34fr) minmax(0,1fr)}
   .hero-section .hero-bottom{grid-template-columns:1fr;padding-top:30px;gap:21px}
   .hero-section .hero-bottom>p{grid-column:1;grid-row:2;justify-self:start;max-width:420px}
   .hero-section .hero-cta-group{grid-column:1;grid-row:1}
@@ -63,8 +60,8 @@
   .hero-section .section-meta{font-size:7px;gap:18px;margin-bottom:29px}
   .hero-section .hero-title{grid-template-columns:repeat(3,minmax(0,1fr));gap:11px 9px;line-height:.9}
   .hero-section .hero-row,.hero-section .hero-preview-pair{display:contents}
-  .hero-section .hero-word-first{grid-column:1/-1;grid-row:1;font-size:16.35vw;letter-spacing:-.07em}
-  .hero-section .hero-word-second{grid-column:1/-1;grid-row:2;font-size:13.65vw;letter-spacing:-.075em;margin-bottom:13px}
+  .hero-section .hero-word-first{grid-column:1/-1;grid-row:1;font-size:calc(10.5vw - 4px);letter-spacing:-.07em}
+  .hero-section .hero-word-second{grid-column:1/-1;grid-row:2;font-size:calc(10.5vw - 4px);letter-spacing:-.07em;margin-bottom:13px}
   .hero-section .hero-film{height:28vw;min-height:96px;max-height:165px;border-radius:6px;grid-row:3}
   .hero-section .hero-film-main{grid-column:3}
   .hero-section .hero-film-wonder{grid-column:1}

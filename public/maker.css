@@ -2,9 +2,11 @@
 .maker-section{overflow:clip;padding-block:76px 64px}
 .maker-section .section-meta{padding-bottom:18px;margin-bottom:32px}
 .maker-composition,.maker-section .maker-bottom{display:grid;grid-template-columns:.55fr 1.45fr;gap:52px}
-.maker-intro{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:36px;margin:0;padding-block:18px 84px;min-width:0}
-.maker-intro .maker-title{margin:0;font-size:clamp(90px,10.3vw,148px);line-height:.92;letter-spacing:-.085em;transform-origin:0% 55%}
+.maker-intro{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:36px;margin:0;padding-block:12px 40px;min-width:0}
+.maker-intro .maker-title{margin:0;font-size:clamp(28px,2.9vw,42px);line-height:1;letter-spacing:-.055em;transform-origin:0% 55%}
 .maker-intro .maker-note{position:static;margin:0;display:block;font-size:clamp(26px,2.3vw,33px);text-align:left;transform:rotate(-5deg)}
+.maker-hello{display:grid;gap:12px}
+.maker-hello p{max-width:360px;font-size:14px;line-height:1.6}
 .maker-workbench{min-width:0}
 .maker-art{position:relative;height:clamp(320px,31vw,446px);perspective:1400px;isolation:isolate;touch-action:pan-y}
 .maker-scroll-shell,.maker-pointer-shell{position:absolute;inset:0;transform-style:preserve-3d}
@@ -30,19 +32,20 @@
 .maker-discipline:focus-visible{outline-color:var(--ink);outline-offset:4px}
 .maker-section .maker-bottom{align-items:end;margin-top:36px;padding-top:25px;border-top:1px solid rgba(16,16,20,.25)}
 .maker-section .maker-bottom p{font-size:14px;max-width:440px;line-height:1.65}
-.maker-section .maker-bottom a{justify-self:end;align-self:center}
+.maker-section .maker-bottom .maker-closing{justify-self:end;max-width:none;text-align:right}
+.maker-closing strong{display:block;margin-top:6px;font:900 clamp(22px,2.3vw,34px)/1.05 var(--display);letter-spacing:-.055em;text-transform:uppercase}
 .maker-section[data-maker-mode='scrub']{height:220svh;padding:0}
 .maker-section[data-maker-mode='scrub'] .maker-sticky-stage{position:sticky;top:var(--header-height);height:calc(100svh - var(--header-height));display:flex;align-items:center;padding-block:24px}
 .maker-sticky-stage>.container{min-width:0}
 .maker-section[data-maker-mode='scrub'] .section-meta{margin-bottom:25px;padding-bottom:14px}
-.maker-section[data-maker-mode='scrub'] .maker-art{height:min(420px,calc(100svh - 320px))}
+.maker-section[data-maker-mode='scrub'] .maker-art{height:min(420px,calc(100svh - 340px))}
 .maker-section[data-maker-mode='scrub'] .maker-bottom{margin-top:24px;padding-top:20px}
 
 @media(min-width:1000px) and (max-height:760px){
   .maker-section[data-maker-mode='scrub'] .maker-sticky-stage{padding-block:18px}
   .maker-section[data-maker-mode='scrub'] .section-meta{margin-bottom:18px;padding-bottom:12px}
-  .maker-section[data-maker-mode='scrub'] .maker-intro{padding-block:10px 60px}
-  .maker-section[data-maker-mode='scrub'] .maker-title{font-size:clamp(90px,9.5vw,137px)}
+  .maker-section[data-maker-mode='scrub'] .maker-intro{padding-block:6px 24px}
+  .maker-section[data-maker-mode='scrub'] .maker-title{font-size:clamp(26px,2.6vw,38px)}
   .maker-section[data-maker-mode='scrub'] .maker-words{inset:24px 30px auto}
   .maker-section[data-maker-mode='scrub'] .maker-word{font-size:clamp(42px,5vw,72px)}
   .maker-section[data-maker-mode='scrub'] .maker-direction{bottom:26px;left:30px;width:190px;height:118px}
@@ -54,7 +57,7 @@
 }
 @media(max-width:1100px){
   .maker-composition,.maker-section .maker-bottom{gap:30px;grid-template-columns:.6fr 1.4fr}
-  .maker-intro .maker-title{font-size:clamp(82px,10.2vw,112px)}
+  .maker-intro .maker-title{font-size:clamp(26px,2.9vw,34px)}
   .maker-intro .maker-note{font-size:26px}
   .maker-signature{width:55px;height:55px;right:30px}
   .maker-direction{width:180px;height:132px;left:30px}
@@ -62,8 +65,8 @@
 }
 @media(max-width:999px){
   .maker-section{padding-block:62px}
-  .maker-intro{padding-bottom:65px}
-  .maker-intro .maker-title{font-size:10.5vw}
+  .maker-intro{padding-bottom:30px}
+  .maker-intro .maker-title{font-size:3.3vw}
   .maker-intro .maker-note{font-size:23px}
   .maker-art{height:320px}
   .maker-words{inset:26px 26px auto}
@@ -75,9 +78,10 @@
 @media(max-width:650px){
   .maker-composition,.maker-section .maker-bottom{grid-template-columns:1fr;gap:26px}
   .maker-section .section-meta{margin-bottom:26px;padding-bottom:15px}
-  .maker-intro{flex-direction:row;align-items:center;gap:10px;padding:0}
-  .maker-intro .maker-title{font-size:20vw;letter-spacing:-.09em;flex:none}
-  .maker-intro .maker-note{font-size:clamp(15px,4.5vw,21px);flex:1;min-width:0}
+  .maker-intro{gap:24px;padding:0}
+  .maker-intro .maker-title{font-size:8.4vw;line-height:1.02}
+  .maker-intro .maker-note{font-size:24px}
+  .maker-hello p{font-size:13px;line-height:1.7}
   .maker-art{height:310px}
   .maker-words{inset:25px 23px auto;height:53%}
   .maker-word{font-size:11vw;line-height:1.08;letter-spacing:-.055em}
@@ -89,6 +93,7 @@
   .maker-discipline{padding:12px 10px;min-height:42px}
   .maker-section .maker-bottom{margin-top:28px;padding-top:22px;gap:22px}
   .maker-section .maker-bottom p{font-size:13px;line-height:1.7}
-  .maker-section .maker-bottom a{justify-self:start}
+  .maker-section .maker-bottom .maker-closing{justify-self:start;text-align:left}
+  .maker-closing strong{font-size:24px}
 }
 @media(prefers-reduced-motion:reduce){.maker-discipline,.maker-beam{transition:none}}

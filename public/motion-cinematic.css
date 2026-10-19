@@ -13,8 +13,8 @@ html[data-motion-cinematic] .scroll-progress{display:block}
 .scene-dot{display:grid;place-items:center;position:relative;width:22px;height:24px}
 .scene-dot i{display:block;position:relative;z-index:1;width:4px;height:4px;background:#928b86;border-radius:9px;transition:height .3s,background .3s}
 .scene-dot[aria-current='location'] i{height:18px;background:var(--orange)}
-html:is([data-active-scene='sobre'],[data-active-scene='contato']) .scene-dot[aria-current='location'] i,
-html:is([data-active-scene='sobre'],[data-active-scene='contato']) .scroll-progress-fill{background:var(--ink)}
+html:is([data-active-scene='sobre'],[data-active-scene='comunidade']) .scene-dot[aria-current='location'] i,
+html:is([data-active-scene='sobre'],[data-active-scene='comunidade']) .scroll-progress-fill{background:var(--ink)}
 .scene-dot:hover i,.scene-dot:focus-visible i{background:var(--cream)}
 .scene-name{pointer-events:none;position:absolute;right:30px;top:50%;transform:translateY(-50%);padding:7px 11px;border:1px solid var(--line);background:var(--ink);border-radius:4px;white-space:nowrap;font-size:10px;opacity:0;transition:opacity .2s}
 .scene-dot:hover .scene-name,.scene-dot:focus-visible .scene-name{opacity:1}
