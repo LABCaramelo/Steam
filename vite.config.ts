@@ -73,8 +73,47 @@ function steamDataApi(): Plugin {
   };
 }
 
+/** LAB client routes (src/App.tsx). Everything else under "/" belongs to the public site. */
+const LAB_ROUTE = /^\/(?:library|store|community|profile|settings|app)(?:\/|$)/;
+/** Same fallback as production: extensionless pages that are not files go to the LAB, which redirects to /library/home. */
+const isUnknownPage = (page: string) => !path.extname(page) && !page.endsWith("/") && !page.startsWith("/@") && !page.startsWith("/api/");
+
+/**
+ * The public site (copied from LP) is served as-is from public/: "/" is public/index.html and
+ * the LAB client is app.html. Mirrors the rewrites in vercel.json for the dev/preview servers.
+ */
+function siteRoutes(): Plugin {
+  const handler = (req: import("node:http").IncomingMessage, res: import("node:http").ServerResponse, next: () => void) => {
+    if (req.method !== "GET" && req.method !== "HEAD") return next();
+    const url = new URL(req.url ?? "/", "http://localhost");
+    const page = url.pathname;
+
+    if (/^\/prompts\/?$/.test(page)) {
+      res.statusCode = 308;
+      res.setHeader("Location", "/tools/prompt-library/index.html");
+      return res.end();
+    }
+    if (page === "/") req.url = `/index.html${url.search}`;
+    else if (/^\/aula-head(?:\/aula-01)?\/?$/.test(page)) req.url = `/aula-head/index.html${url.search}`;
+    else if (LAB_ROUTE.test(page) || (isUnknownPage(page) && req.headers.accept?.includes("text/html"))) req.url = `/app.html${url.search}`;
+    next();
+  };
+
+  return {
+    name: "site-routes",
+    configureServer(server) {
+      server.middlewares.use(handler);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(handler);
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), steamDataApi()],
+  plugins: [react(), steamDataApi(), siteRoutes()],
+  appType: "mpa",
+  build: { rollupOptions: { input: { app: path.resolve(import.meta.dirname, "app.html") } } },
   server: { host: "127.0.0.1", port: 5180 },
   preview: { host: "127.0.0.1", port: 5180 },
 });

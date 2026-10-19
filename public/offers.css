@@ -1,0 +1,250 @@
+/* Two complete offers become a native stack; the document remains their track. */
+.offers-section {
+  overflow: clip;
+  padding-block: 72px 100px;
+}
+
+.offers-section .offers-title {
+  max-width: 11em;
+  margin-bottom: 58px;
+}
+
+.offers-section .offers-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 84px;
+  isolation: isolate;
+}
+
+.offers-section .offer-column {
+  --offer-line: rgba(16, 16, 20, .22);
+  --offer-description: #484139;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+  grid-template-rows: 1fr auto;
+  column-gap: clamp(36px, 5vw, 72px);
+  row-gap: 38px;
+  min-width: 0;
+  min-height: 520px;
+  padding: clamp(32px, 4.2vw, 60px);
+  border: 1px solid var(--offer-line);
+  border-radius: 14px;
+  background: var(--cream);
+  color: var(--ink);
+  scroll-margin-top: calc(var(--header-height) + 24px);
+  transform-origin: center top;
+  z-index: 1;
+}
+
+.offers-section .offer-column:nth-child(2) {
+  --offer-line: rgba(255, 244, 232, .32);
+  --offer-description: var(--cream);
+  background: var(--violet);
+  color: var(--cream);
+  z-index: 2;
+}
+
+/* Tab and anchor focus can always reveal either complete card above its peer. */
+.offers-section .offer-column:focus-within {
+  z-index: 3;
+}
+
+.offers-section .offer-heading {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 0;
+  border: 0;
+}
+
+.offers-section .offer-symbol,
+.offers-section .offer-column:nth-child(2) .offer-symbol {
+  color: currentColor;
+  font-size: 36px;
+}
+
+.offers-section .offer-heading h3 {
+  max-width: 6.8em;
+  font-size: clamp(48px, 6.1vw, 88px);
+  font-weight: 900;
+  line-height: .98;
+  letter-spacing: -.065em;
+  overflow-wrap: normal;
+}
+
+.offers-section .offer-list {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  align-self: center;
+  min-width: 0;
+  margin: 0;
+}
+
+.offers-section .offer-list li {
+  gap: 20px;
+  padding-block: 25px;
+  border-color: var(--offer-line);
+}
+
+.offers-section .offer-list li:first-child {
+  border-top: 1px solid var(--offer-line);
+}
+
+.offers-section .offer-list li > span {
+  flex-shrink: 0;
+  margin-top: 5px;
+  color: currentColor;
+  font-size: 10px;
+}
+
+.offers-section .offer-list h4 {
+  font: 700 clamp(19px, 2vw, 27px)/1.2 var(--display);
+  letter-spacing: -.045em;
+  margin-bottom: 10px;
+}
+
+.offers-section .offer-list p {
+  max-width: 410px;
+  color: var(--offer-description);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.offers-section .offer-column > .pill {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  align-self: end;
+  max-width: 100%;
+  min-height: 54px;
+  padding: 17px 23px;
+  gap: 18px;
+  background: var(--ink);
+  color: var(--cream);
+  border: 1px solid var(--ink);
+  font-size: 12px;
+  text-align: left;
+}
+
+.offers-section .offer-column:nth-child(2) > .pill {
+  background: var(--cream);
+  border-color: var(--cream);
+  color: var(--ink);
+}
+
+.offers-section .offer-column > .pill span {
+  flex-shrink: 0;
+}
+
+@media (min-width: 1000px) and (min-height: 650px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .offers-section[data-offers-mode='stack'] .offer-column {
+    position: sticky;
+    top: calc(var(--header-height) + 24px);
+    min-height: max(520px, calc(100svh - var(--header-height) - 80px));
+  }
+
+  .offers-section[data-offers-mode='stack'] .offer-column:nth-child(2) {
+    top: calc(var(--header-height) + 42px);
+  }
+}
+
+@media (max-width: 999px), (max-height: 759px) {
+  .offers-section {
+    padding-block: 62px 75px;
+  }
+
+  .offers-section .offers-grid {
+    gap: 30px;
+  }
+
+  .offers-section .offer-column {
+    min-height: 460px;
+    gap: 30px;
+    padding: 32px;
+  }
+
+  .offers-section .offer-heading h3 {
+    font-size: clamp(40px, 5.8vw, 64px);
+  }
+
+  .offers-section .offer-list li {
+    padding-block: 20px;
+  }
+
+  .offers-section .offer-list h4 {
+    font-size: 20px;
+  }
+
+  .offers-section .offer-list p {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 650px) {
+  .offers-section {
+    padding-block: 55px 62px;
+  }
+
+  .offers-section .offers-title {
+    margin-bottom: 32px;
+  }
+
+  .offers-section .offers-grid {
+    gap: 24px;
+  }
+
+  .offers-section .offer-column {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    min-height: 0;
+    padding: 27px 23px;
+    row-gap: 28px;
+    border-radius: 10px;
+  }
+
+  .offers-section .offer-heading {
+    gap: 18px;
+  }
+
+  .offers-section .offer-symbol,
+  .offers-section .offer-column:nth-child(2) .offer-symbol {
+    font-size: 28px;
+  }
+
+  .offers-section .offer-heading h3 {
+    font-size: clamp(30px, 9.8vw, 52px);
+  }
+
+  .offers-section .offer-list {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .offers-section .offer-list li {
+    gap: 15px;
+    padding-block: 19px;
+  }
+
+  .offers-section .offer-list h4 {
+    font-size: 19px;
+  }
+
+  .offers-section .offer-list p {
+    font-size: 13px;
+  }
+
+  .offers-section .offer-column > .pill {
+    grid-row: 3;
+    width: 100%;
+    justify-content: space-between;
+    min-height: 50px;
+    padding: 14px 17px;
+    gap: 12px;
+    font-size: 11px;
+  }
+}
