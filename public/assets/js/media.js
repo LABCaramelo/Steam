@@ -1,7 +1,7 @@
 export function initVideos() {
   const videos = [...document.querySelectorAll('video')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const work = document.querySelector('#work .work-stage');
+  const work = document.querySelector('.work-section .work-stage');
   const workToggle = document.getElementById('work-play-toggle');
   let workPaused = reduced.matches;
   const events = new AbortController();
@@ -18,7 +18,7 @@ export function initVideos() {
 
   function update() {
     const candidates = !enabled || document.hidden ? [] : videos.filter(video => {
-      const card = video.closest('#work .project-card');
+      const card = video.closest('.work-section .project-card');
       if (card) {
         if (workPaused || (work?.dataset.workMode === 'scrub' && card.dataset.workActive !== 'true')) return false;
       } else if (reduced.matches) return false;
@@ -59,7 +59,8 @@ export function initVideos() {
     }, { signal: events.signal });
   }
   videos.forEach(video => {
-    if (video.closest('#work')) video.controls = false;
+    // Project previews are silent loops without a player; the selector and the toggle drive playback.
+    if (video.closest('.work-section')) video.controls = false;
     video.autoplay = false;
     video.muted = true;
     video.playsInline = true;
@@ -109,6 +110,5 @@ export function initVideos() {
     changes.disconnect();
     events.abort();
     if (workToggle) workToggle.hidden = true;
-    videos.filter(video => video.closest('#work')).forEach(video => { video.controls = true; });
   };
 }
