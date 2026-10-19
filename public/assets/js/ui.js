@@ -51,6 +51,7 @@ export function initNavigation(getLenis) {
       drawer.setAttribute('aria-hidden', 'true');
     }
     toggle?.setAttribute('aria-expanded', 'false');
+    toggle?.setAttribute('aria-label', 'Abrir menu');
   }
   closeDrawer();
   toggle?.addEventListener('click', () => {
@@ -62,6 +63,7 @@ export function initNavigation(getLenis) {
       drawer.setAttribute('aria-hidden', 'false');
     }
     toggle.setAttribute('aria-expanded', 'true');
+    toggle.setAttribute('aria-label', 'Fechar menu');
   }, { signal: events.signal });
   desktop.addEventListener('change', closeDrawer, { signal: events.signal });
   document.addEventListener('keydown', event => {
