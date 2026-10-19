@@ -100,28 +100,6 @@ export function ProfilePage() {
               ))}
             </section>
           </div>
-          <aside className="profile__side">
-            <div className="profile__box cm-surface--spotlight">
-              <h2>Coleções</h2>
-              {collections
-                .filter((c) => c.id !== "hidden")
-                .map((c) => (
-                  <button key={c.id} className="profile__link" onClick={() => nav(`/library/collection/${c.id}`)}>
-                    {c.name} <span className="muted">({c.appids.length})</span>
-                  </button>
-                ))}
-            </div>
-            <div className="profile__box cm-surface--spotlight">
-              <h2>Perfil público</h2>
-              {snapshot?.user?.steamId64 ? (
-                <a href={`https://steamcommunity.com/profiles/${snapshot.user.steamId64}`} target="_blank" rel="noopener noreferrer">
-                  Abrir no LAB Community
-                </a>
-              ) : (
-                <span className="muted">Indisponível</span>
-              )}
-            </div>
-          </aside>
         </div>
       </div>
     </div>

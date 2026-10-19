@@ -138,12 +138,6 @@ export function LibraryHome() {
             <MagneticButton variant="accent" size="lg" icon={<IconArrowRight />} onClick={() => nav("/store")}>
               EXPLORAR CATÁLOGO
             </MagneticButton>
-            <button
-              className="btn btn--ghost cm-glitch"
-              onClick={() => nav("/library/collections")}
-            >
-              COLEÇÕES
-            </button>
           </div>
           <span className="cm-handwritten home-hero__quote">
             "menos ferramenta, mais sistema."
@@ -235,7 +229,7 @@ export function LibraryHome() {
       {favApps.length > 0 && (
         <section className="home__shelf">
           <h2 className="shelf-title">
-            <Link to="/library/collection/favorite">{t("GameList_Category_Favorites")}</Link>
+            {t("GameList_Category_Favorites")}
             <span className="shelf-title__count">{favApps.length}</span>
           </h2>
           <div className="shelf-row">

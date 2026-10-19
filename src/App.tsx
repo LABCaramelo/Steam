@@ -7,11 +7,8 @@ import { FriendsPanel } from "./components/FriendsPanel";
 import { ModalWindow } from "./components/Modal";
 import { IconMark } from "./components/Icons";
 import { AppPropertiesModal } from "./pages/AppProperties";
-import { CommunityPage } from "./pages/Community";
 import { AchievementsPage } from "./pages/library/Achievements";
 import { AppPage } from "./pages/library/AppPage";
-import { CollectionsPage, CollectionView } from "./pages/library/Collections";
-import { DownloadsPage } from "./pages/library/Downloads";
 import { LibraryHome } from "./pages/library/Home";
 import { LibraryLayout } from "./pages/library/LibraryLayout";
 import { ToolPage } from "./pages/library/ToolPage";
@@ -24,9 +21,9 @@ const isModalPath = (p: string) => p.startsWith("/settings") || /^\/app\/\d+\/pr
 
 /**
  * Route layout follows the client's own route table (sp.js, webpack module 80344):
- * /library/home, /library/app/:appid[/achievements], /library/collection/:id, /library/collections,
- * /library/downloads, /app/:appid/properties/:section and /settings/:page. Store/community/profile are
- * web pages in the real client and get local stand-ins here.
+ * /library/home, /library/app/:appid[/achievements], /app/:appid/properties/:section and /settings/:page.
+ * Store/profile are web pages in the real client and get local stand-ins here. Collections, downloads
+ * and community pages were removed from the LAB; their old URLs fall through to /library/home.
  */
 export function App() {
   const location = useLocation();
@@ -50,13 +47,9 @@ export function App() {
             <Route path="app/:appid" element={<AppPage />} />
             <Route path="app/:appid/open" element={<ToolPage />} />
             <Route path="app/:appid/achievements/*" element={<AchievementsPage />} />
-            <Route path="collections" element={<CollectionsPage />} />
-            <Route path="collection/:collectionid" element={<CollectionView />} />
-            <Route path="collection/:collectionid/:appid" element={<AppPage />} />
-            <Route path="downloads" element={<DownloadsPage />} />
+            <Route path="*" element={<Navigate to="/library/home" replace />} />
           </Route>
           <Route path="/store" element={<StorePage />} />
-          <Route path="/community" element={<CommunityPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<Navigate to="/library/home" replace />} />
         </Routes>
