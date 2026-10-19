@@ -18,6 +18,9 @@ function formatAuthError(msg: string): string {
   if (lower.includes("rate limit")) {
     return "Muitas tentativas em sequência. Aguarde alguns instantes.";
   }
+  if (lower.includes("email not confirmed")) {
+    return "E-mail não confirmado. Tente entrar novamente.";
+  }
   return msg;
 }
 
