@@ -9,13 +9,12 @@ import { useUi } from "../ui";
 import { Avatar } from "./Avatar";
 import { CarameloIsotype } from "./CarameloIsotype";
 import { IconBack, IconBell, IconChevronDown, IconForward } from "./Icons";
-import { Menu, type MenuItem } from "./Menu";
+import { Menu } from "./Menu";
 
 interface Section {
   label: string;
   to: string;
   match: (path: string) => boolean;
-  items: MenuItem[];
 }
 
 /**
@@ -35,50 +34,9 @@ export function AppHeader() {
   const [indicator, setIndicator] = useState({ left: 0, width: 0, visible: false });
 
   const sections: Section[] = [
-    {
-      label: t("MainTabsStore"),
-      to: "/store",
-      match: (p) => p.startsWith("/store"),
-      items: [
-        { label: t("Menu_Featured"), onSelect: () => nav("/store") },
-        { label: t("Menu_Wishlist"), onSelect: () => nav("/store?view=wishlist") },
-        { label: t("Menu_PointsShop"), onSelect: () => nav("/store?view=points") },
-        { label: t("Menu_News"), onSelect: () => nav("/store?view=news") },
-      ],
-    },
-    {
-      label: t("MainTabsLibrary"),
-      to: "/library/home",
-      match: (p) => p.startsWith("/library"),
-      items: [
-        { label: t("Menu_Home"), onSelect: () => nav("/library/home") },
-        { label: t("Menu_Collections"), onSelect: () => nav("/library/collections") },
-        { label: t("Menu_Downloads"), onSelect: () => nav("/library/downloads") },
-      ],
-    },
-    {
-      label: t("Menu_Community"),
-      to: "/community",
-      match: (p) => p.startsWith("/community"),
-      items: [
-        { label: t("Menu_Home"), onSelect: () => nav("/community") },
-        { label: t("Menu_Discussions"), onSelect: () => nav("/community?tab=discussions") },
-        { label: t("Menu_Workshop"), onSelect: () => nav("/community?tab=workshop") },
-        { label: t("Menu_Market"), onSelect: () => nav("/community?tab=market") },
-        { label: t("Menu_Broadcasts"), onSelect: () => nav("/community?tab=broadcasts") },
-      ],
-    },
-    {
-      label: t("Menu_Profile"),
-      to: "/profile",
-      match: (p) => p.startsWith("/profile"),
-      items: [
-        { label: t("Menu_Activity"), onSelect: () => nav("/profile?tab=activity") },
-        { label: t("Menu_Profile"), onSelect: () => nav("/profile") },
-        { label: t("Menu_Badges"), onSelect: () => nav("/profile?tab=badges") },
-        { label: t("Menu_Inventory"), onSelect: () => nav("/profile?tab=inventory") },
-      ],
-    },
+    { label: t("MainTabsStore"), to: "/store", match: (p) => p.startsWith("/store") },
+    { label: t("MainTabsLibrary"), to: "/library/home", match: (p) => p.startsWith("/library") },
+    { label: t("Menu_Profile"), to: "/profile", match: (p) => p.startsWith("/profile") },
   ];
 
   // O traço desliza para a seção da rota atual; mede de novo quando a largura muda (fontes, resize).
@@ -88,7 +46,6 @@ export function AppHeader() {
     const measure = () => {
       const active = list.querySelector<HTMLElement>(".app-header__link.is-active");
       if (!active) return setIndicator((prev) => ({ ...prev, visible: false }));
-      // Cada link vive num item posicionado (âncora do menu), então mede-se em relação à nav.
       const bounds = active.getBoundingClientRect();
       setIndicator({ left: bounds.left - list.getBoundingClientRect().left + list.scrollLeft, width: bounds.width, visible: true });
     };
@@ -130,21 +87,9 @@ export function AppHeader() {
         {sections.map((section) => {
           const active = section.match(pathname);
           return (
-            <div key={section.to} className="app-header__item">
-              <Link to={section.to} className={`app-header__link cm-glitch ${active ? "is-active" : ""}`} aria-current={active ? "page" : undefined}>
-                {section.label}
-              </Link>
-              {/* blur-glide-menu: abre no hover e com o foco de teclado (não fica preso após um clique). */}
-              <div className="app-header__menu" role="menu" aria-label={section.label}>
-                {section.items.map((item, i) =>
-                  item.kind === "separator" ? null : (
-                    <button key={i} type="button" role="menuitem" className="app-header__menu-item" onClick={item.onSelect}>
-                      {item.label}
-                    </button>
-                  ),
-                )}
-              </div>
-            </div>
+            <Link key={section.to} to={section.to} className={`app-header__link cm-glitch ${active ? "is-active" : ""}`} aria-current={active ? "page" : undefined}>
+              {section.label}
+            </Link>
           );
         })}
       </nav>

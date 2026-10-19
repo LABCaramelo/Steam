@@ -74,7 +74,7 @@ function steamDataApi(): Plugin {
 }
 
 /** LAB client routes (src/App.tsx). Everything else under "/" belongs to the public site. */
-const LAB_ROUTE = /^\/(?:library|store|community|profile|settings|app)(?:\/|$)/;
+const LAB_ROUTE = /^\/(?:library|store|profile|settings|app)(?:\/|$)/;
 /** Same fallback as production: extensionless pages that are not files go to the LAB, which redirects to /library/home. */
 const isUnknownPage = (page: string) => !path.extname(page) && !page.endsWith("/") && !page.startsWith("/@") && !page.startsWith("/api/");
 

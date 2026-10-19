@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useDownloads, useLibrary, useRun } from "../../api";
 import { AppIcon } from "../../components/AppArt";
-import { IconChevronDown, IconClock, IconFilter, IconGrid, IconHome, IconPlay, IconSearch } from "../../components/Icons";
+import { IconChevronDown, IconClock, IconFilter, IconHome, IconPlay, IconSearch } from "../../components/Icons";
 import { Menu } from "../../components/Menu";
 import { recencyBucket } from "../../format";
 import { t } from "../../i18n";
@@ -30,7 +30,6 @@ interface Section {
 export function Sidebar({ onContext }: { onContext: (t: ContextTarget) => void }) {
   const { snapshot, collections } = useLibrary();
   const { installedAppIds } = useDownloads();
-  const nav = useNavigate();
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("games");
   const [recent, setRecent] = useState(false);
   const [readyOnly, setReadyOnly] = useState(false);
@@ -76,9 +75,6 @@ export function Sidebar({ onContext }: { onContext: (t: ContextTarget) => void }
         <NavLink to="/library/home" className={({ isActive }) => `sidebar__home-btn ${isActive ? "is-active" : ""}`}>
           <IconHome size={16} /> {t("GameList_Home").toUpperCase()}
         </NavLink>
-        <button className="sidebar__icon-btn" title={t("GameList_Category_YourCollections")} onClick={() => nav("/library/collections")}>
-          <IconGrid size={16} />
-        </button>
       </div>
 
       <div className="sidebar__filters">
