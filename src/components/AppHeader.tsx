@@ -103,8 +103,7 @@ export function AppHeader() {
           align="right"
           items={[
             { label: t("Menu_ViewMyProfile"), onSelect: () => nav("/profile") },
-            { label: `Detalhes da conta: ${snapshot?.user?.personaName ?? ""}`, onSelect: () => nav("/settings/account") },
-            { label: t("Menu_StorePreferences"), onSelect: () => nav("/settings/store") },
+            { label: t("Menu_Settings"), onSelect: () => nav("/settings") },
             { kind: "separator" },
             { label: t("Menu_ChangeAccount"), onSelect: () => logout() },
             { label: t("Menu_SignOut"), onSelect: () => logout() },
