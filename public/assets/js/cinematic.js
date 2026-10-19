@@ -135,6 +135,8 @@ export function initCinematic() {
         if (heroFilms.length) heroOut.to(heroFilms, { rotation: index => index === 0 ? 1 : -1, ease: 'none' }, 0);
       }
 
+      typeEntrance('archive-type', select('#archive-title'));
+      lightEntrance('archive-steps', select('.archive-steps'), 26);
       typeEntrance('work-type', select('#work-title'));
       typeEntrance('doors-type', select('#doors-title'));
       const doors = all('.door-panel');
@@ -164,14 +166,14 @@ export function initCinematic() {
 
       typeEntrance('offers-type', select('#offers-title'));
       typeEntrance('faq-type', select('#faq-title'));
-      typeEntrance('contact-type', select('#contact-title'));
+      typeEntrance('contact-type', select('#community-title'));
       lightEntrance('contact-close', select('.contact-bottom'), 26);
       const identity = select('.contact-identity');
       if (identity) {
         // A timeline defers its initial refresh until the scene batch is built.
         // An immediate tween refresh can race once-only entrances on rebuild.
         const closing = gsap.timeline({ scrollTrigger: {
-          id: 'cine-contact-identity', trigger: select('#contato'),
+          id: 'cine-contact-identity', trigger: select('#comunidade'),
           start: 'top bottom', end: 'bottom bottom', scrub: 0.4
         }});
         closing.fromTo(identity, { rotation: -12, scale: 0.88 }, {
@@ -181,9 +183,10 @@ export function initCinematic() {
     } else {
       // Touch and short viewports keep a direct native reading flow.
       const sections = [
+        ['archive', '#archive-title'], ['archive-steps', '.archive-steps'],
         ['work', '.work-intro'], ['doors', '#doors-title'],
         ['offers', '#offers-title'], ['faq', '#faq-title'],
-        ['contact', '#contact-title'], ['contact-close', '.contact-bottom']
+        ['contact', '#community-title'], ['contact-close', '.contact-bottom']
       ];
       sections.forEach(([id, selector]) => lightEntrance(id, select(selector)));
       all('.door-panel').forEach((element, index) => {

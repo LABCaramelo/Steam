@@ -107,7 +107,7 @@ function AppDetails({ app }: { app: LibraryApp }) {
         <div className="appdetails__col appdetails__col--main">
           <section className="panel">
             <h3 className="panel__title">{t("AppDetails_SectionTitle_Activity")}</h3>
-            <textarea className="activity-input" placeholder="Diga algo sobre esta ferramenta aos seus amigos…" rows={2} />
+            <textarea className="activity-input" aria-label="Diga algo sobre esta ferramenta aos seus amigos" placeholder="Diga algo sobre esta ferramenta aos seus amigos…" rows={2} />
             <ul className="activity">
               {app.lastPlayed > 0 && (
                 <li>
@@ -260,7 +260,7 @@ function Notes({ appid }: { appid: number }) {
   return (
     <section className="panel">
       <h3 className="panel__title">{t("AppDetails_SectionTitle_GameNotes")}</h3>
-      <textarea className="notes" placeholder="Escreva suas anotações sobre a ferramenta…" value={text} onChange={(e) => setText(e.target.value)} rows={4} />
+      <textarea className="notes" aria-label="Anotações sobre a ferramenta" placeholder="Escreva suas anotações sobre a ferramenta…" value={text} onChange={(e) => setText(e.target.value)} rows={4} />
     </section>
   );
 }

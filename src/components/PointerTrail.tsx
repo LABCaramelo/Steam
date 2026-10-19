@@ -1,117 +1,192 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type HTMLAttributes } from "react";
 
-const STICKER_IDS = [
-  "cadeira",
-  "copo",
-  "lata",
-  "spray",
-  "violao",
-  "bola",
-  "chinelo",
-  "onibus",
-  "capacete",
-  "poste",
-  "caneca",
-  "caramelo",
-  "estrelas",
-  "coracao",
-  "raio",
-  "seta",
-  "palmeira",
-  "arcos",
-  "caderno",
-  "bilhete",
+/** As 28 figurinhas canônicas de "rastro mouse.png" (MCP Caramelo · get_brand_asset trail-stickers). */
+const TRAIL_STICKERS = [
+  "cadeira", "copo", "lata", "spray", "violao", "bola", "chinelo", "onibus", "capacete", "poste",
+  "luminaria", "rolo", "caderno", "camera", "bilhete", "caneca", "folha", "planta", "raio", "coracao",
+  "olho", "arcos", "caramelo", "palmeira", "estrelas", "coroa", "seta", "conexoes",
 ];
+const ASSET_BASE = "/caramelo/stickers";
 
-interface StickerItem {
-  id: number;
-  sticker: string;
-  x: number;
-  y: number;
-  rotation: number;
-  size: number;
+/** pointer-trail do motor Caramelo: a cada 64px/85ms, 1100ms por figurinha, pausa de 140ms ao rolar. */
+const MIN_DISTANCE = 64;
+const MIN_INTERVAL = 85;
+const LIFETIME = 1100;
+const SCROLL_PAUSE = 140;
+const EASING = "cubic-bezier(0.2, 0.65, 0.3, 1)";
+/** O rastro nunca cobre controles nem seus alvos. */
+const AVOID = 'a,button,input,select,textarea,summary,label,[role="button"],[contenteditable="true"],[tabindex]:not([tabindex="-1"])';
+
+const FINE_POINTER = "(hover: hover) and (pointer: fine)";
+const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
+
+/** Só existe com mouse/trackpad e movimento completo. */
+function useTrailEnabled() {
+  const read = () =>
+    typeof window !== "undefined" && window.matchMedia(FINE_POINTER).matches && !window.matchMedia(REDUCED_MOTION).matches;
+  const [enabled, setEnabled] = useState(read);
+  useEffect(() => {
+    const queries = [window.matchMedia(FINE_POINTER), window.matchMedia(REDUCED_MOTION)];
+    const sync = () => setEnabled(read());
+    queries.forEach((q) => q.addEventListener("change", sync));
+    return () => queries.forEach((q) => q.removeEventListener("change", sync));
+  }, []);
+  return enabled;
+}
+
+function createPointerTrail(container: HTMLElement, layer: HTMLElement): () => void {
+  const slots = Array.from(layer.children as HTMLCollectionOf<HTMLElement>).map((el) => ({ el, animation: null as Animation | null }));
+  if (!slots.length || !Element.prototype.animate) return () => {};
+
+  let last: { x: number; y: number; time: number } | null = null;
+  let bounds: DOMRect | null = null;
+  let controls: DOMRect[] = [];
+  let cursor = 0;
+  let sequence = 0;
+  let suspendedUntil = 0;
+  let loaded = false;
+
+  const cancel = (slot: (typeof slots)[number]) => {
+    if (slot.animation) {
+      slot.animation.onfinish = null;
+      slot.animation.cancel();
+      slot.animation = null;
+    }
+    slot.el.dataset.active = "false";
+    slot.el.style.opacity = "0";
+  };
+  const clear = () => {
+    slots.forEach(cancel);
+    last = null;
+    bounds = null;
+    controls = [];
+  };
+  const measure = () => {
+    bounds = container.getBoundingClientRect();
+    controls = Array.from(container.querySelectorAll<HTMLElement>(AVOID))
+      .filter((e) => {
+        const s = getComputedStyle(e);
+        return s.visibility !== "hidden" && s.display !== "none";
+      })
+      .map((e) => e.getBoundingClientRect());
+  };
+  // As figurinhas só são baixadas quando o mouse entra na área.
+  const enter = () => {
+    if (!loaded) {
+      loaded = true;
+      layer.querySelectorAll<HTMLImageElement>("img[data-src]").forEach((img) => (img.src = img.dataset.src!));
+    }
+    measure();
+  };
+
+  const move = (event: PointerEvent) => {
+    if (event.pointerType !== "mouse" || event.buttons || document.hidden) return clear();
+    const now = performance.now();
+    if (now < suspendedUntil) return;
+    if (!bounds) measure();
+    if (event.target instanceof Element && event.target.closest(AVOID)) {
+      last = null;
+      return;
+    }
+    const point = { x: event.clientX, y: event.clientY, time: now };
+    if (!last) {
+      last = point;
+      return;
+    }
+    const dx = point.x - last.x;
+    const dy = point.y - last.y;
+    if (Math.hypot(dx, dy) < MIN_DISTANCE || now - last.time < MIN_INTERVAL) return;
+
+    const b = bounds!;
+    const size = Math.min(196, Math.max(130, window.innerWidth * 0.135));
+    if (b.height < size + 24 || b.width < size) return;
+    const x = Math.max(b.left + size / 2, Math.min(b.right - size / 2, point.x));
+    const y = Math.max(b.top + size / 2 + 12, Math.min(b.bottom - size / 2 - 12, point.y));
+    const fp = { l: x - size / 2 - 32, r: x + size / 2 + 32, t: y - size / 2 - 24, b: y + size / 2 + 44 };
+    if (controls.some((c) => c.width && c.height && fp.l < c.right && fp.r > c.left && fp.t < c.bottom && fp.b > c.top)) {
+      last = point;
+      return;
+    }
+
+    const slot = slots[cursor++ % slots.length];
+    cancel(slot);
+    const angle = (sequence % 2 ? -1 : 1) * (4 + (sequence % 5));
+    const drift = Math.max(-18, Math.min(18, dx * 0.06));
+    slot.el.style.width = `${size}px`;
+    slot.el.style.height = `${size}px`;
+    slot.el.style.left = `${x - b.left - size / 2}px`;
+    slot.el.style.top = `${y - b.top - size / 2}px`;
+    slot.el.style.zIndex = String(++sequence);
+    slot.el.dataset.active = "true";
+    const animation = slot.el.animate(
+      [
+        { opacity: 0, transform: `translate3d(0,14px,0) rotate(${angle - 5}deg) scale(.82)`, offset: 0 },
+        { opacity: 1, transform: `translate3d(0,0,0) rotate(${angle}deg) scale(1)`, offset: 0.12 },
+        { opacity: 1, transform: `translate3d(${drift * 0.45}px,-4px,0) rotate(${angle}deg) scale(1)`, offset: 0.56 },
+        { opacity: 0, transform: `translate3d(${drift}px,22px,0) rotate(${angle + 5}deg) scale(.94)`, offset: 1 },
+      ],
+      { duration: LIFETIME, easing: EASING, fill: "none" },
+    );
+    slot.animation = animation;
+    animation.onfinish = () => {
+      if (slot.animation !== animation) return;
+      slot.animation = null;
+      slot.el.dataset.active = "false";
+    };
+    last = point;
+  };
+
+  const ac = new AbortController();
+  const signal = ac.signal;
+  container.addEventListener("pointermove", move, { passive: true, signal });
+  container.addEventListener("pointerenter", enter, { passive: true, signal });
+  container.addEventListener("pointerleave", clear, { passive: true, signal });
+  window.addEventListener(
+    "scroll",
+    () => {
+      suspendedUntil = performance.now() + SCROLL_PAUSE;
+      clear();
+    },
+    { capture: true, passive: true, signal },
+  );
+  window.addEventListener("resize", clear, { passive: true, signal });
+  window.addEventListener("blur", clear, { signal });
+  document.addEventListener("visibilitychange", clear, { signal });
+  document.addEventListener("pointerdown", clear, { capture: true, passive: true, signal });
+  document.addEventListener("focusin", clear, { signal });
+
+  return () => {
+    ac.abort();
+    clear();
+  };
 }
 
 /**
- * Rastro de Figurinhas Caramelo (pointer-trail)
- * Cria a esteira de figurinhas da cultura urbana e visual oficial Caramelo ao mover o mouse.
+ * Rastro de figurinhas Caramelo (pointer-trail) para heróis e rodapés.
+ * As figurinhas surgem atrás do cursor dentro desta área, giram alternando o lado e caem.
+ * Decorativo: nunca cobre controles, some ao rolar, clicar ou focar, e não existe em touch ou com movimento reduzido.
  */
-export function PointerTrail() {
-  const [stickers, setStickers] = useState<StickerItem[]>([]);
-  const lastPos = useRef<{ x: number; y: number; time: number }>({ x: 0, y: 0, time: 0 });
-  const countRef = useRef(0);
+export function PointerTrail({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
+  const enabled = useTrailEnabled();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const layerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Respeita prefers-reduced-motion e touch
-    if (typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (window.matchMedia("(pointer: coarse)").matches) return;
-
-    const onPointerMove = (e: PointerEvent) => {
-      // Ignora ponteiro de toque ou caneta
-      if (e.pointerType === "touch") return;
-
-      const now = Date.now();
-      const dx = e.clientX - lastPos.current.x;
-      const dy = e.clientY - lastPos.current.y;
-      const dist = Math.hypot(dx, dy);
-
-      // Dispara a cada 60px percorridos ou 90ms de movimento contínuo
-      if (dist < 56 && now - lastPos.current.time < 90) {
-        return;
-      }
-
-      lastPos.current = { x: e.clientX, y: e.clientY, time: now };
-
-      const sticker = STICKER_IDS[Math.floor(Math.random() * STICKER_IDS.length)];
-      const rotation = (Math.random() - 0.5) * 32; // -16deg a +16deg
-      const size = Math.floor(36 + Math.random() * 16); // 36px a 52px
-      const newItem: StickerItem = {
-        id: ++countRef.current,
-        sticker,
-        x: e.clientX,
-        y: e.clientY,
-        rotation,
-        size,
-      };
-
-      setStickers((prev) => {
-        const next = [...prev, newItem];
-        // Limita o pool a no máximo 14 figurinhas ativas
-        return next.length > 14 ? next.slice(next.length - 14) : next;
-      });
-
-      // Remove a figurinha após a animação de 1100ms
-      setTimeout(() => {
-        setStickers((prev) => prev.filter((s) => s.id !== newItem.id));
-      }, 1100);
-    };
-
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-    return () => window.removeEventListener("pointermove", onPointerMove);
-  }, []);
-
-  if (stickers.length === 0) return null;
+    if (!enabled || !containerRef.current || !layerRef.current) return;
+    return createPointerTrail(containerRef.current, layerRef.current);
+  }, [enabled]);
 
   return (
-    <div className="cm-pointer-trail" aria-hidden="true">
-      {stickers.map((s) => (
-        <img
-          key={s.id}
-          src={`/caramelo/stickers/${s.sticker}.webp`}
-          alt=""
-          className="cm-pointer-trail__item"
-          style={{
-            left: s.x,
-            top: s.y,
-            width: s.size,
-            height: "auto",
-            transform: `translate(-50%, -50%) rotate(${s.rotation}deg)`,
-          }}
-          loading="eager"
-          decoding="async"
-        />
-      ))}
+    <div ref={containerRef} className={`cm-trail cm-trail--stickers ${className ?? ""}`} {...props}>
+      {children}
+      <div ref={layerRef} className="cm-trail__layer" aria-hidden="true">
+        {enabled &&
+          TRAIL_STICKERS.map((id) => (
+            <div key={id} className="cm-trail__slot" data-active="false">
+              <img data-src={`${ASSET_BASE}/${id}.webp`} alt="" draggable={false} decoding="async" />
+            </div>
+          ))}
+      </div>
     </div>
   );
 }

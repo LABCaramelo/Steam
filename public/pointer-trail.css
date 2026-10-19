@@ -1,4 +1,4 @@
-/* Decorative image trails stay below navigation and never become hit targets. */
+/* Figurinhas canônicas do rastro: ficam abaixo da navegação e nunca viram alvo de clique. */
 .pointer-trail-layer{
   position:fixed;
   inset:0;
@@ -11,13 +11,11 @@
   position:absolute;
   display:block;
   width:clamp(130px,13.5vw,196px);
-  aspect-ratio:16/10;
+  aspect-ratio:1;
   height:auto;
-  object-fit:cover;
-  border:1px solid rgba(255,244,232,.3);
-  border-radius:9px;
-  background:#20252a;
-  box-shadow:0 14px 32px rgba(0,0,0,.25);
+  /* Alpha, proporção e recorte originais: sem moldura de cartão. */
+  object-fit:contain;
+  filter:drop-shadow(0 5px 5px rgba(16,16,20,.22));
   opacity:0;
   pointer-events:none!important;
   user-select:none;

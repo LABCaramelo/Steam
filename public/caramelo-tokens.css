@@ -1,0 +1,112 @@
+/* Caramelo Design System — tokens (gerado pelo MCP). Prefira importar '@caramelo/design-system/styles.css'. */
+:root {
+  color-scheme: dark;
+  --caramelo-color-ink: #101014;
+  --cm-stage: 10 10 13;
+  --cm-surface-1: 16 16 20;
+  --cm-surface-2: 24 24 29;
+  --cm-surface-3: 31 31 38;
+  --cm-line-soft: 26 26 32;
+  --cm-line: 39 39 47;
+  --cm-line-strong: 58 58 68;
+  --cm-fg: 255 244 232;
+  --cm-fg-2: 217 211 204;
+  --cm-fg-muted: 163 163 176;
+  --cm-fg-dim: 139 139 152;
+  --cm-fg-faint: 90 90 102;
+  --cm-accent: 255 112 26;
+  --cm-accent-bright: 255 138 61;
+  --cm-accent-ink: 255 112 26;
+  --cm-accent-soft: 43 22 8;
+  --cm-accent-contrast: 16 16 20;
+  --cm-focus: 37 191 255;
+  --cm-success: 61 220 151;
+  --cm-success-soft: 11 42 29;
+  --cm-warning: 255 213 42;
+  --cm-warning-soft: 51 41 0;
+  --cm-danger: 255 61 141;
+  --cm-danger-soft: 51 11 28;
+  --cm-info: 37 191 255;
+  --cm-info-soft: 10 37 51;
+  --cm-on-status: 16 16 20;
+  --cm-spectrum-gradient: linear-gradient(110deg, #FF701A 0%, #FF3D8D 24%, #7657FF 48%, #25BFFF 72%, #FFD52A 100%);
+  --cm-spectrum: var(--cm-spectrum-gradient);
+  --cm-spectrum-soft: linear-gradient(110deg, #FFAE7B 0%, #FF8FBD 24%, #B6A5FF 48%, #8ADEFF 72%, #FFE889 100%);
+  --cm-spectrum-glow: 0 0 14px rgba(255,112,26,.1), 4px 0 18px rgba(255,61,141,.1), -4px 0 18px rgba(37,191,255,.1), 0 4px 20px rgba(118,87,255,.1), 0 -3px 16px rgba(255,213,42,.1);
+  --cm-spectrum-glow-strong: 0 0 20px rgba(255,112,26,.24), 6px 0 26px rgba(255,61,141,.24), -6px 0 26px rgba(37,191,255,.24), 0 6px 30px rgba(118,87,255,.24), 0 -4px 22px rgba(255,213,42,.24);
+  --cm-glow-sm: var(--cm-spectrum-glow);
+  --cm-glow: var(--cm-spectrum-glow-strong);
+  --cm-focus-ring: 0 0 0 2px rgb(var(--cm-stage)), 0 0 0 4px rgb(var(--cm-focus));
+  --cm-radius-xs: 3px;
+  --cm-radius-sm: 5px;
+  --cm-radius-md: 8px;
+  --cm-radius-lg: 12px;
+  --cm-radius-xl: 16px;
+  --cm-radius-2xl: 22px;
+  --cm-radius-pill: 999px;
+  --cm-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --cm-ease-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --cm-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --cm-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --cm-ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --cm-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --cm-dur-instant: 80ms;
+  --cm-dur-micro: 160ms;
+  --cm-dur-quick: 240ms;
+  --cm-dur-base: 320ms;
+  --cm-dur-smooth: 480ms;
+  --cm-dur-cinematic: 640ms;
+  --caramelo-font-display: Montserrat, Inter, system-ui, sans-serif;
+  --caramelo-font-sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --caramelo-font-handwriting: "Covered By Your Grace", cursive;
+  --caramelo-font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+[data-caramelo-theme="light"] {
+  color-scheme: light;
+  --cm-stage: 255 244 232;
+  --cm-surface-1: 255 250 244;
+  --cm-surface-2: 245 230 212;
+  --cm-surface-3: 238 220 198;
+  --cm-line-soft: 240 226 210;
+  --cm-line: 232 210 187;
+  --cm-line-strong: 212 188 159;
+  --cm-fg: 16 16 20;
+  --cm-fg-2: 46 44 42;
+  --cm-fg-muted: 94 90 85;
+  --cm-fg-dim: 107 104 98;
+  --cm-fg-faint: 163 156 147;
+  --cm-accent: 255 112 26;
+  --cm-accent-bright: 229 94 13;
+  --cm-accent-ink: 171 59 0;
+  --cm-accent-soft: 255 230 211;
+  --cm-accent-contrast: 16 16 20;
+  --cm-focus: 11 110 153;
+  --cm-success: 11 107 69;
+  --cm-success-soft: 231 251 242;
+  --cm-warning: 122 86 0;
+  --cm-warning-soft: 255 251 230;
+  --cm-danger: 192 24 94;
+  --cm-danger-soft: 255 235 243;
+  --cm-info: 11 110 153;
+  --cm-info-soft: 230 248 255;
+  --cm-on-status: 255 244 232;
+}
+
+/* Caramel #FF701A destaca detalhes sólidos; assinatura e motion combinam as cinco cores. neutral é explícito. */
+[data-cm-accent="neutral"] { --cm-accent: 255 244 232; --cm-accent-bright: 255 255 255; --cm-accent-ink: 255 244 232; --cm-accent-soft: 24 24 29; --cm-accent-contrast: 16 16 20; }
+[data-caramelo-theme="light"] [data-cm-accent="neutral"], [data-caramelo-theme="light"][data-cm-accent="neutral"] { --cm-accent: 255 244 232; --cm-accent-bright: 255 255 255; --cm-accent-ink: 16 16 20; --cm-accent-soft: 245 230 212; --cm-accent-contrast: 16 16 20; }
+[data-cm-accent="caramel"] { --cm-accent: 255 112 26; --cm-accent-bright: 255 138 61; --cm-accent-ink: 255 112 26; --cm-accent-soft: 43 22 8; --cm-accent-contrast: 16 16 20; }
+[data-caramelo-theme="light"] [data-cm-accent="caramel"], [data-caramelo-theme="light"][data-cm-accent="caramel"] { --cm-accent: 255 112 26; --cm-accent-bright: 229 94 13; --cm-accent-ink: 171 59 0; --cm-accent-soft: 255 230 211; --cm-accent-contrast: 16 16 20; }
+[data-cm-accent="sky"] { --cm-accent: 37 191 255; --cm-accent-bright: 92 208 255; --cm-accent-ink: 37 191 255; --cm-accent-soft: 10 37 51; --cm-accent-contrast: 16 16 20; }
+[data-caramelo-theme="light"] [data-cm-accent="sky"], [data-caramelo-theme="light"][data-cm-accent="sky"] { --cm-accent: 37 191 255; --cm-accent-bright: 13 168 234; --cm-accent-ink: 11 110 153; --cm-accent-soft: 230 248 255; --cm-accent-contrast: 16 16 20; }
+[data-cm-accent="pink"] { --cm-accent: 255 61 141; --cm-accent-bright: 255 107 168; --cm-accent-ink: 255 61 141; --cm-accent-soft: 51 11 28; --cm-accent-contrast: 16 16 20; }
+[data-caramelo-theme="light"] [data-cm-accent="pink"], [data-caramelo-theme="light"][data-cm-accent="pink"] { --cm-accent: 255 61 141; --cm-accent-bright: 232 37 118; --cm-accent-ink: 192 24 94; --cm-accent-soft: 255 235 243; --cm-accent-contrast: 16 16 20; }
+[data-cm-accent="violet"] { --cm-accent: 93 60 232; --cm-accent-bright: 118 87 255; --cm-accent-ink: 154 133 255; --cm-accent-soft: 25 18 56; --cm-accent-contrast: 255 244 232; }
+[data-caramelo-theme="light"] [data-cm-accent="violet"], [data-caramelo-theme="light"][data-cm-accent="violet"] { --cm-accent: 93 60 232; --cm-accent-bright: 118 87 255; --cm-accent-ink: 91 63 224; --cm-accent-soft: 241 239 255; --cm-accent-contrast: 255 244 232; }
+[data-cm-accent="yellow"] { --cm-accent: 255 213 42; --cm-accent-bright: 255 224 102; --cm-accent-ink: 255 213 42; --cm-accent-soft: 51 41 0; --cm-accent-contrast: 16 16 20; }
+[data-caramelo-theme="light"] [data-cm-accent="yellow"], [data-caramelo-theme="light"][data-cm-accent="yellow"] { --cm-accent: 255 213 42; --cm-accent-bright: 230 189 21; --cm-accent-ink: 122 86 0; --cm-accent-soft: 255 251 230; --cm-accent-contrast: 16 16 20; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --cm-dur-quick: 120ms; --cm-dur-base: 160ms; --cm-dur-smooth: 160ms; --cm-dur-cinematic: 160ms; }
+}

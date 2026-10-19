@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { artUrl, useLibrary } from "../../api";
 import { AppArt } from "../../components/AppArt";
+import { CarameloIsotype } from "../../components/CarameloIsotype";
 import { IconChevronDown, IconTrophy } from "../../components/Icons";
 import { Menu } from "../../components/Menu";
+import { PointerTrail } from "../../components/PointerTrail";
 import { formatBytes, formatDate, formatPlaytime, recencyBucket } from "../../format";
 import { t } from "../../i18n";
 import type { Achievement, LibraryApp } from "../../types";
@@ -121,10 +123,8 @@ export function LibraryHome() {
   if (apps.length === 0) {
     return (
       <div className="home home--empty-canvas">
-        <div className="home-hero cm-surface--spotlight">
-          <div className="home-hero__badge">
-            <span className="home-hero__mark">C.</span>
-          </div>
+        <PointerTrail className="home-hero cm-surface--spotlight">
+          <CarameloIsotype className="home-hero__badge" size={56} decorative interactive />
           <span className="home-hero__eyebrow">UM CARA CARAMELO • LABORATÓRIO DE INTERAÇÃO</span>
           <h1 className="home-hero__title font-display">BIBLIOTECA DE FERRAMENTAS</h1>
           <p className="home-hero__lead">
@@ -147,7 +147,7 @@ export function LibraryHome() {
           <span className="cm-handwritten home-hero__quote">
             "menos ferramenta, mais sistema."
           </span>
-        </div>
+        </PointerTrail>
       </div>
     );
   }

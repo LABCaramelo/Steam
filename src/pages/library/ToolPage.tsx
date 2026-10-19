@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { useLibrary } from "../../api";
 import { AppArt } from "../../components/AppArt";
 import { IconPlay, IconStar } from "../../components/Icons";
+import { PointerTrail } from "../../components/PointerTrail";
 import type { LibraryApp } from "../../types";
 import { usePlayAction } from "./play";
 
@@ -13,11 +14,11 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
 
   return (
     <div className="appdetails tool-details">
-      <div className="appdetails__hero">
+      <PointerTrail className="appdetails__hero">
         <AppArt app={app} kind="hero" className="appdetails__hero-img" fallbackLabel={false} />
         <div className="appdetails__hero-fade" />
         <h1 className="appdetails__title">{app.name}</h1>
-      </div>
+      </PointerTrail>
       <div className="playbar tool-details__actions">
         <button className="playbar__btn playbar__btn--play" onClick={play.onClick}>
           <IconPlay size={18} /> ABRIR

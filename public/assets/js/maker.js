@@ -57,7 +57,7 @@ export function initMaker(getLenis = () => null) {
   if (buttons.length !== 7 || controls.textContent !== originalText) return { destroy() {} };
   credits.replaceChildren(controls);
   credits.setAttribute('role', 'group');
-  credits.setAttribute('aria-label', 'Disciplinas de Luiz');
+  credits.setAttribute('aria-label', 'Do design à curiosidade');
   wordStage.replaceChildren(...words);
 
   // Measure only on layout/font changes. Each word fills its available stage

@@ -1,6 +1,12 @@
-const TARGETS = '#hero-track, #contato, .site-footer';
+const TARGETS = '#hero-track, #comunidade, .site-footer';
 const CONTROLS = 'a,button,input,select,textarea,summary,[role="button"],[contenteditable="true"],[tabindex]:not([tabindex="-1"])';
-const POOL_SIZE = 8;
+/** As 28 figurinhas canônicas de "rastro mouse.png" (MCP Caramelo · get_brand_asset trail-stickers). */
+const STICKERS = [
+  'cadeira', 'copo', 'lata', 'spray', 'violao', 'bola', 'chinelo', 'onibus', 'capacete', 'poste',
+  'luminaria', 'rolo', 'caderno', 'camera', 'bilhete', 'caneca', 'folha', 'planta', 'raio', 'coracao',
+  'olho', 'arcos', 'caramelo', 'palmeira', 'estrelas', 'coroa', 'seta', 'conexoes'
+].map(id => `/caramelo/stickers/${id}.webp`);
+const POOL_SIZE = STICKERS.length;
 const MIN_DISTANCE = 64;
 const MIN_INTERVAL = 85;
 const LIFETIME = 1100;
@@ -9,10 +15,8 @@ const LIFETIME = 1100;
 export function initPointerTrail() {
   const sections = [...document.querySelectorAll(TARGETS)];
   const root = document.documentElement;
-  const posters = [...new Set([...document.querySelectorAll('#work video[poster]')]
-    .map(video => video.getAttribute('poster')))];
   const disabled = new URLSearchParams(location.search).get('motion') === 'off';
-  if (disabled || !sections.length || !posters.length || !Element.prototype.animate) return { destroy() {} };
+  if (disabled || !sections.length || !Element.prototype.animate) return { destroy() {} };
 
   const fine = matchMedia('(hover: hover) and (pointer: fine)');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -32,7 +36,8 @@ export function initPointerTrail() {
       image.alt = '';
       image.draggable = false;
       image.decoding = 'async';
-      image.src = posters[index % posters.length];
+      // Baixadas só quando o mouse entra numa área com rastro.
+      image.dataset.src = STICKERS[index % STICKERS.length];
       image.dataset.active = 'false';
       layer.append(image);
       return { image, animation: null };
@@ -47,6 +52,7 @@ export function initPointerTrail() {
     let sequence = 0;
     let suspendedUntil = 0;
     let focused = true;
+    let loaded = false;
 
     const blocked = () => document.hidden || !focused || Boolean(
       document.querySelector('#contact-dialog.active, #mobile-drawer.active'));
@@ -73,6 +79,10 @@ export function initPointerTrail() {
 
     function enter(next) {
       clear();
+      if (!loaded) {
+        loaded = true;
+        slots.forEach(slot => { slot.image.src = slot.image.dataset.src; });
+      }
       section = next;
       const rect = next.getBoundingClientRect();
       const header = document.getElementById('site-header')?.getBoundingClientRect();
@@ -99,7 +109,7 @@ export function initPointerTrail() {
       if (Math.hypot(dx, dy) < MIN_DISTANCE || now - last.time < MIN_INTERVAL) return;
 
       const width = Math.min(196, Math.max(130, innerWidth * .135));
-      const height = width * 10 / 16;
+      const height = width;
       if (!bounds || bounds.bottom - bounds.top < height + 24 || bounds.right - bounds.left < width) return;
       const x = Math.max(bounds.left + width / 2, Math.min(bounds.right - width / 2, point.x));
       const y = Math.max(bounds.top + height / 2 + 12, Math.min(bounds.bottom - height / 2 - 12, point.y));
