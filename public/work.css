@@ -3,17 +3,20 @@
 .work-stage{position:relative}
 .work-stage .work-grid{display:grid;grid-template-columns:1fr;gap:64px}
 .work-stage .project-card{display:block;min-width:0;cursor:default}
-.work-stage .project-media{aspect-ratio:16/9;background:#0c0c10;border-radius:8px}
+.work-stage .project-media{aspect-ratio:16/9;background:rgb(var(--cm-stage));border-radius:8px}
 .work-stage .project-media video{width:100%;height:100%;object-fit:contain;transform:none;transition:none}
 .work-stage .project-card:hover video{transform:none}
 .work-stage .project-caption{padding-top:18px;gap:20px;align-items:baseline}
 .work-stage .project-caption h3{font:700 clamp(19px,2.15vw,30px)/1.25 var(--display);letter-spacing:-.045em}
-.work-stage .project-caption>span{font-size:10px;color:#b5b0ae}
+.work-stage .project-caption>span{font-size:10px;color:rgb(var(--cm-fg-muted))}
 .work-toolbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px;min-height:36px;font-size:10px;letter-spacing:.08em}
-.work-project-status{display:flex;align-items:center;gap:16px;color:#a49a91}
+.work-project-status{display:flex;align-items:center;gap:16px;color:rgb(var(--cm-fg-muted))}
 .work-counter{font-size:12px;font-weight:600;color:var(--cream);font-variant-numeric:tabular-nums}
 .work-selection{display:flex;gap:6px}
-.work-selection button{width:40px;height:34px;border:1px solid var(--line);border-radius:4px;background:transparent;font-size:10px;transition:background .2s,color .2s}
+.work-selection button{width:40px;height:34px;border:1px solid var(--line);border-radius:4px;background:transparent;font-size:10px;transition:background-color var(--cm-dur-micro) var(--cm-ease-out),color var(--cm-dur-micro) var(--cm-ease-out),transform var(--cm-dur-micro) var(--cm-ease-out)}
+.work-selection button:hover{background:rgb(var(--cm-fg) / .08)}
+.work-selection button:active{transform:scale(.97);transition-duration:var(--cm-dur-instant)}
+.work-selection button:focus-visible{outline:2px solid rgb(var(--cm-focus));outline-offset:2px}
 .work-selection button[aria-pressed='true']{background:var(--orange);border-color:var(--orange);color:var(--ink)}
 .work-play-toggle{background:transparent;border:1px solid var(--line);border-radius:4px;padding:9px 13px;min-height:36px;font-size:10px}
 .work-play-toggle:hover{border-color:var(--cream)}
@@ -30,7 +33,7 @@ html:not([data-motion]) .work-toolbar{display:none}
 .work-stage[data-work-mode='scrub'] .work-grid{position:relative;display:block;flex:1;min-height:0}
 /* Two quiet edges establish the deck without loading another film. */
 .work-stage[data-work-mode='scrub'] .work-grid::before,
-.work-stage[data-work-mode='scrub'] .work-grid::after{content:'';position:absolute;inset:0 0 72px;border:1px solid #fff4e829;border-radius:8px;background:#17171c;pointer-events:none}
+.work-stage[data-work-mode='scrub'] .work-grid::after{content:'';position:absolute;inset:0 0 72px;border:1px solid rgb(var(--cm-fg) / .16);border-radius:8px;background:rgb(var(--cm-surface-2));pointer-events:none}
 .work-stage[data-work-mode='scrub'] .work-grid::before{transform:translateY(17px) scaleX(.982);opacity:.8}
 .work-stage[data-work-mode='scrub'] .work-grid::after{transform:translateY(29px) scaleX(.962);opacity:.5}
 .work-stage[data-work-mode='scrub'] .project-card{position:absolute;inset:0;display:flex;flex-direction:column;height:100%;pointer-events:none}
@@ -51,7 +54,7 @@ html:not([data-motion]) .work-toolbar{display:none}
   .work-play-toggle{min-height:44px;font-size:11px}
 }
 /* The intro speaks to beginners before the showcase starts. */
-.work-intro-copy{display:grid;justify-items:start;gap:16px;max-width:390px;color:#b5b0ae;font-size:15px;line-height:1.65}
+.work-intro-copy{display:grid;justify-items:start;gap:16px;max-width:390px;color:rgb(var(--cm-fg-muted));font-size:15px;line-height:1.65}
 .work-intro-copy .pill{margin-top:10px}
 @media(max-width:999px){
   .work-intro{flex-direction:column;align-items:start;gap:28px}
@@ -61,3 +64,4 @@ html:not([data-motion]) .work-toolbar{display:none}
   .work-intro{gap:22px}
   .work-intro-copy{font-size:13px}
 }
+@media(prefers-reduced-motion:reduce){.work-selection button{transition:none}.work-selection button:active{transform:none}}

@@ -9,9 +9,9 @@
 .scroll-progress-fill{width:100%;height:100%;background:var(--orange);transform:scaleX(0);transform-origin:left}
 html[data-motion-cinematic] .scroll-progress{display:block}
 .scene-nav{display:none;position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:35;flex-direction:column;align-items:center;gap:5px}
-.scene-nav::before{content:'';position:absolute;top:14px;bottom:14px;width:1px;left:50%;background:rgba(255,244,232,.12);pointer-events:none}
+.scene-nav::before{content:'';position:absolute;top:14px;bottom:14px;width:1px;left:50%;background:rgb(var(--cm-fg) / .12);pointer-events:none}
 .scene-dot{display:grid;place-items:center;position:relative;width:22px;height:24px}
-.scene-dot i{display:block;position:relative;z-index:1;width:4px;height:4px;background:#928b86;border-radius:9px;transition:height .3s,background .3s}
+.scene-dot i{display:block;position:relative;z-index:1;width:4px;height:4px;background:rgb(var(--cm-fg-dim));border-radius:9px;transition:height .3s,background .3s}
 .scene-dot[aria-current='location'] i{height:18px;background:var(--orange)}
 html:is([data-active-scene='sobre'],[data-active-scene='comunidade']) .scene-dot[aria-current='location'] i,
 html:is([data-active-scene='sobre'],[data-active-scene='comunidade']) .scroll-progress-fill{background:var(--ink)}

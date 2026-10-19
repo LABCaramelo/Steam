@@ -2,7 +2,7 @@
    natural width and the films take the rest of the row. */
 .hero-section{
   padding:136px 0 62px;
-  background-image:radial-gradient(rgba(255,244,232,.1) .65px,transparent .8px);
+  background-image:radial-gradient(rgb(var(--cm-fg) / .1) .65px,transparent .8px);
   background-size:56px 56px;
 }
 .hero-section>.container{width:min(1500px,calc(100% - 96px))}
@@ -15,14 +15,14 @@
 /* "COMECE COM UMA" is ~9.2em wide: the size keeps it inside its row at every width. */
 .hero-section .hero-word-first,.hero-section .hero-word-second{font-size:calc(7.5vw - 9px)}
 .hero-section .hero-word sup{font-size:.18em;margin-left:.1em;top:.25em}
-.hero-section .hero-film{display:block;position:relative;overflow:hidden;border-radius:10px;height:clamp(116px,12.35vw,188px);background:#20252a}
+.hero-section .hero-film{display:block;position:relative;overflow:hidden;border-radius:10px;height:clamp(116px,12.35vw,188px);background:rgb(var(--cm-surface-3))}
 .hero-section .hero-film video{width:100%;height:100%;object-fit:cover}
 .hero-section .hero-film-main video{object-position:60% center}
 .hero-section .hero-film-wonder video{object-position:46% center}
 .hero-section .hero-film-motion video{object-position:50% center}
 .hero-section .hero-preview-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;min-width:0}
 .hero-section .hero-bottom{display:grid;grid-template-columns:1.4fr 1fr;align-items:center;gap:36px;padding:40px 0 28px}
-.hero-section .hero-bottom>p{grid-column:2;grid-row:1;justify-self:end;color:#a9a29c;font-size:13px;line-height:1.65;max-width:330px}
+.hero-section .hero-bottom>p{grid-column:2;grid-row:1;justify-self:end;color:rgb(var(--cm-fg-muted));font-size:13px;line-height:1.65;max-width:330px}
 .hero-section .hero-cta-group{grid-column:1;grid-row:1;gap:14px}
 .hero-section .hero-cta-group .pill{min-width:218px;min-height:58px;font-size:12px}
 .hero-section .hero-footnote{border:0;padding-top:9px}
