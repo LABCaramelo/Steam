@@ -508,3 +508,79 @@ body:not([data-workshop-ready]) .experience-switch { display: none; }
   .curriculum-sidebar { position: static; }
   .section-space { padding-block: 35px; }
 }
+
+/* Microinterações de @caramelo/design-system (caramelo/styles.css + assets/js/caramelo-interactions.js). */
+.header-actions { display: flex; align-items: center; gap: 14px; }
+.header-actions .cm-theme-toggle { border-radius: 50%; background: transparent; border-color: var(--line); box-shadow: none; color: var(--cream); }
+/* magnetic-fill: o espectro sobe por baixo do rótulo e o botão segue o cursor. */
+.button.cm-btn--fill { position: relative; isolation: isolate; overflow: hidden; --cm-btn-fill: var(--cm-spectrum-soft); --cm-btn-fill-fg: #101014; }
+.button.cm-magnetic { translate: var(--cm-mag-x, 0px) var(--cm-mag-y, 0px); transition: box-shadow .2s, background .2s, color .2s, translate var(--cm-dur-base) var(--cm-ease-out); }
+.button .cm-btn__label { flex: 1; justify-content: space-between; gap: inherit; }
+/* spotlight-tabs: a atmosfera da demonstração troca com o indicador deslizando. */
+.experience-switch .cm-tabs__tab { min-height: 0; height: 36px; padding: 0 16px; border: 0; background: transparent; color: rgb(var(--cm-fg-dim)); font-size: 10px; }
+.experience-switch .cm-tabs__tab[aria-pressed="true"] { background: transparent; color: rgb(var(--cm-fg)); }
+/* spotlight-surface: os cartões respondem ao cursor sem se mover. */
+.insight-grid > .cm-surface--spotlight, .day-grid .cm-surface--spotlight, .offer-card.cm-surface--spotlight { position: relative; isolation: isolate; }
+/* copy-swap: o e-mail de contato também pode ser copiado. */
+.contact-copy { display: flex; align-items: center; justify-content: center; gap: 10px; margin: -10px 0 25px; font-size: 11px; color: var(--muted); }
+.contact-copy .cm-copy { height: 30px; background: transparent; border-color: var(--line); color: var(--cream); }
+/* pointer-tilt: o cartaz do Luiz inclina até 3.5°; a entrada no scroll continua no .maker-art. */
+.maker-art-space { min-width: 0; }
+
+/* Tema claro (theme-reveal): as mesmas cenas sobre Warm Cream. As ilustrações mantêm as próprias cores. */
+:root[data-caramelo-theme="light"] { --ink: #fffaf4; --cream: #101014; --muted: #5e5a55; --line: #1010142b; color-scheme: light; }
+:root[data-caramelo-theme="light"] ::selection { color: #101014; }
+:root[data-caramelo-theme="light"] .button:hover { background: #2b2420; }
+:root[data-caramelo-theme="light"] .ws-header { background: #fffaf4f5; border-bottom-color: #1010140f; }
+:root[data-caramelo-theme="light"] .ws-header nav { color: #46423e; }
+:root[data-caramelo-theme="light"] .hero-art::after { background: linear-gradient(90deg, #fffaf4fa 5%, #fffaf4eb 34%, #fffaf4b8 49%, #fffaf444 66%, transparent 85%), linear-gradient(0deg, var(--ink), transparent 22%); }
+:root[data-caramelo-theme="light"] :is(.hero-browser-screen, .comparison-divider span) { background: #fff4e8; color: #101014; }
+:root[data-caramelo-theme="light"] :is(.floating-note, .comparison-after strong, .route-line i:nth-child(3), .art-type em, .art-interaction, .visual-copy) { color: #fff4e8; }
+:root[data-caramelo-theme="light"] :is(.comparison-divider, .motion-frame:nth-child(3), .visual-movement > span:nth-child(3)) { background: #fff4e8; }
+:root[data-caramelo-theme="light"] :is(.art-type, .art-devices, .offer-cover, .maker-art) { color: #101014; }
+:root[data-caramelo-theme="light"] .hero-description { color: #2e2c2a; }
+:root[data-caramelo-theme="light"] .hero-lot { border-left-color: #10101449; }
+:root[data-caramelo-theme="light"] :is(.hero-lot span, .hero-rail) { color: #6b6862; }
+:root[data-caramelo-theme="light"] .hero-rail { border-top-color: #10101418; }
+:root[data-caramelo-theme="light"] .hero-hand { color: #8a5a3c; }
+:root[data-caramelo-theme="light"] .comparison-control { color: #5e5a55; }
+:root[data-caramelo-theme="light"] .insight-grid > div { background: #fff1e3; }
+:root[data-caramelo-theme="light"] .comparison-section .insight-grid > div { background: color-mix(in srgb, #fff1e3, var(--orange) calc(var(--experience, .5) * 12%)); border-color: color-mix(in srgb, #1010142b, var(--orange) calc(var(--experience, .5) * 45%)); }
+:root[data-caramelo-theme="light"] :is(.insight-grid span, .audience-list article > span) { color: #ab3b00; }
+:root[data-caramelo-theme="light"] .manifesto { background: #ffeedd; }
+:root[data-caramelo-theme="light"] .manifesto .wrap > p:not(.eyebrow) { color: #4a3f38; }
+:root[data-caramelo-theme="light"] :is(.story-mark, .day-date, .lot-label, .event-details dt) { color: #7a6455; }
+:root[data-caramelo-theme="light"] .curriculum { background: #f7ecdf; border-block-color: #10101413; }
+:root[data-caramelo-theme="light"] .curriculum-sidebar nav { border-left-color: #10101426; }
+:root[data-caramelo-theme="light"] .curriculum-sidebar nav a { color: #5e5a55; }
+:root[data-caramelo-theme="light"] .curriculum-sidebar nav a[aria-current] { color: var(--cream); }
+:root[data-caramelo-theme="light"] :is(.curriculum-sidebar .hand, .offer .hand) { color: #8a6f5c; }
+:root[data-caramelo-theme="light"] .schedule { background: #f7ecdf; }
+:root[data-caramelo-theme="light"] .day-grid article { background: #fff1e3; }
+:root[data-caramelo-theme="light"] .day-grid article:nth-child(2) { background: #f1efff; }
+:root[data-caramelo-theme="light"] .day-grid article:nth-child(2) em { color: #5b3fe0; }
+:root[data-caramelo-theme="light"] :is(.day-grid article > p, .faq-items details > p) { color: #4a4542; }
+:root[data-caramelo-theme="light"] :is(.schedule-note, .enrollment-note) { color: #5e5a55; }
+:root[data-caramelo-theme="light"] .offer { background: radial-gradient(ellipse at 95% 80%, #ffd2ad 0%, transparent 60%), #fff4e8; }
+:root[data-caramelo-theme="light"] .offer-benefits li { color: #3a3532; }
+:root[data-caramelo-theme="light"] .offer-card { background: #fffaf4; border-color: #e0b48f; box-shadow: 0 30px 80px #6b43132a; }
+:root[data-caramelo-theme="light"] .lot-steps > span { border-color: #10101425; color: #6b5a4c; }
+:root[data-caramelo-theme="light"] .lot-steps > span.current { color: #ab3b00; }
+:root[data-caramelo-theme="light"] .faq { border-top-color: #10101417; }
+:root[data-caramelo-theme="light"] .final-section { background: #ffeedd; }
+:root[data-caramelo-theme="light"] .final-section .wrap > p:not(.eyebrow) { color: #3a3532; }
+:root[data-caramelo-theme="light"] .final-section .hand { color: #a5562a; }
+:root[data-caramelo-theme="light"] .ws-footer { border-top-color: #10101419; }
+:root[data-caramelo-theme="light"] :is(.ws-footer p, .ws-footer .wrap > a:last-child) { color: #6b6862; }
+@media (min-width: 1000px) and (min-height: 700px) and (hover: hover) and (pointer: fine) {
+  :root[data-caramelo-theme="light"] body[data-workshop-motion="full"] .manifesto-scene { background: radial-gradient(ellipse at center, #ffd9b8 0%, #ffeedd 70%); }
+  :root[data-caramelo-theme="light"] body[data-workshop-motion="full"] .story-count { color: #7a6455; }
+  :root[data-caramelo-theme="light"] body[data-workshop-motion="full"] .story-progress { background: #10101425; }
+  :root[data-caramelo-theme="light"] body[data-workshop-motion="full"] .story-card { background: radial-gradient(ellipse at 90% 30%, #ffd8b5, #fff1e3 70%); }
+  :root[data-caramelo-theme="light"] body[data-workshop-motion="full"] .story-card:nth-child(2) { background: radial-gradient(ellipse at 90% 30%, #e6dcff, #f6f2ff 70%); }
+  :root[data-caramelo-theme="light"] body[data-workshop-motion="full"] .story-card:nth-child(3) { background: radial-gradient(ellipse at 90% 30%, #ffcfa3, #fff1e3 70%); }
+  :root[data-caramelo-theme="light"] .visual-intention > span { background: #fffaf4; color: #3a2c22; }
+}
+@media (max-width: 900px) {
+  :root[data-caramelo-theme="light"] .hero-art::after { background: linear-gradient(180deg, #fffaf4 0%, #fffaf4e6 24%, #fffaf4bb 48%, #fffaf422 73%, var(--ink) 100%); }
+}

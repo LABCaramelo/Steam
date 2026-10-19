@@ -114,7 +114,7 @@
     article.dataset.promptId = item.id;
     const colorIndex = [...String(item.id)].reduce((sum, letter) => sum + letter.charCodeAt(0), 0) % GLOW_GRADIENTS.length;
     article.style.setProperty('--card-gradient', GLOW_GRADIENTS[colorIndex]);
-    const shell = node('div', 'card-shell');
+    const shell = node('div', 'card-shell cm-surface--spotlight');
     const visual = node('div', 'card-visual');
     const placeholder = node('span', 'placeholder', (item.type || 'UI').toUpperCase().slice(0, 4));
     placeholder.setAttribute('aria-hidden', 'true');
@@ -162,18 +162,24 @@
     const open = button('card-open', '', () => openPrompt(item));
     open.setAttribute('aria-label', `Abrir prompt: ${item.title}`);
     const copyLabel = node('span', 'copy-label', 'Copiar prompt');
-    const copy = button('button secondary card-copy', '', async () => {
+    copyLabel.dataset.cmCopyLabel = '';
+    const copy = button('button secondary card-copy cm-copy cm-copy--labeled', '', async () => {
       copy.disabled = true;
       copyLabel.textContent = 'Carregando…';
-      try { await copyText(await getPrompt(item), 'Prompt copiado. Agora é fazer do seu jeito.'); }
+      let copied = false;
+      try { copied = await copyText(await getPrompt(item), 'Prompt copiado. Agora é fazer do seu jeito.'); }
       catch { notify('Não foi possível copiar. Abra o prompt para tentar novamente.'); }
-      finally { copy.disabled = false; copyLabel.textContent = 'Copiar prompt'; }
+      finally {
+        copy.disabled = false;
+        copyLabel.textContent = 'Copiar prompt';
+        if (copied) window.CarameloInteractions?.markCopied(copy);
+      }
     });
-    const copyIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    copyIcon.setAttribute('viewBox', '0 0 24 24');
-    copyIcon.setAttribute('aria-hidden', 'true');
-    copyIcon.innerHTML = '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>';
-    copy.append(copyIcon, copyLabel);
+    // copy-swap do @caramelo/design-system: o ícone se dissolve em um check.
+    const copyIcons = node('span', 'cm-copy__icons');
+    copyIcons.setAttribute('aria-hidden', 'true');
+    copyIcons.innerHTML = '<svg class="cm-copy__icon cm-copy__icon--idle" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><svg class="cm-copy__icon cm-copy__icon--done" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>';
+    copy.append(copyIcons, copyLabel);
     copy.setAttribute('aria-label', `Copiar prompt: ${item.title}`);
     actions.append(copy);
     body.append(actions);
@@ -321,12 +327,13 @@
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   });
-  $('copyDialogPrompt').addEventListener('click', () => copyText($('dialogPrompt').textContent, 'Prompt copiado. Agora é fazer do seu jeito.'));
+  const markCopied = element => copied => { if (copied) window.CarameloInteractions?.markCopied(element); };
+  $('copyDialogPrompt').addEventListener('click', () => copyText($('dialogPrompt').textContent, 'Prompt copiado. Agora é fazer do seu jeito.').then(markCopied($('copyDialogPrompt'))));
   $('sharePrompt').addEventListener('click', () => {
     if (!selected) return;
     const url = new URL(location.pathname, location.origin);
     url.searchParams.set('prompt', selected.slug);
-    copyText(url.href, 'Link copiado para compartilhar.');
+    copyText(url.href, 'Link copiado para compartilhar.').then(markCopied($('sharePrompt')));
   });
   document.addEventListener('keydown', event => {
     if (event.key === '/' && !$('promptDialog').open && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {

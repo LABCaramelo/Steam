@@ -1,3 +1,4 @@
+import { FocusField } from "@caramelo/design-system";
 import { useState } from "react";
 import { useLibrary } from "../api";
 import { t } from "../i18n";
@@ -45,10 +46,10 @@ export function FriendsPanel() {
           />
         </div>
       </div>
-      <label className="friends__search">
-        <IconSearch size={14} />
-        <input placeholder={t("SearchFriends")} value={query} onChange={(e) => setQuery(e.target.value)} />
-      </label>
+      <div className="friends__search">
+        <IconSearch size={14} className="field-icon" aria-hidden="true" />
+        <FocusField label={t("SearchFriends")} type="search" value={query} onChange={(e) => setQuery(e.target.value)} />
+      </div>
       <div className="friends__list">
         {(
           [

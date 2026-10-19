@@ -26,3 +26,26 @@ html:not([data-motion]) .iarp-phase-display{display:block;margin-bottom:25px}htm
 .footer-signature{display:grid;justify-items:start;gap:10px}.footer-signature p{margin-top:8px;font-size:13px;color:rgb(var(--cm-fg-muted))}.footer-signature .handwritten{font-size:24px;color:var(--orange);transform:rotate(-3deg);transform-origin:left center}
 @media(max-width:650px){.community-section .contact-bottom{align-items:start;gap:28px}.community-copy p{font-size:13px}.community-copy .community-beats{font-size:19px}.footer-signature .handwritten{font-size:21px}}
 @media(prefers-reduced-motion:reduce){.pill{transition:none}.pill:active{transform:none}}
+
+/* Microinterações de @caramelo/design-system (caramelo/styles.css + assets/js/caramelo-interactions.js). */
+/* As seções creme e laranja continuam claras quando o tema global também é claro. */
+body [data-caramelo-theme="light"]{--ink:rgb(16 16 20);--cream:rgb(255 244 232);--orange:rgb(255 112 26);--line:rgb(255 244 232 / .18);--muted:rgb(139 139 152)}
+/* magnetic-fill nas pílulas: o ímã move a pílula e o preenchimento sobe por baixo do rótulo. */
+.pill.cm-btn--fill{position:relative;isolation:isolate;overflow:hidden}
+.pill.cm-magnetic{translate:var(--cm-mag-x,0px) var(--cm-mag-y,0px);transition:background-color var(--cm-dur-micro) var(--cm-ease-out),box-shadow var(--cm-dur-micro) var(--cm-ease-out),transform var(--cm-dur-micro) var(--cm-ease-out),color var(--cm-dur-micro) var(--cm-ease-out),translate var(--cm-dur-base) var(--cm-ease-out)}
+.pill .cm-btn__label{font-size:inherit;font-weight:inherit;gap:.45em}
+.pill .cm-arrow{font-size:18px;font-weight:400}
+.pill-accent{--cm-btn-fill:#101014;--cm-btn-fill-fg:#fff4e8}
+.pill-outline{--cm-btn-fill:rgb(var(--cm-fg));--cm-btn-fill-fg:rgb(var(--cm-stage))}
+.pill-dark{--cm-btn-fill:var(--cm-spectrum-soft);--cm-btn-fill-fg:#101014}
+/* spotlight-tabs na escolha de projeto: o indicador laranja desliza entre 01 e 04. */
+.work-selection.cm-tabs{padding:0;background:none;border:0;border-radius:0;box-shadow:none}
+.work-selection .cm-tabs__tab{color:var(--cream)}
+.work-selection .cm-tabs__tab[aria-pressed='true']{background:transparent;border-color:transparent;color:#101014}
+.work-selection .cm-tabs__indicator{top:0;bottom:0;border-radius:4px;background:var(--orange);box-shadow:var(--cm-glow-sm)}
+/* spotlight-surface nos três passos do arquivo. */
+.archive-steps.cm-surface--spotlight{position:relative;isolation:isolate}
+.community-actions{display:flex;flex-direction:column;align-items:flex-end;gap:12px;flex-shrink:0}
+.community-actions .cm-copy{background:rgb(var(--cm-surface-1));color:rgb(var(--cm-fg-2))}
+.header-actions .cm-theme-toggle{border-radius:99px;background:transparent;border-color:var(--line);box-shadow:none;color:var(--cream)}
+@media(max-width:650px){.community-actions{align-items:flex-start}}

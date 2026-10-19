@@ -1,0 +1,49 @@
+{
+  "provider": "Google Fonts",
+  "css": "https://fonts.googleapis.com/css2?family=Montserrat:wght@400..900&family=Inter:wght@400..800&family=Covered+By+Your+Grace&display=swap",
+  "downloaded": "2026-10-07",
+  "fonts": [
+    {
+      "family": "Covered By Your Grace",
+      "subset": "latin-ext",
+      "file": "covered-by-your-grace-latin-ext.woff2",
+      "bytes": 9164,
+      "source": "https://fonts.gstatic.com/s/coveredbyyourgrace/v17/QGYwz-AZahWOJJI9kykWW9mD6opopoqXSOSEHwgsm6Y.woff2"
+    },
+    {
+      "family": "Covered By Your Grace",
+      "subset": "latin",
+      "file": "covered-by-your-grace-latin.woff2",
+      "bytes": 16320,
+      "source": "https://fonts.gstatic.com/s/coveredbyyourgrace/v17/QGYwz-AZahWOJJI9kykWW9mD6opopoqXSOSEEQgs.woff2"
+    },
+    {
+      "family": "Inter",
+      "subset": "latin-ext",
+      "file": "inter-latin-ext.woff2",
+      "bytes": 85068,
+      "source": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2"
+    },
+    {
+      "family": "Inter",
+      "subset": "latin",
+      "file": "inter-latin.woff2",
+      "bytes": 48256,
+      "source": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2"
+    },
+    {
+      "family": "Montserrat",
+      "subset": "latin-ext",
+      "file": "montserrat-latin-ext.woff2",
+      "bytes": 70688,
+      "source": "https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459Wdhyzbi.woff2"
+    },
+    {
+      "family": "Montserrat",
+      "subset": "latin",
+      "file": "montserrat-latin.woff2",
+      "bytes": 37956,
+      "source": "https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2"
+    }
+  ]
+}

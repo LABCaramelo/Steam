@@ -1,3 +1,4 @@
+import { IconArrowRight, MagneticButton, TiltSurface } from "@caramelo/design-system";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { artUrl, useLibrary } from "../../api";
@@ -124,21 +125,21 @@ export function LibraryHome() {
     return (
       <div className="home home--empty-canvas">
         <PointerTrail className="home-hero cm-surface--spotlight">
-          <CarameloIsotype className="home-hero__badge" size={56} decorative interactive />
-          <span className="home-hero__eyebrow">UM CARA CARAMELO • LABORATÓRIO DE INTERAÇÃO</span>
-          <h1 className="home-hero__title font-display">BIBLIOTECA DE FERRAMENTAS</h1>
-          <p className="home-hero__lead">
-            Todos os jogos foram removidos do projeto. O catálogo está limpo e pronto para receber suas ferramentas, automações e sistemas autorais.
-          </p>
+          {/* pointer-tilt no cartaz; os botões ficam fora do plano que gira. */}
+          <TiltSurface className="home-hero__poster">
+            <CarameloIsotype className="home-hero__badge" size={56} decorative interactive />
+            <span className="home-hero__eyebrow">UM CARA CARAMELO • LABORATÓRIO DE INTERAÇÃO</span>
+            <h1 className="home-hero__title font-display">BIBLIOTECA DE FERRAMENTAS</h1>
+            <p className="home-hero__lead">
+              Todos os jogos foram removidos do projeto. O catálogo está limpo e pronto para receber suas ferramentas, automações e sistemas autorais.
+            </p>
+          </TiltSurface>
           <div className="home-hero__actions">
+            <MagneticButton variant="accent" size="lg" icon={<IconArrowRight />} onClick={() => nav("/store")}>
+              EXPLORAR CATÁLOGO
+            </MagneticButton>
             <button
-              className="btn btn--primary cm-spectrum-trigger"
-              onClick={() => nav("/store")}
-            >
-              <span className="cm-glitch" data-text="EXPLORAR CATÁLOGO">EXPLORAR CATÁLOGO</span>
-            </button>
-            <button
-              className="btn btn--ghost"
+              className="btn btn--ghost cm-glitch"
               onClick={() => nav("/library/collections")}
             >
               COLEÇÕES
@@ -161,7 +162,7 @@ export function LibraryHome() {
         </h2>
         {recent.length === 0 ? (
           firstTool?.tool ? (
-            <div className="home-tool-feature">
+            <div className="home-tool-feature cm-surface--spotlight">
               <Link className="home-tool-feature__art" to={`/library/app/${firstTool.appid}`} aria-label={`Conhecer ${firstTool.name}`}>
                 <AppArt app={firstTool} kind="header" />
               </Link>
@@ -169,7 +170,17 @@ export function LibraryHome() {
                 <span className="tool-details__eyebrow">SUA PRIMEIRA FERRAMENTA</span>
                 <h2>{firstTool.name}</h2>
                 <p>{firstTool.tool.description}</p>
-                <Link className="btn btn--primary" to={firstTool.tool.launchPath}>Abrir biblioteca ↗</Link>
+                <MagneticButton
+                  variant="accent"
+                  href={firstTool.tool.launchPath}
+                  icon={<IconArrowRight />}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    nav(firstTool.tool!.launchPath);
+                  }}
+                >
+                  Abrir biblioteca
+                </MagneticButton>
               </div>
             </div>
           ) : <p className="muted">Nenhuma atividade registrada ainda.</p>
@@ -251,7 +262,7 @@ export function LibraryHome() {
           />
         </div>
         {apps.length === 0 ? (
-          <div className="home__empty cm-surface--spotlight" style={{ padding: "48px 24px", textAlign: "center", background: "rgba(24, 24, 29, 0.4)", borderRadius: "var(--cm-radius-lg)", border: "1px dashed rgb(var(--cm-line))", marginTop: "16px" }}>
+          <div className="home__empty cm-surface--spotlight" style={{ padding: "48px 24px", textAlign: "center", background: "rgb(var(--cm-surface-2) / 0.4)", borderRadius: "var(--cm-radius-lg)", border: "1px dashed rgb(var(--cm-line))", marginTop: "16px" }}>
             <p className="font-display" style={{ color: "rgb(var(--cm-fg))", fontSize: "18px", fontWeight: 800, marginBottom: "8px", letterSpacing: "-0.03em" }}>NENHUMA FERRAMENTA NO CATÁLOGO</p>
             <p className="muted" style={{ fontSize: "14px", maxWidth: "460px", margin: "0 auto", lineHeight: "1.6" }}>
               Todos os jogos foram removidos do projeto. O catálogo do LAB está limpo e pronto para o cadastro das suas ferramentas.

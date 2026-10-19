@@ -1,3 +1,4 @@
+import { FocusField } from "@caramelo/design-system";
 import { useMemo, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useDownloads, useLibrary, useRun } from "../../api";
@@ -103,11 +104,11 @@ export function Sidebar({ onContext }: { onContext: (t: ContextTarget) => void }
         </div>
       </div>
 
-      <label className="sidebar__search">
-        <IconSearch size={14} />
-        <input placeholder={t("GameList_Search")} value={query} onChange={(e) => setQuery(e.target.value)} />
-        <IconFilter size={14} className="sidebar__search-filter" />
-      </label>
+      <div className="sidebar__search">
+        <IconSearch size={14} className="field-icon" aria-hidden="true" />
+        <FocusField label={t("GameList_Search")} type="search" value={query} onChange={(e) => setQuery(e.target.value)} />
+        <IconFilter size={14} className="sidebar__search-filter" aria-hidden="true" />
+      </div>
 
       <div className="sidebar__list">
         {!snapshot && <div className="sidebar__loading">Carregando biblioteca…</div>}

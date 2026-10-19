@@ -1,3 +1,4 @@
+import { FocusField } from "@caramelo/design-system";
 import { NavLink, useParams } from "react-router-dom";
 import { useLibrary } from "../api";
 import { ModalWindow, Select, Toggle } from "../components/Modal";
@@ -99,10 +100,7 @@ export function AppPropertiesModal({ onClose }: { onClose: () => void }) {
             <dd>{a.developer ?? "—"}</dd>
           </dl>
           <Toggle label="Ativar a sobreposição LAB durante a execução" checked onChange={() => ui.toast("Preferência salva só nesta sessão.")} />
-          <label className="field field--column">
-            <div className="field__label">Opções de inicialização</div>
-            <input className="input mono" placeholder="ex.: -novid -console" />
-          </label>
+          <FocusField containerClassName="field field--column" className="mono" label="Opções de inicialização" hint="Exemplo: -novid -console" spellCheck={false} />
         </>
       );
       break;

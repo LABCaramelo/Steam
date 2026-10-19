@@ -1,11 +1,10 @@
 import { useEffect, useRef } from "react";
 import { Navigate, Route, Routes, useLocation, useNavigate, type Location } from "react-router-dom";
 import { useLibrary } from "./api";
+import { AppHeader } from "./components/AppHeader";
 import { BottomBar } from "./components/BottomBar";
 import { FriendsPanel } from "./components/FriendsPanel";
 import { ModalWindow } from "./components/Modal";
-import { SuperNav } from "./components/SuperNav";
-import { TitleBar } from "./components/TitleBar";
 import { IconMark } from "./components/Icons";
 import { AppPropertiesModal } from "./pages/AppProperties";
 import { CommunityPage } from "./pages/Community";
@@ -41,8 +40,7 @@ export function App() {
 
   return (
     <div className="client">
-      <TitleBar />
-      <SuperNav />
+      <AppHeader />
       <div className="client__body">
         <Routes location={background}>
           <Route path="/" element={<StartRedirect />} />

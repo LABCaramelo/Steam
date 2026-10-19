@@ -1,3 +1,4 @@
+import { MagneticButton, TiltSurface } from "@caramelo/design-system";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useLibrary } from "../../api";
@@ -20,9 +21,9 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
         <h1 className="appdetails__title">{app.name}</h1>
       </PointerTrail>
       <div className="playbar tool-details__actions">
-        <button className="playbar__btn playbar__btn--play" onClick={play.onClick}>
+        <MagneticButton className="playbar__btn playbar__btn--play" onClick={play.onClick}>
           <IconPlay size={18} /> ABRIR
-        </button>
+        </MagneticButton>
         <div className="playbar__stats">
           <div className="playbar__stat">
             <span className="playbar__stat-label">Disponibilidade</span>
@@ -42,13 +43,15 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
         <div className="appdetails__col appdetails__col--main">
           <section className="panel tool-details__intro">
             <span className="tool-details__eyebrow">ACERVO CRIATIVO / ACESSO LIVRE</span>
-            <h2>Menos página em branco.<br />Mais ideias em ação.</h2>
+            <TiltSurface max={2.5}>
+              <h2>Menos página em branco.<br />Mais ideias em ação.</h2>
+            </TiltSurface>
             <p>{app.tool?.description}</p>
             <div className="tool-details__features">
-              <div><h3>Encontre sua referência</h3><p>Busque por nome, assunto ou tecnologia e filtre o acervo por categoria.</p></div>
-              <div><h3>Veja antes de criar</h3><p>Explore as prévias de interfaces, efeitos e experiências.</p></div>
-              <div><h3>Guarde suas ideias</h3><p>Salve seus prompts favoritos para voltar a eles neste navegador.</p></div>
-              <div><h3>Copie e faça do seu jeito</h3><p>Abra o prompt completo, copie o texto e compartilhe a referência.</p></div>
+              <div className="cm-surface--spotlight"><h3>Encontre sua referência</h3><p>Busque por nome, assunto ou tecnologia e filtre o acervo por categoria.</p></div>
+              <div className="cm-surface--spotlight"><h3>Veja antes de criar</h3><p>Explore as prévias de interfaces, efeitos e experiências.</p></div>
+              <div className="cm-surface--spotlight"><h3>Guarde suas ideias</h3><p>Salve seus prompts favoritos para voltar a eles neste navegador.</p></div>
+              <div className="cm-surface--spotlight"><h3>Copie e faça do seu jeito</h3><p>Abra o prompt completo, copie o texto e compartilhe a referência.</p></div>
             </div>
           </section>
         </div>

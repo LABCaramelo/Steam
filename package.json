@@ -9,9 +9,11 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "node --test --experimental-strip-types server/*.test.ts"
+    "test": "node --test --experimental-strip-types server/*.test.ts",
+    "caramelo:sync": "node scripts/sync-caramelo.mjs"
   },
   "dependencies": {
+    "@caramelo/design-system": "file:vendor/caramelo-design-system-2.0.0.tgz",
     "@supabase/supabase-js": "^2.118.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
