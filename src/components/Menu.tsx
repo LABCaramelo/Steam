@@ -32,9 +32,9 @@ export function Menu({ trigger, items, align = "left", className }: Props) {
 
   return (
     <div className={`menu ${className ?? ""}`} ref={ref}>
-      <div className="menu__trigger" onClick={() => setOpen((o) => !o)}>
+      <button type="button" className="menu__trigger" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
         {trigger(open)}
-      </div>
+      </button>
       {open && (
         <div className={`menu__popup menu__popup--${align}`} role="menu">
           {items.map((it, i) =>
