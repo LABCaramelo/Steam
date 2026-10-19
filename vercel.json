@@ -2,10 +2,12 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "redirects": [
+    { "source": "/prompts", "destination": "/tools/prompt-library/index.html", "permanent": true }
+  ],
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/aula-head", "destination": "/aula-head/index.html" },
+    { "source": "/aula-head/aula-01", "destination": "/aula-head/index.html" },
+    { "source": "/(.*)", "destination": "/app.html" }
   ]
 }

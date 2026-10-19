@@ -8,7 +8,13 @@ npm run dev
 
 Abra `http://127.0.0.1:5180`. `npm run build` compila a aplicação e `npm test` verifica as transições de download.
 
-A primeira ferramenta do LAB é a **Biblioteca de prompts**, disponível na página inicial, na lista lateral e na Loja. O botão **Abrir** carrega o acervo dentro do LAB em `/library/app/1/open`. A versão independente fica em `/tools/prompt-library/index.html`.
+## Página inicial
+
+A raiz `/` é a landing page do Um Cara Caramelo, copiada de `LP/` sem build: `public/index.html`, as folhas `public/*.css`, `public/assets/` (GSAP, Lenis, fontes, vídeos), `public/workshop.html` e a apresentação `public/aula-head/`. Os arquivos mantêm os caminhos e bytes da LP; a única mudança é o acesso ao LAB (**Entrar no LAB** no cabeçalho, no menu mobile e no rodapé, apontando para `/library/home`). Retornos de autenticação do Supabase que caírem em `/` são repassados ao LAB. Alterações feitas em `LP/` não chegam aqui automaticamente.
+
+O cliente LAB passa a ser `app.html` e atende `/library`, `/store`, `/community`, `/profile`, `/settings` e `/app`; os demais caminhos sem arquivo também caem nele e redirecionam para `/library/home`. O plugin `siteRoutes` em `vite.config.ts` aplica essas rotas no `dev`/`preview`, e `vercel.json` repete as mesmas regras na produção, incluindo `/aula-head` e o redirecionamento de `/prompts` para a biblioteca de prompts.
+
+A primeira ferramenta do LAB é a **Biblioteca de prompts**, disponível na página inicial do LAB (`/library/home`), na lista lateral e na Loja. O botão **Abrir** carrega o acervo dentro do LAB em `/library/app/1/open`. A versão independente fica em `/tools/prompt-library/index.html`.
 
 A biblioteca preserva o acervo e as interações de `LP/prompts.html`. A API `/api/prompt-library` atende tanto ao Vite local quanto à função Vercel; os metadados são incluídos no projeto e os textos completos e as prévias usam os serviços públicos originais. Favoritos e preferências da biblioteca ficam no armazenamento do navegador. A pasta LP original não é alterada.
 

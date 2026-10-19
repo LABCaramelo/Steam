@@ -1,0 +1,51 @@
+/* Scroll direction layer. Default document remains readable without JavaScript. */
+/* Flex children keep compensating margins from collapsing between title lines. */
+.motion-heading{display:flex;flex-direction:column}
+.motion-line{display:block;overflow:clip;padding:.18em 0;margin:-.18em 0}
+.motion-line-inner,.motion-hero-inner{display:block}
+.motion-media-layer{position:absolute;inset:-6% 0}
+.motion-media-layer>video{width:100%;height:100%;object-fit:cover}
+.scroll-progress{position:fixed;top:var(--header-height);left:0;right:0;height:2px;z-index:42;pointer-events:none;display:none}
+.scroll-progress-fill{width:100%;height:100%;background:var(--orange);transform:scaleX(0);transform-origin:left}
+html[data-motion-cinematic] .scroll-progress{display:block}
+.scene-nav{display:none;position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:35;flex-direction:column;align-items:center;gap:5px}
+.scene-nav::before{content:'';position:absolute;top:14px;bottom:14px;width:1px;left:50%;background:rgba(255,244,232,.12);pointer-events:none}
+.scene-dot{display:grid;place-items:center;position:relative;width:22px;height:24px}
+.scene-dot i{display:block;position:relative;z-index:1;width:4px;height:4px;background:#928b86;border-radius:9px;transition:height .3s,background .3s}
+.scene-dot[aria-current='location'] i{height:18px;background:var(--orange)}
+html:is([data-active-scene='sobre'],[data-active-scene='contato']) .scene-dot[aria-current='location'] i,
+html:is([data-active-scene='sobre'],[data-active-scene='contato']) .scroll-progress-fill{background:var(--ink)}
+.scene-dot:hover i,.scene-dot:focus-visible i{background:var(--cream)}
+.scene-name{pointer-events:none;position:absolute;right:30px;top:50%;transform:translateY(-50%);padding:7px 11px;border:1px solid var(--line);background:var(--ink);border-radius:4px;white-space:nowrap;font-size:10px;opacity:0;transition:opacity .2s}
+.scene-dot:hover .scene-name,.scene-dot:focus-visible .scene-name{opacity:1}
+@media(prefers-reduced-motion:reduce){.scroll-progress,.scene-nav{display:none!important}}
+html[data-motion='reduced'] .scroll-progress,html[data-motion='reduced'] .scene-nav{display:none!important}
+/* Entry masks preserve accents, baseline and the registered mark. */
+html[data-motion-cinematic='desktop'] .hero-word{overflow:clip;padding:.18em 0;margin:-.18em 0}
+/* The route lives inside the method plate; its scroll transform is independent. */
+.method-route{position:relative;display:flex;justify-content:space-between;height:10px;margin-top:18px;isolation:isolate;color:currentColor}
+.method-route::before,.method-route-fill{position:absolute;left:4px;right:4px;top:4px;height:1px;background:currentColor;transform-origin:0% 50%}
+.method-route::before{content:'';opacity:.22}
+.method-route-fill{transform:scaleX(0)}
+.method-route i{width:9px;height:9px;border:1px solid currentColor;border-radius:50%;background:inherit;z-index:1}
+.iarp-stage-box[data-phase='0'] .method-route{--route-fill:0}
+.iarp-stage-box[data-phase='1'] .method-route{--route-fill:.3333}
+.iarp-stage-box[data-phase='2'] .method-route{--route-fill:.6667}
+.iarp-stage-box[data-phase='3'] .method-route{--route-fill:1}
+html[data-scenes='flow'] .method-route-fill{transform:scaleX(var(--route-fill,0));transition:transform .45s ease}
+.iarp-stage-box .method-route i:first-of-type,
+.iarp-stage-box[data-phase='1'] .method-route i:nth-of-type(-n+2),
+.iarp-stage-box[data-phase='2'] .method-route i:nth-of-type(-n+3),
+.iarp-stage-box[data-phase='3'] .method-route i{background:currentColor}
+html[data-motion='full'] .iarp-phase-display.active .iarp-letter-display{animation:method-letter-arrive .36s cubic-bezier(.2,.7,.2,1) both}
+html[data-motion='full'] .iarp-phase-display.active .phase-caption{animation:method-caption-arrive .38s ease both}
+@keyframes method-letter-arrive{from{transform:translateY(12px) scale(.95)}to{transform:translateY(0) scale(1)}}
+@keyframes method-caption-arrive{from{transform:translateY(7px);opacity:.8}to{transform:translateY(0);opacity:1}}
+.contact-section{position:relative;overflow:clip}
+.contact-section>.container{position:relative}
+.contact-identity{position:absolute;right:0;top:45px;width:clamp(120px,13vw,190px);height:auto;transform:rotate(-8deg);pointer-events:none}
+@media(min-width:1000px){.contact-title{font-size:clamp(50px,6.9vw,100px)}}
+@media(max-width:999px){.contact-identity{width:90px;top:40px}.contact-title{font-size:8vw}}
+@media(max-width:650px){.contact-identity{position:static;width:75px;margin:0 0 24px auto}.contact-title{font-size:10.1vw}}
+@media(prefers-reduced-motion:reduce){.method-route{display:none}.contact-identity{transform:none}}
+html[data-motion='reduced'] .method-route,html:not([data-motion]) .method-route{display:none}

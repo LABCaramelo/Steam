@@ -1,0 +1,52 @@
+/* Work is readable in one column before any motion context is created. */
+.work-showcase{--work-count:4;position:relative}
+.work-stage{position:relative}
+.work-stage .work-grid{display:grid;grid-template-columns:1fr;gap:64px}
+.work-stage .project-card{display:block;min-width:0;cursor:default}
+.work-stage .project-media{aspect-ratio:16/9;background:#0c0c10;border-radius:8px}
+.work-stage .project-media video{width:100%;height:100%;object-fit:contain;transform:none;transition:none}
+.work-stage .project-card:hover video{transform:none}
+.work-stage .project-caption{padding-top:18px;gap:20px;align-items:baseline}
+.work-stage .project-caption h3{font:700 clamp(19px,2.15vw,30px)/1.25 var(--display);letter-spacing:-.045em}
+.work-stage .project-caption>span{font-size:10px;color:#b5b0ae}
+.work-toolbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px;min-height:36px;font-size:10px;letter-spacing:.08em}
+.work-project-status{display:flex;align-items:center;gap:16px;color:#a49a91}
+.work-counter{font-size:12px;font-weight:600;color:var(--cream);font-variant-numeric:tabular-nums}
+.work-selection{display:flex;gap:6px}
+.work-selection button{width:40px;height:34px;border:1px solid var(--line);border-radius:4px;background:transparent;font-size:10px;transition:background .2s,color .2s}
+.work-selection button[aria-pressed='true']{background:var(--orange);border-color:var(--orange);color:var(--ink)}
+.work-play-toggle{background:transparent;border:1px solid var(--line);border-radius:4px;padding:9px 13px;min-height:36px;font-size:10px}
+.work-play-toggle:hover{border-color:var(--cream)}
+.work-selection[hidden],.work-play-toggle[hidden]{display:none}
+.work-timeline{display:none;height:2px;background:var(--line);margin-top:18px;overflow:hidden}
+.work-timeline-fill{display:block;width:100%;height:100%;background:var(--orange);transform:scaleX(0);transform-origin:left}
+.work-stage[data-work-mode='flow'] .work-project-status{display:none}
+.work-stage[data-work-mode='flow'] .work-toolbar{position:sticky;top:var(--header-height);z-index:3;justify-content:flex-end;background:var(--ink);padding-block:8px}
+.work-stage[data-work-mode='flow'] .project-card{display:flex;flex-direction:column;justify-content:center;min-height:calc(100svh - var(--header-height) - 80px)}
+html:not([data-motion]) .work-toolbar{display:none}
+.work-showcase[data-work-mode='scrub']{height:calc(var(--work-count)*100svh)}
+.work-stage[data-work-mode='scrub']{position:sticky;top:var(--header-height);height:calc(100svh - var(--header-height));padding:22px 0 18px;display:flex;flex-direction:column}
+.work-stage[data-work-mode='scrub'] .work-toolbar{flex:none}
+.work-stage[data-work-mode='scrub'] .work-grid{position:relative;display:block;flex:1;min-height:0}
+/* Two quiet edges establish the deck without loading another film. */
+.work-stage[data-work-mode='scrub'] .work-grid::before,
+.work-stage[data-work-mode='scrub'] .work-grid::after{content:'';position:absolute;inset:0 0 72px;border:1px solid #fff4e829;border-radius:8px;background:#17171c;pointer-events:none}
+.work-stage[data-work-mode='scrub'] .work-grid::before{transform:translateY(17px) scaleX(.982);opacity:.8}
+.work-stage[data-work-mode='scrub'] .work-grid::after{transform:translateY(29px) scaleX(.962);opacity:.5}
+.work-stage[data-work-mode='scrub'] .project-card{position:absolute;inset:0;display:flex;flex-direction:column;height:100%;pointer-events:none}
+.work-stage[data-work-mode='scrub'] .project-card[data-work-active='true']{pointer-events:auto;will-change:transform}
+.work-stage[data-work-mode='scrub'] .project-media{flex:1;min-height:0;aspect-ratio:auto;width:100%}
+.work-stage[data-work-mode='scrub'] .project-caption{flex:none;position:relative;padding-top:32px;min-height:72px}
+.work-stage[data-work-mode='scrub'] .work-timeline{display:block;flex:none}
+@media(max-width:999px){
+  .work-stage .project-caption h3{font-size:23px}
+  .work-project-status>span:first-child{font-size:8px}
+  .work-toolbar{gap:12px}
+}
+@media(max-width:650px){
+  .work-stage .work-grid{gap:38px}
+  .work-stage .project-caption{gap:12px;padding-top:14px;align-items:start}
+  .work-stage .project-caption h3{font-size:20px}
+  .work-stage .project-caption>span{font-size:8px;white-space:nowrap;padding-top:5px}
+  .work-play-toggle{min-height:44px;font-size:11px}
+}
