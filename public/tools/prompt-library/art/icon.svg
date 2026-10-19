@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Biblioteca de prompts</title>
+  <desc id="desc">Duas fichas sobrepostas com um sinal de prompt em laranja e creme sobre preto.</desc>
+  <rect width="64" height="64" rx="12" fill="#101014"/>
+  <path d="M12 12H45V44H12Z" fill="#ff701a" transform="rotate(-8 28.5 28)"/>
+  <path d="M19 18H53V52H19Z" fill="#fff4e8"/>
+  <path d="m27 28 6 6-6 6m11 0h8" fill="none" stroke="#101014" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M19 18H53V22H19Z" fill="#ff701a"/>
+</svg>

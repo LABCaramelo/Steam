@@ -2,6 +2,7 @@ import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import fs from "node:fs";
 import path from "node:path";
+import { promptLibrary } from "./server/promptLibrary.ts";
 import {
   buildSnapshot,
   findSteamPath,
@@ -32,6 +33,10 @@ function steamDataApi(): Plugin {
     };
 
     if (url.pathname === "/api/library") return json(snapshot(url.searchParams.has("refresh")));
+    if (url.pathname === "/api/prompt-library") {
+      void promptLibrary(req, res).catch(() => json({ error: "Não foi possível consultar o acervo. Tente novamente." }, 500));
+      return;
+    }
 
     let m = url.pathname.match(/^\/api\/art\/(\d+)\/([a-zA-Z]+)$/);
     if (m) {

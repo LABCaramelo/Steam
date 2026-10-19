@@ -3,10 +3,13 @@ import { createDownloadSession, downloadReducer, type DownloadSession, type RunS
 import fallbackSnapshot from "./fallbackSnapshot.json";
 import type { Achievement, ArtKind, LibraryApp, LibrarySnapshot, UserCollection } from "./types";
 import { useAuth } from "./auth";
+import { getRegisteredTool, registerTools, toolArtUrl } from "./toolCatalog";
 
-export const artUrl = (appid: number, kind: ArtKind) => `/api/art/${appid}/${kind}`;
+export const artUrl = (appid: number, kind: ArtKind) => toolArtUrl(appid, kind) ?? `/api/art/${appid}/${kind}`;
 
 export const steamCdnArtUrl = (appid: number, kind: ArtKind) => {
+  const localArt = toolArtUrl(appid, kind);
+  if (localArt) return localArt;
   switch (kind) {
     case "capsule":
       return `https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/${appid}/library_600x900_2x.jpg`;
@@ -105,15 +108,16 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       })
       .then((s: LibrarySnapshot) => {
         if (!s || !Array.isArray(s.apps)) throw new Error("Invalid snapshot format");
-        setSnapshot(s);
+        const registered = registerTools(s);
+        setSnapshot(registered);
         setError(null);
-        const validIds = new Set(s.apps.map((a) => a.appid));
-        const rawCol = loadLocal() ?? s.collections;
+        const validIds = new Set(registered.apps.map((a) => a.appid));
+        const rawCol = loadLocal() ?? registered.collections;
         setCollections(rawCol.map((c) => ({ ...c, appids: c.appids.filter((id) => validIds.has(id)) })));
       })
       .catch(() => {
         // Fallback resiliente para o snapshot embutido quando servido sem backend local (Vercel)
-        const fallback = fallbackSnapshot as unknown as LibrarySnapshot;
+        const fallback = registerTools(fallbackSnapshot as unknown as LibrarySnapshot);
         setSnapshot(fallback);
         setError(null);
         const validIds = new Set(fallback.apps.map((a) => a.appid));
@@ -297,6 +301,12 @@ export function useAchievements(appid: number) {
   const [data, setData] = useState<{ total: number; achieved: number; list: Achievement[] } | null>(null);
   useEffect(() => {
     let alive = true;
+    if (getRegisteredTool(appid)) {
+      setData({ total: 0, achieved: 0, list: [] });
+      return () => {
+        alive = false;
+      };
+    }
     setData(null);
     fetch(`/api/app/${appid}/achievements`)
       .then((r) => r.json())

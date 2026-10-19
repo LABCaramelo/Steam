@@ -8,6 +8,13 @@ export interface DownloadInfo {
   bytesToDownload: number;
 }
 
+export interface ToolMetadata {
+  launchPath: string;
+  publicPage: string;
+  description: string;
+  assets: Partial<Record<ArtKind, string>>;
+}
+
 export interface LibraryApp {
   appid: number;
   name: string;
@@ -28,6 +35,7 @@ export interface LibraryApp {
   reviewPercentage?: number;
   metacritic?: number;
   download?: DownloadInfo;
+  tool?: ToolMetadata;
 }
 
 export interface UserCollection {

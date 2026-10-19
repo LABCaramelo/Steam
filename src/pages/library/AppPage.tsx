@@ -8,6 +8,7 @@ import { t } from "../../i18n";
 import type { LibraryApp } from "../../types";
 import { useUi } from "../../ui";
 import { usePlayAction } from "./play";
+import { ToolDetails } from "./ToolPage";
 
 export function AppPage() {
   const { appid } = useParams();
@@ -15,6 +16,7 @@ export function AppPage() {
   const a = app(Number(appid));
   if (!snapshot) return <div className="page-loading">Carregando…</div>;
   if (!a) return <div className="page-empty">Este app não está na sua biblioteca.</div>;
+  if (a.tool) return <ToolDetails key={a.appid} app={a} />;
   return <AppDetails key={a.appid} app={a} />;
 }
 

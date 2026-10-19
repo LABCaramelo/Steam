@@ -1,6 +1,7 @@
 import { useState, type CSSProperties } from "react";
 import { artUrl, steamCdnArtUrl } from "../api";
 import type { ArtKind, LibraryApp } from "../types";
+import { getRegisteredTool } from "../toolCatalog";
 
 /** Hue derived from the appid so placeholder art is stable per game. */
 const hue = (appid: number) => (appid * 47) % 360;
@@ -23,7 +24,7 @@ export function AppArt({ app, kind, className, fallbackLabel = true }: Props) {
   const [failed, setFailed] = useState(false);
 
   const handleError = () => {
-    if (!triedCdn) {
+    if (!triedCdn && !getRegisteredTool(app.appid) && !app.tool) {
       setTriedCdn(true);
     } else {
       setFailed(true);
@@ -57,7 +58,7 @@ export function AppIcon({ app, size = 16 }: { app: LibraryApp; size?: number }) 
   const [failed, setFailed] = useState(false);
 
   const handleError = () => {
-    if (!triedCdn) {
+    if (!triedCdn && !getRegisteredTool(app.appid) && !app.tool) {
       setTriedCdn(true);
     } else {
       setFailed(true);

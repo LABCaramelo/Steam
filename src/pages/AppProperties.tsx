@@ -25,6 +25,21 @@ export function AppPropertiesModal({ onClose }: { onClose: () => void }) {
   const a = app(Number(appid));
   if (!a) return null;
 
+  if (a.tool) return (
+    <ModalWindow title={a.name} onClose={onClose}>
+      <div className="settings-page">
+        <h2 className="settings-page__title">Sobre a ferramenta</h2>
+        <p>{a.tool.description}</p>
+        <dl className="info-grid">
+          <dt>Desenvolvedor</dt><dd>{a.developer}</dd>
+          <dt>Disponibilidade</dt><dd>Pronta para usar no navegador</dd>
+          <dt>Instalação</dt><dd>Acesso direto pelo LAB</dd>
+        </dl>
+        <p className="muted">Os favoritos dos prompts ficam salvos neste navegador.</p>
+      </div>
+    </ModalWindow>
+  );
+
   let body;
   switch (section) {
     case "localfiles":

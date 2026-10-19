@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="620" viewBox="0 0 1920 620" role="img" aria-labelledby="title desc">
+  <title id="title">Biblioteca de prompts — Um Cara Caramelo</title>
+  <desc id="desc">Banner editorial da biblioteca de prompts. Tipografia creme sobre preto e cartões de direção criativa empilhados à direita, com laranja como cor de assinatura.</desc>
+  <defs>
+    <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0V80" fill="none" stroke="#fff4e8" stroke-opacity=".045"/></pattern>
+    <pattern id="dots" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#101014" opacity=".18"/></pattern>
+  </defs>
+  <rect width="1920" height="620" fill="#101014"/>
+  <rect width="1920" height="620" fill="url(#grid)"/>
+  <path d="M1460 0H1920V620H1180Z" fill="#ff701a"/>
+  <path d="M1660 0H1920V620H1380Z" fill="url(#dots)"/>
+  <path d="M118 96H934" stroke="#fff4e8" stroke-opacity=".18"/>
+  <text x="120" y="72" font-family="Inter, Arial, sans-serif" font-size="14" fill="#ff701a" font-weight="700" letter-spacing="3">UM CARA CARAMELO / LAB 01</text>
+  <g font-family="Montserrat, Inter, Arial, sans-serif" font-size="93" font-weight="900" fill="#fff4e8" letter-spacing="-4">
+    <text x="114" y="215">Biblioteca</text>
+    <text x="114" y="311">de prompts<tspan fill="#ff701a">.</tspan></text>
+  </g>
+  <text x="120" y="361" font-family="Inter, Arial, sans-serif" font-size="22" fill="#fff4e8" opacity=".65">Um ponto de partida para a sua próxima ideia.</text>
+  <g transform="translate(1152 79) rotate(-10 278 210)">
+    <rect x="20" y="21" width="550" height="411" fill="#101014" opacity=".18"/>
+    <rect width="550" height="411" fill="#26262b" stroke="#fff4e8" stroke-opacity=".2"/>
+    <text x="34" y="48" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff4e8" opacity=".65" letter-spacing="2.2">DIREÇÃO CRIATIVA</text>
+    <path d="M34 70H516" stroke="#fff4e8" stroke-opacity=".2"/>
+  </g>
+  <g transform="translate(1224 103) rotate(6 280 204)">
+    <rect x="17" y="20" width="557" height="408" fill="#101014" opacity=".38"/>
+    <rect width="557" height="408" fill="#fff4e8"/>
+    <path d="M0 0H557V10H0Z" fill="#101014"/>
+    <text x="35" y="57" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#101014" letter-spacing="2">PROMPT / 001</text>
+    <g fill="#101014" font-family="Montserrat, Inter, Arial, sans-serif" font-size="37" font-weight="800" letter-spacing="-.8">
+      <text x="35" y="133">Dê direção</text>
+      <text x="35" y="177">à sua ideia.</text>
+    </g>
+    <path d="M35 210H520" stroke="#101014" stroke-opacity=".2"/>
+    <g fill="#101014" font-family="Inter, Arial, sans-serif" font-size="17">
+      <text x="35" y="252" opacity=".68">[ contexto ]</text>
+      <text x="35" y="282" opacity=".68">[ intenção ]</text>
+      <text x="35" y="312" opacity=".68">[ próxima possibilidade ]</text>
+    </g>
+    <text x="35" y="372" font-family="Inter, Arial, sans-serif" font-size="13" fill="#101014" font-weight="700" letter-spacing="1.4">EXPLORE. ADAPTE. CRIE.</text>
+    <path d="m483 350 15 15-15 15m-20-15h34" fill="none" stroke="#101014" stroke-width="3"/>
+  </g>
+  <g fill="#fff4e8" opacity=".06" font-family="Montserrat, Inter, Arial, sans-serif" font-size="170" font-weight="900" letter-spacing="-6"><text x="930" y="646">{ }</text></g>
+  <path d="M120 566H950" stroke="#fff4e8" stroke-opacity=".13"/>
+  <text x="1811" y="578" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="13" fill="#101014" font-weight="700" letter-spacing="2">ACERVO CRIATIVO / ACESSO LIVRE</text>
+</svg>

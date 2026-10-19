@@ -1,4 +1,6 @@
 import { useDownloads, useRun } from "../../api";
+import { useNavigate } from "react-router-dom";
+import { getRegisteredTool } from "../../toolCatalog";
 import type { LibraryApp } from "../../types";
 import { useUi } from "../../ui";
 
@@ -16,10 +18,16 @@ export interface PlayAction {
  * "Iniciar via steam://" enabled in Configurações > Biblioteca the real client receives the request.
  */
 export function usePlayAction(app: LibraryApp): PlayAction {
+  const navigate = useNavigate();
   const [run, setRun] = useRun(app.appid);
   const downloads = useDownloads();
   const ui = useUi();
   const real = ui.settings.launchViaSteamProtocol;
+
+  const tool = app.tool ?? getRegisteredTool(app.appid)?.tool;
+  if (tool) {
+    return { variant: "play", label: "Abrir", onClick: () => navigate(tool.launchPath) };
+  }
 
   const settled = app.installed ? { kind: "idle" as const } : { kind: "installed" as const };
 

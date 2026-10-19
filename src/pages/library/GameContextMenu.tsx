@@ -74,13 +74,13 @@ export function GameContextMenu({ target, onClose }: { target: ContextTarget; on
       <button className="ctxmenu__item" onClick={act(() => nav(`/library/app/${app.appid}`))}>
         Detalhes da ferramenta
       </button>
-      <button className="ctxmenu__item" onClick={act(() => window.open("https://umcaracaramelo.com.br", "_blank", "noopener"))}>
+      <button className="ctxmenu__item" onClick={act(() => window.open(app.tool?.publicPage ?? "https://umcaracaramelo.com.br", "_blank", "noopener"))}>
         Página no LAB
       </button>
       <button className="ctxmenu__item" onClick={act(() => nav(`/app/${app.appid}/properties/general`))}>
         Propriedades…
       </button>
-      {app.installed && (
+      {app.installed && !app.tool && (
         <button className="ctxmenu__item" onClick={act(() => ui.toast(`Pasta: ${app.libraryPath}\\steamapps\\common\\${app.installdir}`))}>
           Procurar arquivos locais
         </button>

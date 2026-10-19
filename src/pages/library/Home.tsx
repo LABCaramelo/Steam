@@ -114,6 +114,7 @@ export function LibraryHome() {
   const favorites = collections.find((c) => c.id === "favorite");
   const favApps = apps.filter((a) => favorites?.appids.includes(a.appid));
   const bg = recent.find((a) => a.art.heroBlur || a.art.hero);
+  const firstTool = apps.find((a) => a.tool);
 
   if (!snapshot) return <div className="page-loading">Carregando…</div>;
 
@@ -156,10 +157,22 @@ export function LibraryHome() {
       <section className="home__recent">
         {bg && <div className="home__recent-bg" style={{ backgroundImage: `url(${artUrl(bg.appid, bg.art.heroBlur ? "heroBlur" : "hero")})` }} />}
         <h2 className="shelf-title">
-          Ferramentas recentes <span className="shelf-title__count">{recent.length}</span>
+          {recent.length === 0 && firstTool ? "Comece por aqui" : <>Ferramentas recentes <span className="shelf-title__count">{recent.length}</span></>}
         </h2>
         {recent.length === 0 ? (
-          <p className="muted">Nenhuma atividade registrada ainda.</p>
+          firstTool?.tool ? (
+            <div className="home-tool-feature">
+              <Link className="home-tool-feature__art" to={`/library/app/${firstTool.appid}`} aria-label={`Conhecer ${firstTool.name}`}>
+                <AppArt app={firstTool} kind="header" />
+              </Link>
+              <div className="home-tool-feature__body">
+                <span className="tool-details__eyebrow">SUA PRIMEIRA FERRAMENTA</span>
+                <h2>{firstTool.name}</h2>
+                <p>{firstTool.tool.description}</p>
+                <Link className="btn btn--primary" to={firstTool.tool.launchPath}>Abrir biblioteca ↗</Link>
+              </div>
+            </div>
+          ) : <p className="muted">Nenhuma atividade registrada ainda.</p>
         ) : (
           <div className="home__recent-row">
             {recentGroups.map((g, gi) => (
@@ -176,11 +189,8 @@ export function LibraryHome() {
         )}
       </section>
 
-      <section className="home__shelf">
+      {feed.length > 0 && <section className="home__shelf">
         <h2 className="shelf-title">{t("Menu_NewForYou")}</h2>
-        {feed.length === 0 ? (
-          <p className="muted">Nada novo por aqui.</p>
-        ) : (
           <div className="feed">
             {feed.map((f, i) => (
               <button key={i} className={`feed-card feed-card--${f.kind}`} onClick={() => nav(`/library/app/${f.app.appid}`)}>
@@ -209,8 +219,7 @@ export function LibraryHome() {
               </button>
             ))}
           </div>
-        )}
-      </section>
+      </section>}
 
       {favApps.length > 0 && (
         <section className="home__shelf">

@@ -15,6 +15,7 @@ import { CollectionsPage, CollectionView } from "./pages/library/Collections";
 import { DownloadsPage } from "./pages/library/Downloads";
 import { LibraryHome } from "./pages/library/Home";
 import { LibraryLayout } from "./pages/library/LibraryLayout";
+import { ToolPage } from "./pages/library/ToolPage";
 import { ProfilePage } from "./pages/Profile";
 import { SettingsModal } from "./pages/Settings";
 import { StorePage } from "./pages/Store";
@@ -49,6 +50,7 @@ export function App() {
             <Route index element={<Navigate to="home" replace />} />
             <Route path="home" element={<LibraryHome />} />
             <Route path="app/:appid" element={<AppPage />} />
+            <Route path="app/:appid/open" element={<ToolPage />} />
             <Route path="app/:appid/achievements/*" element={<AchievementsPage />} />
             <Route path="collections" element={<CollectionsPage />} />
             <Route path="collection/:collectionid" element={<CollectionView />} />
