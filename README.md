@@ -12,7 +12,7 @@ A primeira ferramenta do LAB é a **Biblioteca de prompts**, disponível na pág
 
 A biblioteca preserva o acervo e as interações de `LP/prompts.html`. A API `/api/prompt-library` atende tanto ao Vite local quanto à função Vercel; os metadados são incluídos no projeto e os textos completos e as prévias usam os serviços públicos originais. Favoritos e preferências da biblioteca ficam no armazenamento do navegador. A pasta LP original não é alterada.
 
-Na integração de 19/10/2026, a origem dos textos (`banco-de-prompts-three.vercel.app`) retornava `DEPLOYMENT_NOT_FOUND`. Busca, filtros e favoritos continuam disponíveis; abrir/copiar o texto depende da restauração desse serviço. Se o banco mudar de domínio, configure `PROMPT_LIBRARY_ORIGIN` no servidor, sem barra final. A interface informa a indisponibilidade e permite tentar novamente.
+A biblioteca conecta-se diretamente à base do Supabase (`fzhzpzxsttflgtassyex.supabase.co`) através da RPC canônica `get_caramelo_prompt_copy`, garantindo acesso em tempo real e de alta performance a todos os textos completos dos 391 prompts autorais sem depender de servidores intermediários. O deploy em produção é servido em `https://lab-caramelo.vercel.app/`.
 
 Downloads simulados podem ser pausados, retomados e cancelados; conclusão e execução continuam ao navegar entre páginas. Atualizar a página reinicia as simulações. Os registros locais da Steam são somente leitura; envio de comandos `steam://` é uma opção explícita em Configurações > Biblioteca.
 
