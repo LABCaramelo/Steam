@@ -26,8 +26,8 @@ export function initVideos() {
       const phaseVisible = !phase || document.documentElement.dataset.motion === 'reduced' || phase.classList.contains('active');
       return visible.has(video) && phaseVisible;
     }).sort((a, b) => visible.get(b) - visible.get(a));
-    // A dense portfolio still keeps decoder and GPU work bounded.
-    const selected = new Set(candidates.slice(0, 2));
+    // A dense portfolio still keeps decoder and GPU work bounded; the hero shows three films at once.
+    const selected = new Set(candidates.slice(0, 3));
     videos.forEach(video => {
       if (!selected.has(video)) return pause(video);
       if (requested.has(video)) return;

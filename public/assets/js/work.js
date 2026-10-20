@@ -2,7 +2,7 @@
 // video eligibility follow the rendered timeline rather than the scroll target.
 export function initWork(getLenis = () => null) {
   const { gsap, ScrollTrigger } = window;
-  const showcase = document.querySelector('#experimentos .work-showcase');
+  const showcase = document.querySelector('#projetos .work-showcase');
   const stage = showcase?.querySelector('.work-stage');
   const cards = [...(showcase?.querySelectorAll('.project-card') || [])];
   const disabled = new URLSearchParams(location.search).get('motion') === 'off';
