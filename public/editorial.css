@@ -43,9 +43,28 @@ body [data-caramelo-theme="light"]{--ink:rgb(16 16 20);--cream:rgb(255 244 232);
 .work-selection .cm-tabs__tab{color:var(--cream)}
 .work-selection .cm-tabs__tab[aria-pressed='true']{background:transparent;border-color:transparent;color:#101014}
 .work-selection .cm-tabs__indicator{top:0;bottom:0;border-radius:4px;background:var(--orange);box-shadow:var(--cm-glow-sm)}
-/* spotlight-surface nos três passos do arquivo. */
+/* spotlight-surface no cartão do workshop e do arquivo. */
 .archive-steps.cm-surface--spotlight{position:relative;isolation:isolate}
 .community-actions{display:flex;flex-direction:column;align-items:flex-end;gap:12px;flex-shrink:0}
 .community-actions .cm-copy{background:rgb(var(--cm-surface-1));color:rgb(var(--cm-fg-2))}
 .header-actions .cm-theme-toggle{border-radius:99px;background:transparent;border-color:var(--line);box-shadow:none;color:var(--cream)}
 @media(max-width:650px){.community-actions{align-items:flex-start}}
+/* Fechamento: uma frase, dois caminhos — trabalhar junto ou aprender construindo. */
+.closing-section .contact-title{max-width:12em}
+.closing-paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,5vw,80px);margin-top:56px;padding-top:32px;border-top:1px solid var(--line)}
+.closing-path{display:grid;justify-items:start;align-content:space-between;gap:24px}
+.closing-path p{max-width:400px;color:rgb(var(--cm-fg-muted));font-size:15px;line-height:1.65}
+@media(max-width:650px){.closing-paths{grid-template-columns:1fr;gap:34px;margin-top:34px;padding-top:26px}.closing-path{gap:18px}.closing-path p{font-size:13px}}
+/* Gaveta mobile: desce como cortina e os links sobem em sequência; cada link é um alvo de 44px. */
+.mobile-drawer.active{gap:0}
+.mobile-drawer>a{display:flex;align-items:center;min-height:48px;border-bottom:1px solid var(--line)}
+.mobile-drawer>a:last-child{border-bottom:0}
+@keyframes drawer-open{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes drawer-link{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+html[data-motion='full'] .mobile-drawer.active{animation:drawer-open 360ms var(--cm-ease-drawer) both}
+html[data-motion='full'] .mobile-drawer.active>a{animation:drawer-link 380ms var(--cm-ease-out) both;animation-delay:calc(var(--i,0)*35ms + 60ms)}
+.mobile-drawer>a:nth-child(2){--i:1}.mobile-drawer>a:nth-child(3){--i:2}.mobile-drawer>a:nth-child(4){--i:3}.mobile-drawer>a:nth-child(5){--i:4}.mobile-drawer>a:nth-child(6){--i:5}.mobile-drawer>a:nth-child(7){--i:6}.mobile-drawer>a:nth-child(8){--i:7}
+@media(prefers-reduced-motion:reduce){.mobile-drawer.active,.mobile-drawer.active>a{animation:none!important}}
+/* Rótulos legíveis no celular (auditoria Caramelo: nada abaixo de 11px). */
+.footer-bottom{font-size:11px}
+@media(max-width:650px){.section-meta{font-size:11px}.display,.contact-title,.maker-title{text-wrap:balance}}

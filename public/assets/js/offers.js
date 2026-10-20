@@ -1,6 +1,6 @@
 // Card positions stay native. Scroll only directs the short arrival geometry.
 export function initOffers() {
-  const section = document.getElementById('ofertas');
+  const section = document.getElementById('infoprodutores');
   const grid = section?.querySelector('.offers-grid');
   const cards = [...(grid?.querySelectorAll('.offer-column') || [])];
   if (!section || !grid || cards.length !== 2) return { destroy() {} };

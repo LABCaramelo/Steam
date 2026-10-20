@@ -1,4 +1,4 @@
-const TARGETS = '#hero-track, #comunidade, .site-footer';
+const TARGETS = '#hero-track, #comunidade, #contato, .site-footer';
 const CONTROLS = 'a,button,input,select,textarea,summary,[role="button"],[contenteditable="true"],[tabindex]:not([tabindex="-1"])';
 /** As 28 figurinhas canônicas de "rastro mouse.png" (MCP Caramelo · get_brand_asset trail-stickers). */
 const STICKERS = [

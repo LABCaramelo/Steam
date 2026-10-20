@@ -57,7 +57,7 @@ export function initMaker(getLenis = () => null) {
   if (buttons.length !== 7 || controls.textContent !== originalText) return { destroy() {} };
   credits.replaceChildren(controls);
   credits.setAttribute('role', 'group');
-  credits.setAttribute('aria-label', 'Do design à curiosidade');
+  credits.setAttribute('aria-label', 'Do design aos sistemas');
   wordStage.replaceChildren(...words);
 
   // Measure only on layout/font changes. Each word fills its available stage
@@ -92,7 +92,27 @@ export function initMaker(getLenis = () => null) {
   }
   selectDiscipline(0);
   section.dataset.makerMode = mode;
+
+  // In flow (touch, small screens) the words take one unattended lap while the
+  // art is in view, so the scene moves without scroll scrub. A tap ends it.
+  let tour = null, toured = false;
+  const stopTour = () => { clearInterval(tour); tour = null; };
+  const endTour = () => { toured = true; stopTour(); };
+  const tourObserver = typeof IntersectionObserver === 'function' ? new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return stopTour();
+    if (tour || toured || mode !== 'flow' || document.documentElement.dataset.motion !== 'full') return;
+    tour = setInterval(() => {
+      if (!alive || mode !== 'flow' || document.documentElement.dataset.motion !== 'full') return stopTour();
+      if (document.hidden) return;
+      const next = (selected + 1) % buttons.length;
+      selectDiscipline(next);
+      if (next === 0) endTour();
+    }, 1700);
+  }, { threshold: .6 }) : null;
+  tourObserver?.observe(section.querySelector('.maker-art') || wordStage);
+
   buttons.forEach((button, index) => button.addEventListener('click', () => {
+    endTour();
     const trigger = timeline?.scrollTrigger;
     if (mode === 'scrub' && trigger) {
       const top = trigger.start + (trigger.end - trigger.start) * ((index + .5) / buttons.length);
@@ -178,6 +198,8 @@ export function initMaker(getLenis = () => null) {
   }
   return { destroy() {
     alive = false;
+    stopTour();
+    tourObserver?.disconnect();
     media?.revert();
     events.abort();
     resize?.disconnect();

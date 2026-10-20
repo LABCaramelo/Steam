@@ -1,12 +1,35 @@
-/* Two complete offers become a native stack; the document remains their track. */
+/* Two services become a native stack; the document remains their track. */
 .offers-section {
   overflow: clip;
   padding-block: 72px 100px;
 }
 
 .offers-section .offers-title {
-  max-width: 11em;
-  margin-bottom: 58px;
+  margin-bottom: 52px;
+}
+
+/* The case for the work: the gap on the left, where the work happens on the right. */
+.offers-section .offers-intro {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(40px, 6vw, 96px);
+  margin-bottom: 72px;
+}
+
+.offers-section .offers-intro-copy {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  max-width: 480px;
+  color: rgb(var(--cm-fg-muted));
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.offers-section .offers-statement {
+  color: rgb(var(--cm-fg));
+  font: 800 clamp(21px, 1.9vw, 27px)/1.25 var(--display);
+  letter-spacing: -.04em;
 }
 
 .offers-section .offers-grid {
@@ -41,7 +64,8 @@
 .offers-section .offer-column:nth-child(2) {
   --offer-line: rgba(255, 244, 232, .32);
   --offer-description: var(--cream);
-  background: var(--violet);
+  /* The violet accent token: cream copy reaches 5.9:1 here (AA); #7657ff stops at 4.2:1. */
+  background: rgb(93 60 232);
   color: var(--cream);
   z-index: 2;
 }
@@ -65,54 +89,48 @@
 .offers-section .offer-symbol,
 .offers-section .offer-column:nth-child(2) .offer-symbol {
   color: currentColor;
-  font-size: 36px;
+  font: 500 12px/1 var(--body);
+  letter-spacing: .1em;
 }
 
 .offers-section .offer-heading h3 {
-  max-width: 6.8em;
-  font-size: clamp(48px, 6.1vw, 88px);
+  max-width: 7.2em;
+  font-size: clamp(40px, 4.6vw, 68px);
   font-weight: 900;
   line-height: .98;
   letter-spacing: -.065em;
   overflow-wrap: normal;
 }
 
-.offers-section .offer-list {
+.offers-section .offer-copy {
   grid-column: 2;
   grid-row: 1 / 3;
   align-self: center;
+  display: grid;
+  gap: 14px;
   min-width: 0;
-  margin: 0;
+  max-width: 520px;
 }
 
-.offers-section .offer-list li {
-  gap: 20px;
-  padding-block: 25px;
-  border-color: var(--offer-line);
-}
-
-.offers-section .offer-list li:first-child {
-  border-top: 1px solid var(--offer-line);
-}
-
-.offers-section .offer-list li > span {
-  flex-shrink: 0;
-  margin-top: 5px;
-  color: currentColor;
-  font-size: 10px;
-}
-
-.offers-section .offer-list h4 {
-  font: 700 clamp(19px, 2vw, 27px)/1.2 var(--display);
-  letter-spacing: -.045em;
-  margin-bottom: 10px;
-}
-
-.offers-section .offer-list p {
-  max-width: 410px;
+.offers-section .offer-copy p {
   color: var(--offer-description);
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.offers-section .offer-copy .offer-lead {
+  margin-bottom: 8px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--offer-line);
+  color: currentColor;
+  font: 700 clamp(21px, 2.1vw, 29px)/1.2 var(--display);
+  letter-spacing: -.045em;
+}
+
+.offers-section .offer-copy .offer-closing {
+  margin-top: 6px;
+  color: currentColor;
+  font-weight: 700;
 }
 
 .offers-section .offer-column > .pill {
@@ -168,20 +186,26 @@
     padding: 32px;
   }
 
+  .offers-section .offers-intro {
+    gap: 28px;
+    margin-bottom: 52px;
+  }
+
+  .offers-section .offers-intro-copy {
+    font-size: 15px;
+  }
+
   .offers-section .offer-heading h3 {
-    font-size: clamp(40px, 5.8vw, 64px);
+    font-size: clamp(34px, 5vw, 52px);
   }
 
-  .offers-section .offer-list li {
-    padding-block: 20px;
+  .offers-section .offer-copy .offer-lead {
+    padding-bottom: 20px;
+    font-size: 21px;
   }
 
-  .offers-section .offer-list h4 {
-    font-size: 20px;
-  }
-
-  .offers-section .offer-list p {
-    font-size: 13px;
+  .offers-section .offer-copy p {
+    font-size: 14px;
   }
 }
 
@@ -211,30 +235,38 @@
     gap: 18px;
   }
 
-  .offers-section .offer-symbol,
-  .offers-section .offer-column:nth-child(2) .offer-symbol {
-    font-size: 28px;
+  .offers-section .offers-intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+    margin-bottom: 40px;
+  }
+
+  .offers-section .offers-intro-copy {
+    gap: 14px;
+    font-size: 14px;
+  }
+
+  .offers-section .offers-statement {
+    font-size: 20px;
   }
 
   .offers-section .offer-heading h3 {
-    font-size: clamp(30px, 9.8vw, 52px);
+    font-size: clamp(28px, 9vw, 44px);
   }
 
-  .offers-section .offer-list {
+  .offers-section .offer-copy {
     grid-column: 1;
     grid-row: 2;
+    gap: 12px;
   }
 
-  .offers-section .offer-list li {
-    gap: 15px;
-    padding-block: 19px;
-  }
-
-  .offers-section .offer-list h4 {
+  .offers-section .offer-copy .offer-lead {
+    margin-bottom: 4px;
+    padding-bottom: 18px;
     font-size: 19px;
   }
 
-  .offers-section .offer-list p {
+  .offers-section .offer-copy p {
     font-size: 13px;
   }
 

@@ -4,7 +4,7 @@
 .maker-composition,.maker-section .maker-bottom{display:grid;grid-template-columns:.55fr 1.45fr;gap:52px}
 .maker-intro{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:36px;margin:0;padding-block:12px 40px;min-width:0}
 .maker-intro .maker-title{margin:0;font-size:clamp(28px,2.9vw,42px);line-height:1;letter-spacing:-.055em;transform-origin:0% 55%}
-.maker-intro .maker-note{position:static;margin:0;display:block;font-size:clamp(26px,2.3vw,33px);text-align:left;transform:rotate(-5deg)}
+.maker-intro .maker-note{position:static;margin:0 0 14px;display:block;font-size:clamp(26px,2.3vw,33px);text-align:left;transform:rotate(-5deg)}
 .maker-hello{display:grid;gap:12px}
 .maker-hello p{max-width:360px;font-size:14px;line-height:1.6}
 .maker-workbench{min-width:0}
@@ -97,3 +97,8 @@
   .maker-closing strong{font-size:24px}
 }
 @media(prefers-reduced-motion:reduce){.maker-discipline,.maker-beam{transition:none}}
+/* In flow the word change is a short cut: the next word rises into place. */
+.maker-section[data-maker-mode='flow'] .maker-word{transform:translateY(14%);transition:opacity 220ms var(--cm-ease-out),transform 380ms var(--cm-ease-out)}
+.maker-section[data-maker-mode='flow'] .maker-word[data-word-active='true']{transform:none}
+@media(prefers-reduced-motion:reduce){.maker-section .maker-word{transform:none;transition:none}}
+html[data-motion='reduced'] .maker-section .maker-word{transform:none;transition:none}

@@ -13,11 +13,15 @@ export function initCinematic() {
     always: 'all',
     wide: '(min-width: 1000px) and (min-height: 760px)',
     fine: '(hover: hover) and (pointer: fine)',
-    reduced: '(prefers-reduced-motion: reduce)'
+    reduced: '(prefers-reduced-motion: reduce)',
+    // offers.js and work.js own their cards' transforms in these contexts.
+    offersStack: '(min-width: 1000px) and (min-height: 650px) and (hover: hover) and (pointer: fine)',
+    workDeck: '(min-width: 900px) and (min-height: 520px) and (hover: hover) and (pointer: fine)'
   }, context => {
-    const { wide, fine, reduced } = context.conditions;
+    const { wide, fine, reduced, offersStack, workDeck } = context.conditions;
     if (reduced) return;
     const desktop = wide && fine;
+    const rise = desktop ? 26 : 18;
     const restoreDOM = [];
     const listeners = [];
     const entrances = [];
@@ -59,8 +63,9 @@ export function initCinematic() {
       element.classList.add('motion-heading');
       const original = [...element.childNodes];
       const groups = [[]];
+      // A break hidden at this width (.desktop-break) stays inside its line.
       original.forEach(node => {
-        if (node.nodeName === 'BR') groups.push([]);
+        if (node.nodeName === 'BR' && getComputedStyle(node).display !== 'none') groups.push([]);
         else groups.at(-1).push(node);
       });
       element.replaceChildren();
@@ -102,43 +107,122 @@ export function initCinematic() {
     }
 
     const hero = select('#hero-track');
+    // The hero enters on every pointer: lines rise from their masks, films are cut in.
+    const heroWords = all('.hero-word').map(element => wrapContents(element, 'motion-hero-inner'));
+    const heroFilms = all('.hero-film');
+    // Touch sets the three films in one row; they open left to right as seen.
+    const filmOrder = desktop ? heroFilms : [...heroFilms].sort((a, b) =>
+      a.getBoundingClientRect().left - b.getBoundingClientRect().left);
+    const introElements = [select('.hero-section .section-meta'), select('.hero-bottom'), select('.hero-footnote')].filter(Boolean);
+    const enterAtTop = window.scrollY < 60 && (!location.hash || location.hash === '#hero-track');
+    const heroEntry = gsap.timeline();
+    if (enterAtTop) {
+      heroEntry.fromTo(heroWords, { yPercent: 105 }, {
+        yPercent: 0, duration: 1.08, stagger: 0.12, ease: 'power4.out'
+      }, 0.08)
+        .fromTo(filmOrder, { clipPath: 'inset(100% 0% 0% 0%)' }, {
+          clipPath: 'inset(0% 0% 0% 0%)', duration: 0.95,
+          stagger: { each: 0.09, from: desktop ? 'end' : 'start' }, ease: 'power3.inOut'
+        }, 0.2)
+        .fromTo(introElements, { y: 20, opacity: 0.45 }, {
+          y: 0, opacity: 1, duration: 0.7, stagger: 0.08, ease: 'power2.out'
+        }, 0.52);
+    }
+    rememberEntrance(heroEntry, [hero]);
+
+    if (desktop && hero) {
+      const heroOut = gsap.timeline({ scrollTrigger: {
+        id: 'cine-hero-depth', trigger: hero, start: 'top top',
+        end: 'bottom top', scrub: 0.5, invalidateOnRefresh: true
+      }});
+      // Scroll transforms the row; its child owns the independent title entry.
+      const topRow = select('.hero-row-top');
+      const bottomRow = select('.hero-row-bottom');
+      if (topRow) heroOut.to(topRow, { y: -30, x: -12, opacity: 0.72, ease: 'none' }, 0);
+      if (bottomRow) heroOut.to(bottomRow, { y: -55, x: 12, opacity: 0.72, ease: 'none' }, 0);
+      if (heroFilms.length) heroOut.to(heroFilms, { rotation: index => index === 0 ? 1 : -1, ease: 'none' }, 0);
+    }
+
+    // Section titles rise line by line; supporting copy starts legible and only softens in.
+    [['offers', '#offers-title'], ['work', '#work-title'], ['archive', '#archive-title'],
+      ['contact', '#community-title'], ['maker', '#maker-title'], ['closing', '#closing-title'],
+      ['doors', '#doors-title'], ['faq', '#faq-title']]
+      .forEach(([id, selector]) => typeEntrance(`${id}-type`, select(selector)));
+    [['offers-intro', '.offers-intro'], ['work-copy', '.work-intro-copy'], ['archive-copy', '.archive-copy'],
+      ['archive-steps', '.archive-steps'], ['contact-close', '.contact-bottom'], ['maker-hello', '.maker-hello'],
+      ['maker-close', '.maker-bottom'], ['closing-paths', '.closing-paths']]
+      .forEach(([id, selector]) => lightEntrance(id, select(selector), rise));
+
+    // Outside the sticky stack, the two services arrive tilted and settle (tilt-entrance).
+    if (!offersStack) all('.offer-column').forEach((card, index) => {
+      const timeline = entrance(`offer-card-${index}`, card, 'top 92%');
+      if (!timeline) return;
+      timeline.fromTo(card, { y: 45, rotation: index % 2 ? 1.1 : -1.1, opacity: 0.45 }, {
+        y: 0, rotation: 0, opacity: 1, duration: 0.85, ease: 'power3.out'
+      });
+      rememberEntrance(timeline, [card]);
+    });
+
+    // Outside the deck, each project cover is cut in from below as it arrives (clip-reveal).
+    if (!workDeck) all('.work-section .project-media').forEach((cover, index) => {
+      const timeline = entrance(`work-cover-${index}`, cover, 'top 92%');
+      if (!timeline) return;
+      timeline.fromTo(cover, { clipPath: 'inset(100% 0% 0% 0%)' }, {
+        clipPath: 'inset(0% 0% 0% 0%)', duration: 0.95, ease: 'power3.inOut', clearProps: 'clipPath'
+      });
+      rememberEntrance(timeline, [cover]);
+    });
+
+    // Handwritten asides write themselves left to right, once.
+    all('.archive-beat, .work-question, .maker-note').forEach((note, index) => {
+      const timeline = entrance(`hand-${index}`, note, 'top 90%');
+      if (!timeline) return;
+      timeline.fromTo(note, { clipPath: 'inset(-30% 100% -30% -6%)' }, {
+        clipPath: 'inset(-30% -6% -30% -6%)', duration: 0.9, ease: 'power2.out', clearProps: 'clipPath'
+      });
+      rememberEntrance(timeline, [note]);
+    });
+
+    // The page's one thesis lights word by word at reading pace (scrub-words).
+    const thesis = select('.offers-statement');
+    if (thesis) {
+      const original = [...thesis.childNodes];
+      const text = thesis.textContent.trim();
+      const reader = document.createElement('span');
+      reader.className = 'cm-sr-only';
+      reader.textContent = text;
+      const visual = document.createElement('span');
+      visual.setAttribute('aria-hidden', 'true');
+      const words = text.split(/\s+/).map((word, index, list) => {
+        const span = document.createElement('span');
+        span.className = 'motion-word';
+        span.textContent = word;
+        visual.append(span, index < list.length - 1 ? ' ' : '');
+        return span;
+      });
+      thesis.replaceChildren(reader, visual);
+      restoreDOM.push(() => thesis.replaceChildren(...original));
+      gsap.fromTo(words, { opacity: 0.18, y: 6 }, {
+        opacity: 1, y: 0, stagger: 0.07, ease: 'none',
+        scrollTrigger: { id: 'cine-thesis', trigger: thesis, start: 'top 88%', end: 'top 55%', scrub: 0.4 }
+      });
+    }
+
+    // The community seal turns with the scroll on every pointer (scroll-depth).
+    const identity = select('.contact-identity');
+    if (identity) {
+      // A timeline defers its initial refresh until the scene batch is built.
+      // An immediate tween refresh can race once-only entrances on rebuild.
+      const closing = gsap.timeline({ scrollTrigger: {
+        id: 'cine-contact-identity', trigger: select('#comunidade'),
+        start: 'top bottom', end: 'bottom bottom', scrub: 0.4
+      }});
+      closing.fromTo(identity, { rotation: -12, scale: 0.88 }, {
+        rotation: 8, scale: 1.04, ease: 'none'
+      });
+    }
 
     if (desktop) {
-      const heroWords = all('.hero-word').map(element => wrapContents(element, 'motion-hero-inner'));
-      const heroFilms = all('.hero-film');
-      const introElements = [select('.hero-section .section-meta'), select('.hero-bottom'), select('.hero-footnote')].filter(Boolean);
-      const enterAtTop = window.scrollY < 60 && (!location.hash || location.hash === '#hero-track');
-      const heroEntry = gsap.timeline();
-      if (enterAtTop) {
-        heroEntry.fromTo(heroWords, { yPercent: 105 }, {
-          yPercent: 0, duration: 1.08, stagger: 0.12, ease: 'power4.out'
-        }, 0.08)
-          .fromTo(heroFilms, { clipPath: 'inset(100% 0% 0% 0%)' }, {
-            clipPath: 'inset(0% 0% 0% 0%)', duration: 0.95,
-            stagger: { each: 0.09, from: 'end' }, ease: 'power3.inOut'
-          }, 0.2)
-          .fromTo(introElements, { y: 20, opacity: 0.45 }, {
-            y: 0, opacity: 1, duration: 0.7, stagger: 0.08, ease: 'power2.out'
-          }, 0.52);
-      }
-      rememberEntrance(heroEntry, [hero]);
-      if (hero) {
-        const heroOut = gsap.timeline({ scrollTrigger: {
-          id: 'cine-hero-depth', trigger: hero, start: 'top top',
-          end: 'bottom top', scrub: 0.5, invalidateOnRefresh: true
-        }});
-        // Scroll transforms the row; its child owns the independent title entry.
-        const topRow = select('.hero-row-top');
-        const bottomRow = select('.hero-row-bottom');
-        if (topRow) heroOut.to(topRow, { y: -30, x: -12, opacity: 0.72, ease: 'none' }, 0);
-        if (bottomRow) heroOut.to(bottomRow, { y: -55, x: 12, opacity: 0.72, ease: 'none' }, 0);
-        if (heroFilms.length) heroOut.to(heroFilms, { rotation: index => index === 0 ? 1 : -1, ease: 'none' }, 0);
-      }
-
-      typeEntrance('archive-type', select('#archive-title'));
-      lightEntrance('archive-steps', select('.archive-steps'), 26);
-      typeEntrance('work-type', select('#work-title'));
-      typeEntrance('doors-type', select('#doors-title'));
       const doors = all('.door-panel');
       const doorReveal = entrance('doors-choice', select('#doors-split'), 'top 92%');
       if (doorReveal) {
@@ -163,32 +247,7 @@ export function initCinematic() {
           });
         });
       }
-
-      typeEntrance('offers-type', select('#offers-title'));
-      typeEntrance('faq-type', select('#faq-title'));
-      typeEntrance('contact-type', select('#community-title'));
-      lightEntrance('contact-close', select('.contact-bottom'), 26);
-      const identity = select('.contact-identity');
-      if (identity) {
-        // A timeline defers its initial refresh until the scene batch is built.
-        // An immediate tween refresh can race once-only entrances on rebuild.
-        const closing = gsap.timeline({ scrollTrigger: {
-          id: 'cine-contact-identity', trigger: select('#comunidade'),
-          start: 'top bottom', end: 'bottom bottom', scrub: 0.4
-        }});
-        closing.fromTo(identity, { rotation: -12, scale: 0.88 }, {
-          rotation: 8, scale: 1.04, ease: 'none'
-        });
-      }
     } else {
-      // Touch and short viewports keep a direct native reading flow.
-      const sections = [
-        ['archive', '#archive-title'], ['archive-steps', '.archive-steps'],
-        ['work', '.work-intro'], ['doors', '#doors-title'],
-        ['offers', '#offers-title'], ['faq', '#faq-title'],
-        ['contact', '#community-title'], ['contact-close', '.contact-bottom']
-      ];
-      sections.forEach(([id, selector]) => lightEntrance(id, select(selector)));
       all('.door-panel').forEach((element, index) => {
         lightEntrance(`flow-card-${index}`, element, 16);
       });
