@@ -1,5 +1,6 @@
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { promptLibrary } from "./server/promptLibrary.ts";
@@ -110,8 +111,71 @@ function siteRoutes(): Plugin {
   };
 }
 
+/**
+ * Cloudflare tells browsers to keep public/ JS and CSS for 4 hours, so a deploy reached
+ * returning visitors hours late. After the build, every local .js/.css URL in the copied
+ * public pages, and every relative import inside those scripts, gets ?v=<content hash>:
+ * an edited file gets a new URL at once and an untouched one stays cached. The pages
+ * themselves are served with max-age=0, so they always point at the current files.
+ */
+function stampPublicAssets(): Plugin {
+  let outDir = "";
+  let publicDir = "";
+  return {
+    name: "stamp-public-assets",
+    apply: "build",
+    configResolved(config) {
+      outDir = path.resolve(config.root, config.build.outDir);
+      publicDir = config.publicDir;
+    },
+    closeBundle() {
+      if (!publicDir || !fs.existsSync(publicDir)) return;
+      const versions = new Map<string, string>();
+      // Remote URLs and files whose name already carries a build hash are left alone.
+      const localFile = (from: string, url: string) => {
+        if (!/\.(?:m?js|css)$/.test(url) || /^(?:[a-z]+:)?\/\//i.test(url) || /-[\w-]{8}\.(?:m?js|css)$/.test(url)) return null;
+        const file = url.startsWith("/") ? path.join(outDir, url) : path.resolve(path.dirname(from), url);
+        return file.startsWith(outDir) && fs.existsSync(file) ? file : null;
+      };
+      const stamp = (from: string, url: string) => {
+        const file = localFile(from, url);
+        return file ? `${url}?v=${version(file)}` : url;
+      };
+      // A script's own imports are stamped first, so a changed module also renames its importer.
+      function version(file: string): string {
+        const known = versions.get(file);
+        if (known !== undefined) return known;
+        versions.set(file, "");
+        const source = fs.readFileSync(file, "utf8");
+        const stamped = file.endsWith(".css") ? source : source.replace(
+          /(\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)(["'])(\.{1,2}\/[^"'?]+)\2/g,
+          (_match, lead, quote, url) => `${lead}${quote}${stamp(file, url)}${quote}`,
+        );
+        if (stamped !== source) fs.writeFileSync(file, stamped);
+        const hash = crypto.createHash("sha1").update(stamped).digest("hex").slice(0, 10);
+        versions.set(file, hash);
+        return hash;
+      }
+      const pages = (dir: string): string[] => fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
+        const full = path.join(dir, entry.name);
+        return entry.isDirectory() ? pages(full) : entry.name.endsWith(".html") ? [full] : [];
+      });
+      for (const page of pages(publicDir)) {
+        const built = path.join(outDir, path.relative(publicDir, page));
+        if (!fs.existsSync(built)) continue;
+        const html = fs.readFileSync(built, "utf8");
+        const stamped = html.replace(
+          /(\s(?:href|src)=)(["'])([^"'?#]+)\2/g,
+          (_match, lead, quote, url) => `${lead}${quote}${stamp(built, url)}${quote}`,
+        );
+        if (stamped !== html) fs.writeFileSync(built, stamped);
+      }
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), steamDataApi(), siteRoutes()],
+  plugins: [react(), steamDataApi(), siteRoutes(), stampPublicAssets()],
   appType: "mpa",
   build: { rollupOptions: { input: { app: path.resolve(import.meta.dirname, "app.html") } } },
   server: { host: "127.0.0.1", port: 5180 },
