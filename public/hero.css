@@ -72,10 +72,9 @@
   .hero-section .hero-film-main video{object-position:center}
   .hero-section .hero-bottom{padding:25px 0 20px;gap:20px}
   .hero-section .hero-cta-group{width:100%;flex-direction:column;gap:9px}
-  .hero-section .hero-cta-group .pill{flex:none;justify-content:space-between;min-width:0;min-height:46px;padding:13px 18px;font-size:11px;gap:8px}
-  /* The arrow keeps its 16px glyph; the label stays at the pill's size. */
-  .hero-section .hero-cta-group .pill .cm-btn__label{justify-content:space-between;width:100%;font-size:inherit}
-  .hero-section .hero-cta-group .pill .cm-btn__label .cm-arrow{font-size:16px}
+  .hero-section .hero-cta-group .pill{flex:none;min-width:0;min-height:46px;padding:13px 18px;font-size:11px;gap:8px}
+  /* The label stays at the pill's size (.pill span would set 18px). */
+  .hero-section .hero-cta-group .pill .cm-btn__label{font-size:inherit}
   .hero-section .hero-intro{gap:10px;max-width:340px}
   .hero-section .hero-intro p{font-size:12px;line-height:1.6}
   .hero-section .hero-footnote{padding-top:3px}

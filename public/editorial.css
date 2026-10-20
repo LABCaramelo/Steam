@@ -46,7 +46,6 @@ body [data-caramelo-theme="light"]{--ink:rgb(16 16 20);--cream:rgb(255 244 232);
 /* spotlight-surface no cartão do workshop e do arquivo. */
 .archive-steps.cm-surface--spotlight{position:relative;isolation:isolate}
 .community-actions{display:flex;flex-direction:column;align-items:flex-end;gap:12px;flex-shrink:0}
-.community-actions .cm-copy{background:rgb(var(--cm-surface-1));color:rgb(var(--cm-fg-2))}
 .header-actions .cm-theme-toggle{border-radius:99px;background:transparent;border-color:var(--line);box-shadow:none;color:var(--cream)}
 @media(max-width:650px){.community-actions{align-items:flex-start}}
 /* Fechamento: uma frase, dois caminhos — trabalhar junto ou aprender construindo. */
