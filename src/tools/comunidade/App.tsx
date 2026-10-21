@@ -14,7 +14,7 @@ import { QuickSwitcher, type QuickDestination } from './components/QuickSwitcher
 import { ServerRail } from './components/ServerRail';
 import { SettingsView } from './components/Settings';
 import { ChannelIcon, HomeSidebar, ServerSidebar, type VoiceUi } from './components/Sidebar';
-import { TitleBar } from './components/TitleBar';
+
 import { VoiceView } from './components/VoiceView';
 
 export function App({ user }: { user?: ToolUser } = {}) {
@@ -143,13 +143,13 @@ export function App({ user }: { user?: ToolUser } = {}) {
     setQuickSwitcherOpen(false);
   };
 
-  let title = 'Amigos';
+
   let sidebar: React.ReactNode;
   let content: React.ReactNode;
 
   if (server) {
     const channel = server.categories.flatMap((c) => c.channels).find((c) => c.id === state.channelByServer[server.id]);
-    title = server.name;
+
     sidebar = <ServerSidebar server={server} state={state} voiceUi={voiceUi} dispatch={sidebarDispatch} />;
     if (!channel) {
       content = (
@@ -210,7 +210,7 @@ export function App({ user }: { user?: ToolUser } = {}) {
     const dm = directMessages.find((d) => d.id === dmId);
     if (dm) {
       const user = users[dm.userId];
-      title = user.name;
+
       content = (
         <Chat
           conversationId={dm.id}
@@ -245,7 +245,7 @@ export function App({ user }: { user?: ToolUser } = {}) {
       <OpenNavContext.Provider value={() => setNavOpen(true)}>
         <OpenQuickSwitcherContext.Provider value={openQuickSwitcher}>
           <div className="app" data-nav={navOpen ? 'open' : 'closed'}>
-            <TitleBar title={title} />
+
             <div className="app-body">
               <ServerRail servers={state.servers} view={view} dispatch={dispatch} />
               <div className="app-panel">
