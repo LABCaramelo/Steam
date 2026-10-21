@@ -1,7 +1,8 @@
 import { CopyButton, FocusField, MagneticButton } from "@caramelo/design-system";
 import { useEffect, useState, type ReactNode } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useAchievements, useLibrary, useRun } from "../../api";
+import { getRegisteredTool } from "../../toolCatalog";
 import { AppArt } from "../../components/AppArt";
 import { IconCloud, IconDownload, IconGear, IconInfo, IconPlay, IconStar } from "../../components/Icons";
 import { formatBytes, formatDate, formatLastPlayed, formatPlaytime } from "../../format";
@@ -16,6 +17,7 @@ export function AppPage() {
   const { app, snapshot } = useLibrary();
   const a = app(Number(appid));
   if (!snapshot) return <div className="page-loading">Carregando…</div>;
+  if (!a && getRegisteredTool(Number(appid))) return <Navigate to={`/store/app/${appid}`} replace />;
   if (!a) return <div className="page-empty">Este app não está na sua biblioteca.</div>;
   if (a.tool) return <ToolDetails key={a.appid} app={a} />;
   return <AppDetails key={a.appid} app={a} />;

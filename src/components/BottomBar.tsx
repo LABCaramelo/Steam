@@ -1,13 +1,15 @@
 import { useNavigate } from "react-router-dom";
+import { useCommunity } from "../community";
 import { t } from "../i18n";
 import { useUi } from "../ui";
 import { IconPlus, IconUsers } from "./Icons";
 import { Menu } from "./Menu";
 
-/** Bottom strip: "Adicionar ferramenta" and "Amigos e conversas". */
+/** Bottom strip: "Adicionar ferramenta" and "Comunidade". */
 export function BottomBar() {
   const nav = useNavigate();
   const ui = useUi();
+  const { totalUnread } = useCommunity();
 
   return (
     <footer className="bottombar">
@@ -24,7 +26,13 @@ export function BottomBar() {
         )}
       />
       <button className="bottombar__btn bottombar__friends" onClick={() => ui.setFriendsOpen(!ui.friendsOpen)}>
-        {t("BottomBar_FriendsAndChat")} <IconUsers size={18} />
+        {t("BottomBar_FriendsAndChat")}
+        {totalUnread > 0 && (
+          <span className="friends__badge" aria-label={`${totalUnread} mensagens novas`}>
+            {totalUnread > 99 ? "99+" : totalUnread}
+          </span>
+        )}
+        <IconUsers size={18} />
       </button>
     </footer>
   );

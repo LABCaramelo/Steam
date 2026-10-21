@@ -131,12 +131,12 @@ export function LibraryHome() {
             <span className="home-hero__eyebrow">UM CARA CARAMELO • LABORATÓRIO DE INTERAÇÃO</span>
             <h1 className="home-hero__title font-display">BIBLIOTECA DE FERRAMENTAS</h1>
             <p className="home-hero__lead">
-              Todos os jogos foram removidos do projeto. O catálogo está limpo e pronto para receber suas ferramentas, automações e sistemas autorais.
+              Sua biblioteca ainda está vazia. Adquira na Loja as ferramentas que quiser usar: elas entram aqui, com os seus dados guardados só para você.
             </p>
           </TiltSurface>
           <div className="home-hero__actions">
             <MagneticButton variant="accent" size="lg" icon={<IconArrowRight />} onClick={() => nav("/store")}>
-              EXPLORAR CATÁLOGO
+              IR PARA A LOJA
             </MagneticButton>
           </div>
           <span className="cm-handwritten home-hero__quote">
@@ -173,7 +173,7 @@ export function LibraryHome() {
                     nav(firstTool.tool!.launchPath);
                   }}
                 >
-                  Abrir biblioteca
+                  Abrir {firstTool.name}
                 </MagneticButton>
               </div>
             </div>

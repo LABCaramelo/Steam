@@ -4,8 +4,10 @@ import { BrowserRouter } from "react-router-dom";
 import { LibraryProvider, RunProvider } from "./api";
 import { App } from "./App";
 import { AuthProvider, useAuth } from "./auth";
-import { IconMark } from "./components/Icons";
+import { CommunityProvider } from "./community";
 import { LoginScreen } from "./components/LoginScreen";
+import { LabAccessGate, LoadingScreen } from "./components/WhatsAppGate";
+import { EntitlementsProvider } from "./entitlements";
 import { UiProvider } from "./ui";
 import "@caramelo/design-system/styles.css";
 import "./styles.css";
@@ -35,34 +37,30 @@ function AuthGatekeeper() {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="login-screen" style={{ display: "grid", placeItems: "center" }}>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "14px" }}>
-          <div className="login-modal__badge login-modal__badge--loading">
-            <IconMark size={46} decorative />
-          </div>
-          <span style={{ fontFamily: "Montserrat", fontSize: "11px", fontWeight: 700, letterSpacing: "0.18em", color: "rgb(var(--cm-fg-muted))" }}>
-            CARREGANDO SESSÃO…
-          </span>
-        </div>
-      </div>
-    );
+    return <LoadingScreen label="CARREGANDO SESSÃO…" />;
   }
 
   if (!isAuthenticated) {
     return <LoginScreen />;
   }
 
+  // Só membros do grupo oficial no WhatsApp entram: o servidor confere a cada entrada.
   return (
-    <BrowserRouter>
-      <UiProvider>
-        <LibraryProvider>
-          <RunProvider>
-            <App />
-          </RunProvider>
-        </LibraryProvider>
-      </UiProvider>
-    </BrowserRouter>
+    <LabAccessGate>
+      <BrowserRouter>
+        <UiProvider>
+          <EntitlementsProvider>
+            <LibraryProvider>
+              <RunProvider>
+                <CommunityProvider>
+                  <App />
+                </CommunityProvider>
+              </RunProvider>
+            </LibraryProvider>
+          </EntitlementsProvider>
+        </UiProvider>
+      </BrowserRouter>
+    </LabAccessGate>
   );
 }
 

@@ -76,6 +76,9 @@ export const IconBell = ({ size, ...p }: P) => (
 export const IconUsers = ({ size, ...p }: P) => (
   <svg {...base(size, p)}><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c.5-3.5 3.3-5.5 6.5-5.5s6 2 6.5 5.5" /><circle cx="17" cy="9" r="2.5" /><path d="M16.5 14.6c2.6.2 4.6 2 5 4.9" /></svg>
 );
+export const IconSend = ({ size, ...p }: P) => (
+  <svg {...base(size, p)}><path d="M22 2L11 13" /><path d="M22 2l-7 20-4-9-9-4 20-7z" /></svg>
+);
 export const IconPlus = ({ size, ...p }: P) => (
   <svg {...base(size, p)}><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
 );

@@ -12,6 +12,19 @@ export interface UserProfile {
   nickname?: string | null;
 }
 
+/** Conversas da Comunidade (src/community.tsx): só existem enquanto a sessão está aberta. */
+export const COMMUNITY_STORAGE_PREFIX = "lab:community:";
+
+function clearCommunityChats() {
+  try {
+    for (const key of Object.keys(sessionStorage)) {
+      if (key.startsWith(COMMUNITY_STORAGE_PREFIX)) sessionStorage.removeItem(key);
+    }
+  } catch {
+    // sessionStorage restrito
+  }
+}
+
 // Expurgar qualquer chave de bypass legado do navegador
 try {
   localStorage.removeItem("steam-recriada:auth");
@@ -99,6 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (mounted) setProfile(prof);
       } else {
         setProfile(null);
+        clearCommunityChats();
       }
     });
 
@@ -211,6 +225,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // Ignora erro de rede no logout
     } finally {
+      clearCommunityChats();
       setSession(null);
       setUser(null);
       setProfile(null);

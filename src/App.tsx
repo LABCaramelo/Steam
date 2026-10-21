@@ -15,6 +15,7 @@ import { ToolPage } from "./pages/library/ToolPage";
 import { ProfilePage } from "./pages/Profile";
 import { SettingsModal } from "./pages/Settings";
 import { StorePage } from "./pages/Store";
+import { StoreToolPage } from "./pages/StoreTool";
 import { useUi } from "./ui";
 
 const isModalPath = (p: string) => p.startsWith("/settings") || /^\/app\/\d+\/properties/.test(p);
@@ -50,6 +51,7 @@ export function App() {
             <Route path="*" element={<Navigate to="/library/home" replace />} />
           </Route>
           <Route path="/store" element={<StorePage />} />
+          <Route path="/store/app/:appid" element={<StoreToolPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<Navigate to="/library/home" replace />} />
         </Routes>

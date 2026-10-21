@@ -1,8 +1,9 @@
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { labAccess } from "./server/labAccess.ts";
 import { promptLibrary } from "./server/promptLibrary.ts";
 import {
   buildSnapshot,
@@ -36,6 +37,10 @@ function steamDataApi(): Plugin {
     if (url.pathname === "/api/library") return json(snapshot(url.searchParams.has("refresh")));
     if (url.pathname === "/api/prompt-library") {
       void promptLibrary(req, res).catch(() => json({ error: "Não foi possível consultar o acervo. Tente novamente." }, 500));
+      return;
+    }
+    if (url.pathname === "/api/lab-access") {
+      void labAccess(req, res).catch(() => json({ error: "Não foi possível conferir seu acesso agora." }, 500));
       return;
     }
 
@@ -76,6 +81,11 @@ function steamDataApi(): Plugin {
 
 /** LAB client routes (src/App.tsx). Everything else under "/" belongs to the public site. */
 const LAB_ROUTE = /^\/(?:library|store|profile|settings|app)(?:\/|$)/;
+/** Tool pages built from tools/<slug>/index.html (src/tools/<slug>). */
+const TOOL_PAGES = ["kanban", "prancheta", "automation", "academy"].filter((slug) =>
+  fs.existsSync(path.resolve(import.meta.dirname, "src", "tools", slug, "main.tsx")),
+);
+const TOOL_ROUTE = new RegExp(`^/tools/(${TOOL_PAGES.join("|")})/?$`);
 /** Same fallback as production: extensionless pages that are not files go to the LAB, which redirects to /library/home. */
 const isUnknownPage = (page: string) => !path.extname(page) && !page.endsWith("/") && !page.startsWith("/@") && !page.startsWith("/api/");
 
@@ -96,6 +106,7 @@ function siteRoutes(): Plugin {
     }
     if (page === "/") req.url = `/index.html${url.search}`;
     else if (/^\/aula-head(?:\/aula-01)?\/?$/.test(page)) req.url = `/aula-head/index.html${url.search}`;
+    else if (TOOL_ROUTE.test(page)) req.url = `/tools/${page.match(TOOL_ROUTE)![1]}/index.html${url.search}`;
     else if (LAB_ROUTE.test(page) || (isUnknownPage(page) && req.headers.accept?.includes("text/html"))) req.url = `/app.html${url.search}`;
     next();
   };
@@ -174,10 +185,23 @@ function stampPublicAssets(): Plugin {
   };
 }
 
-export default defineConfig({
-  plugins: [react(), steamDataApi(), siteRoutes(), stampPublicAssets()],
-  appType: "mpa",
-  build: { rollupOptions: { input: { app: path.resolve(import.meta.dirname, "app.html") } } },
-  server: { host: "127.0.0.1", port: 5180 },
-  preview: { host: "127.0.0.1", port: 5180 },
+export default defineConfig(({ mode }) => {
+  // Server-only secrets in .env (UAZAPI_*, SUPABASE_SERVICE_ROLE_KEY) reach /api/lab-access locally,
+  // as Vercel's environment variables do in production. They never enter the bundle (no VITE_ prefix).
+  for (const [name, value] of Object.entries(loadEnv(mode, import.meta.dirname, ""))) process.env[name] ??= value;
+  return {
+    plugins: [react(), steamDataApi(), siteRoutes(), stampPublicAssets()],
+    appType: "mpa",
+    build: {
+      rollupOptions: {
+        input: {
+          app: path.resolve(import.meta.dirname, "app.html"),
+          // LAB tools: each one is its own page, embedded by the LAB and usable in a tab of its own.
+          ...Object.fromEntries(TOOL_PAGES.map((slug) => [`tool-${slug}`, path.resolve(import.meta.dirname, "tools", slug, "index.html")])),
+        },
+      },
+    },
+    server: { host: "127.0.0.1", port: 5180 },
+    preview: { host: "127.0.0.1", port: 5180 },
+  };
 });

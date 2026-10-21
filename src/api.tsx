@@ -3,6 +3,7 @@ import { createDownloadSession, downloadReducer, type DownloadSession, type RunS
 import fallbackSnapshot from "./fallbackSnapshot.json";
 import type { Achievement, ArtKind, LibraryApp, LibrarySnapshot, UserCollection } from "./types";
 import { useAuth } from "./auth";
+import { useEntitlements } from "./entitlements";
 import { getRegisteredTool, registerTools, toolArtUrl } from "./toolCatalog";
 
 export const artUrl = (appid: number, kind: ArtKind) => toolArtUrl(appid, kind) ?? `/api/art/${appid}/${kind}`;
@@ -68,9 +69,20 @@ function saveLocal(c: UserCollection[]) {
 
 export function LibraryProvider({ children }: { children: ReactNode }) {
   const { user, profile } = useAuth();
-  const [snapshot, setSnapshot] = useState<LibrarySnapshot | null>(null);
+  const entitlements = useEntitlements();
+  const [source, setSource] = useState<LibrarySnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [collections, setCollections] = useState<UserCollection[]>([]);
+  const [storedCollections, setCollections] = useState<UserCollection[]>([]);
+  // Owned tools join the library once the person's library is known, so a tool never flashes in and out.
+  const snapshot = useMemo(
+    () => (source && entitlements.status !== "loading" ? registerTools(source, entitlements.owned) : null),
+    [source, entitlements.status, entitlements.owned],
+  );
+  // Collections keep ids of tools that are not owned yet (or anymore); they are hidden, not forgotten.
+  const collections = useMemo(() => {
+    const validIds = new Set(snapshot?.apps.map((a) => a.appid));
+    return storedCollections.map((c) => ({ ...c, appids: c.appids.filter((id) => validIds.has(id)) }));
+  }, [snapshot, storedCollections]);
 
   // Persistent storage overrides (never written to Steam files)
   const [appPathOverrides, setAppPathOverrides] = useState<Record<number, string>>(() => {
@@ -108,21 +120,16 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       })
       .then((s: LibrarySnapshot) => {
         if (!s || !Array.isArray(s.apps)) throw new Error("Invalid snapshot format");
-        const registered = registerTools(s);
-        setSnapshot(registered);
+        setSource(s);
         setError(null);
-        const validIds = new Set(registered.apps.map((a) => a.appid));
-        const rawCol = loadLocal() ?? registered.collections;
-        setCollections(rawCol.map((c) => ({ ...c, appids: c.appids.filter((id) => validIds.has(id)) })));
+        setCollections(loadLocal() ?? s.collections);
       })
       .catch(() => {
         // Fallback resiliente para o snapshot embutido quando servido sem backend local (Vercel)
-        const fallback = registerTools(fallbackSnapshot as unknown as LibrarySnapshot);
-        setSnapshot(fallback);
+        const fallback = fallbackSnapshot as unknown as LibrarySnapshot;
+        setSource(fallback);
         setError(null);
-        const validIds = new Set(fallback.apps.map((a) => a.appid));
-        const rawCol = loadLocal() ?? fallback.collections;
-        setCollections(rawCol.map((c) => ({ ...c, appids: c.appids.filter((id) => validIds.has(id)) })));
+        setCollections(loadLocal() ?? fallback.collections);
       });
   }, []);
 
