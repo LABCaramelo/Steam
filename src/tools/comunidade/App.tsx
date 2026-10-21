@@ -7,7 +7,6 @@ import { colorFor, playVoiceSound, useUnread, useVoiceOccupancy, useVoiceSession
 import { Avatar } from './components/Avatar';
 import { Chat } from './components/Chat';
 import { FriendsView } from './components/Friends';
-import { MemberList } from './components/MemberList';
 import { AddServerModal, ConfirmModal, CreateChannelModal, InviteModal } from './components/Modals';
 import { NamePrompt } from './components/NamePrompt';
 import { QuickSwitcher, type QuickDestination } from './components/QuickSwitcher';
@@ -179,29 +178,24 @@ export function App({ user }: { user?: ToolUser } = {}) {
       );
     } else {
       content = (
-        <>
-          <Chat
-            conversationId={channel.id}
-            title={channel.name}
-            icon={<ChannelIcon channel={channel} size={24} />}
-            topic={channel.topic}
-            placeholder={`Conversar em #${channel.name}`}
-            welcome={
-              <>
-                <div className="welcome-icon">
-                  <ChannelIcon channel={channel} size={42} />
-                </div>
-                <h2>Bem-vindo(a) a #{channel.name}!</h2>
-                <p>Este é o começo do canal #{channel.name}.</p>
-              </>
-            }
-            messages={state.messages[channel.id] ?? []}
-            showMembers={state.showMembers}
-            membersToggle
-            dispatch={dispatch}
-          />
-          {state.showMembers && <MemberList server={server} myStatus={state.myStatus} />}
-        </>
+        <Chat
+          conversationId={channel.id}
+          title={channel.name}
+          icon={<ChannelIcon channel={channel} size={24} />}
+          topic={channel.topic}
+          placeholder={`Conversar em #${channel.name}`}
+          welcome={
+            <>
+              <div className="welcome-icon">
+                <ChannelIcon channel={channel} size={42} />
+              </div>
+              <h2>Bem-vindo(a) a #${channel.name}!</h2>
+              <p>Este é o começo do canal #${channel.name}.</p>
+            </>
+          }
+          messages={state.messages[channel.id] ?? []}
+          dispatch={dispatch}
+        />
       );
     }
   } else {
@@ -227,8 +221,6 @@ export function App({ user }: { user?: ToolUser } = {}) {
             </>
           }
           messages={state.messages[dm.id] ?? []}
-          showMembers={false}
-          membersToggle={false}
           dispatch={dispatch}
         />
       );

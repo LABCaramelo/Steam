@@ -9,7 +9,7 @@ import {
   useAttachmentUrl,
 } from '../attachments';
 import { ME, users } from '../data';
-import { Bell, Close, Emoji, FileIcon, Members, Pin, Plus, Search, Threads, Trash } from '../icons';
+import { Bell, Close, Emoji, FileIcon, Pin, Plus, Search, Threads, Trash } from '../icons';
 import type { Action } from '../store';
 import type { Attachment, Message, User } from '../types';
 import { NavButton, SettingsContext } from '../ui';
@@ -79,11 +79,9 @@ export function Chat(p: Props) {
           </>
         )}
         <div className="chat-header-tools">
-          {p.membersToggle && (
-            <button className="optional" title="Threads" aria-label="Threads">
-              <Threads size={24} />
-            </button>
-          )}
+          <button className="optional" title="Threads" aria-label="Threads">
+            <Threads size={24} />
+          </button>
           <button className="optional" title="Notificações" aria-label="Notificações">
             <Bell size={24} />
           </button>
@@ -98,17 +96,6 @@ export function Chat(p: Props) {
           >
             <Pin size={24} />
           </button>
-          {p.membersToggle && (
-            <button
-              className={`members-toggle ${p.showMembers ? 'on' : ''}`}
-              onClick={() => p.dispatch({ type: 'toggleMembers' })}
-              title="Lista de membros"
-              aria-label="Lista de membros"
-              aria-pressed={p.showMembers}
-            >
-              <Members size={24} />
-            </button>
-          )}
           <label className="header-search chat-local-search">
             <input
               ref={searchRef}
