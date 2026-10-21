@@ -3,7 +3,8 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "redirects": [
-    { "source": "/prompts", "destination": "/tools/prompt-library/index.html", "permanent": true }
+    { "source": "/prompts", "destination": "/tools/prompt-library/index.html", "permanent": true },
+    { "source": "/favicon.ico", "destination": "/favicon.svg", "permanent": false }
   ],
   "rewrites": [
     { "source": "/aula-head", "destination": "/aula-head/index.html" },
