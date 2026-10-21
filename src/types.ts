@@ -70,7 +70,14 @@ export interface UserCollection {
 
 export interface LibrarySnapshot {
   steamPath: string | null;
-  user: { personaName: string; steamId64?: string; accountId?: string; hasAvatar: boolean } | null;
+  user: {
+    personaName: string;
+    steamId64?: string;
+    accountId?: string;
+    hasAvatar: boolean;
+    avatarUrl?: string | null;
+    bio?: string | null;
+  } | null;
   apps: LibraryApp[];
   collections: UserCollection[];
   libraryFolders: { path: string; label: string; totalSize: number; freeBytes?: number }[];

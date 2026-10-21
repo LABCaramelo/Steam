@@ -1,17 +1,24 @@
 import { CopyButton } from "@caramelo/design-system";
-import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { artUrl, useLibrary } from "../api";
+import { useAuth } from "../auth";
 import { AppArt } from "../components/AppArt";
 import { Avatar, STATUS_COLOR } from "../components/Avatar";
+import { EditProfileModal } from "../components/EditProfileModal";
+import { IconCamera, IconEdit } from "../components/Icons";
 import { formatDate, formatPlaytime } from "../format";
 import { STATUS_LABEL, useUi } from "../ui";
 
 /** Profile built from local facts: persona, playtime totals, favorites and achievement counts. */
 export function ProfilePage() {
   const { snapshot, collections } = useLibrary();
+  const { profile } = useAuth();
   const ui = useUi();
   const nav = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [isEditing, setIsEditing] = useState(() => searchParams.get("edit") === "1");
+
   const apps = snapshot?.apps ?? [];
   const stats = useMemo(() => {
     const totalMin = apps.reduce((s, a) => s + a.playtimeMinutes, 0);
@@ -24,27 +31,73 @@ export function ProfilePage() {
   const favApps = apps.filter((a) => fav?.appids.includes(a.appid));
   const top = [...apps].sort((a, b) => b.playtimeMinutes - a.playtimeMinutes)[0];
 
+  const handleCloseEdit = () => {
+    setIsEditing(false);
+    if (searchParams.get("edit")) {
+      const next = new URLSearchParams(searchParams);
+      next.delete("edit");
+      setSearchParams(next, { replace: true });
+    }
+  };
+
+  const bioText = profile?.bio?.trim() || "elegância + pequena confissão patética";
+
   return (
     <div className="profile">
       {top?.art.hero && <div className="profile__bg" style={{ backgroundImage: `url(${artUrl(top.appid, top.art.heroBlur ? "heroBlur" : "hero")})` }} />}
       <div className="profile__inner">
         <header className="profile__header">
-          <Avatar size={164} />
+          <div className="profile__avatar-container">
+            <Avatar size={164} />
+            <button
+              type="button"
+              className="profile__avatar-overlay-btn"
+              onClick={() => setIsEditing(true)}
+              title="Trocar foto de perfil"
+              aria-label="Trocar foto de perfil"
+            >
+              <IconCamera size={20} />
+              <span>Trocar foto</span>
+            </button>
+          </div>
+
           <div className="profile__id">
-            <h1 className="font-display">{snapshot?.user?.personaName}</h1>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+              <h1 className="font-display">{snapshot?.user?.personaName}</h1>
+              {profile?.nickname && (
+                <span className="cm-brand-badge" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
+                  @{profile.nickname}
+                </span>
+              )}
+            </div>
+
             <div className="profile__status" style={{ color: STATUS_COLOR[ui.status] }}>
               {STATUS_LABEL[ui.status]}
             </div>
+
             {snapshot?.user?.steamId64 && (
               <div className="muted small mono copy-row">
                 LAB ID {snapshot.user.steamId64}
                 <CopyButton value={snapshot.user.steamId64} aria-label="Copiar LAB ID" />
               </div>
             )}
-            <span className="cm-handwritten" style={{ fontSize: "16px", marginTop: "6px" }}>
-              "elegância + pequena confissão patética"
-            </span>
+
+            <div className="cm-handwritten profile__bio">
+              "{bioText}"
+            </div>
+
+            <div style={{ marginTop: "14px" }}>
+              <button
+                type="button"
+                className="btn btn--blue profile__edit-btn"
+                onClick={() => setIsEditing(true)}
+              >
+                <IconEdit size={14} />
+                <span>Editar perfil</span>
+              </button>
+            </div>
           </div>
+
           <div className="profile__counters">
             <div>
               <b>{apps.length}</b>
@@ -60,6 +113,8 @@ export function ProfilePage() {
             </div>
           </div>
         </header>
+
+        {isEditing && <EditProfileModal onClose={handleCloseEdit} />}
 
         <div className="profile__cols">
           <div>

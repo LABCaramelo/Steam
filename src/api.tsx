@@ -248,6 +248,9 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       ? {
           ...snapshot.user,
           personaName: personaName || snapshot.user.personaName,
+          avatarUrl: profile?.avatar_url ?? null,
+          bio: profile?.bio ?? null,
+          hasAvatar: Boolean(profile?.avatar_url || snapshot.user.hasAvatar),
         }
       : snapshot.user;
 

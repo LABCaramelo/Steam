@@ -2,6 +2,9 @@ import { CopyButton, ThemeToggle } from "@caramelo/design-system";
 import { useState, type ReactNode } from "react";
 import { Navigate, NavLink, useParams } from "react-router-dom";
 import { useLibrary } from "../api";
+import { useAuth } from "../auth";
+import { EditProfileModal } from "../components/EditProfileModal";
+import { IconEdit } from "../components/Icons";
 import { ModalWindow, Select, Toggle } from "../components/Modal";
 import { t, type LocKey } from "../i18n";
 import { useCarameloTheme } from "../theme";
@@ -66,6 +69,8 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
 function SettingsPage({ slug }: { slug: string }) {
   const ui = useUi();
   const { snapshot } = useLibrary();
+  const { profile } = useAuth();
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [flags, setFlag] = useLocalFlags(slug);
   const theme = useCarameloTheme();
   const page = PAGES.find((p) => p.slug === slug);
@@ -79,9 +84,38 @@ function SettingsPage({ slug }: { slug: string }) {
     case "account":
       body = (
         <>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
+            <div>
+              <h3 style={{ margin: "0 0 4px", fontSize: "16px" }}>Dados da conta no LAB</h3>
+              <p className="muted small" style={{ margin: 0 }}>Gerencie seus dados públicos, apelido na comunidade e foto.</p>
+            </div>
+            <button
+              type="button"
+              className="btn btn--blue"
+              onClick={() => setIsEditingProfile(true)}
+            >
+              <IconEdit size={14} />
+              <span>Editar perfil</span>
+            </button>
+          </div>
+
           <dl className="info-grid">
-            <dt>Nome de perfil</dt>
-            <dd>{snapshot?.user?.personaName}</dd>
+            <dt>Nome de exibição</dt>
+            <dd>{profile?.name || snapshot?.user?.personaName || "—"}</dd>
+            <dt>Apelido no LAB</dt>
+            <dd>{profile?.nickname ? `@${profile.nickname}` : <span className="muted">não definido</span>}</dd>
+            <dt>E-mail</dt>
+            <dd className="mono">{profile?.email || "—"}</dd>
+            <dt>Nível de acesso</dt>
+            <dd>
+              <span className="cm-brand-badge" style={{ textTransform: "uppercase" }}>
+                {profile?.role === "admin" ? "Administrador" : "Membro"}
+              </span>
+            </dd>
+            <dt>Frase / Bio</dt>
+            <dd className="cm-handwritten" style={{ fontSize: "15px" }}>
+              "{profile?.bio || "elegância + pequena confissão patética"}"
+            </dd>
             <dt>LAB ID</dt>
             <dd className="mono copy-row">
               {snapshot?.user?.steamId64 ?? "—"}
@@ -90,7 +124,9 @@ function SettingsPage({ slug }: { slug: string }) {
             <dt>Pasta do LAB</dt>
             <dd className="mono">{snapshot?.steamPath ?? "não encontrada (modo demonstração)"}</dd>
           </dl>
-          <p className="muted small">E-mail, senha e saldo da carteira ficam nos servidores do LAB e não são lidos por esta recriação.</p>
+          <p className="muted small">O acesso é protegido por verificação de segurança no WhatsApp oficial do LAB.</p>
+
+          {isEditingProfile && <EditProfileModal onClose={() => setIsEditingProfile(false)} />}
         </>
       );
       break;

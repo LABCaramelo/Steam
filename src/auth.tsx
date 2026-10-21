@@ -10,6 +10,7 @@ export interface UserProfile {
   access_status: string;
   avatar_url?: string | null;
   nickname?: string | null;
+  bio?: string | null;
 }
 
 /** Conversas da Comunidade (src/community.tsx): só existem enquanto a sessão está aberta. */
@@ -45,6 +46,17 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   /** Atalho para login com e-mail e senha */
   login: (email: string, password?: string) => Promise<{ ok: boolean; error?: string }>;
+  /** Atualiza perfil de usuário (nome, apelido, avatar, bio) */
+  updateProfile: (data: {
+    name: string;
+    nickname?: string | null;
+    avatar_url?: string | null;
+    bio?: string | null;
+  }) => Promise<{ ok: boolean; error?: string }>;
+  /** Envia um arquivo de avatar para o bucket avatars */
+  uploadAvatar: (file: File) => Promise<{ ok: boolean; url?: string; error?: string }>;
+  /** Recarrega os dados do perfil */
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -53,7 +65,7 @@ async function fetchUserProfile(userId: string): Promise<UserProfile | null> {
   try {
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, name, email, role, access_status, avatar_url, nickname")
+      .select("id, name, email, role, access_status, avatar_url, nickname, bio")
       .eq("id", userId)
       .maybeSingle();
 
@@ -239,6 +251,86 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [loginWithPassword]
   );
 
+  const refreshProfile = useCallback(async () => {
+    if (!user?.id) return;
+    const prof = await fetchUserProfile(user.id);
+    setProfile(prof);
+  }, [user?.id]);
+
+  const updateProfile = useCallback(
+    async (data: {
+      name: string;
+      nickname?: string | null;
+      avatar_url?: string | null;
+      bio?: string | null;
+    }): Promise<{ ok: boolean; error?: string }> => {
+      try {
+        if (!user?.id) return { ok: false, error: "Usuário não autenticado." };
+
+        const { data: res, error } = await supabase.rpc("update_my_profile", {
+          p_name: data.name,
+          p_nickname: data.nickname ?? null,
+          p_avatar_url: data.avatar_url ?? null,
+          p_bio: data.bio ?? null,
+        });
+
+        if (error) {
+          return { ok: false, error: error.message };
+        }
+
+        if (res && res.success === false) {
+          return { ok: false, error: res.message || res.error };
+        }
+
+        const prof = await fetchUserProfile(user.id);
+        setProfile(prof);
+        return { ok: true };
+      } catch (err) {
+        return { ok: false, error: err instanceof Error ? err.message : "Erro ao atualizar perfil." };
+      }
+    },
+    [user?.id]
+  );
+
+  const uploadAvatar = useCallback(
+    async (file: File): Promise<{ ok: boolean; url?: string; error?: string }> => {
+      try {
+        if (!user?.id) return { ok: false, error: "Usuário não autenticado." };
+
+        if (!file.type.startsWith("image/")) {
+          return { ok: false, error: "O arquivo precisa ser uma imagem (PNG, JPG, WEBP ou GIF)." };
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          return { ok: false, error: "A imagem não pode ultrapassar 5 MB." };
+        }
+
+        const fileExt = file.name.split(".").pop() || "png";
+        const filePath = `${user.id}/avatar-${Date.now()}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("avatars")
+          .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: true,
+          });
+
+        if (uploadError) {
+          return { ok: false, error: uploadError.message };
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from("avatars")
+          .getPublicUrl(filePath);
+
+        return { ok: true, url: publicUrl };
+      } catch (err) {
+        return { ok: false, error: err instanceof Error ? err.message : "Erro ao enviar imagem." };
+      }
+    },
+    [user?.id]
+  );
+
   // Apenas e estritamente sessões reais ativas do Supabase concedem autenticação
   const isAuthenticated = Boolean(session?.user);
 
@@ -255,6 +347,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loginWithOtp,
         logout,
         login,
+        updateProfile,
+        uploadAvatar,
+        refreshProfile,
       }}
     >
       {children}
