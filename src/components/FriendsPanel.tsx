@@ -55,13 +55,38 @@ function MemberList() {
             {snapshot?.user?.personaName ?? "…"}
           </div>
           <Menu
-            items={(["online", "away", "invisible", "offline"] as PersonaStatus[]).map((s) => ({
-              label: STATUS_LABEL[s],
+            items={(["online", "away", "invisible"] as PersonaStatus[]).map((s) => ({
+              label: (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: STATUS_COLOR[s],
+                      display: "inline-block",
+                      flexShrink: 0,
+                    }}
+                  />
+                  {STATUS_LABEL[s]}
+                </span>
+              ),
               checked: ui.status === s,
+              checkColor: s === "online" ? "var(--c-online)" : undefined,
               onSelect: () => ui.setStatus(s),
             }))}
             trigger={() => (
               <span className="friends__status">
+                <span
+                  style={{
+                    width: 7,
+                    height: 7,
+                    borderRadius: "50%",
+                    background: STATUS_COLOR[ui.status],
+                    display: "inline-block",
+                    flexShrink: 0,
+                  }}
+                />
                 {STATUS_LABEL[ui.status]} <IconChevronDown size={11} />
               </span>
             )}

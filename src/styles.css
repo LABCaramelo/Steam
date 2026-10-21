@@ -158,7 +158,7 @@
   --c-white: rgb(var(--cm-fg));               /* branco puro → Warm Cream */
   --c-accent: rgb(var(--cm-accent));          /* #FF701A Caramel Orange */
   --c-accent-hover: rgb(var(--cm-accent-bright));
-  --c-online: rgb(var(--cm-focus));           /* #25BFFF Electric Sky */
+  --c-online: rgb(var(--cm-success));         /* Signal Mint (Verde) */
   --c-ingame: rgb(var(--cm-accent));          /* #FF701A */
   --c-away: rgb(var(--cm-warning));           /* #FFD52A Acid Yellow */
   --c-offline: rgb(var(--cm-fg-faint));
@@ -434,7 +434,7 @@ select {
   content: "✓";
   position: absolute;
   left: 10px;
-  color: rgb(var(--cm-accent));
+  color: var(--menu-check-color, rgb(var(--cm-accent)));
   font-weight: 700;
   font-size: 13px;
 }

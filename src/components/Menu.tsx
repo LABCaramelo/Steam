@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 export type MenuItem =
-  | { kind?: "item"; label: string; onSelect?: () => void; disabled?: boolean; checked?: boolean }
+  | { kind?: "item"; label: ReactNode; onSelect?: () => void; disabled?: boolean; checked?: boolean; checkColor?: string }
   | { kind: "separator" };
 
 interface Props {
@@ -45,6 +45,7 @@ export function Menu({ trigger, items, align = "left", className }: Props) {
                 key={i}
                 role="menuitem"
                 className={`menu__item ${it.checked ? "is-checked" : ""}`}
+                style={it.checkColor ? ({ "--menu-check-color": it.checkColor } as React.CSSProperties) : undefined}
                 disabled={it.disabled}
                 onClick={() => {
                   setOpen(false);
