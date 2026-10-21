@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { COMMUNITY_STORAGE_PREFIX, useAuth } from "./auth";
 import { supabase } from "./supabase";
+import { notifyBrowser, playNotificationSound } from "./notifications";
 import { useUi } from "./ui";
 
 /**
@@ -95,9 +96,30 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
   const communityRef = useRef<RealtimeChannel | null>(null);
   const [joined, setJoined] = useState(false);
 
+  const openChat = useCallback((id: string | null) => {
+    setActiveChat(id);
+    if (id) setUnread((u) => (u[id] ? { ...u, [id]: 0 } : u));
+  }, []);
+
   // O que os callbacks do Realtime precisam ler sem recriar os canais.
-  const live = useRef({ activeChat, friendsOpen: ui.friendsOpen, toast: ui.toast, profiles: stored.profiles });
-  live.current = { activeChat, friendsOpen: ui.friendsOpen, toast: ui.toast, profiles: stored.profiles };
+  const live = useRef({
+    activeChat,
+    friendsOpen: ui.friendsOpen,
+    toast: ui.toast,
+    setFriendsOpen: ui.setFriendsOpen,
+    openChat,
+    profiles: stored.profiles,
+    settings: ui.settings,
+  });
+  live.current = {
+    activeChat,
+    friendsOpen: ui.friendsOpen,
+    toast: ui.toast,
+    setFriendsOpen: ui.setFriendsOpen,
+    openChat,
+    profiles: stored.profiles,
+    settings: ui.settings,
+  };
 
   useEffect(() => {
     if (!storageKey) return;
@@ -130,10 +152,43 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
         return { profiles, conversations: { ...s.conversations, [other]: [...list, msg].slice(-MAX_MESSAGES) } };
       });
       if (msg.from === selfId) return;
-      const { activeChat: open, friendsOpen, toast, profiles } = live.current;
-      if (friendsOpen && open === other) return;
-      setUnread((u) => ({ ...u, [other]: (u[other] ?? 0) + 1 }));
-      if (!friendsOpen) toast(`Nova mensagem de ${profiles[other]?.name ?? name ?? "um membro do LAB"}`);
+      const { activeChat: open, friendsOpen, toast, setFriendsOpen, openChat: doOpenChat, profiles, settings } = live.current;
+
+      const isWindowActive = typeof document !== "undefined" && !document.hidden;
+      const isChatFocused = isWindowActive && friendsOpen && open === other;
+
+      if (!isChatFocused) {
+        setUnread((u) => ({ ...u, [other]: (u[other] ?? 0) + 1 }));
+
+        const senderName = profiles[other]?.name ?? name ?? "Membro do LAB";
+        const preview = msg.body.length > 50 ? `${msg.body.slice(0, 47)}…` : msg.body;
+
+        // 1. Som suave de notificação
+        if (settings.notificationSound !== false) {
+          playNotificationSound();
+        }
+
+        // 2. Notificação interna em toast (com ação de clique para abrir o chat)
+        if (settings.notificationsToasts) {
+          toast(`Nova mensagem de ${senderName}: ${preview}`, () => {
+            setFriendsOpen(true);
+            doOpenChat(other);
+          });
+        }
+
+        // 3. Notificação nativa no navegador (Web Notifications API)
+        if (settings.browserNotifications !== false) {
+          notifyBrowser(`${senderName} · Comunidade LAB`, {
+            body: msg.body,
+            tag: `chat:${other}`,
+            renotify: true,
+          }, () => {
+            try { window.focus(); } catch {}
+            setFriendsOpen(true);
+            doOpenChat(other);
+          });
+        }
+      }
     },
     [selfId],
   );
@@ -238,11 +293,6 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
         .sort(byName),
     [stored.conversations, presence, member],
   );
-
-  const openChat = useCallback((id: string | null) => {
-    setActiveChat(id);
-    if (id) setUnread((u) => (u[id] ? { ...u, [id]: 0 } : u));
-  }, []);
 
   // Mensagem que chega com a conversa já aberta e visível não conta como não lida.
   useEffect(() => {

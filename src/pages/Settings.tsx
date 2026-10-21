@@ -7,6 +7,13 @@ import { EditProfileModal } from "../components/EditProfileModal";
 import { IconEdit } from "../components/Icons";
 import { ModalWindow, Select, Toggle } from "../components/Modal";
 import { t, type LocKey } from "../i18n";
+import {
+  getBrowserNotificationPermission,
+  isBrowserNotificationSupported,
+  notifyBrowser,
+  playNotificationSound,
+  requestBrowserNotificationPermission,
+} from "../notifications";
 import { useCarameloTheme } from "../theme";
 import { useUi } from "../ui";
 
@@ -156,16 +163,72 @@ function SettingsPage({ slug }: { slug: string }) {
         </>
       );
       break;
-    case "notifications":
+    case "notifications": {
+      const hasBrowser = isBrowserNotificationSupported();
+      const notifPerm = getBrowserNotificationPermission();
       body = (
         <>
-          <Toggle label="Exibir notificações (toasts)" checked={ui.settings.notificationsToasts} onChange={(v) => ui.setSetting("notificationsToasts", v)} />
-          {flag("achSound", "Tocar som ao desbloquear conquistas", undefined, true)}
+          <Toggle
+            label="Exibir notificações na interface (toasts)"
+            desc="Exibe um aviso flutuante dentro do LAB ao receber mensagens."
+            checked={ui.settings.notificationsToasts}
+            onChange={(v) => ui.setSetting("notificationsToasts", v)}
+          />
+          <Toggle
+            label="Avisos no navegador"
+            desc={
+              !hasBrowser
+                ? "Este navegador não suporta notificações de sistema."
+                : notifPerm === "granted"
+                ? "Ativo. O navegador avisa quando você receber mensagens mesmo em outra aba."
+                : notifPerm === "denied"
+                ? "Bloqueado nas configurações de permissão do navegador."
+                : "Permite que o navegador exiba notificações na área de trabalho quando chegar mensagem."
+            }
+            checked={hasBrowser && notifPerm === "granted" && ui.settings.browserNotifications}
+            disabled={!hasBrowser || notifPerm === "denied"}
+            onChange={async (v) => {
+              if (v && notifPerm !== "granted") {
+                const p = await requestBrowserNotificationPermission();
+                if (p === "granted") {
+                  ui.setSetting("browserNotifications", true);
+                  ui.toast("Notificações no navegador ativadas.");
+                }
+              } else {
+                ui.setSetting("browserNotifications", v);
+              }
+            }}
+          />
+          <Toggle
+            label="Som de nova mensagem"
+            desc="Toca um som suave ao receber uma mensagem na Comunidade."
+            checked={ui.settings.notificationSound}
+            onChange={(v) => ui.setSetting("notificationSound", v)}
+          />
+          <div style={{ marginTop: 8, marginBottom: 8, display: "flex", gap: 10, alignItems: "center" }}>
+            <button
+              type="button"
+              className="cm-btn cm-btn--ghost cm-btn--sm"
+              onClick={() => {
+                if (ui.settings.notificationSound) playNotificationSound();
+                if (ui.settings.notificationsToasts) ui.toast("Teste de notificação na interface.");
+                if (hasBrowser && notifPerm === "granted") {
+                  notifyBrowser("Teste de Notificação · LAB Caramelo", {
+                    body: "O navegador está configurado para avisar quando novas mensagens chegarem!",
+                  });
+                }
+              }}
+            >
+              Testar som e notificação
+            </button>
+            <span className="muted small">Dispara um som e notificação de teste</span>
+          </div>
           {flag("friendOnline", "Avisar quando um amigo ficar on-line")}
-          {flag("wishlistSale", "Itens da lista de desejos em promoção", undefined, true)}
+          {flag("achSound", "Tocar som ao desbloquear conquistas", undefined, true)}
         </>
       );
       break;
+    }
     case "cloud":
       body = flag("cloud", "Ativar o LAB Cloud nos aplicativos compatíveis", "Os arquivos salvos são sincronizados automaticamente.", true);
       break;

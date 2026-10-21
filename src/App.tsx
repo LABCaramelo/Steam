@@ -73,7 +73,18 @@ export function App() {
       <div className="toasts" aria-live="polite">
         {ui.settings.notificationsToasts &&
           ui.toasts.map((t) => (
-            <div key={t.id} className="toast">
+            <div
+              key={t.id}
+              className={`toast ${t.onClick ? "is-clickable" : ""}`}
+              onClick={() => {
+                if (t.onClick) {
+                  t.onClick();
+                  ui.dismissToast(t.id);
+                }
+              }}
+              role={t.onClick ? "button" : undefined}
+              tabIndex={t.onClick ? 0 : undefined}
+            >
               {t.msg}
             </div>
           ))}

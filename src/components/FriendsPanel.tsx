@@ -3,6 +3,11 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 
 import { useLibrary } from "../api";
 import { COMMUNITY_UNCONFIGURED, useCommunity, type CommunityMember } from "../community";
 import { t } from "../i18n";
+import {
+  getBrowserNotificationPermission,
+  isBrowserNotificationSupported,
+  requestBrowserNotificationPermission,
+} from "../notifications";
 import { STATUS_LABEL, useUi, type PersonaStatus } from "../ui";
 import { Avatar, MemberAvatar, STATUS_COLOR } from "./Avatar";
 import { IconBack, IconChevronDown, IconClose, IconSearch, IconSend } from "./Icons";
@@ -45,6 +50,16 @@ function MemberList() {
     { key: "offline" as const, label: t("FriendGroup_Offline"), members: filter(community.offline), empty: "" },
   ].filter((g) => g.key === "online" || g.members.length > 0);
   const hidden = ui.status === "invisible" || ui.status === "offline";
+  const [notifPerm, setNotifPerm] = useState(() => getBrowserNotificationPermission());
+
+  async function enableNotifications() {
+    const p = await requestBrowserNotificationPermission();
+    setNotifPerm(p);
+    if (p === "granted") {
+      ui.setSetting("browserNotifications", true);
+      ui.toast("Notificações no navegador ativadas.");
+    }
+  }
 
   return (
     <>
@@ -94,6 +109,17 @@ function MemberList() {
         </div>
       </div>
       {hidden && <p className="friends__notice">Ninguém vê você on-line agora, mas as mensagens continuam chegando.</p>}
+      {isBrowserNotificationSupported() && notifPerm === "default" && (
+        <div className="friends__notif-bar">
+          <div className="friends__notif-text">
+            <strong>Avisos no navegador</strong>
+            <span>Receba notificações na área de trabalho quando chegar mensagem.</span>
+          </div>
+          <button type="button" className="cm-btn cm-btn--accent cm-btn--sm" onClick={enableNotifications}>
+            Ativar
+          </button>
+        </div>
+      )}
       <div className="friends__search">
         <IconSearch size={14} className="field-icon" aria-hidden="true" />
         <FocusField label={t("SearchFriends")} type="search" value={query} onChange={(e) => setQuery(e.target.value)} />
@@ -169,6 +195,17 @@ function ChatView({ id }: { id: string }) {
   const logRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const online = member.status !== null;
+  const ui = useUi();
+  const [notifPerm, setNotifPerm] = useState(() => getBrowserNotificationPermission());
+
+  async function enableNotifications() {
+    const p = await requestBrowserNotificationPermission();
+    setNotifPerm(p);
+    if (p === "granted") {
+      ui.setSetting("browserNotifications", true);
+      ui.toast("Notificações no navegador ativadas.");
+    }
+  }
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -218,6 +255,16 @@ function ChatView({ id }: { id: string }) {
           </span>
           <span className="friends__member-sub">{member.status ? MEMBER_STATUS_LABEL[member.status] : STATUS_LABEL.offline}</span>
         </span>
+        {isBrowserNotificationSupported() && notifPerm === "default" && (
+          <button
+            type="button"
+            className="friends__notif-chip"
+            title="Permitir que o navegador avise quando novas mensagens chegarem"
+            onClick={enableNotifications}
+          >
+            🔔 Ativar avisos
+          </button>
+        )}
       </div>
 
       <div className="friends__chat-log" ref={logRef} role="log" aria-live="polite" aria-label={`Conversa com ${member.name}`}>

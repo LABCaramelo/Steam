@@ -10,6 +10,8 @@ export interface ClientSettings {
   lowPerfMode: boolean;
   downloadThrottleKbps: number;
   notificationsToasts: boolean;
+  notificationSound: boolean;
+  browserNotifications: boolean;
 }
 
 const DEFAULT_SETTINGS: ClientSettings = {
@@ -19,7 +21,15 @@ const DEFAULT_SETTINGS: ClientSettings = {
   lowPerfMode: false,
   downloadThrottleKbps: 0,
   notificationsToasts: true,
+  notificationSound: true,
+  browserNotifications: true,
 };
+
+export interface ToastItem {
+  id: number;
+  msg: string;
+  onClick?: () => void;
+}
 
 interface UiState {
   smallMode: boolean;
@@ -30,8 +40,9 @@ interface UiState {
   setAboutOpen: (v: boolean) => void;
   status: PersonaStatus;
   setStatus: (s: PersonaStatus) => void;
-  toast: (msg: string) => void;
-  toasts: { id: number; msg: string }[];
+  toast: (msg: string, onClick?: () => void) => void;
+  dismissToast: (id: number) => void;
+  toasts: ToastItem[];
   settings: ClientSettings;
   setSetting: <K extends keyof ClientSettings>(k: K, v: ClientSettings[K]) => void;
 }
@@ -64,9 +75,13 @@ export function UiProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle("low-perf", settings.lowPerfMode);
   }, [settings]);
 
-  const toast = useCallback((msg: string) => {
+  const dismissToast = useCallback((id: number) => {
+    setToasts((t) => t.filter((x) => x.id !== id));
+  }, []);
+
+  const toast = useCallback((msg: string, onClick?: () => void) => {
     const id = Date.now() + Math.random();
-    setToasts((t) => [...t, { id, msg }]);
+    setToasts((t) => [...t, { id, msg, onClick }]);
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 4200);
   }, []);
 
@@ -74,7 +89,7 @@ export function UiProvider({ children }: { children: ReactNode }) {
 
   return (
     <Ctx.Provider
-      value={{ smallMode, setSmallMode, friendsOpen, setFriendsOpen, aboutOpen, setAboutOpen, status, setStatus, toast, toasts, settings, setSetting }}
+      value={{ smallMode, setSmallMode, friendsOpen, setFriendsOpen, aboutOpen, setAboutOpen, status, setStatus, toast, dismissToast, toasts, settings, setSetting }}
     >
       {children}
     </Ctx.Provider>

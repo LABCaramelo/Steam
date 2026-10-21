@@ -775,6 +775,15 @@ select {
     opacity: 0;
   }
 }
+.toast.is-clickable {
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform var(--cm-dur-instant) var(--cm-ease-out), border-color var(--cm-dur-instant) var(--cm-ease-out);
+}
+.toast.is-clickable:hover {
+  transform: translateY(-2px);
+  border-color: rgb(var(--cm-accent));
+}
 
 /* avatar */
 .avatar {
@@ -2396,6 +2405,47 @@ select {
   background: rgb(var(--cm-surface-2));
   border: 1px solid rgb(var(--cm-line));
   border-radius: var(--cm-radius-sm);
+}
+.friends__notif-bar {
+  margin: 10px 12px 0;
+  padding: 8px 10px;
+  background: rgb(var(--cm-surface-2));
+  border: 1px solid rgb(var(--cm-line));
+  border-left: 3px solid rgb(var(--cm-accent));
+  border-radius: var(--cm-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.friends__notif-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  color: rgb(var(--cm-fg-muted));
+  line-height: 1.35;
+}
+.friends__notif-text strong {
+  font-size: 12px;
+  color: rgb(var(--cm-fg));
+}
+.friends__notif-chip {
+  margin-left: auto;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: var(--cm-radius-xs);
+  background: rgb(var(--cm-surface-2));
+  border: 1px solid rgb(var(--cm-line));
+  color: rgb(var(--cm-accent));
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--cm-dur-instant) var(--cm-ease-out);
+}
+.friends__notif-chip:hover {
+  background: rgb(var(--cm-accent) / 0.15);
+  border-color: rgb(var(--cm-accent));
 }
 .friends__members {
   list-style: none;

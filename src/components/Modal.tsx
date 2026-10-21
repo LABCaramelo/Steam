@@ -38,14 +38,14 @@ export function ModalWindow({
   );
 }
 
-export function Toggle({ checked, onChange, label, desc }: { checked: boolean; onChange: (v: boolean) => void; label: string; desc?: string }) {
+export function Toggle({ checked, onChange, label, desc, disabled }: { checked: boolean; onChange: (v: boolean) => void; label: string; desc?: string; disabled?: boolean }) {
   return (
-    <label className="field">
+    <label className={`field ${disabled ? "is-disabled" : ""}`}>
       <div className="field__text">
         <div className="field__label">{label}</div>
         {desc && <div className="field__desc">{desc}</div>}
       </div>
-      <button role="switch" aria-checked={checked} className={`toggle ${checked ? "is-on" : ""}`} onClick={() => onChange(!checked)}>
+      <button role="switch" aria-checked={checked} disabled={disabled} className={`toggle ${checked ? "is-on" : ""}`} onClick={() => !disabled && onChange(!checked)}>
         <span />
       </button>
     </label>

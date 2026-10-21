@@ -10,6 +10,7 @@ export const KANBAN_APP_ID = 2;
 export const PRANCHETA_APP_ID = 3;
 export const AUTOMATION_APP_ID = 4;
 export const ACADEMY_APP_ID = 5;
+export const CLAQUETE_APP_ID = 6;
 
 const art = (root: string): ToolMetadata["assets"] => ({
   capsule: `${root}/capsule.svg`,
@@ -150,8 +151,38 @@ export const ACADEMY_APP = tool(ACADEMY_APP_ID, "Academy", {
   },
 });
 
+export const CLAQUETE_APP = tool(CLAQUETE_APP_ID, "Claquete", {
+  slug: "claquete",
+  launchPath: `/library/app/${CLAQUETE_APP_ID}/open`,
+  publicPage: "/tools/claquete/index.html",
+  description: "Plataforma de cinema e vídeo com IA: canvas infinito, roteiro, set 3D e editor de vídeo multi-trilha.",
+  assets: art("/tools/claquete/art"),
+  store: {
+    tagline: "Do roteiro ao corte final num só canvas com IA.",
+    eyebrow: "CINEMA & VÍDEO COM IA / DIREÇÃO AUDIOVISUAL",
+    headline: "Crie filmes com IA\ndo rascunho à montagem.",
+    features: [
+      { title: "Canvas Infinito de Cinema", text: "Organize planos, cenas, referências, áudios e notas visuais com conexões inteligentes." },
+      { title: "20 Ações de Geração e Agente", text: "Gere imagens, planos em vídeo, diálogos e efeitos sonoros com assistência do Agente Diretor." },
+      { title: "Set 3D com Câmera Virtual", text: "Transforme fotos em cenários 3D, posicione personagens e ensaie movimentos cinematográficos reais." },
+      { title: "Editor de Vídeo Multi-trilha", text: "Corte, transições, ajuste de velocidade, mixagem de áudio e exportação em vídeo de alta fidelidade." },
+    ],
+    steps: ["Adquira a Claquete e inicie um novo projeto cinematográfico.", "Monte o canvas com cenas, decupagem no roteiro ou bloqueio de câmera no Set 3D.", "Gere os planos com IA, monte na linha do tempo e exporte seu filme."],
+    about: [["Formato", "Estúdio de cinema com IA"], ["Geração", "Higgsfield & OpenAI"], ["Exportação", "MP4, Canvas e Roteiro"]],
+    dataNote: "Seus projetos, chats e decupagens ficam salvos no Supabase do LAB; mídias e renders são hospedados no Cloudflare R2.",
+    category: "Cinema",
+  },
+});
+
 /** Store order. */
-export const TOOL_CATALOG: readonly LibraryApp[] = [ACADEMY_APP, KANBAN_APP, PRANCHETA_APP, AUTOMATION_APP, PROMPT_LIBRARY_APP];
+export const TOOL_CATALOG: readonly LibraryApp[] = [
+  CLAQUETE_APP,
+  ACADEMY_APP,
+  KANBAN_APP,
+  PRANCHETA_APP,
+  AUTOMATION_APP,
+  PROMPT_LIBRARY_APP,
+];
 
 export function getRegisteredTool(appid: number): LibraryApp | undefined {
   return TOOL_CATALOG.find((app) => app.appid === appid);
