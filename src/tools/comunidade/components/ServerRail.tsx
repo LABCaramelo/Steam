@@ -7,9 +7,10 @@ interface Props {
   servers: Server[];
   view: View;
   dispatch: (a: Action) => void;
+  isAdmin?: boolean;
 }
 
-export function ServerRail({ servers, view, dispatch }: Props) {
+export function ServerRail({ servers, view, dispatch, isAdmin }: Props) {
   const homeActive = view.kind === 'home';
   return (
     <nav className="server-rail" aria-label="Servidores">
@@ -28,13 +29,15 @@ export function ServerRail({ servers, view, dispatch }: Props) {
           {s.icon ? <img className="rail-icon" src={s.icon} alt="" /> : s.acronym}
         </RailItem>
       ))}
-      <RailItem
-        label="Adicionar um servidor"
-        green
-        onClick={() => dispatch({ type: 'openModal', modal: { kind: 'addServer' } })}
-      >
-        <Plus size={24} />
-      </RailItem>
+      {isAdmin && (
+        <RailItem
+          label="Adicionar um servidor"
+          green
+          onClick={() => dispatch({ type: 'openModal', modal: { kind: 'addServer' } })}
+        >
+          <Plus size={24} />
+        </RailItem>
+      )}
     </nav>
   );
 }

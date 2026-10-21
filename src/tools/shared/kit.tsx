@@ -3,6 +3,7 @@ import type { Session } from "@supabase/supabase-js";
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { supabase } from "../../supabase";
+import { subscribeToolReleases } from "../../toolLifecycle";
 
 /**
  * Shared runtime of the LAB tools (Kanban, Prancheta, Automation, Academy). Each tool is its
@@ -76,6 +77,7 @@ export interface ToolUser {
   id: string;
   email: string;
   name: string;
+  role?: string;
 }
 
 export interface ToolInfo {
@@ -95,7 +97,7 @@ type GateState =
 const UserCtx = createContext<ToolUser | null>(null);
 const MISSING = new Set(["PGRST202", "PGRST205", "42P01"]);
 
-function toUser(session: Session, profile?: { name?: string | null; nickname?: string | null } | null): ToolUser {
+function toUser(session: Session, profile?: { name?: string | null; nickname?: string | null; role?: string | null } | null): ToolUser {
   const meta = session.user.user_metadata ?? {};
   const email = session.user.email ?? "";
   const name =
@@ -105,7 +107,8 @@ function toUser(session: Session, profile?: { name?: string | null; nickname?: s
     (meta.name as string)?.trim() ||
     email.split("@")[0] ||
     "Você";
-  return { id: session.user.id, email, name };
+  const role = profile?.role?.trim() || (meta.role as string)?.trim() || "member";
+  return { id: session.user.id, email, name, role };
 }
 
 /** Renders the tool only for a signed-in person who has it in the library. */
@@ -125,11 +128,14 @@ export function ToolGate({ tool, children }: { tool: ToolInfo; children: ReactNo
         return;
       }
       if (session.user.id !== userId.current && alive) setState({ kind: "loading" });
-      const [{ data, error }, profRes] = await Promise.all([
+      userId.current = session.user.id;
+      const result = await Promise.all([
         supabase.rpc("has_tool", { p_slug: tool.slug }),
-        supabase.from("profiles").select("name, nickname").eq("id", session.user.id).maybeSingle(),
-      ]);
+        supabase.from("profiles").select("name, nickname, role").eq("id", session.user.id).maybeSingle(),
+      ]).catch(() => null);
       if (!alive || version !== request) return;
+      if (!result) { setState({ kind: "error", message: "Não foi possível abrir a ferramenta agora." }); return; }
+      const [{ data, error }, profRes] = result;
       if (error) setState(MISSING.has(error.code) ? { kind: "unconfigured" } : { kind: "error", message: "Não foi possível abrir a ferramenta agora." });
       else if (!data) setState({ kind: "locked" });
       else {
@@ -137,7 +143,22 @@ export function ToolGate({ tool, children }: { tool: ToolInfo; children: ReactNo
         setState({ kind: "ready", user: toUser(session, profRes?.data) });
       }
     };
-    supabase.auth.getSession().then(({ data }) => check(data.session));
+    const refresh = () => {
+      const version = ++request;
+      void supabase.auth.getSession().then(({ data }) => {
+        if (alive && version === request) return check(data.session);
+      }).catch(() => {
+        if (alive && version === request) setState({ kind: "error", message: "Não foi possível conferir seu acesso agora." });
+      });
+    };
+    const unsubscribeRelease = subscribeToolReleases((notice) => {
+      if (notice.slug !== tool.slug || notice.appid !== tool.appid || notice.userId !== userId.current) return;
+      // Unmount immediately and invalidate any ownership response started before removal.
+      ++request;
+      setState({ kind: "locked" });
+    });
+    window.addEventListener("focus", refresh);
+    refresh();
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       // Token refreshes keep the same person: nothing to re-check.
       if (event === "TOKEN_REFRESHED" && session?.user.id === userId.current) return;
@@ -146,9 +167,12 @@ export function ToolGate({ tool, children }: { tool: ToolInfo; children: ReactNo
     });
     return () => {
       alive = false;
+      ++request;
+      unsubscribeRelease();
+      window.removeEventListener("focus", refresh);
       data.subscription.unsubscribe();
     };
-  }, [tool.slug, attempt]);
+  }, [tool.slug, tool.appid, attempt]);
 
   useEffect(() => {
     document.title = `${tool.name} — LAB`;

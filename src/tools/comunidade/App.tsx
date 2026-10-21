@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { ToolUser } from '../shared/kit';
 import { ME, directMessages, users } from './data';
 import { findServer, useAppStore, type Action } from './store';
@@ -15,10 +15,13 @@ import { SettingsView } from './components/Settings';
 import { ChannelIcon, HomeSidebar, ServerSidebar, type VoiceUi } from './components/Sidebar';
 
 import { VoiceView } from './components/VoiceView';
+import { activateAttachmentOwner } from './attachments';
 
 export function App({ user }: { user?: ToolUser } = {}) {
-  const [state, dispatch] = useAppStore();
+  const [state, dispatch] = useAppStore(user?.id);
+  useLayoutEffect(() => activateAttachmentOwner(user?.id), [user?.id]);
   const { view, profile, settings, modal } = state;
+  const isAdmin = user?.role === 'admin';
 
   useEffect(() => {
     if (user?.name && !profile.name) {
@@ -239,7 +242,7 @@ export function App({ user }: { user?: ToolUser } = {}) {
           <div className="app" data-nav={navOpen ? 'open' : 'closed'}>
 
             <div className="app-body">
-              <ServerRail servers={state.servers} view={view} dispatch={dispatch} />
+              <ServerRail servers={state.servers} view={view} dispatch={dispatch} isAdmin={isAdmin} />
               <div className="app-panel">
                 {sidebar}
                 <div className="app-content">{content}</div>
@@ -255,8 +258,13 @@ export function App({ user }: { user?: ToolUser } = {}) {
                 dispatch={dispatch}
               />
             )}
-            {modal?.kind === 'addServer' && (
-              <AddServerModal invite={modal.invite} profileName={profile.name} dispatch={dispatch} />
+            {modal?.kind === 'addServer' && (isAdmin || modal.invite) && (
+              <AddServerModal
+                invite={modal.invite}
+                profileName={profile.name}
+                isAdmin={isAdmin}
+                dispatch={dispatch}
+              />
             )}
             {modal?.kind === 'invite' && modalServer && <InviteModal server={modalServer} dispatch={dispatch} />}
             {modal?.kind === 'createChannel' && modalServer && (

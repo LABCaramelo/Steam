@@ -47,21 +47,23 @@ type Step = 'start' | 'about' | 'customize' | 'join';
 export function AddServerModal({
   invite,
   profileName,
+  isAdmin = false,
   dispatch,
 }: {
   /** Código ou link de convite; presente quando o modal abre direto em "Entrar em um servidor". */
   invite?: string;
   profileName: string;
+  isAdmin?: boolean;
   dispatch: (a: Action) => void;
 }) {
-  const [step, setStep] = useState<Step>(invite !== undefined ? 'join' : 'start');
+  const [step, setStep] = useState<Step>(!isAdmin || invite !== undefined ? 'join' : 'start');
   const [template, setTemplate] = useState<Template>(TEMPLATES[0]);
   const [community, setCommunity] = useState(false);
   const close = () => dispatch({ type: 'closeModal' });
 
   return (
-    <ModalShell label="Adicionar um servidor" onClose={close} className="add-server">
-      {step === 'start' && (
+    <ModalShell label={isAdmin ? 'Adicionar um servidor' : 'Entrar em um servidor'} onClose={close} className="add-server">
+      {isAdmin && step === 'start' && (
         <>
           <div className="dialog-head">
             <h2>Criar seu servidor</h2>
@@ -96,7 +98,7 @@ export function AddServerModal({
         </>
       )}
 
-      {step === 'about' && (
+      {isAdmin && step === 'about' && (
         <>
           <div className="dialog-head">
             <h2>Conte-nos mais sobre o seu servidor</h2>
@@ -139,7 +141,7 @@ export function AddServerModal({
         </>
       )}
 
-      {step === 'customize' && (
+      {isAdmin && step === 'customize' && (
         <CustomizeStep
           defaultName={`Servidor de ${profileName || 'você'}`}
           onBack={() => setStep('about')}
@@ -150,7 +152,7 @@ export function AddServerModal({
       {step === 'join' && (
         <JoinStep
           initial={invite ?? ''}
-          onBack={() => setStep('start')}
+          onBack={isAdmin ? () => setStep('start') : close}
           onJoin={(server) => dispatch({ type: 'createServer', server })}
         />
       )}
