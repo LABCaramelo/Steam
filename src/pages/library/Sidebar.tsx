@@ -1,25 +1,13 @@
-import { FocusField } from "@caramelo/design-system";
 import { useMemo, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useDownloads, useLibrary, useRun } from "../../api";
 import { AppIcon } from "../../components/AppArt";
-import { IconChevronDown, IconClock, IconFilter, IconHome, IconPlay, IconSearch } from "../../components/Icons";
-import { Menu } from "../../components/Menu";
-import { recencyBucket } from "../../format";
+import { IconHome } from "../../components/Icons";
 import { t } from "../../i18n";
 import type { LibraryApp } from "../../types";
 import { useUi } from "../../ui";
 import type { ContextTarget } from "./GameContextMenu";
 import { usePlayAction } from "./play";
-
-type TypeFilter = "games" | "software" | "all";
-const TYPE_LABEL: Record<TypeFilter, string> = { games: "Ferramentas", software: "Software", all: "Ferramentas e software" };
-
-function matchesType(a: LibraryApp, f: TypeFilter) {
-  if (f === "all") return true;
-  const software = a.type === "application";
-  return f === "software" ? software : !software;
-}
 
 interface Section {
   key: string;
@@ -29,32 +17,14 @@ interface Section {
 
 export function Sidebar({ onContext }: { onContext: (t: ContextTarget) => void }) {
   const { snapshot, collections } = useLibrary();
-  const { installedAppIds } = useDownloads();
-  const [typeFilter, setTypeFilter] = useState<TypeFilter>("games");
-  const [recent, setRecent] = useState(false);
-  const [readyOnly, setReadyOnly] = useState(false);
-  const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
   const visible = useMemo(() => {
-    const q = query.trim().toLowerCase();
     const hidden = new Set(collections.find((c) => c.id === "hidden")?.appids ?? []);
-    return (snapshot?.apps ?? []).filter(
-      (a) => matchesType(a, typeFilter) && (!readyOnly || a.installed || installedAppIds[a.appid]) && (q ? a.name.toLowerCase().includes(q) : !hidden.has(a.appid)),
-    );
-  }, [snapshot, collections, typeFilter, readyOnly, query, installedAppIds]);
+    return (snapshot?.apps ?? []).filter((a) => !hidden.has(a.appid));
+  }, [snapshot, collections]);
 
   const sections = useMemo<Section[]>(() => {
-    if (query.trim()) return [{ key: "search", label: t("GameList_SectionHeader_SearchResults"), apps: visible }];
-    if (recent) {
-      const byBucket = new Map<string, LibraryApp[]>();
-      const sorted = [...visible].sort((a, b) => b.lastPlayed - a.lastPlayed);
-      for (const a of sorted) {
-        const k = a.lastPlayed ? recencyBucket(a.lastPlayed) : "Sem atividade registrada";
-        byBucket.set(k, [...(byBucket.get(k) ?? []), a]);
-      }
-      return [...byBucket].map(([k, apps]) => ({ key: k, label: k, apps }));
-    }
     const out: Section[] = [];
     const inSome = new Set<number>();
     const ordered = [...collections].sort((a, b) => (a.id === "favorite" ? -1 : b.id === "favorite" ? 1 : a.name.localeCompare(b.name)));
@@ -67,7 +37,7 @@ export function Sidebar({ onContext }: { onContext: (t: ContextTarget) => void }
     const rest = visible.filter((a) => !inSome.has(a.appid));
     if (rest.length) out.push({ key: "uncategorized", label: t("GameList_Category_Uncategorized"), apps: rest });
     return out;
-  }, [visible, recent, collections, query]);
+  }, [visible, collections]);
 
   return (
     <aside className="sidebar">
@@ -75,35 +45,6 @@ export function Sidebar({ onContext }: { onContext: (t: ContextTarget) => void }
         <NavLink to="/library/home" className={({ isActive }) => `sidebar__home-btn ${isActive ? "is-active" : ""}`}>
           <IconHome size={16} /> {t("GameList_Home").toUpperCase()}
         </NavLink>
-      </div>
-
-      <div className="sidebar__filters">
-        <Menu
-          items={(Object.keys(TYPE_LABEL) as TypeFilter[]).map((k) => ({ label: TYPE_LABEL[k], checked: typeFilter === k, onSelect: () => setTypeFilter(k) }))}
-          trigger={() => (
-            <span className="sidebar__type">
-              {TYPE_LABEL[typeFilter].toUpperCase()} <IconChevronDown size={12} />
-            </span>
-          )}
-        />
-        <div className="sidebar__toggles">
-          <button className={`sidebar__icon-btn ${recent ? "is-on" : ""}`} title={t("GameList_View_Recent")} onClick={() => setRecent((r) => !r)}>
-            <IconClock size={16} />
-          </button>
-          <button
-            className={`sidebar__icon-btn ${readyOnly ? "is-on" : ""}`}
-            title={t("GameList_View_ShowOnlyReadyToPlay")}
-            onClick={() => setReadyOnly((r) => !r)}
-          >
-            <IconPlay size={14} />
-          </button>
-        </div>
-      </div>
-
-      <div className="sidebar__search">
-        <IconSearch size={14} className="field-icon" aria-hidden="true" />
-        <FocusField label={t("GameList_Search")} type="search" value={query} onChange={(e) => setQuery(e.target.value)} />
-        <IconFilter size={14} className="sidebar__search-filter" aria-hidden="true" />
       </div>
 
       <div className="sidebar__list">
@@ -117,7 +58,7 @@ export function Sidebar({ onContext }: { onContext: (t: ContextTarget) => void }
             {!collapsed[s.key] && s.apps.map((a) => <GameListEntry key={a.appid} app={a} onContext={onContext} />)}
           </section>
         ))}
-        {snapshot && sections.length === 0 && <div className="sidebar__loading">Nenhuma ferramenta corresponde ao filtro.</div>}
+        {snapshot && sections.length === 0 && <div className="sidebar__loading">Nenhuma ferramenta encontrada.</div>}
       </div>
     </aside>
   );
