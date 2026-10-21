@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { commit, refitAllText } from './actions';
 import { CanvasView } from './canvas/CanvasView';
 import { contextMenu, installKeyboard, mainMenu } from './commands';
@@ -11,7 +11,7 @@ import { QuickActionsModal } from './ui/QuickActionsModal';
 import { RightPanel } from './ui/RightPanel';
 import { ShortcutsModal } from './ui/ShortcutsModal';
 import { Toolbar } from './ui/Toolbar';
-import { IconCheck, IconChevronDown, IconKeyboard, IconMoon, IconSun, Logo } from './ui/icons';
+import { IconArrowLeft, IconCheck, IconChevronDown, IconKeyboard, IconMoon, IconSun, Logo } from './ui/icons';
 
 function FileName() {
   const { doc } = useEditor();
@@ -39,19 +39,45 @@ function FileName() {
   );
 }
 
-function Header() {
+export interface EditorProps {
+  onBack?: () => void;
+  saveSlot?: ReactNode;
+  busy?: boolean;
+}
+
+function Header({ onBack, saveSlot, busy }: EditorProps) {
   const s = useEditor();
   const [anchor, setAnchor] = useState<DOMRect | null>(null);
   return (
     <header className="app-header">
+      {onBack && (
+        <>
+          <button
+            type="button"
+            className="header-back-btn"
+            onClick={onBack}
+            disabled={busy}
+            title="Voltar para Meus arquivos"
+            aria-label="Voltar para Meus arquivos"
+          >
+            <IconArrowLeft size={14} />
+            <span>Meus arquivos</span>
+          </button>
+          <div className="header-divider" />
+        </>
+      )}
       <button className="app-menu-button" aria-label="Menu principal" title="Menu principal" data-menu-anchor=""
         onClick={(e) => setAnchor(anchor ? null : e.currentTarget.getBoundingClientRect())}>
         <Logo size={25} /><IconChevronDown size={14} />
       </button>
       <div className="header-divider" />
-      <span className="file-location">Meus arquivos<span>/</span></span>
+
       <FileName />
-      <span className="local-badge" title="Este arquivo pertence à sua conta no LAB"><IconCheck size={14} />LAB</span>
+      {saveSlot ? (
+        <div className="header-save-slot">{saveSlot}</div>
+      ) : (
+        <span className="local-badge" title="Este arquivo pertence à sua conta no LAB"><IconCheck size={14} />LAB</span>
+      )}
       <div className="header-spacer" />
       <button className="icon-btn" aria-label="Atalhos de teclado" title="Atalhos de teclado (Ctrl+Shift+?)"
         onClick={() => store.update((state) => { state.ui.showShortcuts = true; })}><IconKeyboard /></button>
@@ -64,7 +90,7 @@ function Header() {
   );
 }
 
-export function App() {
+export function App(props: EditorProps = {}) {
   const s = useEditor();
   useEffect(() => {
     const offKeyboard = installKeyboard();
@@ -90,7 +116,7 @@ export function App() {
 
   return (
     <div className={'app' + (s.ui.hidden ? ' ui-hidden' : '')}>
-      {!s.ui.hidden && <Header />}
+      {!s.ui.hidden && <Header {...props} />}
       <main className="editor-layout">
         {!s.ui.hidden && <LeftPanel />}
         <div className="canvas-area">

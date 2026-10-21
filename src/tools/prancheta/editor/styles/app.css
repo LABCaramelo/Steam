@@ -20,6 +20,10 @@ svg { vertical-align: middle; }
 .file-name { display: flex; align-items: center; gap: 9px; border-radius: 5px; font-weight: 550; padding: 7px; max-width: 430px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .file-name-input { width: 280px; padding: 7px; background: var(--input); border-radius: 4px; }
 .local-badge { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 10px; margin-left: 1px; }
+.header-back-btn { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 6px; font-size: 11px; font-weight: 550; color: var(--text); background: var(--surface); border: 1px solid var(--border); cursor: pointer; white-space: nowrap; transition: all .15s ease; }
+.header-back-btn:hover:not(:disabled) { background: var(--surface-hover); border-color: var(--blue); color: var(--blue); }
+.header-back-btn:disabled { opacity: .5; cursor: wait; }
+.header-save-slot { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; }
 .header-spacer { flex: 1; }
 .editor-layout { display: flex; flex: 1; min-height: 0; }
 .panel { width: var(--panel-width); flex-shrink: 0; background: var(--surface); display: flex; flex-direction: column; min-height: 0; z-index: 10; }

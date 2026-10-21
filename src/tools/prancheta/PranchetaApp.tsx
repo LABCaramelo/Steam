@@ -192,14 +192,21 @@ function Workspace({ repo }: { repo: PranchetaRepo }) {
   return (
     <div className={`prancheta-root ${session ? "prancheta-root--editing" : ""}`}>
       {session ? <>
-        <div className="prancheta-cloudbar">
-          <button className="pr-btn" onClick={() => void close()} disabled={busy}>← Meus arquivos</button>
-          <SaveIndicator session={session} />
-          {busy && <Spinner size={15} />}
-        </div>
         <SaveProblem session={session} onCopy={() => void preserveCopy()} onReload={reload} busy={busy} />
         {error && <div className="pr-error" role="alert">{error}<button className="pr-btn" onClick={() => setError("")}>Fechar aviso</button></div>}
-        <div className="prancheta-editor" inert={busy || undefined}><Editor key={session.instanceId} /></div>
+        <div className="prancheta-editor" inert={busy || undefined}>
+          <Editor
+            key={session.instanceId}
+            onBack={() => void close()}
+            busy={busy}
+            saveSlot={
+              <>
+                <SaveIndicator session={session} />
+                {busy && <Spinner size={13} />}
+              </>
+            }
+          />
+        </div>
       </> : <main className="pr-library">
         <header className="pr-library__header">
           <div className="pr-brand"><Isotype size={32} decorative /><span>PRANCHETA <small>UM CARA CARAMELO · LAB</small></span></div>

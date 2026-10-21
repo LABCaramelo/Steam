@@ -59,6 +59,7 @@ export const IconPage = make(<path d="M7.5 4.5h6l3 3v12h-9zM13.5 4.5v3h3" />);
 // interface
 export const IconChevronDown = make(<path d="m8 10.5 4 4 4-4" />);
 export const IconChevronRight = make(<path d="m10.5 8 4 4-4 4" />);
+export const IconArrowLeft = make(<path d="M19 12H5M11 18l-6-6 6-6" strokeWidth={1.5} />);
 export const IconCaretDown = make(<path d="M9 10.5h6l-3 3.5z" fill="currentColor" stroke="none" />);
 export const IconCaretRight = make(<path d="M10.5 9v6l3.5-3z" fill="currentColor" stroke="none" />);
 export const IconPlus = make(<path d="M12 6.5v11M6.5 12h11" />);
