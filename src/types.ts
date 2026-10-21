@@ -8,11 +8,34 @@ export interface DownloadInfo {
   bytesToDownload: number;
 }
 
+export interface ToolFeature {
+  title: string;
+  text: string;
+}
+
+/** What the store page tells about a tool before it is acquired. */
+export interface ToolStoreInfo {
+  /** Short line under the name (store rows and capsules). */
+  tagline: string;
+  eyebrow: string;
+  /** Poster headline; "\n" breaks the line. */
+  headline: string;
+  features: ToolFeature[];
+  steps: string[];
+  about: [label: string, value: string][];
+  /** Where the user's data lives, shown next to the acquire button. */
+  dataNote: string;
+  category: string;
+}
+
 export interface ToolMetadata {
+  /** Same slug as public.lab_tools / public.user_tools. */
+  slug: string;
   launchPath: string;
   publicPage: string;
   description: string;
   assets: Partial<Record<ArtKind, string>>;
+  store: ToolStoreInfo;
 }
 
 export interface LibraryApp {

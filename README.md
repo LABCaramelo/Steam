@@ -35,3 +35,33 @@ O relatório [REA — media](docs/rea-media.md) registra a análise e recriaçã
 O relatório [REA — storage](docs/rea-storage.md) registra a análise e recriação do Gerenciador de Armazenamento (`/settings/storage`).
 
 Projeto de estudo sem afiliação com a Valve Corporation.
+
+## Ferramentas e aquisição
+
+A Loja apresenta as cinco ferramentas em `/store` e suas páginas em `/store/app/:id`. Só as adquiridas entram na biblioteca. Cada entrada React também confere a sessão e a função `has_tool` no banco, inclusive quando aberta diretamente em outra aba. Uma troca de conta desmonta o conteúdo anterior. As regras de leitura e escrita continuam sendo aplicadas pelo RLS do Supabase.
+
+| Ferramenta | Entrada | Implementação |
+| --- | --- | --- |
+| Kanban | `/tools/kanban/index.html` | Quadros/listas/cartões, arraste e alternativas de teclado, etiquetas, checklists, comentários, agenda, tabela/CSV e métricas. Template Rotina Superprodutiva com 8 listas e 98 cartões. Importa/exporta JSON do LAB e do Trello. |
+| Prancheta | `/tools/prancheta/index.html` | Editor original de `Figma/` com vários arquivos privados em `prancheta_files`. Desenho, páginas, camadas, componentes e exportação PNG/SVG/JSON. Salvamento automático e manual; detecta conflitos entre abas e oferece recuperação/cópia. |
+| Automation | `/tools/automation/index.html` | Port React de `Fiqon/`: canvas, módulos, templates, rascunho assistido por regras, versões, logs, métricas e replay. A execução é simulada: não chama APIs nem executa código, IA ou agendamentos reais. Conexões guardam apenas metadados, sem credenciais. |
+| Academy | `/tools/academy/index.html` | Vitrine, aulas YouTube/Vimeo/vídeo e a apresentação de `/aula-head`, progresso, conclusão, favoritos, anotações privadas e comentários/respostas/curtidas da turma. Administradores criam, ordenam, editam e publicam cursos, módulos e aulas. |
+
+Fontes e entradas ficam em `src/tools/<nome>/` e `tools/<nome>/index.html`. A base comum é `src/tools/shared/`. O Vite compila as quatro páginas separadamente; o LAB as abre no iframe. As 16 artes da Loja estão em `public/tools/<nome>/art/` e podem ser regeneradas com `node scripts/generate-tool-art.mjs`.
+
+### Configuração do banco antes da publicação
+
+No SQL Editor do projeto Supabase, aplique **`supabase/lab-access.sql` antes de `supabase/lab-tools.sql`**. A Loja avisa quando as tabelas/funções ainda não existem. Isso vale também para adquirir a Biblioteca de prompts. Para editar aulas, cadastre explicitamente a conta em `lab_admins` usando o comando comentado no início de `lab-tools.sql`; metadados do perfil não concedem administração. O `community.sql` da outra sessão depende de `lab_member()` deste script.
+
+As implementações novas não exigem chaves privilegiadas no navegador nem alteração de permissões. O Kanban e a Prancheta preservam dados locais pendentes quando uma gravação falha. Na Prancheta, conflitos de revisão interrompem o autosave para evitar sobrescrever outra aba. As notas da Academy têm salvamento explícito e avisam antes de sair com alterações pendentes. A restauração da rotina do Kanban usa várias requisições, pois o SQL atual não tem uma RPC transacional para isso; uma falha parcial é informada e o quadro é recarregado.
+
+### Verificação das ferramentas
+
+```powershell
+npm run typecheck
+npm run build
+node --test --test-isolation=none --experimental-strip-types server/*.test.ts src/tools/kanban/model.test.ts src/tools/automation/model.test.mjs src/tools/academy/media.test.ts
+node src/tools/prancheta/verify-session.mjs
+```
+
+`labTools.test.ts` aplica o SQL em Postgres em memória (PGlite) e verifica aquisição, acesso por ferramenta, isolamento entre pessoas, comentários e administração. Os testes adicionais cobrem importação/exportação, credenciais, simulação, mídia e falhas/conflitos de gravação. A conferência visual local usa repositórios de teste separados da produção; ela não comprova a instalação do SQL nem uma sessão real do Supabase. Evidências em `docs/qa/tools-2026-10-21/`.

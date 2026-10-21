@@ -1894,7 +1894,7 @@ select {
 .store__nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 16px;
   max-width: 1100px;
   margin: 18px auto 0;
@@ -1906,13 +1906,6 @@ select {
   border: 1px solid rgb(var(--cm-line));
   border-radius: var(--cm-radius-md);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), var(--cm-spectrum-glow);
-}
-.store__nav-links.cm-tabs {
-  background: rgb(var(--cm-surface-1) / 0.6);
-}
-.store__nav-links .cm-tabs__tab {
-  height: 30px;
-  font-weight: 600;
 }
 .store__search {
   width: 240px;
@@ -2123,15 +2116,6 @@ select {
   padding: 4px 10px;
   border-radius: var(--cm-radius-pill);
   white-space: nowrap;
-}
-.store__placeholder {
-  color: rgb(var(--cm-fg-muted));
-  max-width: 1100px;
-  margin: 24px auto;
-  padding: 0 10px;
-}
-.store__placeholder a {
-  color: rgb(var(--cm-accent));
 }
 
 /* community */
@@ -2402,6 +2386,199 @@ select {
   font-size: 12px;
   color: rgb(var(--cm-fg-muted));
   line-height: 1.5;
+}
+.friends__notice {
+  margin: 10px 12px 0;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgb(var(--cm-fg-2));
+  background: rgb(var(--cm-surface-2));
+  border: 1px solid rgb(var(--cm-line));
+  border-radius: var(--cm-radius-sm);
+}
+.friends__members {
+  list-style: none;
+  margin: 0;
+  padding: 0 6px 6px;
+}
+.friends__member {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px;
+  text-align: left;
+  border-radius: var(--cm-radius-sm);
+  transition: background-color var(--cm-dur-instant) var(--cm-ease-out);
+}
+.friends__member:hover {
+  background: rgb(var(--cm-surface-2));
+}
+.friends__member:focus-visible,
+.friends__chat-back:focus-visible,
+.friends__send:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: var(--cm-focus-ring);
+}
+.friends__member-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+.friends__member-name {
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.friends__member-sub {
+  font-size: 12px;
+  color: rgb(var(--cm-fg-muted));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.friends__badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: rgb(var(--cm-accent-contrast));
+  background: rgb(var(--cm-accent));
+  border-radius: var(--cm-radius-pill);
+}
+
+/* conversa direta dentro da janela da Comunidade */
+.friends__chat {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.friends__chat-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px 10px 6px;
+  background: rgb(var(--cm-stage) / 0.25);
+  border-bottom: 1px solid rgb(var(--cm-line-soft));
+}
+.friends__chat-back {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--cm-radius-sm);
+  color: rgb(var(--cm-fg-muted));
+}
+.friends__chat-back:hover {
+  color: rgb(var(--cm-fg));
+  background: rgb(var(--cm-surface-2));
+}
+.friends__chat-log {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+}
+.friends__chat-hint {
+  margin: 0 0 6px;
+  font-size: 11px;
+  line-height: 1.45;
+  text-align: center;
+  color: rgb(var(--cm-fg-faint));
+}
+.friends__chat-hint:last-child {
+  margin: 8px 0 0;
+}
+.friends__msg {
+  align-self: flex-start;
+  max-width: 85%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgb(var(--cm-fg));
+  background: rgb(var(--cm-surface-2));
+  border: 1px solid rgb(var(--cm-line));
+  border-radius: var(--cm-radius-md) var(--cm-radius-md) var(--cm-radius-md) var(--cm-radius-xs);
+}
+.friends__msg--mine {
+  align-self: flex-end;
+  color: rgb(var(--cm-accent-contrast));
+  background: rgb(var(--cm-accent));
+  border-color: transparent;
+  border-radius: var(--cm-radius-md) var(--cm-radius-md) var(--cm-radius-xs) var(--cm-radius-md);
+}
+.friends__msg-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.friends__msg-time {
+  align-self: flex-end;
+  font-size: 10px;
+  opacity: 0.7;
+}
+.friends__composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid rgb(var(--cm-line-soft));
+}
+.friends__composer textarea {
+  flex: 1;
+  min-height: 36px;
+  max-height: 120px;
+  field-sizing: content;
+  resize: none;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgb(var(--cm-fg));
+  background: rgb(var(--cm-surface-2));
+  border: 1px solid rgb(var(--cm-line));
+  border-radius: var(--cm-radius-sm);
+}
+.friends__composer textarea:focus {
+  outline: none;
+  border-color: rgb(var(--cm-focus));
+}
+.friends__composer textarea:disabled {
+  opacity: 0.6;
+}
+.friends__send {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  color: rgb(var(--cm-accent-contrast));
+  background: rgb(var(--cm-accent));
+  border-radius: var(--cm-radius-sm);
+  transition: opacity var(--cm-dur-instant) var(--cm-ease-out);
+}
+.friends__send:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.friends__error {
+  margin: -4px 12px 10px;
+  font-size: 12px;
+  color: rgb(var(--cm-danger));
 }
 
 /* modal window (settings / properties) */
@@ -3009,6 +3186,80 @@ select {
   text-align: center;
 }
 
+/* Acesso de membro (WhatsAppGate): mesma moldura do login. */
+.gate-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgb(var(--cm-fg-2));
+}
+.gate-text strong {
+  color: rgb(var(--cm-fg));
+  white-space: nowrap;
+}
+
+.gate-alert {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid rgb(var(--cm-accent));
+  border-radius: var(--cm-radius-sm, 6px);
+  background: rgb(var(--cm-accent) / 0.12);
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgb(var(--cm-fg-2));
+}
+.gate-alert strong {
+  color: rgb(var(--cm-fg));
+  font-size: 14px;
+}
+.gate-nowrap {
+  white-space: nowrap;
+}
+
+.gate-notice {
+  padding: 10px 14px;
+  border: 1px solid rgb(var(--cm-line-strong));
+  border-radius: var(--cm-radius-sm, 6px);
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgb(var(--cm-fg-2));
+}
+
+.gate-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+.gate-links--footer {
+  padding-top: 4px;
+  border-top: 1px solid rgb(var(--cm-line));
+}
+.gate-link {
+  padding: 4px 2px;
+  background: none;
+  color: rgb(var(--cm-fg-muted));
+  font-family: var(--caramelo-font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--cm-dur-micro) var(--cm-ease-out);
+}
+.gate-link:hover:not(:disabled) {
+  color: rgb(var(--cm-fg));
+}
+.gate-link:disabled {
+  cursor: default;
+  opacity: 0.55;
+  text-decoration: none;
+}
+a.login-modal__submit {
+  text-decoration: none;
+}
+
 @keyframes login-pop {
   from {
     opacity: 0;
@@ -3385,7 +3636,6 @@ button:focus-visible,
   .btn--blue:active:not(:disabled),
   .btn--primary:active:not(:disabled),
   .btn--ghost:active:not(:disabled),
-  .store__nav-links button:active:not(:disabled),
   .store__dots button:active:not(:disabled),
   .friends__titlebar button:active:not(:disabled),
   .modal-window__titlebar button:active:not(:disabled),
@@ -3405,3 +3655,17 @@ button:focus-visible,
     animation: none;
   }
 }
+
+/* Loja do LAB — aquisição e páginas das ferramentas (2026-10-21). */
+.store__nav-title{font-family:var(--font-display);font-size:16px;font-weight:800;letter-spacing:-.025em;align-self:center}
+.store__notice{padding:16px 20px;border:1px solid rgb(var(--cm-warning)/.35);border-radius:var(--cm-radius-md);background:rgb(var(--cm-warning)/.07);font-size:13px;line-height:1.6;color:rgb(var(--cm-fg-2))}
+.store__heading-row{display:flex;align-items:baseline;justify-content:space-between;gap:18px;margin-bottom:14px;flex-wrap:wrap}.store__heading-row .store__heading{margin-bottom:0}.store__count{font-size:11px;color:var(--c-text-3)}
+.store__category{color:rgb(var(--cm-accent-ink));font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em}.store__highlights{padding-left:16px;margin:20px 0;color:var(--c-text-3);font-size:12px;line-height:1.8}.store__highlights li::marker{color:var(--c-accent)}.store__carousel-buy{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:auto}.store__carousel-side{display:flex;flex-direction:column}.store__carousel .store__carousel-img{object-fit:cover}.store-badge{display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;letter-spacing:.04em;white-space:nowrap;border:1px solid rgb(var(--cm-line-strong));border-radius:var(--cm-radius-pill);padding:5px 10px;color:var(--c-text-2);background:rgb(var(--cm-surface-2))}.store-badge--owned{color:rgb(var(--cm-success));border-color:rgb(var(--cm-success)/.35);background:rgb(var(--cm-success)/.06)}
+.store-row__category{font-size:10px;color:var(--c-text-3);padding-inline:8px}.acquire{display:flex;flex-direction:column;align-items:flex-start;gap:10px}.acquire--block{width:100%}.acquire__error{font-size:11px;line-height:1.6;color:rgb(var(--cm-danger));margin:0;max-width:360px}.store__carousel-buy .acquire__error{max-width:250px}
+.store-tool{padding:24px clamp(20px,4vw,58px) 64px;overflow-y:auto;background:rgb(var(--cm-stage))}.store-tool__crumbs{display:flex;align-items:center;gap:12px;font-size:11px;color:var(--c-text-3);margin-bottom:26px;flex-wrap:wrap}.store-tool__crumbs a{color:var(--c-text-2);text-decoration:underline;text-underline-offset:3px}.store-tool__head{margin:0 0 28px}.store-tool__title{font:900 clamp(32px,4vw,54px)/1.05 var(--font-display);letter-spacing:-.045em;margin:0 0 12px}.store-tool__tagline{margin:0;color:var(--c-text-3);font-size:14px;line-height:1.6}
+.store-tool__top{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:28px;align-items:start}.store-tool__hero{min-width:0;overflow:hidden;border:1px solid rgb(var(--cm-line));border-radius:var(--cm-radius-md);background:#101014;align-self:start}.store-tool__hero-img{display:block;width:100%;aspect-ratio:1920/620;object-fit:contain}.store-tool__buy{padding:20px;border:1px solid rgb(var(--cm-line));border-radius:var(--cm-radius-md)}.store-tool__buy-art{display:block;width:100%;aspect-ratio:920/430;object-fit:cover;border-radius:var(--cm-radius-sm);margin-bottom:20px}.store-tool__desc{font-size:13px;line-height:1.7;color:var(--c-text-2)}.store-tool__facts{display:grid;gap:9px;margin:20px 0;font-size:11px}.store-tool__fact{display:grid;grid-template-columns:90px 1fr;gap:12px}.store-tool__fact dt{color:var(--c-text-3)}.store-tool__fact dd{margin:0;color:var(--c-text-2);overflow-wrap:anywhere}.store-tool__price{display:flex;align-items:center;gap:10px;margin:24px 0 18px;flex-wrap:wrap}.store-tool__price-note{font-size:10px;color:var(--c-text-3)}.store-tool__data{font-size:11px;line-height:1.7;color:var(--c-text-3);margin:20px 0 0}.store-tool__body{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:28px;align-items:start;margin-top:38px}.store-tool__intro{padding:8px 8px 24px}.store-tool__headline{font:900 clamp(27px,3.5vw,46px)/1.07 var(--font-display);letter-spacing:-.04em;margin:18px 0 30px}.store-tool__headline span{display:block}.store-tool__steps{margin-top:0}.tool-details__line{display:block}.tool-details__store-link{display:inline-block;font-size:12px;text-decoration:underline;text-underline-offset:4px;margin-top:18px;color:var(--c-text-2)}
+@media(max-width:1120px){.store-tool__top,.store-tool__body{grid-template-columns:minmax(0,1fr) 270px;gap:20px}.store-row__category{display:none}.store__carousel-side .store__highlights{display:none}.store__carousel-side{gap:12px}.store__carousel .store__carousel-title{font-size:23px}.store__carousel .store__tagline{font-size:12px}}
+@media(max-width:800px){.store-tool__top,.store-tool__body{grid-template-columns:1fr}.store-tool__buy-art{max-width:460px}.store-tool__hero{min-height:0}.store-tool__buy{max-width:none}.store-tool__body{margin-top:26px}.store__carousel{grid-template-columns:1fr}.store__carousel-side{padding:20px}.store__carousel-main{aspect-ratio:1920/620}.store__carousel .store__carousel-img{height:100%;width:100%}.store-row .store-badge{display:none}.store__nav{flex-wrap:wrap;gap:14px}.store__nav-title{margin-right:auto}}
+/* As artes editoriais carregam títulos: preservar o enquadramento completo no destaque. */
+.store__carousel .store__carousel-img{object-fit:contain;object-position:center;background:#101014}
+.store__nav-title{margin-right:auto}

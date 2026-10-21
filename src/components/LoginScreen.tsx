@@ -1,10 +1,11 @@
 import { FocusField, MagneticButton, SpotlightTabs, TiltSurface } from "@caramelo/design-system";
 import { useState, type FormEvent } from "react";
 import { useAuth } from "../auth";
+import { PENDING_WHATSAPP_KEY, isPlausiblePhone } from "../labAccess";
 import { IconMark } from "./Icons";
 
 type LoginMode = "password" | "signup";
-type FieldErrors = { email?: string; password?: string };
+type FieldErrors = { email?: string; password?: string; whatsapp?: string };
 
 const MODES = [
   { id: "password", label: "Entrar" },
@@ -37,6 +38,7 @@ export function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
   const [remember, setRemember] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -59,12 +61,19 @@ export function LoginScreen() {
     if (!email.trim() || !email.includes("@")) errors.email = "Insira um endereço de e-mail válido.";
     if (!password.trim()) errors.password = "Insira sua senha.";
     else if (mode === "signup" && password.length < 6) errors.password = "A senha deve conter no mínimo 6 caracteres.";
-    if (errors.email || errors.password) {
+    if (mode === "signup" && !isPlausiblePhone(whatsapp)) errors.whatsapp = "Informe seu WhatsApp com DDD.";
+    if (errors.email || errors.password || errors.whatsapp) {
       setFieldErrors(errors);
       return;
     }
 
     if (mode === "signup") {
+      // A conferência do grupo envia o código para este número assim que a sessão nova abrir.
+      try {
+        sessionStorage.setItem(PENDING_WHATSAPP_KEY, whatsapp.trim());
+      } catch {
+        // sessionStorage restrito: o número é pedido de novo na tela de acesso
+      }
       setSubmitting(true);
       const res = await signUp(email, password, name);
       setSubmitting(false);
@@ -162,6 +171,24 @@ export function LoginScreen() {
             autoComplete="email"
             required
           />
+
+          {mode === "signup" && (
+            <FocusField
+              id="lab-whatsapp"
+              label="WhatsApp"
+              hint="Com DDD. O LAB é liberado para membros da comunidade no WhatsApp."
+              type="tel"
+              inputMode="tel"
+              value={whatsapp}
+              onChange={(e) => {
+                setWhatsapp(e.target.value);
+                if (fieldErrors.whatsapp) setFieldErrors((f) => ({ ...f, whatsapp: undefined }));
+              }}
+              error={fieldErrors.whatsapp}
+              autoComplete="tel"
+              required
+            />
+          )}
 
           <div className="login-field login-field--password">
             <FocusField

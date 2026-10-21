@@ -1,10 +1,11 @@
 import { MagneticButton, TiltSurface } from "@caramelo/design-system";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { useLibrary } from "../../api";
 import { AppArt } from "../../components/AppArt";
 import { IconPlay, IconStar } from "../../components/Icons";
 import { PointerTrail } from "../../components/PointerTrail";
+import { getRegisteredTool } from "../../toolCatalog";
 import type { LibraryApp } from "../../types";
 import { usePlayAction } from "./play";
 
@@ -12,6 +13,7 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
   const { isFavorite, toggleFavorite } = useLibrary();
   const play = usePlayAction(app);
   const favorite = isFavorite(app.appid);
+  const store = app.tool!.store;
 
   return (
     <div className="appdetails tool-details">
@@ -27,11 +29,11 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
         <div className="playbar__stats">
           <div className="playbar__stat">
             <span className="playbar__stat-label">Disponibilidade</span>
-            <span className="playbar__stat-value">Pronta para usar</span>
+            <span className="playbar__stat-value">Na sua biblioteca</span>
           </div>
           <div className="playbar__stat">
-            <span className="playbar__stat-label">Acesso</span>
-            <span className="playbar__stat-value">Livre · No navegador</span>
+            <span className="playbar__stat-label">Categoria</span>
+            <span className="playbar__stat-value">{store.category} · No navegador</span>
           </div>
         </div>
         <button className={`btn btn--ghost tool-details__favorite ${favorite ? "is-fav" : ""}`} aria-pressed={favorite} onClick={() => toggleFavorite(app.appid)}>
@@ -42,16 +44,22 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
       <div className="appdetails__body">
         <div className="appdetails__col appdetails__col--main">
           <section className="panel tool-details__intro">
-            <span className="tool-details__eyebrow">ACERVO CRIATIVO / ACESSO LIVRE</span>
+            <span className="tool-details__eyebrow">{store.eyebrow}</span>
             <TiltSurface max={2.5}>
-              <h2>Menos página em branco.<br />Mais ideias em ação.</h2>
+              <h2>
+                {store.headline.split("\n").map((line, i) => (
+                  <span key={i} className="tool-details__line">{line}</span>
+                ))}
+              </h2>
             </TiltSurface>
-            <p>{app.tool?.description}</p>
+            <p>{app.tool!.description}</p>
             <div className="tool-details__features">
-              <div className="cm-surface--spotlight"><h3>Encontre sua referência</h3><p>Busque por nome, assunto ou tecnologia e filtre o acervo por categoria.</p></div>
-              <div className="cm-surface--spotlight"><h3>Veja antes de criar</h3><p>Explore as prévias de interfaces, efeitos e experiências.</p></div>
-              <div className="cm-surface--spotlight"><h3>Guarde suas ideias</h3><p>Salve seus prompts favoritos para voltar a eles neste navegador.</p></div>
-              <div className="cm-surface--spotlight"><h3>Copie e faça do seu jeito</h3><p>Abra o prompt completo, copie o texto e compartilhe a referência.</p></div>
+              {store.features.map((f) => (
+                <div key={f.title} className="cm-surface--spotlight">
+                  <h3>{f.title}</h3>
+                  <p>{f.text}</p>
+                </div>
+              ))}
             </div>
           </section>
         </div>
@@ -59,24 +67,35 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
           <section className="panel">
             <h2 className="panel__title">Comece por aqui</h2>
             <ol className="tool-details__steps">
-              <li>Abra a biblioteca e explore o acervo.</li>
-              <li>Escolha uma referência e veja o prompt.</li>
-              <li>Copie o texto e transforme a ideia no seu projeto.</li>
+              {store.steps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
             </ol>
           </section>
           <section className="panel">
             <h2 className="panel__title">Sobre a ferramenta</h2>
             <dl className="info-grid info-grid--compact">
-              <dt>Por</dt><dd>{app.developer}</dd>
-              <dt>Formato</dt><dd>Biblioteca interativa</dd>
-              <dt>Idioma</dt><dd>Português</dd>
-              <dt>Instalação</dt><dd>Acesso direto pelo LAB</dd>
+              <dt>Por</dt>
+              <dd>{app.developer}</dd>
+              {store.about.map(([label, value]) => (
+                <Fact key={label} label={label} value={value} />
+              ))}
             </dl>
-            <p className="muted small">Os textos completos e as prévias precisam de conexão com a internet.</p>
+            <p className="muted small">{store.dataNote}</p>
+            <Link className="tool-details__store-link" to={`/store/app/${app.appid}`}>Ver na Loja</Link>
           </section>
         </div>
       </div>
     </div>
+  );
+}
+
+function Fact({ label, value }: { label: string; value: string }) {
+  return (
+    <>
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </>
   );
 }
 
@@ -86,6 +105,8 @@ export function ToolPage() {
   const tool = app(Number(appid));
 
   if (!snapshot) return <div className="page-loading">Carregando ferramenta…</div>;
+  // Ferramenta do catálogo que a pessoa ainda não adquiriu: a página dela é a da loja.
+  if (!tool && getRegisteredTool(Number(appid))) return <Navigate to={`/store/app/${appid}`} replace />;
   if (!tool?.tool) return <div className="page-empty">Esta ferramenta não está disponível. <Link to="/library/home">Voltar à biblioteca</Link></div>;
   return <ToolWorkspace key={tool.appid} app={tool} />;
 }
@@ -105,8 +126,15 @@ function ToolWorkspace({ app }: { app: LibraryApp }) {
         <h1>{app.name}</h1>
         <a className="btn btn--ghost" href={app.tool!.publicPage} target="_blank" rel="noopener noreferrer">Abrir em nova aba ↗</a>
       </header>
-      {loading && <div className="tool-workspace__loading" role="status">Abrindo biblioteca de prompts…</div>}
-      <iframe className="tool-workspace__frame" src={`${app.tool!.publicPage}?embed=1`} title={app.name} allow="clipboard-write" onLoad={() => setLoading(false)} />
+      {loading && <div className="tool-workspace__loading" role="status">Abrindo {app.name}…</div>}
+      <iframe
+        className="tool-workspace__frame"
+        src={`${app.tool!.publicPage}?embed=1`}
+        title={app.name}
+        allow="clipboard-write; fullscreen; autoplay; picture-in-picture"
+        allowFullScreen
+        onLoad={() => setLoading(false)}
+      />
     </section>
   );
 }
