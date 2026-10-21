@@ -95,10 +95,17 @@ type GateState =
 const UserCtx = createContext<ToolUser | null>(null);
 const MISSING = new Set(["PGRST202", "PGRST205", "42P01"]);
 
-function toUser(session: Session): ToolUser {
+function toUser(session: Session, profile?: { name?: string | null; nickname?: string | null } | null): ToolUser {
   const meta = session.user.user_metadata ?? {};
   const email = session.user.email ?? "";
-  return { id: session.user.id, email, name: (meta.nickname as string) || (meta.name as string) || email.split("@")[0] || "Você" };
+  const name =
+    profile?.nickname?.trim() ||
+    profile?.name?.trim() ||
+    (meta.nickname as string)?.trim() ||
+    (meta.name as string)?.trim() ||
+    email.split("@")[0] ||
+    "Você";
+  return { id: session.user.id, email, name };
 }
 
 /** Renders the tool only for a signed-in person who has it in the library. */
@@ -118,13 +125,16 @@ export function ToolGate({ tool, children }: { tool: ToolInfo; children: ReactNo
         return;
       }
       if (session.user.id !== userId.current && alive) setState({ kind: "loading" });
-      const { data, error } = await supabase.rpc("has_tool", { p_slug: tool.slug });
+      const [{ data, error }, profRes] = await Promise.all([
+        supabase.rpc("has_tool", { p_slug: tool.slug }),
+        supabase.from("profiles").select("name, nickname").eq("id", session.user.id).maybeSingle(),
+      ]);
       if (!alive || version !== request) return;
       if (error) setState(MISSING.has(error.code) ? { kind: "unconfigured" } : { kind: "error", message: "Não foi possível abrir a ferramenta agora." });
       else if (!data) setState({ kind: "locked" });
       else {
         userId.current = session.user.id;
-        setState({ kind: "ready", user: toUser(session) });
+        setState({ kind: "ready", user: toUser(session, profRes?.data) });
       }
     };
     supabase.auth.getSession().then(({ data }) => check(data.session));
