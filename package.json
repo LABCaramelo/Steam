@@ -13,6 +13,7 @@
     "caramelo:sync": "node scripts/sync-caramelo.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1154.0",
     "@caramelo/design-system": "file:vendor/caramelo-design-system-2.0.0.tgz",
     "@supabase/supabase-js": "^2.118.0",
     "country-flag-icons": "1.6.20",
