@@ -242,6 +242,24 @@ create index if not exists prancheta_files_user_idx on public.prancheta_files (u
 drop trigger if exists prancheta_files_touch on public.prancheta_files;
 create trigger prancheta_files_touch before update on public.prancheta_files for each row execute function public.touch_updated_at();
 
+-- Mantém estritamente os 7 arquivos/saves mais recentes por usuário para economizar espaço
+create or replace function public.prune_user_prancheta_files() returns trigger
+language plpgsql security definer set search_path = public, pg_temp as $$
+begin
+  delete from public.prancheta_files
+  where user_id = new.user_id
+    and id not in (
+      select id from public.prancheta_files
+      where user_id = new.user_id
+      order by updated_at desc
+      limit 7
+    );
+  return new;
+end $$;
+
+drop trigger if exists prancheta_files_prune_limit on public.prancheta_files;
+create trigger prancheta_files_prune_limit after insert on public.prancheta_files for each row execute function public.prune_user_prancheta_files();
+
 -- ---------------------------------------------------------------------------------------------
 -- 4. Automation — integrações, versões, execuções e conexões de cada pessoa
 -- ---------------------------------------------------------------------------------------------

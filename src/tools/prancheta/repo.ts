@@ -40,15 +40,10 @@ export function createSupabasePranchetaRepo(userId: string): PranchetaRepo {
   if (!userId) throw new Error("Entre no LAB para abrir seus arquivos.");
   return {
     async listFiles() {
-      const files: PranchetaFileInfo[] = [];
-      for (let offset = 0; ; offset += 100) {
-        const { data, error } = await supabase.from("prancheta_files").select(META)
-          .eq("user_id", userId).order("updated_at", { ascending: false }).order("id")
-          .range(offset, offset + 99);
-        if (error) throw new Error(error.message);
-        files.push(...(data as PranchetaFileInfo[]));
-        if (data.length < 100) return files;
-      }
+      const { data, error } = await supabase.from("prancheta_files").select(META)
+        .eq("user_id", userId).order("updated_at", { ascending: false }).limit(7);
+      if (error) throw new Error(error.message);
+      return (data ?? []) as PranchetaFileInfo[];
     },
     async getFile(id) {
       const { data, error } = await supabase.from("prancheta_files").select(`${META}, document`)

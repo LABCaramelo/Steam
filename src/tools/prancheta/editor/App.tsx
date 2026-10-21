@@ -4,7 +4,6 @@ import { CanvasView } from './canvas/CanvasView';
 import { contextMenu, installKeyboard, mainMenu } from './commands';
 import { ensureDocFonts, ensureFontFace } from './fonts';
 import { installClipboard } from './io/clipboard';
-import { saveLocalCopy } from './io/persist';
 import { store, useEditor } from './store/store';
 import { LeftPanel } from './ui/LeftPanel';
 import { MenuPopup } from './ui/Menu';
@@ -12,7 +11,7 @@ import { QuickActionsModal } from './ui/QuickActionsModal';
 import { RightPanel } from './ui/RightPanel';
 import { ShortcutsModal } from './ui/ShortcutsModal';
 import { Toolbar } from './ui/Toolbar';
-import { IconCheck, IconChevronDown, IconExport, IconKeyboard, IconMoon, IconSun, Logo } from './ui/icons';
+import { IconCheck, IconChevronDown, IconKeyboard, IconMoon, IconSun, Logo } from './ui/icons';
 
 function FileName() {
   const { doc } = useEditor();
@@ -60,7 +59,6 @@ function Header() {
         onClick={() => store.setTheme(s.ui.theme === 'dark' ? 'light' : 'dark')}>
         {s.ui.theme === 'dark' ? <IconSun /> : <IconMoon />}
       </button>
-      <button className="btn primary save-copy" onClick={saveLocalCopy}><IconExport size={16} />Salvar cópia</button>
       {anchor && <MenuPopup x={anchor.left} y={anchor.bottom + 6} items={mainMenu()} onClose={() => setAnchor(null)} />}
     </header>
   );

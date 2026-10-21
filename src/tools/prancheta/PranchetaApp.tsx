@@ -203,8 +203,6 @@ function Workspace({ repo }: { repo: PranchetaRepo }) {
         <div className="prancheta-cloudbar">
           <button className="pr-btn" onClick={() => void close()} disabled={busy}>← Meus arquivos</button>
           <SaveIndicator session={session} />
-          <button className="pr-btn" onClick={() => void session.save()} disabled={busy}>Salvar agora</button>
-          <button className="pr-btn" onClick={() => void preserveCopy()} disabled={busy}>Salvar uma cópia no LAB</button>
           {busy && <Spinner size={15} />}
         </div>
         <SaveProblem session={session} onCopy={() => void preserveCopy()} onReload={reload} busy={busy} />
