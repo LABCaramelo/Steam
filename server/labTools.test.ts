@@ -82,7 +82,7 @@ before(async () => {
 describe("loja e biblioteca", () => {
   test("o catálogo é público e a biblioteca começa vazia", async () => {
     const tools = await as(null, (tx) => rows<{ slug: string }>(tx, "select slug from public.lab_tools order by appid"));
-    assert.deepEqual(tools.map((t) => t.slug), ["prompt-library", "kanban", "prancheta", "automation", "academy"]);
+    assert.deepEqual(tools.map((t) => t.slug), ["prompt-library", "kanban", "prancheta", "automation", "academy", "claquete", "comunidade"]);
     const owned = await as(ALICE, (tx) => rows(tx, "select * from public.user_tools"));
     assert.equal(owned.length, 0);
   });

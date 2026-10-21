@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { ToolUser } from '../shared/kit';
 import { ME, directMessages, users } from './data';
 import { findServer, useAppStore, type Action } from './store';
 import { OpenNavContext, OpenQuickSwitcherContext, SettingsContext } from './ui';
@@ -16,9 +17,15 @@ import { ChannelIcon, HomeSidebar, ServerSidebar, type VoiceUi } from './compone
 import { TitleBar } from './components/TitleBar';
 import { VoiceView } from './components/VoiceView';
 
-export function App() {
+export function App({ user }: { user?: ToolUser } = {}) {
   const [state, dispatch] = useAppStore();
   const { view, profile, settings, modal } = state;
+
+  useEffect(() => {
+    if (user?.name && !profile.name) {
+      dispatch({ type: 'setName', name: user.name });
+    }
+  }, [user?.name, profile.name, dispatch]);
   const [quickSwitcherOpen, setQuickSwitcherOpen] = useState(false);
   const quickSwitcherTrigger = useRef<HTMLElement | null>(null);
   const openQuickSwitcher = useCallback(() => {
@@ -74,6 +81,23 @@ export function App() {
     prevVoiceKey.current = voiceKey;
   }, [voiceKey, state.deafened, settings.voiceSounds]);
 
+  // Sincronização com o tema Caramelo do LAB (light / dark)
+  useEffect(() => {
+    const root = document.documentElement;
+    const syncWithCaramelo = () => {
+      const ct = root.getAttribute('data-caramelo-theme');
+      if (ct === 'light' && settings.theme !== 'claro') {
+        dispatch({ type: 'updateSettings', patch: { theme: 'claro' } });
+      } else if (ct === 'dark' && settings.theme === 'claro') {
+        dispatch({ type: 'updateSettings', patch: { theme: 'escuro' } });
+      }
+    };
+    syncWithCaramelo();
+    const observer = new MutationObserver(syncWithCaramelo);
+    observer.observe(root, { attributes: true, attributeFilter: ['data-caramelo-theme'] });
+    return () => observer.disconnect();
+  }, [settings.theme, dispatch]);
+
   // Tema e acessibilidade valem para a página inteira (inclusive janelas sobrepostas).
   useEffect(() => {
     const root = document.documentElement;
@@ -82,6 +106,13 @@ export function App() {
     // O filtro só entra quando a saturação foi reduzida, para não custar nada no padrão.
     root.dataset.desaturated = String(settings.saturation < 100);
     root.style.setProperty('--saturation', String(settings.saturation / 100));
+    if (settings.theme === 'claro') {
+      root.setAttribute('data-caramelo-theme', 'light');
+      try { localStorage.setItem('caramelo-theme', 'light'); } catch {}
+    } else {
+      root.setAttribute('data-caramelo-theme', 'dark');
+      try { localStorage.setItem('caramelo-theme', 'dark'); } catch {}
+    }
   }, [settings.theme, settings.reducedMotion, settings.saturation]);
 
   // Abrir um link de convite (?convite=...) leva direto para "Entrar em um servidor".

@@ -75,7 +75,9 @@ insert into public.lab_tools (slug, appid, name) values
   ('kanban', 2, 'Kanban'),
   ('prancheta', 3, 'Prancheta'),
   ('automation', 4, 'Automation'),
-  ('academy', 5, 'Academy')
+  ('academy', 5, 'Academy'),
+  ('claquete', 6, 'Claquete'),
+  ('comunidade', 7, 'Comunidade')
 on conflict (slug) do update set appid = excluded.appid, name = excluded.name;
 
 create table if not exists public.user_tools (

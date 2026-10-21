@@ -1,40 +1,42 @@
+@import "@caramelo/design-system/styles.css";
+
 :root {
-  /* Cor que o app desktop usa na janela antes do web app pintar (DEFAULT_BACKGROUND_COLOR no core.asar). */
-  --window-bg: #2f3136;
+  /* Padrões Visuais do MCP Caramelo */
+  --window-bg: #101014;
 
-  --bg-primary: #313338;
-  --bg-secondary: #2b2d31;
-  --bg-tertiary: #1e1f22;
-  --bg-panel: #232428;
-  --bg-floating: #111214;
-  --bg-input: #383a40;
-  --bg-hover: rgba(78, 80, 88, 0.3);
-  --bg-selected: rgba(78, 80, 88, 0.6);
-  --bg-message-hover: rgba(2, 2, 2, 0.06);
+  --bg-primary: #18181D;
+  --bg-secondary: #141418;
+  --bg-tertiary: #101014;
+  --bg-panel: #16161B;
+  --bg-floating: #1E1F26;
+  --bg-input: #1E1E26;
+  --bg-hover: rgba(255, 244, 232, 0.06);
+  --bg-selected: rgba(255, 244, 232, 0.12);
+  --bg-message-hover: rgba(255, 244, 232, 0.025);
 
-  --text-normal: #dbdee1;
-  --text-muted: #949ba4;
-  --header-primary: #f2f3f5;
-  --header-secondary: #b5bac1;
-  --interactive-normal: #b5bac1;
-  --interactive-hover: #dbdee1;
+  --text-normal: #FFF4E8;
+  --text-muted: #A3A3B0;
+  --header-primary: #FFF4E8;
+  --header-secondary: rgba(255, 244, 232, 0.72);
+  --interactive-normal: #A3A3B0;
+  --interactive-hover: #FFF4E8;
   --interactive-active: #ffffff;
-  --interactive-muted: #4e5058;
-  --channel-icon: #80848e;
-  --divider: rgba(78, 80, 88, 0.48);
+  --interactive-muted: #5A5A66;
+  --channel-icon: #7D7D8C;
+  --divider: rgba(255, 244, 232, 0.08);
 
-  --brand: #5865f2;
-  --brand-hover: #4752c4;
-  --green: #23a55a;
-  --yellow: #f0b232;
-  --red: #f23f43;
-  --mention-bg: rgba(88, 101, 242, 0.3);
-  --mention-text: #c9cdfb;
-  --link: #00a8fc;
-  --control-hover: #43444b;
+  --brand: #7657FF;
+  --brand-hover: #8F75FF;
+  --green: #22c55e;
+  --yellow: #FFD52A;
+  --red: #FF3D8D;
+  --mention-bg: rgba(118, 87, 255, 0.22);
+  --mention-text: #FF701A;
+  --link: #25BFFF;
+  --control-hover: rgba(255, 244, 232, 0.08);
 
-  --font: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-code: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console', monospace;
+  --font: var(--caramelo-font-sans, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  --font-code: Consolas, 'Space Mono', 'Fira Code', monospace;
 
   color-scheme: dark;
 }
@@ -1858,58 +1860,91 @@ button.voice-tile-hit:focus-visible {
   }
 }
 
-/* ---------- Temas (Configurações > Aparência) ---------- */
+/* ---------- Temas (Configurações > Aparência & MCP Caramelo) ---------- */
 
 :root[data-theme='cinza'] {
-  --window-bg: #3a3b42;
-  --bg-primary: #393a41;
-  --bg-secondary: #313238;
-  --bg-tertiary: #28292e;
-  --bg-panel: #2c2d32;
-  --bg-floating: #1f2024;
-  --bg-input: #44454c;
-  --control-hover: #4d4e56;
+  --window-bg: #1A1A20;
+  --bg-primary: #202026;
+  --bg-secondary: #1A1A20;
+  --bg-tertiary: #16161B;
+  --bg-panel: #18181D;
+  --bg-floating: #24242C;
+  --bg-input: #282832;
+  --control-hover: rgba(255, 244, 232, 0.08);
 }
 
 :root[data-theme='onix'] {
-  --window-bg: #000;
-  --bg-primary: #111214;
-  --bg-secondary: #0b0b0d;
-  --bg-tertiary: #000;
-  --bg-panel: #0e0e10;
-  --bg-floating: #0b0b0d;
-  --bg-input: #1e1f22;
-  --bg-hover: rgba(78, 80, 88, 0.22);
-  --bg-selected: rgba(78, 80, 88, 0.42);
-  --control-hover: #2b2d31;
+  --window-bg: #0A0A0D;
+  --bg-primary: #101014;
+  --bg-secondary: #0A0A0D;
+  --bg-tertiary: #050507;
+  --bg-panel: #0D0D10;
+  --bg-floating: #141418;
+  --bg-input: #16161B;
+  --bg-hover: rgba(255, 244, 232, 0.04);
+  --bg-selected: rgba(255, 244, 232, 0.08);
+  --control-hover: #18181D;
 }
 
+:root[data-caramelo-theme='light'],
 :root[data-theme='claro'] {
-  --window-bg: #e3e5e8;
-  --bg-primary: #ffffff;
-  --bg-secondary: #f2f3f5;
-  --bg-tertiary: #e3e5e8;
-  --bg-panel: #ebedef;
-  --bg-floating: #ffffff;
-  --bg-input: #ebedef;
-  --bg-hover: rgba(116, 124, 138, 0.14);
-  --bg-selected: rgba(116, 124, 138, 0.24);
-  --bg-message-hover: rgba(6, 6, 7, 0.03);
-  --text-normal: #313338;
-  --text-muted: #5c5e66;
-  --header-primary: #060607;
-  --header-secondary: #4e5058;
-  --interactive-normal: #4e5058;
-  --interactive-hover: #313338;
-  --interactive-active: #060607;
-  --interactive-muted: #c4c9ce;
-  --channel-icon: #5c5e66;
-  --divider: rgba(6, 6, 7, 0.1);
-  --mention-bg: rgba(88, 101, 242, 0.15);
-  --mention-text: #505cdc;
-  --link: #006ce7;
-  --control-hover: #d7d9dc;
+  --window-bg: #FFF4E8;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8EFE4;
+  --bg-tertiary: #EDE4D7;
+  --bg-panel: #F3EAE0;
+  --bg-floating: #FFFFFF;
+  --bg-input: #EDE3D6;
+  --bg-hover: rgba(16, 16, 20, 0.05);
+  --bg-selected: rgba(16, 16, 20, 0.1);
+  --bg-message-hover: rgba(16, 16, 20, 0.02);
+  --text-normal: #101014;
+  --text-muted: #60606B;
+  --header-primary: #101014;
+  --header-secondary: #40404B;
+  --interactive-normal: #4E5058;
+  --interactive-hover: #101014;
+  --interactive-active: #101014;
+  --interactive-muted: #C4C9CE;
+  --channel-icon: #60606B;
+  --divider: rgba(16, 16, 20, 0.08);
+  --mention-bg: rgba(255, 112, 26, 0.15);
+  --mention-text: #FF701A;
+  --link: #7657FF;
+  --control-hover: rgba(16, 16, 20, 0.08);
   color-scheme: light;
+}
+
+.titlebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-right: 14px;
+  font-family: var(--caramelo-font-sans, 'Inter', sans-serif);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.titlebar-brand svg {
+  flex-shrink: 0;
+}
+
+.titlebar-lab {
+  color: #FF701A;
+}
+
+.titlebar-sep {
+  opacity: 0.35;
+}
+
+.titlebar-tool {
+  color: var(--text-muted);
+}
+
+.titlebar--embedded {
+  border-bottom: 1px solid var(--divider);
+  background: var(--bg-tertiary);
 }
 
 :root[data-desaturated='true'] .app {

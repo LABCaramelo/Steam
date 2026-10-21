@@ -51,7 +51,7 @@ export function FriendsView({ dispatch }: { dispatch: (a: Action) => void }) {
           {tab === 'add' ? (
             <div className="add-friend">
               <h2>Adicionar amigo</h2>
-              <p>Você pode adicionar amigos com o nome de usuário deles no Discord.</p>
+              <p>Você pode adicionar amigos com o nome de exibição deles na Comunidade LAB.</p>
               <form className="add-friend-form" onSubmit={(e) => e.preventDefault()}>
                 <input placeholder="Você pode adicionar amigos com o nome de usuário deles." />
                 <button type="submit">Enviar pedido de amizade</button>

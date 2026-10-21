@@ -111,7 +111,7 @@ export function SettingsView({ section, profile, settings, myStatus, dispatch }:
               Sair
               <DoorExit size={18} />
             </button>
-            <p className="settings-version">discord-clone 0.1.0</p>
+            <p className="settings-version">Comunidade · LAB 0.1.0</p>
           </div>
         </nav>
 

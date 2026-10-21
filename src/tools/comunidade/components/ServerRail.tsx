@@ -1,4 +1,5 @@
-import { Compass, HomeLogo, Plus } from '../icons';
+import { Isotype } from '@caramelo/design-system';
+import { Compass, Plus } from '../icons';
 import type { Action, View } from '../store';
 import type { Server } from '../types';
 
@@ -13,7 +14,7 @@ export function ServerRail({ servers, view, dispatch }: Props) {
   return (
     <nav className="server-rail" aria-label="Servidores">
       <RailItem label="Mensagens diretas" active={homeActive} onClick={() => dispatch({ type: 'openHome' })} brand>
-        <HomeLogo size={28} />
+        <Isotype size={24} decorative />
       </RailItem>
       <div className="rail-separator" />
       {servers.map((s) => (

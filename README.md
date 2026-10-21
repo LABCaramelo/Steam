@@ -46,6 +46,7 @@ A Loja apresenta as cinco ferramentas em `/store` e suas páginas em `/store/app
 | Prancheta | `/tools/prancheta/index.html` | Editor original de `Figma/` com vários arquivos privados em `prancheta_files`. Desenho, páginas, camadas, componentes e exportação PNG/SVG/JSON. Salvamento automático e manual; detecta conflitos entre abas e oferece recuperação/cópia. |
 | Automation | `/tools/automation/index.html` | Port React de `Fiqon/`: canvas, módulos, templates, rascunho assistido por regras, versões, logs, métricas e replay. A execução é simulada: não chama APIs nem executa código, IA ou agendamentos reais. Conexões guardam apenas metadados, sem credenciais. |
 | Academy | `/tools/academy/index.html` | Vitrine, aulas YouTube/Vimeo/vídeo e a apresentação de `/aula-head`, progresso, conclusão, favoritos, anotações privadas e comentários/respostas/curtidas da turma. Administradores criam, ordenam, editam e publicam cursos, módulos e aulas. |
+| Comunidade | `/tools/comunidade/index.html` | Canais de texto, salas de voz em tempo real (WebRTC via LiveKit), compartilhamento de tela, mensagens diretas, status e navegação rápida por Ctrl+K. Identidade visual e tokens canônicos do MCP Caramelo. |
 
 Fontes e entradas ficam em `src/tools/<nome>/` e `tools/<nome>/index.html`. A base comum é `src/tools/shared/`. O Vite compila as quatro páginas separadamente; o LAB as abre no iframe. As 16 artes da Loja estão em `public/tools/<nome>/art/` e podem ser regeneradas com `node scripts/generate-tool-art.mjs`.
 

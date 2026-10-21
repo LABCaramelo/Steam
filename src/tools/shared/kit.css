@@ -12,6 +12,16 @@ body {
   height: 100%;
 }
 
+html {
+  overflow-x: hidden;
+}
+
+/* spotlight-surface fora do <Surface>: o holofote precisa de um contexto próprio. */
+.cm-surface--spotlight:not(.cm-surface) {
+  position: relative;
+  isolation: isolate;
+}
+
 body {
   background: rgb(var(--cm-stage));
   color: rgb(var(--cm-fg));
