@@ -4,6 +4,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { AcquireButton, OwnedBadge } from "../components/AcquireButton";
 import { AppArt } from "../components/AppArt";
 import { PointerTrail } from "../components/PointerTrail";
+import { useAuth } from "../auth";
 import { useEntitlements } from "../entitlements";
 import { getRegisteredTool } from "../toolCatalog";
 
@@ -12,6 +13,7 @@ export function StoreToolPage() {
   const { appid } = useParams();
   const app = getRegisteredTool(Number(appid));
   const { owns } = useEntitlements();
+  const { profile } = useAuth();
 
   useEffect(() => {
     if (!app) return;
@@ -21,7 +23,7 @@ export function StoreToolPage() {
     };
   }, [app]);
 
-  if (!app?.tool) return <Navigate to="/store" replace />;
+  if (!app?.tool || (app.tool.adminOnly && profile?.role !== "admin")) return <Navigate to="/store" replace />;
   const { store, available } = app.tool;
   const owned = owns(app.tool.slug);
 
@@ -57,7 +59,7 @@ export function StoreToolPage() {
             ))}
           </dl>
           <div className="store-tool__price">
-            <OwnedBadge owned={owned} available={available} />
+            <OwnedBadge owned={owned} available={available} stage={app.tool.stage} />
             <span className="store-tool__price-note">{!available ? "Aquisição ainda não liberada." : owned ? "Já está na sua biblioteca." : "Para membros do LAB."}</span>
           </div>
           <AcquireButton app={app} size="lg" block />

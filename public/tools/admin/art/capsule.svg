@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Administração do LAB — Cápsula</title>
+  <desc id="desc">SISTEMA / LAB. Painel e controle.</desc>
+  <defs>
+    <pattern id="dots-cap-admin" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#FFF4E8" opacity=".08"/>
+    </pattern>
+    <linearGradient id="grad-cap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF701A" stop-opacity=".3"/>
+      <stop offset="60%" stop-color="#101014" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="900" fill="#101014"/>
+  <rect width="600" height="900" fill="url(#dots-cap-admin)"/>
+  <rect width="600" height="400" fill="url(#grad-cap)"/>
+  <g font-family="system-ui,-apple-system,sans-serif" transform="translate(48, 120)">
+    <text x="0" y="0" fill="#FF701A" font-size="12" font-weight="700" letter-spacing="3">LAB / ADMIN</text>
+    <text x="0" y="80" fill="#FFF4E8" font-size="52" font-weight="900" letter-spacing="-2">Painel<tspan fill="#FF701A">.</tspan></text>
+    <text x="0" y="140" fill="#FFF4E8" font-size="52" font-weight="900" letter-spacing="-2">Admin</text>
+    <text x="0" y="210" fill="#FFF4E8" fill-opacity=".6" font-size="14" letter-spacing="1.5">GOVERNANÇA CENTRAL</text>
+  </g>
+  <g transform="translate(48, 520)">
+    <rect width="504" height="260" rx="16" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".12"/>
+    <text x="32" y="55" fill="#FFF4E8" font-size="16" font-weight="700" font-family="system-ui">Métricas em Tempo Real</text>
+    <text x="32" y="85" fill="#FFF4E8" fill-opacity=".6" font-size="13" font-family="system-ui">Usuários, ferramentas e acessos</text>
+    <path d="M32 120h440" stroke="#FFF4E8" stroke-opacity=".1"/>
+    <text x="32" y="165" fill="#FF701A" font-size="14" font-weight="800" font-family="system-ui">PUBLICAÇÃO IMEDIATA</text>
+    <text x="32" y="195" fill="#FFF4E8" font-size="13" font-family="system-ui">Controle da vitrine da Loja LAB</text>
+    <text x="32" y="225" fill="#25BFFF" font-size="12" font-family="system-ui">Acesso exclusivo para administradores</text>
+  </g>
+</svg>

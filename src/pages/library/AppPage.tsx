@@ -2,6 +2,7 @@ import { CopyButton, FocusField, MagneticButton } from "@caramelo/design-system"
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useAchievements, useLibrary, useRun } from "../../api";
+import { useAuth } from "../../auth";
 import { getRegisteredTool } from "../../toolCatalog";
 import { AppArt } from "../../components/AppArt";
 import { IconCloud, IconDownload, IconGear, IconInfo, IconPlay, IconStar } from "../../components/Icons";
@@ -15,10 +16,11 @@ import { ToolDetails } from "./ToolPage";
 export function AppPage() {
   const { appid } = useParams();
   const { app, snapshot } = useLibrary();
+  const { profile } = useAuth();
   const a = app(Number(appid));
   if (!snapshot) return <div className="page-loading">Carregando…</div>;
   if (!a && getRegisteredTool(Number(appid))) return <Navigate to={`/store/app/${appid}`} replace />;
-  if (!a) return <div className="page-empty">Este app não está na sua biblioteca.</div>;
+  if (!a || (a.tool?.adminOnly && profile?.role !== "admin")) return <Navigate to="/library/home" replace />;
   if (a.tool) return <ToolDetails key={a.appid} app={a} />;
   return <AppDetails key={a.appid} app={a} />;
 }

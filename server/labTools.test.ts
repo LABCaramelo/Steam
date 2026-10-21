@@ -84,12 +84,12 @@ before(async () => {
 describe("loja e biblioteca", () => {
   test("o catálogo é público e a biblioteca começa vazia", async () => {
     const tools = await as(null, (tx) => rows<{ slug: string; available: boolean }>(tx, "select slug, available from public.lab_tools order by appid"));
-    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: false })));
+    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" })));
     const owned = await as(ALICE, (tx) => rows(tx, "select * from public.user_tools"));
     assert.equal(owned.length, 0);
   });
 
-  test("todas ficam em breve e bloqueiam aquisição sem apagar quem já adquiriu", async () => {
+  test("apenas a biblioteca de prompts fica liberada (beta) e as demais ficam em breve", async () => {
     // Simula um banco já configurado: catálogo liberado e uma aquisição anterior à mudança.
     await db.query("insert into auth.users (id) values ($1)", [PREVIOUS_OWNER]);
     await db.query("insert into public.lab_access (user_id, verified_at, member_at) values ($1, now(), now())", [PREVIOUS_OWNER]);
@@ -99,17 +99,20 @@ describe("loja e biblioteca", () => {
     await db.exec(sql("lab-tools.sql"));
 
     const tools = await as(null, (tx) => rows<{ slug: string; available: boolean }>(tx, "select slug, available from public.lab_tools order by appid"));
-    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: false })));
+    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" })));
     const future = await db.query<{ available: boolean }>("insert into public.lab_tools (slug, appid, name) values ('futura', 99, 'Futura') returning available");
     assert.deepEqual(future.rows, [{ available: false }]);
     await db.exec("delete from public.lab_tools where slug = 'futura'");
-    for (const slug of TOOL_SLUGS) {
+    for (const slug of TOOL_SLUGS.filter((s) => s !== "prompt-library")) {
       assert.match(await rejects(ALICE, "select public.acquire_tool($1)", [slug]), /Em breve/);
     }
-    assert.equal((await as(ALICE, (tx) => rows(tx, "select * from public.user_tools"))).length, 0);
     assert.deepEqual(await as(PREVIOUS_OWNER, (tx) => rows(tx, "select * from public.user_tools")), [previous]);
     assert.deepEqual(await as(PREVIOUS_OWNER, (tx) => rows(tx, "select public.has_tool('prompt-library') as owned")), [{ owned: true }]);
-    assert.match(await rejects(PREVIOUS_OWNER, "select public.acquire_tool('prompt-library')"), /Em breve/);
+    // A biblioteca de prompts pode ser adquirida normalmente
+    const [acquired] = await as(ALICE, (tx) => rows<{ tool_slug: string }>(tx, "select * from public.acquire_tool('prompt-library')"));
+    assert.equal(acquired.tool_slug, "prompt-library");
+    // Limpeza de Alice para não interferir nos testes seguintes
+    await db.query("delete from public.user_tools where user_id = $1", [ALICE]);
   });
 
   test("ninguém grava direto na biblioteca", async () => {

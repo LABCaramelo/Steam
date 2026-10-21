@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="430" viewBox="0 0 920 430" role="img" aria-labelledby="title desc">
+  <title id="title">Administração do LAB — Um Cara Caramelo</title>
+  <desc id="desc">SISTEMA / LAB. Métricas, gestão e controle de usuários.</desc>
+  <defs>
+    <pattern id="dots-admin" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#FFF4E8" opacity=".08"/>
+    </pattern>
+    <linearGradient id="grad-admin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF701A" stop-opacity=".25"/>
+      <stop offset="100%" stop-color="#FF3D8D" stop-opacity=".05"/>
+    </linearGradient>
+  </defs>
+  <rect width="920" height="430" fill="#101014"/>
+  <rect width="920" height="430" fill="url(#dots-admin)"/>
+  <rect x="620" y="0" width="300" height="430" fill="url(#grad-admin)"/>
+  <path d="M44 240H435" stroke="#FFF4E8" stroke-opacity=".18"/>
+  <g font-family="system-ui,-apple-system,sans-serif">
+    <text x="44" y="55" fill="#FF701A" font-size="11" font-weight="700" letter-spacing="3">LAB / ADMIN</text>
+    <text x="40" y="160" fill="#FFF4E8" font-size="62" font-weight="900" letter-spacing="-2">Painel Admin<tspan fill="#FF701A">.</tspan></text>
+    <text x="44" y="210" fill="#FFF4E8" fill-opacity=".6" font-size="11" letter-spacing="2">GESTÃO &amp; GOVERNANÇA DO LAB</text>
+    <text x="44" y="300" fill="#FFF4E8" font-size="20" font-weight="800" letter-spacing="-.5">Visão geral em tempo real.</text>
+    <text x="44" y="330" fill="#FF701A" font-size="20" font-weight="800" letter-spacing="-.5">Controle completo do ecossistema.</text>
+    <text x="44" y="405" fill="#FFF4E8" fill-opacity=".38" font-size="9" font-weight="700" letter-spacing="2">UM CARA CARAMELO®</text>
+  </g>
+  <g transform="translate(620, 90)">
+    <rect width="240" height="150" rx="14" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".12" stroke-width="1"/>
+    <text x="24" y="40" fill="#FFF4E8" font-size="13" font-weight="700" font-family="system-ui">Membros Ativos</text>
+    <text x="24" y="86" fill="#FF701A" font-size="36" font-weight="900" font-family="system-ui">100%</text>
+    <text x="24" y="118" fill="#FFF4E8" fill-opacity=".5" font-size="11" font-family="system-ui">Acesso Seguro RLS</text>
+    <circle cx="196" cy="40" r="12" fill="#25BFFF" fill-opacity=".15"/>
+    <circle cx="196" cy="40" r="5" fill="#25BFFF"/>
+  </g>
+  <g transform="translate(660, 260)">
+    <rect width="200" height="90" rx="12" fill="#18181D" stroke="#FF701A" stroke-opacity=".3" stroke-width="1"/>
+    <text x="20" y="34" fill="#FFF4E8" font-size="12" font-weight="700" font-family="system-ui">Catálogo de Ferramentas</text>
+    <text x="20" y="68" fill="#25BFFF" font-size="26" font-weight="900" font-family="system-ui">Publicação Ativa</text>
+  </g>
+</svg>

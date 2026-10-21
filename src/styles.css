@@ -675,7 +675,7 @@ select {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   background: rgb(var(--cm-surface-1));
   border-top: 1px solid rgb(var(--cm-line-soft));
   padding: 0 12px;
@@ -3930,15 +3930,55 @@ button:focus-visible,
   color: rgb(var(--cm-danger));
 }
 
+.store-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .store-badge--soon {
   color: var(--c-text-2);
   border-color: rgb(var(--cm-line-strong));
   background: rgb(var(--cm-surface-2));
 }
 
+.store-badge--beta {
+  color: rgb(var(--cm-accent));
+  border-color: rgb(var(--cm-accent) / 0.4);
+  background: rgb(var(--cm-accent) / 0.1);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+}
+
 /* Keep release status visible in the compact store rows too. */
-.store-row .store-badge--soon {
+.store-row .store-badge--soon,
+.store-row .store-badge--beta {
   display: inline-flex;
+}
+
+.gamelist-entry__tag--beta {
+  color: rgb(var(--cm-accent));
+  background: rgb(var(--cm-accent) / 0.12);
+  border: 1px solid rgb(var(--cm-accent) / 0.35);
+  border-radius: var(--cm-radius-pill);
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.appdetails__title-badge {
+  margin-left: 14px;
+  vertical-align: middle;
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.capsule__badge--beta {
+  background: rgb(var(--cm-surface-1) / 0.9);
+  border-color: rgb(var(--cm-accent));
+  color: rgb(var(--cm-accent));
 }
 
 .tool-remove-trigger { color: rgb(var(--cm-danger)); }

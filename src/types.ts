@@ -38,6 +38,10 @@ export interface ToolMetadata {
   description: string;
   assets: Partial<Record<ArtKind, string>>;
   store: ToolStoreInfo;
+  /** Visível exclusivamente para administradores do LAB */
+  adminOnly?: boolean;
+  /** Estágio de disponibilidade: 'beta' | 'stable' */
+  stage?: "beta" | "stable";
 }
 
 export interface LibraryApp {

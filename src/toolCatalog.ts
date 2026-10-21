@@ -39,13 +39,15 @@ function tool(appid: number, name: string, meta: Omit<ToolMetadata, "available">
 
 export const PROMPT_LIBRARY_APP = tool(PROMPT_LIBRARY_APP_ID, "Biblioteca de prompts", {
   slug: "prompt-library",
+  available: true,
+  stage: "beta",
   launchPath: `/library/app/${PROMPT_LIBRARY_APP_ID}/open`,
   publicPage: "/tools/prompt-library/index.html",
   description: "Encontre, organize e copie prompts para criar com inteligência artificial.",
   assets: art("/tools/prompt-library/art"),
   store: {
     tagline: "Prompts autorais para interfaces, motion e design.",
-    eyebrow: "ACERVO CRIATIVO / ACESSO LIVRE",
+    eyebrow: "ACERVO CRIATIVO / VERSÃO BETA",
     headline: "Menos página em branco.\nMais ideias em ação.",
     features: [
       { title: "Encontre sua referência", text: "Busque por nome, assunto ou tecnologia e filtre o acervo por categoria." },
@@ -54,7 +56,7 @@ export const PROMPT_LIBRARY_APP = tool(PROMPT_LIBRARY_APP_ID, "Biblioteca de pro
       { title: "Copie e faça do seu jeito", text: "Abra o prompt completo, copie o texto e compartilhe a referência." },
     ],
     steps: ["Abra a biblioteca e explore o acervo.", "Escolha uma referência e veja o prompt.", "Copie o texto e transforme a ideia no seu projeto."],
-    about: [["Formato", "Biblioteca interativa"], ["Idioma", "Português"], ["Instalação", "Acesso direto pelo LAB"]],
+    about: [["Formato", "Biblioteca interativa"], ["Versão", "Beta"], ["Idioma", "Português"], ["Instalação", "Acesso direto pelo LAB"]],
     dataNote: "Favoritos e preferências ficam no seu navegador. Os textos completos e as prévias precisam de internet.",
     category: "Referências",
   },
@@ -199,14 +201,47 @@ export const CLAQUETE_APP = tool(CLAQUETE_APP_ID, "Claquete", {
 });
 
 /** Store order. */
+
+export const ADMIN_APP_ID = 8;
+
+export const ADMIN_APP = tool(ADMIN_APP_ID, "Administração do LAB", {
+  slug: "admin",
+  launchPath: `/library/app/${ADMIN_APP_ID}/open`,
+  publicPage: "/tools/admin/index.html",
+  available: true,
+  adminOnly: true,
+  description: "Painel de controle e governança do LAB: métricas gerais, gestão do catálogo de ferramentas, publicação e controle de membros.",
+  assets: art("/tools/admin/art"),
+  store: {
+    tagline: "Gestão completa de usuários, ferramentas e métricas do LAB.",
+    eyebrow: "SISTEMA / EXCLUSIVO PARA ADMINISTRADORES",
+    headline: "Visão geral e controle\ndo ecossistema LAB.",
+    features: [
+      { title: "Dashboard Geral", text: "Métricas em tempo real de usuários cadastrados, membros ativos e aquisições." },
+      { title: "Publicar e Despublicar", text: "Alterne a disponibilidade de cada ferramenta na Loja com um clique." },
+      { title: "Gestão de Ferramentas", text: "Configure nomes, preços, categorias e acompanhe o número de usuários em cada ferramenta." },
+      { title: "Controle de Usuários", text: "Pesquise membros, visualize perfis, confira ferramentas ativas e defina cargos de administrador." },
+    ],
+    steps: [
+      "Acesse o painel com sua conta de administrador.",
+      "Acompanhe métricas ou selecione a aba de ferramentas e membros.",
+      "Publique ou configure os recursos do LAB em tempo real.",
+    ],
+    about: [["Formato", "Painel Administrativo"], ["Acesso", "Exclusivo Administradores"], ["Segurança", "Row Level Security e RPCs"]],
+    dataNote: "Operações administrativas são auditadas e protegidas pelo banco do Supabase.",
+    category: "Administração",
+  },
+});
+
 export const TOOL_CATALOG: readonly LibraryApp[] = [
+  PROMPT_LIBRARY_APP,
+  ADMIN_APP,
   COMUNIDADE_APP,
   CLAQUETE_APP,
   ACADEMY_APP,
   KANBAN_APP,
   PRANCHETA_APP,
   AUTOMATION_APP,
-  PROMPT_LIBRARY_APP,
 ];
 
 export function getRegisteredTool(appid: number): LibraryApp | undefined {
@@ -226,10 +261,10 @@ export function toolArtUrl(appid: number, kind: ArtKind): string | undefined {
  * Adds the tools this person owns to the current source. Catalog tools they have not acquired
  * are removed, so a Steam snapshot can never bring one in either.
  */
-export function registerTools(snapshot: LibrarySnapshot, owned: ReadonlySet<string>): LibrarySnapshot {
+export function registerTools(snapshot: LibrarySnapshot, owned: ReadonlySet<string>, isAdmin = false): LibrarySnapshot {
   const catalogIds = new Set(TOOL_CATALOG.map((app) => app.appid));
   return {
     ...snapshot,
-    apps: [...TOOL_CATALOG.filter((app) => owned.has(app.tool!.slug)), ...snapshot.apps.filter((app) => !catalogIds.has(app.appid))],
+    apps: [...TOOL_CATALOG.filter((app) => (!app.tool?.adminOnly || isAdmin) && owned.has(app.tool!.slug)), ...snapshot.apps.filter((app) => !catalogIds.has(app.appid))],
   };
 }

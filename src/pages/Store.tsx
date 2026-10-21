@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../auth";
 import { AcquireButton, OwnedBadge } from "../components/AcquireButton";
 import { AppArt } from "../components/AppArt";
 import { IconChevronRight } from "../components/Icons";
@@ -13,8 +14,11 @@ import type { LibraryApp } from "../types";
 export function StorePage() {
   const nav = useNavigate();
   const { owns, status } = useEntitlements();
+  const { profile } = useAuth();
+  const isAdmin = profile?.role === "admin";
+  const catalog = useMemo(() => TOOL_CATALOG.filter((a) => !a.tool?.adminOnly || isAdmin), [isAdmin]);
   const [slide, setSlide] = useState(0);
-  const featured = TOOL_CATALOG;
+  const featured = catalog;
 
   useEffect(() => {
     const id = setInterval(() => setSlide((s) => (s + 1) % featured.length), 7000);
@@ -22,8 +26,8 @@ export function StorePage() {
   }, [featured.length]);
 
   const cur = featured[slide];
-  const ownedCount = TOOL_CATALOG.filter((a) => owns(a.tool!.slug)).length;
-  const allComingSoon = TOOL_CATALOG.every((a) => !a.tool!.available);
+  const ownedCount = catalog.filter((a) => owns(a.tool!.slug)).length;
+  const allComingSoon = catalog.every((a) => !a.tool!.available);
 
   return (
     <div className="store">
@@ -53,7 +57,7 @@ export function StorePage() {
               ))}
             </ul>
             <div className="store__carousel-buy">
-              <OwnedBadge owned={owns(cur.tool!.slug)} available={cur.tool!.available} />
+              <OwnedBadge owned={owns(cur.tool!.slug)} available={cur.tool!.available} stage={cur.tool?.stage} />
               <AcquireButton app={cur} size="sm" />
             </div>
           </div>
@@ -69,10 +73,10 @@ export function StorePage() {
         <div className="store__heading-row">
           <h2 className="store__heading">Todas as ferramentas</h2>
           <span className="store__count">
-            {allComingSoon ? `${TOOL_CATALOG.length} ferramentas em breve` : `${ownedCount} de ${TOOL_CATALOG.length} na sua biblioteca`}
+            {allComingSoon ? `${catalog.length} ferramentas em breve` : `${ownedCount} de ${catalog.length} na sua biblioteca`}
           </span>
         </div>
-        <StoreRows apps={[...TOOL_CATALOG]} />
+        <StoreRows apps={[...catalog]} />
       </section>
     </div>
   );
@@ -93,7 +97,7 @@ function StoreRows({ apps }: { apps: LibraryApp[] }) {
             <div className="store-row__meta">{a.tool!.store.tagline}</div>
           </div>
           <span className="store-row__category">{a.tool!.store.category}</span>
-          <OwnedBadge owned={owns(a.tool!.slug)} available={a.tool!.available} />
+          <OwnedBadge owned={owns(a.tool!.slug)} available={a.tool!.available} stage={a.tool?.stage} />
           <IconChevronRight size={16} />
         </button>
       ))}

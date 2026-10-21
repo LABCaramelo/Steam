@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="620" viewBox="0 0 1920 620" role="img" aria-labelledby="title desc">
+  <title id="title">Administração do LAB — Hero</title>
+  <desc id="desc">SISTEMA / LAB. Painel e controle.</desc>
+  <defs>
+    <pattern id="dots-hero-admin" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.5" fill="#FFF4E8" opacity=".07"/>
+    </pattern>
+    <radialGradient id="glow-hero" cx="70%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#FF701A" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="#101014" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="620" fill="#101014"/>
+  <rect width="1920" height="620" fill="url(#dots-hero-admin)"/>
+  <rect width="1920" height="620" fill="url(#glow-hero)"/>
+  <g font-family="system-ui,-apple-system,sans-serif" transform="translate(140, 150)">
+    <text x="0" y="40" fill="#FF701A" font-size="14" font-weight="700" letter-spacing="4">LAB // SISTEMA CENTRAL</text>
+    <text x="0" y="140" fill="#FFF4E8" font-size="76" font-weight="900" letter-spacing="-3">Administração do LAB<tspan fill="#FF701A">.</tspan></text>
+    <text x="0" y="200" fill="#FFF4E8" fill-opacity=".6" font-size="18" letter-spacing="2">DASHBOARD • GESTÃO DE FERRAMENTAS • GOVERNANÇA DE MEMBROS</text>
+  </g>
+</svg>

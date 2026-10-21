@@ -39,6 +39,9 @@ export function Capsule({ app, size = "md", caption }: { app: LibraryApp; size?:
         )}
         {play.variant === "running" && <span className="capsule__badge">Em execução</span>}
         {play.variant === "busy" && <span className="capsule__badge">{play.label}</span>}
+        {app.tool?.stage === "beta" && play.variant !== "running" && play.variant !== "busy" && (
+          <span className="capsule__badge capsule__badge--beta">Beta</span>
+        )}
       </div>
       {caption && <div className="capsule__caption">{caption}</div>}
     </div>

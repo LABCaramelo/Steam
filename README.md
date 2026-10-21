@@ -38,7 +38,7 @@ Projeto de estudo sem afiliação com a Valve Corporation.
 
 ## Ferramentas e aquisição
 
-A Loja está em pré-lançamento: as sete ferramentas aparecem como **Em breve**, com aquisição desabilitada. O catálogo do frontend usa `available: false`; o catálogo do banco também bloqueia `acquire_tool` por `lab_tools.available`. O SQL de configuração mantém todas indisponíveis para novas aquisições.
+A Loja disponibiliza a **Biblioteca de prompts** em versão **Beta** para membros do LAB. As demais ferramentas aparecem como **Em breve**, com aquisição em preparação. O catálogo do frontend usa `available: true` para a Biblioteca de prompts e `available: false` para as demais; o banco libera a aquisição apenas das ferramentas ativas.
 
 Quem já adquiriu pode escolher **Remover da biblioteca…** nos detalhes ou no menu da ferramenta. A confirmação **Remover e apagar meus dados** chama `release_tool(p_slug)`: aquisição e registros próprios da ferramenta são excluídos na mesma transação, inclusive dados vinculados por cascata. A RPC usa a conta autenticada e permite a exclusão mesmo após perda de acesso ao LAB. Gravações autenticadas concorrentes seguram a posse até terminar, para a limpeza acontecer depois delas. Adquirir novamente, quando liberado, começa sem esses registros.
 

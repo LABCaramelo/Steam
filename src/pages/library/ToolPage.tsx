@@ -2,6 +2,7 @@ import { MagneticButton, TiltSurface } from "@caramelo/design-system";
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { useLibrary } from "../../api";
+import { useAuth } from "../../auth";
 import { AppArt } from "../../components/AppArt";
 import { IconPlay, IconStar } from "../../components/Icons";
 import { PointerTrail } from "../../components/PointerTrail";
@@ -21,7 +22,10 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
       <PointerTrail className="appdetails__hero">
         <AppArt app={app} kind="hero" className="appdetails__hero-img" fallbackLabel={false} />
         <div className="appdetails__hero-fade" />
-        <h1 className="appdetails__title">{app.name}</h1>
+        <h1 className="appdetails__title">
+          {app.name}
+          {app.tool?.stage === "beta" && <span className="store-badge store-badge--beta appdetails__title-badge">Beta</span>}
+        </h1>
       </PointerTrail>
       <div className="playbar tool-details__actions">
         <MagneticButton className="playbar__btn playbar__btn--play" onClick={play.onClick}>
@@ -30,7 +34,9 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
         <div className="playbar__stats">
           <div className="playbar__stat">
             <span className="playbar__stat-label">Disponibilidade</span>
-            <span className="playbar__stat-value">Na sua biblioteca</span>
+            <span className="playbar__stat-value">
+              {app.tool?.stage === "beta" ? "Versão Beta · Na sua biblioteca" : "Na sua biblioteca"}
+            </span>
           </div>
           <div className="playbar__stat">
             <span className="playbar__stat-label">Categoria</span>
@@ -104,11 +110,13 @@ function Fact({ label, value }: { label: string; value: string }) {
 export function ToolPage() {
   const { appid } = useParams();
   const { app, snapshot } = useLibrary();
+  const { profile } = useAuth();
   const tool = app(Number(appid));
 
   if (!snapshot) return <div className="page-loading">Carregando ferramenta…</div>;
   // Ferramenta do catálogo que a pessoa ainda não adquiriu: a página dela é a da loja.
   if (!tool && getRegisteredTool(Number(appid))) return <Navigate to={`/store/app/${appid}`} replace />;
+  if (tool?.tool?.adminOnly && profile?.role !== "admin") return <Navigate to="/library/home" replace />;
   if (!tool?.tool) return <div className="page-empty">Esta ferramenta não está disponível. <Link to="/library/home">Voltar à biblioteca</Link></div>;
   return <ToolWorkspace key={tool.appid} app={tool} />;
 }

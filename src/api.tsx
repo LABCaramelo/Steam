@@ -3,6 +3,7 @@ import { createDownloadSession, downloadReducer, type DownloadSession, type RunS
 import fallbackSnapshot from "./fallbackSnapshot.json";
 import type { Achievement, ArtKind, LibraryApp, LibrarySnapshot, UserCollection } from "./types";
 import { useAuth } from "./auth";
+import { supabase } from "./supabase";
 import { useEntitlements } from "./entitlements";
 import { getRegisteredTool, registerTools, toolArtUrl } from "./toolCatalog";
 
@@ -43,6 +44,7 @@ interface LibraryState {
   renameLibraryFolder: (path: string, newLabel: string) => void;
   setDefaultFolder: (path: string) => void;
   defaultFolder: string;
+  achievementSummary: { total_unlocked: number; total_available: number; by_appid: Record<string, { total: number; achieved: number }> } | null;
 }
 
 const Ctx = createContext<LibraryState | null>(null);
@@ -74,9 +76,10 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [storedCollections, setCollections] = useState<UserCollection[]>([]);
   // Owned tools join the library once the person's library is known, so a tool never flashes in and out.
+  const isAdmin = profile?.role === "admin";
   const snapshot = useMemo(
-    () => (source && entitlements.status !== "loading" ? registerTools(source, entitlements.owned) : null),
-    [source, entitlements.status, entitlements.owned],
+    () => (source && entitlements.status !== "loading" ? registerTools(source, entitlements.owned, isAdmin) : null),
+    [source, entitlements.status, entitlements.owned, isAdmin],
   );
   // Collections keep ids of tools that are not owned yet (or anymore); they are hidden, not forgotten.
   const collections = useMemo(() => {
@@ -85,6 +88,20 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   }, [snapshot, storedCollections]);
 
   // Persistent storage overrides (never written to Steam files)
+  const [achSummary, setAchSummary] = useState<{ total_unlocked: number; total_available: number; by_appid: Record<string, { total: number; achieved: number }> } | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    let alive = true;
+    supabase.rpc("get_my_achievement_summary").then(
+      ({ data }) => {
+        if (alive && data) setAchSummary(data as any);
+      },
+      () => {},
+    );
+    return () => { alive = false; };
+  }, [user]);
+
   const [appPathOverrides, setAppPathOverrides] = useState<Record<number, string>>(() => {
     try {
       return JSON.parse(localStorage.getItem(PATHS_KEY) ?? "{}");
@@ -231,10 +248,15 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
 
     const apps = snapshot.apps.map((a) => {
       const overridden = appPathOverrides[a.appid];
-      if (overridden) {
-        return { ...a, libraryPath: overridden };
-      }
-      return a;
+      const byApp = achSummary?.by_appid?.[String(a.appid)];
+      const achievements = byApp
+        ? { total: Number(byApp.total ?? 0), achieved: Number(byApp.achieved ?? 0) }
+        : a.achievements;
+      return {
+        ...a,
+        libraryPath: overridden || a.libraryPath,
+        achievements,
+      };
     });
 
     const personaName =
@@ -260,7 +282,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       libraryFolders,
       apps,
     };
-  }, [snapshot, appPathOverrides, extraFolders, removedFolderPaths, folderLabels, user, profile]);
+  }, [snapshot, appPathOverrides, extraFolders, removedFolderPaths, folderLabels, user, profile, achSummary]);
 
   const value = useMemo<LibraryState>(() => {
     const byId = new Map(effectiveSnapshot?.apps.map((a) => [a.appid, a]));
@@ -295,8 +317,9 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       renameLibraryFolder,
       setDefaultFolder,
       defaultFolder: activeDefaultFolder,
+      achievementSummary: achSummary,
     };
-  }, [effectiveSnapshot, error, collections, load, updateCollections, defaultFolder, moveApps, addLibraryFolder, removeLibraryFolder, renameLibraryFolder, setDefaultFolder]);
+  }, [effectiveSnapshot, error, collections, load, updateCollections, defaultFolder, moveApps, addLibraryFolder, removeLibraryFolder, renameLibraryFolder, setDefaultFolder, achSummary]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
@@ -312,7 +335,29 @@ export function useAchievements(appid: number) {
   useEffect(() => {
     let alive = true;
     if (getRegisteredTool(appid)) {
-      setData({ total: 0, achieved: 0, list: [] });
+      supabase.rpc("get_my_achievements", { p_appid: appid }).then(
+        ({ data: rows, error }) => {
+          if (!alive) return;
+          if (error || !rows) {
+            setData({ total: 0, achieved: 0, list: [] });
+            return;
+          }
+          const list: Achievement[] = (rows as any[]).map((r) => ({
+            id: r.id,
+            name: `${r.icon ? r.icon + " " : ""}${r.name}`,
+            description: r.description,
+            achieved: Boolean(r.achieved),
+            unlocked: r.unlocked_at ? Math.floor(new Date(r.unlocked_at).getTime() / 1000) : undefined,
+            hidden: Boolean(r.hidden),
+          }));
+          const total = list.length;
+          const achieved = list.filter((x) => x.achieved).length;
+          setData({ total, achieved, list });
+        },
+        () => {
+          if (alive) setData({ total: 0, achieved: 0, list: [] });
+        },
+      );
       return () => {
         alive = false;
       };

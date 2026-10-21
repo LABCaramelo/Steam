@@ -12,7 +12,7 @@ import { STATUS_LABEL, useUi } from "../ui";
 
 /** Profile built from local facts: persona, playtime totals, favorites and achievement counts. */
 export function ProfilePage() {
-  const { snapshot, collections } = useLibrary();
+  const { snapshot, collections, achievementSummary } = useLibrary();
   const { profile } = useAuth();
   const ui = useUi();
   const nav = useNavigate();
@@ -22,10 +22,10 @@ export function ProfilePage() {
   const apps = snapshot?.apps ?? [];
   const stats = useMemo(() => {
     const totalMin = apps.reduce((s, a) => s + a.playtimeMinutes, 0);
-    const ach = apps.reduce((s, a) => s + (a.achievements?.achieved ?? 0), 0);
+    const ach = achievementSummary?.total_unlocked ?? apps.reduce((s, a) => s + (a.achievements?.achieved ?? 0), 0);
     const played = apps.filter((a) => a.playtimeMinutes > 0).length;
     return { totalMin, ach, played };
-  }, [apps]);
+  }, [apps, achievementSummary]);
   const recent = [...apps].filter((a) => a.lastPlayed).sort((a, b) => b.lastPlayed - a.lastPlayed).slice(0, 4);
   const fav = collections.find((c) => c.id === "favorite");
   const favApps = apps.filter((a) => fav?.appids.includes(a.appid));

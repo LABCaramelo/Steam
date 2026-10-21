@@ -64,7 +64,12 @@ export function AcquireButton({ app, size = "md", block }: { app: LibraryApp; si
   );
 }
 
-export function OwnedBadge({ owned, available }: { owned: boolean; available: boolean }) {
+export function OwnedBadge({ owned, available, stage }: { owned: boolean; available: boolean; stage?: "beta" | "stable" }) {
   if (!available) return <span className="store-badge store-badge--soon">Em breve</span>;
-  return owned ? <span className="store-badge store-badge--owned">Na biblioteca</span> : <span className="store-badge">Gratuito</span>;
+  return (
+    <span className="store-badges">
+      {stage === "beta" && <span className="store-badge store-badge--beta">Beta</span>}
+      {owned ? <span className="store-badge store-badge--owned">Na biblioteca</span> : <span className="store-badge">Gratuito</span>}
+    </span>
+  );
 }
