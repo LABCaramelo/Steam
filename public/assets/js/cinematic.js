@@ -202,9 +202,14 @@ export function initCinematic() {
       });
       thesis.replaceChildren(reader, visual);
       restoreDOM.push(() => thesis.replaceChildren(...original));
-      gsap.fromTo(words, { opacity: 0.18, y: 6 }, {
-        opacity: 1, y: 0, stagger: 0.07, ease: 'none',
-        scrollTrigger: { id: 'cine-thesis', trigger: thesis, start: 'top 88%', end: 'top 55%', scrub: 0.4 }
+      // A timeline, like the seal below: a tween would refresh at once and fire the
+      // once-only entrances above a restored scroll position, which kill themselves
+      // mid-refresh and throw inside ScrollTrigger, stopping every scene after this one.
+      const reading = gsap.timeline({ scrollTrigger: {
+        id: 'cine-thesis', trigger: thesis, start: 'top 88%', end: 'top 55%', scrub: 0.4
+      }});
+      reading.fromTo(words, { opacity: 0.18, y: 6 }, {
+        opacity: 1, y: 0, stagger: 0.07, ease: 'none'
       });
     }
 
