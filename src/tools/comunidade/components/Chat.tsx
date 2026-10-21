@@ -28,8 +28,8 @@ interface Props {
   placeholder: string;
   welcome: React.ReactNode;
   messages: Message[];
-  showMembers: boolean;
-  membersToggle: boolean;
+
+
   dispatch: (a: Action) => void;
 }
 
