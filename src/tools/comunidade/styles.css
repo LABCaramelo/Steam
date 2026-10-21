@@ -56,8 +56,8 @@ body {
   background: var(--window-bg);
   color: var(--text-normal);
   font-family: var(--font);
-  font-size: 16px;
-  line-height: 1.375;
+  font-size: 13px;
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
 }
@@ -137,7 +137,7 @@ textarea {
 
 .titlebar-title {
   grid-column: 2;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--header-primary);
 }
@@ -185,7 +185,7 @@ textarea {
 /* ---------- Trilho de servidores ---------- */
 
 .server-rail {
-  width: 72px;
+  width: 60px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -201,7 +201,7 @@ textarea {
 
 .rail-item {
   position: relative;
-  width: 72px;
+  width: 60px;
   display: flex;
   justify-content: center;
 }
@@ -218,22 +218,22 @@ textarea {
   transition: height 0.15s ease;
 }
 .rail-item:hover .rail-pill {
-  height: 20px;
+  height: 16px;
 }
 .rail-item.active .rail-pill {
-  height: 40px;
+  height: 32px;
 }
 
 .rail-button {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   border-radius: 50%;
   overflow: hidden;
   background: var(--bg-primary);
   color: var(--text-normal);
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 500;
   transition:
     border-radius 0.15s ease,
@@ -242,7 +242,7 @@ textarea {
 }
 .rail-item:hover .rail-button,
 .rail-item.active .rail-button {
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--server-color, var(--brand));
   color: #fff;
 }
@@ -259,13 +259,13 @@ textarea {
 
 .rail-tooltip {
   position: fixed;
-  left: 80px;
-  margin-top: 12px;
-  padding: 8px 12px;
-  border-radius: 6px;
+  left: 68px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 4px;
   background: var(--bg-floating);
   color: var(--header-primary);
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
   pointer-events: none;
@@ -283,7 +283,7 @@ textarea {
 }
 
 .rail-separator {
-  width: 32px;
+  width: 28px;
   height: 2px;
   border-radius: 1px;
   background: var(--divider);
@@ -293,7 +293,7 @@ textarea {
 /* ---------- Barra lateral ---------- */
 
 .sidebar {
-  width: 240px;
+  width: 220px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -302,7 +302,7 @@ textarea {
 }
 
 .sidebar-header {
-  height: 48px;
+  height: 42px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -313,7 +313,8 @@ textarea {
 
 .server-header {
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 0 14px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--header-primary);
   width: 100%;
@@ -330,7 +331,7 @@ textarea {
   border-radius: 4px;
   background: var(--bg-tertiary);
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 12px;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
@@ -340,11 +341,11 @@ textarea {
 .sidebar-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: 8px 8px 16px;
+  padding: 6px 6px 14px;
 }
 
 .category {
-  margin-top: 16px;
+  margin-top: 12px;
 }
 .category:first-child {
   margin-top: 4px;
@@ -361,10 +362,10 @@ textarea {
   display: flex;
   align-items: center;
   gap: 2px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
   color: var(--channel-icon);
 }
 .category-toggle:hover {
@@ -390,8 +391,9 @@ textarea {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 8px;
-  margin-top: 2px;
+  padding: 4px 8px;
+  margin-top: 1px;
+  font-size: 13px;
   border-radius: 4px;
   color: var(--channel-icon);
   text-align: left;
@@ -400,6 +402,7 @@ textarea {
   flex-shrink: 0;
 }
 .channel-name {
+  font-size: 13px;
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -424,10 +427,11 @@ textarea {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 8px 4px 10px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 14px 8px 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--channel-icon);
 }
 
@@ -443,7 +447,7 @@ textarea {
   flex: 1;
 }
 .dm-activity {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -468,10 +472,10 @@ textarea {
   display: flex;
   align-items: center;
   gap: 8px;
-  height: 30px;
+  height: 28px;
   padding: 0 8px 0 4px;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 12.5px;
   color: var(--channel-icon);
   cursor: pointer;
 }
@@ -565,12 +569,13 @@ textarea {
 }
 .modal h2 {
   margin: 0 0 8px;
-  font-size: 24px;
+  font-size: 18px;
   text-align: center;
   color: var(--header-primary);
 }
 .modal > p {
-  margin: 0 0 20px;
+  margin: 0 0 16px;
+  font-size: 13px;
   text-align: center;
   color: var(--header-secondary);
 }
@@ -579,10 +584,11 @@ textarea {
 }
 .modal-label {
   display: block;
-  margin-bottom: 8px;
-  font-size: 12px;
+  margin-bottom: 6px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--header-secondary);
 }
 .modal-input {
@@ -602,10 +608,10 @@ textarea {
 }
 .modal-submit,
 .modal-cancel {
-  height: 38px;
-  padding: 0 16px;
+  height: 34px;
+  padding: 0 14px;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
 }
 .modal-submit {
@@ -732,7 +738,7 @@ textarea {
 }
 .voice-view-header h1 {
   margin: 0;
-  font-size: 16px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--header-primary);
 }
@@ -841,7 +847,7 @@ textarea {
   border-radius: 4px;
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -1032,7 +1038,7 @@ button.voice-tile-hit:focus-visible {
   flex: 1;
   min-width: 0;
   margin: 0;
-  font-size: 16px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--header-primary);
   overflow: hidden;
@@ -1065,7 +1071,7 @@ button.voice-tile-hit:focus-visible {
   border-radius: 4px;
   background: rgba(240, 178, 50, 0.15);
   color: var(--yellow);
-  font-size: 14px;
+  font-size: 12px;
   text-align: center;
 }
 
@@ -1077,8 +1083,8 @@ button.voice-tile-hit:focus-visible {
   padding: 16px;
 }
 .voice-controls button {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -1121,7 +1127,7 @@ button.voice-tile-hit:focus-visible {
 }
 .voice-lobby h2 {
   margin: 8px 0 0;
-  font-size: 24px;
+  font-size: 18px;
   color: var(--header-primary);
 }
 .voice-lobby p {
@@ -1144,7 +1150,7 @@ button.voice-tile-hit:focus-visible {
 /* ---------- Painel do usuário ---------- */
 
 .user-panel {
-  height: 52px;
+  height: 46px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -1175,12 +1181,12 @@ button.voice-tile-hit:focus-visible {
   line-height: 1.2;
 }
 .user-panel-name {
-  font-size: 14px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--header-primary);
 }
 .user-panel-sub {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--header-secondary);
 }
 
@@ -1188,8 +1194,8 @@ button.voice-tile-hit:focus-visible {
   display: flex;
 }
 .user-panel-actions button {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: grid;
   place-items: center;
   border-radius: 4px;
@@ -1309,7 +1315,7 @@ button.voice-tile-hit:focus-visible {
 }
 
 .chat-header {
-  height: 48px;
+  height: 42px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -1324,8 +1330,8 @@ button.voice-tile-hit:focus-visible {
 }
 .chat-header-title {
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 13.5px;
+  font-weight: 700;
   color: var(--header-primary);
   white-space: nowrap;
 }
@@ -1338,7 +1344,7 @@ button.voice-tile-hit:focus-visible {
 .chat-header-topic {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+  font-size: 12px;
   color: var(--header-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1381,7 +1387,7 @@ button.voice-tile-hit:focus-visible {
   border: 0;
   outline: 0;
   background: transparent;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .messages {
@@ -1401,7 +1407,7 @@ button.voice-tile-hit:focus-visible {
 }
 .messages-welcome h2 {
   margin: 8px 0;
-  font-size: 32px;
+  font-size: 20px;
   line-height: 1.25;
   font-weight: 700;
   color: var(--header-primary);
@@ -1411,8 +1417,8 @@ button.voice-tile-hit:focus-visible {
   color: var(--header-secondary);
 }
 .welcome-icon {
-  width: 68px;
-  height: 68px;
+  width: 48px;
+  height: 48px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -1423,9 +1429,10 @@ button.voice-tile-hit:focus-visible {
 .day-divider {
   display: flex;
   align-items: center;
-  margin: 24px 16px 8px;
-  font-size: 12px;
-  font-weight: 600;
+  margin: 16px 16px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
   color: var(--text-muted);
 }
 .day-divider::before,
@@ -1442,9 +1449,9 @@ button.voice-tile-hit:focus-visible {
 .message {
   position: relative;
   display: flex;
-  padding: 2px 48px 2px 72px;
-  margin-top: 17px;
-  min-height: 44px;
+  padding: 2px 40px 2px 56px;
+  margin-top: 10px;
+  min-height: 34px;
 }
 .message.grouped {
   margin-top: 0;
@@ -1456,18 +1463,18 @@ button.voice-tile-hit:focus-visible {
 
 .message-avatar {
   position: absolute;
-  left: 16px;
-  top: 4px;
+  left: 14px;
+  top: 2px;
   cursor: pointer;
 }
 
 .message-hover-time {
   position: absolute;
   left: 0;
-  width: 64px;
-  top: 4px;
+  width: 50px;
+  top: 2px;
   text-align: right;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
   opacity: 0;
 }
@@ -1479,26 +1486,30 @@ button.voice-tile-hit:focus-visible {
   min-width: 0;
 }
 .message-meta {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.375;
+  margin: 0 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
   display: flex;
   align-items: baseline;
   gap: 8px;
 }
 .message-author {
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
 }
 .message-author:hover {
   text-decoration: underline;
 }
 .message-time {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 400;
   color: var(--text-muted);
 }
 .message-content {
+  font-size: 13px;
+  line-height: 1.45;
   white-space: pre-wrap;
   word-wrap: break-word;
   color: var(--text-normal);
@@ -1562,7 +1573,7 @@ button.voice-tile-hit:focus-visible {
 /* ---------- Caixa de mensagem ---------- */
 
 .composer {
-  padding: 0 16px 24px;
+  padding: 0 16px 16px;
   flex-shrink: 0;
 }
 .composer-box {
@@ -1594,8 +1605,9 @@ button.voice-tile-hit:focus-visible {
   border: 0;
   outline: 0;
   background: transparent;
-  padding: 11px 0;
-  line-height: 1.375;
+  padding: 9px 0;
+  font-size: 13px;
+  line-height: 1.45;
   max-height: 300px;
 }
 .composer textarea::placeholder {
@@ -1626,19 +1638,19 @@ button.voice-tile-hit:focus-visible {
 /* ---------- Lista de membros ---------- */
 
 .member-list {
-  width: 240px;
+  width: 210px;
   flex-shrink: 0;
   overflow-y: auto;
   background: var(--bg-secondary);
-  padding: 0 8px 20px;
+  padding: 0 6px 16px;
 }
 
 .member-group {
-  margin: 24px 0 4px 8px;
-  font-size: 12px;
-  font-weight: 600;
+  margin: 16px 0 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
   color: var(--channel-icon);
 }
 
@@ -1646,8 +1658,8 @@ button.voice-tile-hit:focus-visible {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 4px 8px;
+  gap: 8px;
+  padding: 3px 6px;
   margin-bottom: 2px;
   border-radius: 4px;
   text-align: left;
@@ -1667,6 +1679,7 @@ button.voice-tile-hit:focus-visible {
   min-width: 0;
 }
 .member-name {
+  font-size: 12.5px;
   font-weight: 500;
   color: var(--channel-icon);
   white-space: nowrap;
@@ -1674,7 +1687,7 @@ button.voice-tile-hit:focus-visible {
   text-overflow: ellipsis;
 }
 .member-activity {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--channel-icon);
   white-space: nowrap;
   overflow: hidden;
@@ -1696,7 +1709,7 @@ button.voice-tile-hit:focus-visible {
 .friends-tabs button {
   padding: 2px 8px;
   border-radius: 4px;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--interactive-normal);
 }
@@ -1740,18 +1753,19 @@ button.voice-tile-hit:focus-visible {
 }
 
 .friends-count {
-  margin: 24px 0 12px;
-  font-size: 12px;
-  font-weight: 600;
+  margin: 16px 0 8px;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--header-secondary);
 }
 
 .friend-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  height: 62px;
+  gap: 10px;
+  height: 48px;
   padding: 0 10px;
   margin: 0 -10px;
   border-top: 1px solid var(--divider);
@@ -1769,11 +1783,12 @@ button.voice-tile-hit:focus-visible {
   min-width: 0;
 }
 .friend-name {
+  font-size: 13px;
   font-weight: 600;
   color: var(--header-primary);
 }
 .friend-status {
-  font-size: 14px;
+  font-size: 12px;
   color: var(--header-secondary);
   white-space: nowrap;
   overflow: hidden;
@@ -1788,21 +1803,23 @@ button.voice-tile-hit:focus-visible {
 
 .add-friend h2 {
   margin: 4px 0 8px;
-  font-size: 16px;
+  font-size: 13.5px;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--header-primary);
 }
 .add-friend p {
-  margin: 0 0 16px;
-  font-size: 14px;
+  margin: 0 0 12px;
+  font-size: 12px;
   color: var(--header-secondary);
 }
 .add-friend-form {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 12px;
-  height: 52px;
+  padding: 0 10px;
+  height: 38px;
   border-radius: 8px;
   background: var(--bg-tertiary);
   border: 1px solid var(--bg-tertiary);
@@ -1822,7 +1839,7 @@ button.voice-tile-hit:focus-visible {
   border-radius: 3px;
   background: var(--brand);
   color: #fff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
 }
 .add-friend-form button:hover {
@@ -1830,17 +1847,18 @@ button.voice-tile-hit:focus-visible {
 }
 
 .active-now {
-  width: 360px;
+  width: 280px;
   flex-shrink: 0;
-  padding: 16px;
+  padding: 12px;
   background: var(--bg-primary);
   border-left: 1px solid var(--divider);
   overflow-y: auto;
 }
 .active-now h2 {
-  margin: 8px 0 16px;
-  font-size: 20px;
+  margin: 6px 0 12px;
+  font-size: 13.5px;
   font-weight: 700;
+  letter-spacing: 0.04em;
   color: var(--header-primary);
 }
 .active-card {
@@ -2277,17 +2295,18 @@ a.attachment-file-name:hover {
 /* ---------- Botões e campos dos modais ---------- */
 
 .button {
-  height: 38px;
-  padding: 0 16px;
-  border-radius: 6px;
-  font-size: 14px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 4px;
+  font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
   transition: background-color 0.15s ease;
 }
 .button.small {
-  height: 32px;
-  padding: 0 12px;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
 }
 .button.wide {
   width: 100%;
@@ -2372,13 +2391,13 @@ a.attachment-file-name:hover {
 }
 .modal.dialog .dialog-head h2 {
   margin: 0 0 8px;
-  font-size: 24px;
+  font-size: 18px;
   line-height: 1.25;
   text-align: inherit;
 }
 .modal.dialog .dialog-head p {
   margin: 0;
-  font-size: 15px;
+  font-size: 13px;
   text-align: inherit;
 }
 .modal.dialog.left .dialog-head {
@@ -2386,7 +2405,7 @@ a.attachment-file-name:hover {
   text-align: left;
 }
 .modal.dialog.left .dialog-head h2 {
-  font-size: 20px;
+  font-size: 16px;
 }
 .dialog-body {
   min-height: 0;
@@ -2406,14 +2425,15 @@ a.attachment-file-name:hover {
 }
 .dialog-foot h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: 16px;
   color: var(--header-primary);
 }
 .dialog-section {
-  margin: 16px 0 8px;
-  font-size: 12px;
+  margin: 14px 0 6px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--header-secondary);
 }
 .dialog-note {
@@ -2464,11 +2484,11 @@ a.attachment-file-name:hover {
 
 .field-label {
   display: block;
-  margin: 16px 0 8px;
-  font-size: 12px;
+  margin: 12px 0 6px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
   color: var(--header-secondary);
 }
 .required {
@@ -2476,10 +2496,11 @@ a.attachment-file-name:hover {
 }
 .field-input {
   width: 100%;
-  height: 40px;
+  height: 36px;
   padding: 0 10px;
   border: 0;
   border-radius: 4px;
+  font-size: 13px;
   outline: 2px solid transparent;
   background: var(--bg-tertiary);
 }
@@ -2687,7 +2708,7 @@ a.attachment-file-name:hover {
 }
 
 .settings-nav {
-  width: 260px;
+  width: 220px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -2754,9 +2775,11 @@ a.attachment-file-name:hover {
   padding: 0 4px 16px;
 }
 .settings-nav-scroll h3 {
-  margin: 16px 10px 4px;
-  font-size: 12px;
-  font-weight: 600;
+  margin: 14px 10px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   color: var(--text-muted);
 }
 .settings-nav-item {
@@ -2765,9 +2788,9 @@ a.attachment-file-name:hover {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 2px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 15px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 13px;
   font-weight: 500;
   text-align: left;
   color: var(--interactive-normal);
@@ -2802,7 +2825,7 @@ a.attachment-file-name:hover {
   flex-direction: column;
 }
 .settings-content-head {
-  height: 48px;
+  height: 42px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -2813,7 +2836,7 @@ a.attachment-file-name:hover {
 .settings-content-head h2 {
   flex: 1;
   margin: 0;
-  font-size: 15px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--header-primary);
 }
@@ -2842,9 +2865,9 @@ a.attachment-file-name:hover {
 }
 
 .settings-heading {
-  margin: 32px 0 8px;
-  font-size: 20px;
-  font-weight: 600;
+  margin: 24px 0 6px;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--header-primary);
 }
 .settings-page > .settings-heading:first-child {
@@ -2870,7 +2893,7 @@ a.attachment-file-name:hover {
 }
 .setting-hint {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 .setting-grid {
@@ -2929,14 +2952,14 @@ a.attachment-file-name:hover {
 
 .select {
   width: 100%;
-  height: 40px;
+  height: 34px;
   padding: 0 10px;
   border: 1px solid var(--divider);
-  border-radius: 6px;
+  border-radius: 4px;
   background: var(--bg-tertiary);
   color: var(--text-normal);
   font: inherit;
-  font-size: 15px;
+  font-size: 13px;
 }
 .select.small {
   width: auto;
@@ -2959,7 +2982,7 @@ a.attachment-file-name:hover {
 .slider-value {
   width: 44px;
   text-align: right;
-  font-size: 14px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 
@@ -2999,7 +3022,7 @@ a.attachment-file-name:hover {
   border-radius: 8px;
   background: var(--bg-tertiary);
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 13px;
 }
 .camera-preview video {
   width: 100%;
@@ -3066,7 +3089,7 @@ a.attachment-file-name:hover {
   flex: 1;
   min-width: 0;
   margin-bottom: 4px;
-  font-size: 20px;
+  font-size: 16px;
   color: var(--header-primary);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3175,7 +3198,7 @@ a.attachment-file-name:hover {
   padding: 0 16px;
 }
 .profile-preview strong {
-  font-size: 20px;
+  font-size: 16px;
   color: var(--header-primary);
 }
 .unsaved-bar {

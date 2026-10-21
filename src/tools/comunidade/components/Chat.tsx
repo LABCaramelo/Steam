@@ -436,7 +436,7 @@ function MessageList({
                   <time className="message-hover-time">{formatTime(m.timestamp)}</time>
                 ) : (
                   <div className="message-avatar">
-                    <Avatar user={author} size={40} />
+                    <Avatar user={author} size={32} />
                   </div>
                 )}
                 <div className="message-body">

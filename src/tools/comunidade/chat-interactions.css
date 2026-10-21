@@ -47,7 +47,7 @@
   flex: 1;
   margin: 0;
   color: var(--header-primary);
-  font-size: 16px;
+  font-size: 13.5px;
   font-weight: 600;
 }
 
@@ -109,7 +109,7 @@
 }
 
 .chat-panel-result-meta strong {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--header-primary);
 }
@@ -126,7 +126,7 @@
   -webkit-box-orient: vertical;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .chat-panel-result-file {
@@ -155,12 +155,12 @@
 
 .chat-panel-empty strong {
   color: var(--header-primary);
-  font-size: 16px;
+  font-size: 13.5px;
 }
 
 .chat-panel-empty p {
   margin: 0;
-  font-size: 14px;
+  font-size: 12.5px;
   line-height: 1.5;
 }
 

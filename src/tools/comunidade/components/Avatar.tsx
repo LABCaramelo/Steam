@@ -10,7 +10,7 @@ interface Props {
   speaking?: boolean;
 }
 
-export function Avatar({ user, size = 40, status, ring = 'var(--bg-secondary)', speaking }: Props) {
+export function Avatar({ user, size = 32, status, ring = 'var(--bg-secondary)', speaking }: Props) {
   const dot = Math.round(size * 0.3);
   return (
     <div
