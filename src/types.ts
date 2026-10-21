@@ -31,6 +31,8 @@ export interface ToolStoreInfo {
 export interface ToolMetadata {
   /** Same slug as public.lab_tools / public.user_tools. */
   slug: string;
+  /** Whether new acquisitions are open in the store. */
+  available: boolean;
   launchPath: string;
   publicPage: string;
   description: string;

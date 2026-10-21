@@ -21,7 +21,7 @@ const art = (root: string): ToolMetadata["assets"] => ({
   icon: `${root}/icon.svg`,
 });
 
-function tool(appid: number, name: string, meta: ToolMetadata): LibraryApp {
+function tool(appid: number, name: string, meta: Omit<ToolMetadata, "available"> & { available?: boolean }): LibraryApp {
   return {
     appid,
     name,
@@ -33,7 +33,7 @@ function tool(appid: number, name: string, meta: ToolMetadata): LibraryApp {
     developer: "Um Cara Caramelo",
     publisher: "Um Cara Caramelo",
     art: { capsule: true, hero: true, heroBlur: true, logo: false, header: true, icon: true },
-    tool: meta,
+    tool: { available: false, ...meta },
   };
 }
 

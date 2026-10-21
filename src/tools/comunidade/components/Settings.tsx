@@ -5,6 +5,9 @@ import type { Action, Profile, Settings as SettingsState, SettingsSection, Theme
 import type { Status } from '../types';
 import { colorFor, PALETTE } from '../voice';
 import { Avatar, statusLabel } from './Avatar';
+import { useToolUser } from '../../shared/kit';
+import { clearToolLocalData } from '../../../toolLifecycle';
+import { closeAttachmentOwner } from '../attachments';
 
 interface Props {
   section: SettingsSection;
@@ -209,6 +212,7 @@ function Slider({
 /* ---------------------------------------------------------------- Conta */
 
 function AccountPage({ profile, myStatus, dispatch }: { profile: Profile; myStatus: Status; dispatch: (a: Action) => void }) {
+  const user = useToolUser();
   const me = users[ME];
   const [copied, setCopied] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
@@ -275,7 +279,7 @@ function AccountPage({ profile, myStatus, dispatch }: { profile: Profile; myStat
       <div className="button-row">
         {confirmReset ? (
           <>
-            <button className="button danger" onClick={resetEverything}>
+            <button className="button danger" onClick={() => void resetEverything(user.id)}>
               Sim, apagar tudo
             </button>
             <button className="button text" onClick={() => setConfirmReset(false)}>
@@ -292,13 +296,9 @@ function AccountPage({ profile, myStatus, dispatch }: { profile: Profile; myStat
   );
 }
 
-function resetEverything() {
-  try {
-    localStorage.removeItem('discord-clone:v1');
-    indexedDB.deleteDatabase('discord-clone');
-  } catch {
-    // nada a apagar
-  }
+async function resetEverything(userId: string) {
+  closeAttachmentOwner();
+  await clearToolLocalData({ userId, slug: 'comunidade', appid: 7 });
   location.reload();
 }
 

@@ -6,7 +6,7 @@ import type { LibraryApp } from "../types";
 import { useUi } from "../ui";
 import { IconPlay } from "./Icons";
 
-/** "Adquirir" in the store; once the tool is in the library it becomes "Abrir". */
+/** Upcoming tools cannot be acquired or launched from the store. */
 export function AcquireButton({ app, size = "md", block }: { app: LibraryApp; size?: "sm" | "md" | "lg"; block?: boolean }) {
   const nav = useNavigate();
   const ui = useUi();
@@ -14,6 +14,10 @@ export function AcquireButton({ app, size = "md", block }: { app: LibraryApp; si
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const slug = app.tool!.slug;
+
+  if (!app.tool!.available) {
+    return <MagneticButton variant="surface" size={size} block={block} disabled>Em breve</MagneticButton>;
+  }
 
   if (owns(slug)) {
     return (
@@ -60,6 +64,7 @@ export function AcquireButton({ app, size = "md", block }: { app: LibraryApp; si
   );
 }
 
-export function OwnedBadge({ owned }: { owned: boolean }) {
+export function OwnedBadge({ owned, available }: { owned: boolean; available: boolean }) {
+  if (!available) return <span className="store-badge store-badge--soon">Em breve</span>;
   return owned ? <span className="store-badge store-badge--owned">Na biblioteca</span> : <span className="store-badge">Gratuito</span>;
 }

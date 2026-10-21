@@ -1,4 +1,5 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
+import { subscribeToolReleases, toolStorageKey } from '../../toolLifecycle';
 import { ME, seedMessages, servers as seedServers } from './data';
 import type { Attachment, Channel, Message, Server, Status } from './types';
 
@@ -96,8 +97,6 @@ export type Action =
   | { type: 'createChannel'; serverId: string; categoryId: string | null; channel: Channel }
   | { type: 'logout' };
 
-const STORAGE_KEY = 'discord-clone:v1';
-
 export const defaultSettings: Settings = {
   theme: 'escuro',
   compactMessages: false,
@@ -137,7 +136,7 @@ export function findChannel(servers: Server[], serverId: string, channelId: stri
     .find((c) => c.id === channelId);
 }
 
-function initialState(): State {
+function initialState(storageKey: string | null): State {
   const fallback: State = {
     profile: { id: crypto.randomUUID(), name: '' },
     servers: seedServers,
@@ -155,7 +154,8 @@ function initialState(): State {
     modal: null,
   };
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    // The old shared cache has no owner: never import another account's conversations.
+    const saved = storageKey ? localStorage.getItem(storageKey) : null;
     if (saved) {
       const parsed = JSON.parse(saved) as Partial<State>;
       return {
@@ -341,17 +341,24 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-export function useAppStore() {
-  const [state, dispatch] = useReducer(reducer, undefined, initialState);
+export function useAppStore(userId?: string) {
+  const storageKey = userId ? toolStorageKey(userId, 'comunidade') : null;
+  const [state, dispatch] = useReducer(reducer, storageKey, initialState);
+  const released = useRef(false);
+
+  useEffect(() => subscribeToolReleases((notice) => {
+    if (notice.userId === userId && notice.slug === 'comunidade') released.current = true;
+  }), [userId]);
 
   useEffect(() => {
+    if (!storageKey || released.current) return;
     try {
       const { modal: _, ...saved } = state;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      localStorage.setItem(storageKey, JSON.stringify(saved));
     } catch {
       // sem persistência neste navegador
     }
-  }, [state]);
+  }, [state, storageKey]);
 
   return [state, dispatch] as const;
 }

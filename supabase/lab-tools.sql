@@ -61,24 +61,27 @@ create table if not exists public.lab_tools (
   appid integer not null unique,
   name text not null,
   price_cents integer not null default 0 check (price_cents >= 0),
-  available boolean not null default true,
+  available boolean not null default false,
   created_at timestamptz not null default now()
 );
+-- Novas ferramentas só abrem para aquisição depois da liberação explícita do LAB.
+alter table public.lab_tools alter column available set default false;
 alter table public.lab_tools enable row level security;
 revoke all on table public.lab_tools from anon, authenticated;
 grant select on table public.lab_tools to anon, authenticated;
 drop policy if exists "lab_tools_select" on public.lab_tools;
 create policy "lab_tools_select" on public.lab_tools for select using (true);
 
-insert into public.lab_tools (slug, appid, name) values
-  ('prompt-library', 1, 'Biblioteca de prompts'),
-  ('kanban', 2, 'Kanban'),
-  ('prancheta', 3, 'Prancheta'),
-  ('automation', 4, 'Automation'),
-  ('academy', 5, 'Academy'),
-  ('claquete', 6, 'Claquete'),
-  ('comunidade', 7, 'Comunidade')
-on conflict (slug) do update set appid = excluded.appid, name = excluded.name;
+-- Estado atual da Loja: todas em breve. A posse já registrada em user_tools permanece intacta.
+insert into public.lab_tools (slug, appid, name, available) values
+  ('prompt-library', 1, 'Biblioteca de prompts', false),
+  ('kanban', 2, 'Kanban', false),
+  ('prancheta', 3, 'Prancheta', false),
+  ('automation', 4, 'Automation', false),
+  ('academy', 5, 'Academy', false),
+  ('claquete', 6, 'Claquete', false),
+  ('comunidade', 7, 'Comunidade', false)
+on conflict (slug) do update set appid = excluded.appid, name = excluded.name, available = excluded.available;
 
 create table if not exists public.user_tools (
   user_id uuid not null references auth.users (id) on delete cascade,
@@ -114,8 +117,11 @@ begin
     raise exception 'Entre no LAB para adquirir ferramentas.' using errcode = '28000';
   end if;
   select * into tool from public.lab_tools where slug = p_slug;
-  if not found or not tool.available then
+  if not found then
     raise exception 'Esta ferramenta não está disponível na loja.' using errcode = 'P0002';
+  end if;
+  if not tool.available then
+    raise exception 'Em breve: esta ferramenta ainda não pode ser adquirida.' using errcode = 'P0002';
   end if;
   if tool.price_cents > 0 then
     raise exception 'Esta ferramenta ainda não pode ser adquirida pela loja.' using errcode = 'P0001';
@@ -453,7 +459,9 @@ begin
     new.id := old.id;
     new.lesson_id := old.lesson_id;
     new.user_id := old.user_id;
-    new.parent_id := old.parent_id;
+    -- Uma resposta pode ser desvinculada quando o autor do comentário original sai da ferramenta.
+    -- Nunca permite transferir uma resposta para outro tópico.
+    new.parent_id := case when new.parent_id is null then null else old.parent_id end;
     new.author_name := old.author_name;
     new.author_avatar := old.author_avatar;
     new.created_at := old.created_at;
@@ -475,6 +483,7 @@ begin
   new.author_avatar := avatar;
   return new;
 end $$;
+revoke all on function public.academy_comment_author() from public, anon, authenticated;
 drop trigger if exists academy_comments_author on public.academy_comments;
 create trigger academy_comments_author before insert or update on public.academy_comments
   for each row execute function public.academy_comment_author();
@@ -618,6 +627,155 @@ create policy "academy_likes_write" on public.academy_comment_likes for insert t
 drop policy if exists "academy_likes_delete" on public.academy_comment_likes;
 create policy "academy_likes_delete" on public.academy_comment_likes for delete to authenticated
   using (user_id = (select auth.uid()));
+
+-- ---------------------------------------------------------------------------------------------
+-- Remoção da biblioteca: apaga os dados próprios da ferramenta na mesma transação da posse.
+-- ---------------------------------------------------------------------------------------------
+
+-- Uma gravação segura a posse até terminar. release_tool usa FOR UPDATE na mesma linha:
+-- gravações anteriores terminam antes da limpeza; as posteriores aguardam e perdem autorização.
+create or replace function public.lock_tool_write() returns trigger
+language plpgsql security definer set search_path = public, pg_temp as $$
+declare
+  uid uuid := auth.uid();
+  owner_id uuid := nullif(to_jsonb(new) ->> coalesce(tg_argv[1], 'user_id'), '')::uuid;
+begin
+  -- SQL Editor/service_role e operações internas em linhas de terceiros continuam possíveis.
+  -- Para o cliente, as políticas RLS abaixo continuam exigindo dono + acesso ao LAB.
+  if uid is null or owner_id is distinct from uid then
+    return new;
+  end if;
+  perform 1 from public.user_tools where user_id = uid and tool_slug = tg_argv[0] for share;
+  if not found then
+    raise exception 'Esta ferramenta não está mais na sua biblioteca.' using errcode = '42501';
+  end if;
+  return new;
+end $$;
+revoke all on function public.lock_tool_write() from public, anon, authenticated;
+
+-- Jobs e mídia da Claquete pertencem ao projeto, sem uma coluna user_id própria.
+create or replace function public.lock_project_tool_write() returns trigger
+language plpgsql security definer set search_path = public, pg_temp as $$
+declare
+  uid uuid := auth.uid();
+  owner_id uuid;
+begin
+  if uid is null or new.project_id is null then return new; end if;
+  execute 'select user_id from public.flick_projects where id = $1' into owner_id using new.project_id;
+  if owner_id is distinct from uid then return new; end if;
+  perform 1 from public.user_tools where user_id = uid and tool_slug = 'claquete' for share;
+  if not found then
+    raise exception 'Esta ferramenta não está mais na sua biblioteca.' using errcode = '42501';
+  end if;
+  return new;
+end $$;
+revoke all on function public.lock_project_tool_write() from public, anon, authenticated;
+
+do $$
+declare
+  rec record;
+begin
+  for rec in
+    select * from (values
+      ('kanban_boards', 'kanban'), ('kanban_labels', 'kanban'), ('kanban_lists', 'kanban'),
+      ('kanban_cards', 'kanban'), ('kanban_comments', 'kanban'), ('kanban_activity', 'kanban'),
+      ('prancheta_files', 'prancheta'),
+      ('automation_fluxes', 'automation'), ('automation_flux_versions', 'automation'),
+      ('automation_executions', 'automation'), ('automation_connections', 'automation'),
+      ('academy_progress', 'academy'), ('academy_favorites', 'academy'), ('academy_notes', 'academy'),
+      ('academy_comments', 'academy'), ('academy_comment_likes', 'academy')
+    ) as v (tbl, slug)
+  loop
+    execute format('drop trigger if exists tool_write_lock on public.%I', rec.tbl);
+    execute format('create trigger tool_write_lock before insert or update on public.%I
+      for each row execute function public.lock_tool_write(%L)', rec.tbl, rec.slug);
+  end loop;
+
+  -- Tabelas de outros módulos podem não existir em instalações locais. Lista fechada e explícita.
+  for rec in
+    select * from (values
+      ('caramelo_personal_prompts', 'prompt-library', 'owner_user_id'),
+      ('caramelo_prompt_observations', 'prompt-library', 'user_id'),
+      ('flick_projects', 'claquete', 'user_id'), ('flick_chat_threads', 'claquete', 'user_id')
+    ) as v (tbl, slug, owner_column)
+  loop
+    if to_regclass('public.' || rec.tbl) is not null then
+      execute format('drop trigger if exists tool_write_lock on public.%I', rec.tbl);
+      execute format('create trigger tool_write_lock before insert or update on public.%I
+        for each row execute function public.lock_tool_write(%L, %L)', rec.tbl, rec.slug, rec.owner_column);
+    end if;
+  end loop;
+  for rec in select * from (values ('flick_jobs'), ('flick_media')) as v (tbl)
+  loop
+    if to_regclass('public.flick_projects') is not null and to_regclass('public.' || rec.tbl) is not null then
+      execute format('drop trigger if exists tool_write_lock on public.%I', rec.tbl);
+      execute format('create trigger tool_write_lock before insert or update on public.%I
+        for each row execute function public.lock_project_tool_write()', rec.tbl);
+    end if;
+  end loop;
+end $$;
+
+-- Não exige lab_member(): mesmo quem perdeu acesso ao LAB pode remover seus próprios dados.
+-- A ausência de posse é um sucesso idempotente; slugs desconhecidos não executam limpeza.
+create or replace function public.release_tool(p_slug text) returns jsonb
+language plpgsql volatile security definer set search_path = public, pg_temp as $$
+declare
+  uid uuid := auth.uid();
+begin
+  if uid is null then
+    raise exception 'Entre no LAB para remover ferramentas.' using errcode = '28000';
+  end if;
+  if p_slug is null or p_slug not in ('prompt-library', 'kanban', 'prancheta', 'automation', 'academy', 'claquete', 'comunidade') then
+    raise exception 'Ferramenta não encontrada.' using errcode = 'P0002';
+  end if;
+  perform 1 from public.user_tools where user_id = uid and tool_slug = p_slug for update;
+  if not found then
+    return jsonb_build_object('slug', p_slug, 'removed', false);
+  end if;
+
+  case p_slug
+    when 'prompt-library' then
+      if to_regclass('public.caramelo_personal_prompts') is not null then
+        execute 'delete from public.caramelo_personal_prompts where owner_user_id = $1' using uid;
+      end if;
+      if to_regclass('public.caramelo_prompt_observations') is not null then
+        execute 'delete from public.caramelo_prompt_observations where user_id = $1' using uid;
+      end if;
+    when 'kanban' then
+      delete from public.kanban_boards where user_id = uid;
+    when 'prancheta' then
+      delete from public.prancheta_files where user_id = uid;
+    when 'automation' then
+      delete from public.automation_fluxes where user_id = uid;
+      delete from public.automation_connections where user_id = uid;
+    when 'academy' then
+      delete from public.academy_progress where user_id = uid;
+      delete from public.academy_favorites where user_id = uid;
+      delete from public.academy_notes where user_id = uid;
+      delete from public.academy_comment_likes where user_id = uid;
+      -- O FK original é ON DELETE CASCADE: preservar respostas de terceiros antes de apagar.
+      update public.academy_comments reply set parent_id = null
+        where reply.user_id <> uid and reply.parent_id in (
+          select id from public.academy_comments where user_id = uid
+        );
+      delete from public.academy_comments where user_id = uid;
+    when 'claquete' then
+      if to_regclass('public.flick_chat_threads') is not null then
+        execute 'delete from public.flick_chat_threads where user_id = $1' using uid;
+      end if;
+      if to_regclass('public.flick_projects') is not null then
+        -- FKs de jobs, mídia e threads do projeto usam ON DELETE CASCADE.
+        execute 'delete from public.flick_projects where user_id = $1' using uid;
+      end if;
+    else
+      null; -- Comunidade: dados da ferramenta são locais, sem tabela própria no banco.
+  end case;
+
+  delete from public.user_tools where user_id = uid and tool_slug = p_slug;
+  return jsonb_build_object('slug', p_slug, 'removed', true);
+end $$;
+revoke all on function public.release_tool(text) from public, anon;
+grant execute on function public.release_tool(text) to authenticated;
 
 -- ---------------------------------------------------------------------------------------------
 -- 7. Primeira aula da Academy: o treinamento que já está publicado em /aula-head

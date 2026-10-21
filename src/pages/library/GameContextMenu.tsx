@@ -12,7 +12,7 @@ export interface ContextTarget {
 }
 
 /** Right-click menu for a game (sidebar entries and capsules). */
-export function GameContextMenu({ target, onClose }: { target: ContextTarget; onClose: () => void }) {
+export function GameContextMenu({ target, onClose, onRemove }: { target: ContextTarget; onClose: () => void; onRemove: (app: LibraryApp) => void }) {
   const { app } = target;
   const nav = useNavigate();
   const lib = useLibrary();
@@ -85,6 +85,10 @@ export function GameContextMenu({ target, onClose }: { target: ContextTarget; on
           Procurar arquivos locais
         </button>
       )}
+      {app.tool && <>
+        <div className="menu__sep" />
+        <button className="ctxmenu__item tool-remove-trigger" onClick={act(() => onRemove(app))}>Remover da biblioteca…</button>
+      </>}
     </div>
   );
 }

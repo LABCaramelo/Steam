@@ -3,6 +3,8 @@ import { Outlet } from "react-router-dom";
 import { useUi } from "../../ui";
 import { GameContextMenu, type ContextTarget } from "./GameContextMenu";
 import { Sidebar } from "./Sidebar";
+import { RemoveToolDialog } from "../../components/RemoveToolDialog";
+import type { LibraryApp } from "../../types";
 
 export interface LibraryOutletContext {
   openContext: (t: ContextTarget) => void;
@@ -12,6 +14,7 @@ export interface LibraryOutletContext {
 export function LibraryLayout() {
   const { smallMode } = useUi();
   const [ctx, setCtx] = useState<ContextTarget | null>(null);
+  const [removing, setRemoving] = useState<LibraryApp | null>(null);
   const [width, setWidth] = useState(272);
   const close = useCallback(() => setCtx(null), []);
 
@@ -38,7 +41,8 @@ export function LibraryLayout() {
           <Outlet context={{ openContext: setCtx } satisfies LibraryOutletContext} />
         </main>
       )}
-      {ctx && <GameContextMenu target={ctx} onClose={close} />}
+      {ctx && <GameContextMenu target={ctx} onClose={close} onRemove={setRemoving} />}
+      {removing && <RemoveToolDialog app={removing} onClose={() => setRemoving(null)} />}
     </div>
   );
 }

@@ -23,10 +23,15 @@ export function StorePage() {
 
   const cur = featured[slide];
   const ownedCount = TOOL_CATALOG.filter((a) => owns(a.tool!.slug)).length;
+  const allComingSoon = TOOL_CATALOG.every((a) => !a.tool!.available);
 
   return (
     <div className="store">
-      {status === "unconfigured" && (
+      {allComingSoon ? (
+        <div className="store__section">
+          <p className="store__notice">As ferramentas do LAB estão em preparação. Em breve você poderá adicioná-las à sua biblioteca.</p>
+        </div>
+      ) : status === "unconfigured" && (
         <div className="store__section">
           <p className="store__notice" role="status">{UNCONFIGURED_MESSAGE}</p>
         </div>
@@ -48,7 +53,7 @@ export function StorePage() {
               ))}
             </ul>
             <div className="store__carousel-buy">
-              <OwnedBadge owned={owns(cur.tool!.slug)} />
+              <OwnedBadge owned={owns(cur.tool!.slug)} available={cur.tool!.available} />
               <AcquireButton app={cur} size="sm" />
             </div>
           </div>
@@ -64,7 +69,7 @@ export function StorePage() {
         <div className="store__heading-row">
           <h2 className="store__heading">Todas as ferramentas</h2>
           <span className="store__count">
-            {ownedCount} de {TOOL_CATALOG.length} na sua biblioteca
+            {allComingSoon ? `${TOOL_CATALOG.length} ferramentas em breve` : `${ownedCount} de ${TOOL_CATALOG.length} na sua biblioteca`}
           </span>
         </div>
         <StoreRows apps={[...TOOL_CATALOG]} />
@@ -88,7 +93,7 @@ function StoreRows({ apps }: { apps: LibraryApp[] }) {
             <div className="store-row__meta">{a.tool!.store.tagline}</div>
           </div>
           <span className="store-row__category">{a.tool!.store.category}</span>
-          <OwnedBadge owned={owns(a.tool!.slug)} />
+          <OwnedBadge owned={owns(a.tool!.slug)} available={a.tool!.available} />
           <IconChevronRight size={16} />
         </button>
       ))}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Room, RoomEvent, Track, type AudioCaptureOptions, type Participant } from 'livekit-client';
-import { blobToDataUrl, dataUrlToBlob, deleteBlobs, loadBlob, safeType, saveBlob, storeFiles } from './attachments';
+import { blobToDataUrl, captureAttachmentSession, dataUrlToBlob, deleteBlobs, safeType, storeFiles } from './attachments';
 import { ME, users } from './data';
 import type { Profile, Settings, VoiceConnection } from './store';
 import type { Attachment, Message, User } from './types';
@@ -207,12 +207,13 @@ function parseChatMessage(raw: unknown, profileId: string): WireMessage | null {
 
 /** Guarda os arquivos que vieram junto e devolve a mensagem como o app a armazena. */
 async function materialize(m: WireMessage): Promise<Message> {
+  const session = captureAttachmentSession();
   const attachments = await Promise.all(
     (m.attachments ?? []).map(async ({ data, ...a }) => {
       // Nunca sobrescreve um arquivo que já existe aqui com o mesmo id.
-      if (data && !(await loadBlob(a.id))) {
+      if (data && !(await session.load(a.id))) {
         await dataUrlToBlob(data, a.type)
-          .then((blob) => saveBlob(a.id, blob))
+          .then((blob) => session.save(a.id, blob))
           .catch(() => {});
       }
       return a;
@@ -222,11 +223,12 @@ async function materialize(m: WireMessage): Promise<Message> {
 }
 
 async function toWire(m: Message, profile: Profile, budget = { left: Infinity }): Promise<WireMessage> {
+  const session = captureAttachmentSession();
   const base = m.authorId === ME ? { ...m, authorId: profile.id, authorName: profile.name, authorColor: profile.color } : m;
   if (!m.attachments?.length) return base;
   const attachments = await Promise.all(
     m.attachments.map(async (a): Promise<WireAttachment> => {
-      const blob = a.size <= budget.left ? await loadBlob(a.id) : undefined;
+      const blob = a.size <= budget.left ? await session.load(a.id) : undefined;
       if (!blob) return a;
       budget.left -= blob.size;
       return { ...a, data: await blobToDataUrl(blob) };

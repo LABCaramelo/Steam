@@ -3929,3 +3929,36 @@ button:focus-visible,
   border: 1px solid rgb(var(--cm-danger) / 0.4);
   color: rgb(var(--cm-danger));
 }
+
+.store-badge--soon {
+  color: var(--c-text-2);
+  border-color: rgb(var(--cm-line-strong));
+  background: rgb(var(--cm-surface-2));
+}
+
+/* Keep release status visible in the compact store rows too. */
+.store-row .store-badge--soon {
+  display: inline-flex;
+}
+
+.tool-remove-trigger { color: rgb(var(--cm-danger)); }
+.tool-remove-dialog {
+  margin: auto;
+  width: min(540px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  padding: 0;
+  border: 1px solid rgb(var(--cm-line-strong));
+  border-radius: var(--cm-radius-lg);
+  background: rgb(var(--cm-surface-2));
+  color: var(--c-text);
+  box-shadow: var(--cm-elev-4);
+}
+.tool-remove-dialog::backdrop { background: rgb(0 0 0 / .72); }
+.tool-remove-dialog__body { padding: 28px; }
+.tool-remove-dialog h2 { font: 800 22px/1.25 var(--font-display); margin: 0 0 18px; }
+.tool-remove-dialog p { font-size: 14px; line-height: 1.65; color: var(--c-text-2); margin: 0 0 18px; }
+.tool-remove-dialog .tool-remove-dialog__notice { padding: 12px; border: 1px solid rgb(var(--cm-warning) / .3); border-radius: var(--cm-radius-sm); }
+.tool-remove-dialog .tool-remove-dialog__error { color: rgb(var(--cm-danger)); }
+.tool-remove-dialog__actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.tool-remove-dialog__confirm { background: rgb(var(--cm-danger)); color: rgb(var(--cm-on-status)); border-color: rgb(var(--cm-danger)); }

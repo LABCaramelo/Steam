@@ -5,6 +5,7 @@ import { useLibrary } from "../../api";
 import { AppArt } from "../../components/AppArt";
 import { IconPlay, IconStar } from "../../components/Icons";
 import { PointerTrail } from "../../components/PointerTrail";
+import { RemoveToolButton } from "../../components/RemoveToolDialog";
 import { getRegisteredTool } from "../../toolCatalog";
 import type { LibraryApp } from "../../types";
 import { usePlayAction } from "./play";
@@ -40,6 +41,7 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
           <IconStar size={17} filled={favorite} />
           {favorite ? "Nos favoritos" : "Favoritar"}
         </button>
+        <RemoveToolButton app={app} />
       </div>
       <div className="appdetails__body">
         <div className="appdetails__col appdetails__col--main">

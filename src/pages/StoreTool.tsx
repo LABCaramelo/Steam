@@ -22,7 +22,7 @@ export function StoreToolPage() {
   }, [app]);
 
   if (!app?.tool) return <Navigate to="/store" replace />;
-  const { store } = app.tool;
+  const { store, available } = app.tool;
   const owned = owns(app.tool.slug);
 
   return (
@@ -57,8 +57,8 @@ export function StoreToolPage() {
             ))}
           </dl>
           <div className="store-tool__price">
-            <OwnedBadge owned={owned} />
-            <span className="store-tool__price-note">{owned ? "Já está na sua biblioteca." : "Para membros do LAB."}</span>
+            <OwnedBadge owned={owned} available={available} />
+            <span className="store-tool__price-note">{!available ? "Aquisição ainda não liberada." : owned ? "Já está na sua biblioteca." : "Para membros do LAB."}</span>
           </div>
           <AcquireButton app={app} size="lg" block />
           <p className="store-tool__data">{store.dataNote}</p>

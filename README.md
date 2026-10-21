@@ -38,6 +38,14 @@ Projeto de estudo sem afiliação com a Valve Corporation.
 
 ## Ferramentas e aquisição
 
+A Loja está em pré-lançamento: as sete ferramentas aparecem como **Em breve**, com aquisição desabilitada. O catálogo do frontend usa `available: false`; o catálogo do banco também bloqueia `acquire_tool` por `lab_tools.available`. O SQL de configuração mantém todas indisponíveis para novas aquisições.
+
+Quem já adquiriu pode escolher **Remover da biblioteca…** nos detalhes ou no menu da ferramenta. A confirmação **Remover e apagar meus dados** chama `release_tool(p_slug)`: aquisição e registros próprios da ferramenta são excluídos na mesma transação, inclusive dados vinculados por cascata. A RPC usa a conta autenticada e permite a exclusão mesmo após perda de acesso ao LAB. Gravações autenticadas concorrentes seguram a posse até terminar, para a limpeza acontecer depois delas. Adquirir novamente, quando liberado, começa sem esses registros.
+
+A limpeza inclui quadros do Kanban, arquivos da Prancheta, fluxos/versões/execuções/conexões da Automation, progresso/notas/favoritos/comentários da Academy, prompts pessoais/observações e projetos/chats da Claquete nas tabelas correspondentes, quando instaladas. Respostas de outros alunos são desvinculadas antes da exclusão do comentário original. Arquivos físicos hospedados no R2/Storage não são excluídos por esta RPC; ela remove os registros no banco. Registros sem vínculo de propriedade comprovado não são apagados.
+
+Abas do LAB recebem a revogação e desmontam a ferramenta. A Comunidade usa cache e anexos separados por conta; os caches globais legados, sem dono identificado, não são importados automaticamente nem apagados indiscriminadamente. O navegador pode manter preferências locais que não fazem parte dos registros do banco, como favoritos da biblioteca estática de prompts.
+
 A Loja apresenta as cinco ferramentas em `/store` e suas páginas em `/store/app/:id`. Só as adquiridas entram na biblioteca. Cada entrada React também confere a sessão e a função `has_tool` no banco, inclusive quando aberta diretamente em outra aba. Uma troca de conta desmonta o conteúdo anterior. As regras de leitura e escrita continuam sendo aplicadas pelo RLS do Supabase.
 
 | Ferramenta | Entrada | Implementação |
