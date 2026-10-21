@@ -1,5 +1,5 @@
 import { Isotype } from '@caramelo/design-system';
-import { Compass, Plus } from '../icons';
+import { Plus } from '../icons';
 import type { Action, View } from '../store';
 import type { Server } from '../types';
 
@@ -34,13 +34,6 @@ export function ServerRail({ servers, view, dispatch }: Props) {
         onClick={() => dispatch({ type: 'openModal', modal: { kind: 'addServer' } })}
       >
         <Plus size={24} />
-      </RailItem>
-      <RailItem
-        label="Entrar em um servidor"
-        green
-        onClick={() => dispatch({ type: 'openModal', modal: { kind: 'addServer', invite: '' } })}
-      >
-        <Compass size={24} />
       </RailItem>
     </nav>
   );
