@@ -48,7 +48,6 @@ function Workspace({ repo }: { repo: PranchetaRepo }) {
   const mounted = useRef(false);
   const operation = useRef(false);
   const epoch = useRef(0);
-  const input = useRef<HTMLInputElement>(null);
   const actions = useRef<{ create: () => void; import: (document: DocumentData) => Promise<void> }>({ create() {}, async import() {} });
 
   useEffect(() => { store.setTheme(theme); }, [theme]);
@@ -188,13 +187,6 @@ function Workspace({ repo }: { repo: PranchetaRepo }) {
     }, false);
   };
 
-  const importFile = async (file: File) => {
-    if (file.size > 25 * 1024 * 1024) { toast("O arquivo deve ter até 25 MB.", "error"); return; }
-    try {
-      const document = normalizeDocument(JSON.parse(await file.text()));
-      await create(document);
-    } catch { toast("Arquivo inválido. Escolha um JSON exportado pela Prancheta.", "error"); }
-  };
 
   const filtered = files.filter((file) => file.name.toLocaleLowerCase("pt-BR").includes(query.toLocaleLowerCase("pt-BR")));
   return (
@@ -217,10 +209,8 @@ function Workspace({ repo }: { repo: PranchetaRepo }) {
         <div className="pr-library__toolbar">
           <h2>Meus arquivos <span>{files.length}</span></h2>
           <label className="pr-search"><span className="pr-sr">Buscar arquivos</span><input placeholder="Buscar arquivo…" value={query} onChange={(event) => setQuery(event.target.value)} /></label>
-          <button className="pr-btn" disabled={busy || loading} onClick={() => input.current?.click()}>Importar JSON</button>
           <button className="pr-btn" disabled={busy || loading} onClick={() => void create(createSampleDocument())}>Usar exemplo</button>
           <button className="pr-btn pr-btn--accent" disabled={busy || loading} onClick={() => void create()}>+ Novo arquivo</button>
-          <input ref={input} className="pr-sr" type="file" accept=".json,application/json" tabIndex={-1} onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ""; if (file) void importFile(file); }} />
         </div>
         {loading ? <div className="pr-loading"><Spinner label="Carregando arquivos" />Carregando seus arquivos…</div> : error ? <div className="pr-error" role="alert"><p>{error}</p><button className="pr-btn" onClick={() => void refresh()}>Tentar novamente</button></div> : filtered.length ? <div className="pr-files">
           {filtered.map((file) => <article key={file.id} className="pr-file cm-surface cm-surface--spotlight">
