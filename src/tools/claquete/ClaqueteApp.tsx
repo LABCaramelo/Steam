@@ -86,7 +86,7 @@ export function ClaqueteApp() {
         <div className="claquete-actions">
           <a
             className="btn btn--ghost"
-            href={`${activeUrl}/projects`}
+            href={`${activeUrl}/`}
             target="_blank"
             rel="noopener noreferrer"
             style={{ fontSize: 13, textDecoration: "none" }}
@@ -135,7 +135,7 @@ export function ClaqueteApp() {
         <iframe
           key={`${activeUrl}-${attempt}`}
           className="claquete-frame"
-          src={`${activeUrl}/projects`}
+          src={`${activeUrl}/`}
           title="Claquete — Estúdio de Cinema com IA"
           allow="clipboard-write; fullscreen; autoplay; picture-in-picture; camera; microphone"
           allowFullScreen
