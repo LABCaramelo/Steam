@@ -4,6 +4,10 @@ const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || "0b85653a3fda604ea469fb2
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || "";
 const BUCKET = process.env.CLOUDFLARE_R2_BUCKET || "umcaracaramelo";
 const PUBLIC_URL = (process.env.CLOUDFLARE_R2_PUBLIC_URL || "https://media.umcaracaramelo.com.br").replace(/\/$/, "");
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://fzhzpzxsttflgtassyex.supabase.co";
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6aHpwenhzdHRmbGd0YXNzeWV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNTU2NTIsImV4cCI6MjEwNDkzMTY1Mn0.rWO90rI-O8XVOWAlvuylkFWMNpjkocC0HRHBNbmrJj4";
+
+const ALLOWED_MIME_TYPES = new Set(["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif"]);
 
 type Req = IncomingMessage & { body?: unknown };
 
@@ -20,11 +24,36 @@ export default async function handler(req: Req, res: ServerResponse) {
     return send(res, 405, { error: "Método não permitido." });
   }
 
-  if (!API_TOKEN) {
-    return send(res, 503, { error: "Serviço de upload não configurado: CLOUDFLARE_API_TOKEN ausente." });
+  // Verificação de autenticação: impede envio anônimo / abuso de armazenamento
+  const authHeader = (req.headers["authorization"] as string) || "";
+  const tokenMatch = authHeader.match(/^Bearer\s+(.+)$/i);
+  if (!tokenMatch) {
+    return send(res, 401, { error: "Autenticação necessária para envio de arquivos." });
   }
 
+  const token = tokenMatch[1];
   try {
+    const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${token}`,
+      },
+      signal: AbortSignal.timeout(10_000),
+    });
+
+    if (!userRes.ok) {
+      return send(res, 401, { error: "Sessão inválida ou expirada." });
+    }
+
+    const userData = (await userRes.json()) as { id?: string };
+    if (!userData.id) {
+      return send(res, 401, { error: "Usuário inválido." });
+    }
+
+    if (!API_TOKEN) {
+      return send(res, 503, { error: "Serviço de upload não configurado: CLOUDFLARE_API_TOKEN ausente." });
+    }
+
     let buffer: Buffer;
 
     if (Buffer.isBuffer(req.body)) {
@@ -48,6 +77,10 @@ export default async function handler(req: Req, res: ServerResponse) {
     }
 
     const contentType = ((req.headers["content-type"] as string) || "image/png").split(";")[0].trim().toLowerCase();
+    if (!ALLOWED_MIME_TYPES.has(contentType)) {
+      return send(res, 400, { error: "Tipo de arquivo não permitido. Apenas imagens são aceitas." });
+    }
+
     const rawFilename = (req.headers["x-filename"] as string) || "avatar.png";
     const ext =
       rawFilename.split(".").pop()?.toLowerCase() ||
@@ -58,21 +91,21 @@ export default async function handler(req: Req, res: ServerResponse) {
         : contentType.includes("gif")
         ? "gif"
         : "png");
-    const userId = (req.headers["x-user-id"] as string) || "user";
-    const folder = (req.headers["x-folder"] as string) || "avatars";
 
-    const safeUser = userId.replace(/[^a-zA-Z0-9_-]/g, "");
-    const safeFolder = folder.replace(/[^a-zA-Z0-9_-]/g, "");
-    const key = `${safeFolder}/${safeUser ? `${safeUser}/` : ""}avatar-${Date.now()}.${ext}`;
+    // Identidade garantida pelo token de autenticação, impedindo spoofing de x-user-id
+    const safeUser = userData.id.replace(/[^a-zA-Z0-9_-]/g, "");
+    const safeFolder = "avatars";
+    const key = `${safeFolder}/${safeUser}/avatar-${Date.now()}.${ext}`;
 
     const r2Url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/r2/buckets/${BUCKET}/objects/${key}`;
     const uploadRes = await fetch(r2Url, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${API_TOKEN}`,
-        "Content-Type": contentType.startsWith("image/") ? contentType : "image/png",
+        "Content-Type": contentType,
       },
       body: buffer,
+      signal: AbortSignal.timeout(20_000),
     });
 
     if (!uploadRes.ok) {

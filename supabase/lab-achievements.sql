@@ -308,3 +308,7 @@ grant execute on function public.admin_get_user_achievements(uuid) to authentica
 grant execute on function public.admin_grant_achievement(uuid, text) to authenticated;
 grant execute on function public.admin_revoke_achievement(uuid, text) to authenticated;
 grant execute on function public.admin_create_achievement(text, text, text, text, text, boolean) to authenticated;
+
+-- Proteção defensiva: apenas funções administrativas definidoras de segurança podem alterar conquistas
+revoke insert, update, delete on table public.lab_achievements from anon, authenticated;
+revoke insert, update, delete on table public.user_achievements from anon, authenticated;

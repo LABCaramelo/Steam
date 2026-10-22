@@ -21,7 +21,7 @@
     "livekit-server-sdk": "^2.19.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-router-dom": "7.6.2"
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.8",
@@ -30,6 +30,6 @@
     "@types/react-dom": "19.1.6",
     "@vitejs/plugin-react": "4.5.2",
     "typescript": "5.8.3",
-    "vite": "6.3.5"
+    "vite": "^6.4.5"
   }
 }

@@ -44,7 +44,8 @@ SET search_path = public
 AS $$
 DECLARE
   v_uid uuid := auth.uid();
-  v_mins integer := greatest(coalesce(p_minutes, 1), 1);
+  -- Limita cada registro a no máximo 60 minutos e no mínimo 1 minuto por heartbeat
+  v_mins integer := least(greatest(coalesce(p_minutes, 1), 1), 60);
   v_res record;
 BEGIN
   IF v_uid IS NULL THEN
@@ -55,12 +56,16 @@ BEGIN
     RAISE EXCEPTION 'Ferramenta % não encontrada', p_slug;
   END IF;
 
-  INSERT INTO public.user_tools (user_id, tool_slug, acquired_at, source, last_played_at, playtime_minutes)
-  VALUES (v_uid, p_slug, now(), 'usage', now(), v_mins)
-  ON CONFLICT (user_id, tool_slug) DO UPDATE
+  -- Trava de segurança: impede aquisição indevida ou elevação de privilégios via heartbeat
+  IF NOT EXISTS (SELECT 1 FROM public.user_tools WHERE user_id = v_uid AND tool_slug = p_slug) THEN
+    RAISE EXCEPTION 'Esta ferramenta não pertence à sua biblioteca.' USING errcode = '42501';
+  END IF;
+
+  UPDATE public.user_tools
   SET
     last_played_at = now(),
     playtime_minutes = coalesce(public.user_tools.playtime_minutes, 0) + v_mins
+  WHERE user_id = v_uid AND tool_slug = p_slug
   RETURNING tool_slug, playtime_minutes, last_played_at, extract(epoch from last_played_at)::bigint as last_played_unix
   INTO v_res;
 
