@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Isotype } from "@caramelo/design-system";
 
 import { AudioEngine } from "./engine/audio-engine.js";
 import { TransitionsEngine } from "./engine/transitions.js";
@@ -204,29 +203,6 @@ export function GravadorApp() {
 
   return (
     <div className="gravador-shell" ref={rootRef}>
-      <header className="gravador-topbar">
-        <div className="gravador-brand">
-          <Isotype size={20} decorative interactive />
-          <span className="gravador-title">Gravador</span>
-          <span className="gravador-badge">ESTÚDIO 1080P60</span>
-          <span className="gravador-tag">
-            <span className="gravador-tag-dot" /> Prontidão HD
-          </span>
-        </div>
-
-        <div className="gravador-actions">
-          <a
-            className="btn btn--ghost"
-            href="/tools/gravador/index.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ fontSize: 12, padding: "4px 10px", textDecoration: "none" }}
-          >
-            Abrir em nova aba ↗
-          </a>
-        </div>
-      </header>
-
       {/* Main Workspace (Canvas View) */}
       <main className="obs-workspace" id="obs-workspace">
         {/* Single Canvas Area */}
