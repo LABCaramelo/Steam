@@ -11,6 +11,17 @@ export interface AdminStats {
   whatsapp_verified: number;
 }
 
+export type ToolBannerKind = "hero" | "header" | "capsule" | "icon" | "logo";
+
+export interface ToolCustomAssets {
+  hero?: string;
+  header?: string;
+  capsule?: string;
+  icon?: string;
+  logo?: string;
+  [key: string]: string | undefined;
+}
+
 export interface AdminToolItem {
   slug: string;
   appid: number;
@@ -19,6 +30,7 @@ export interface AdminToolItem {
   available: boolean;
   created_at: string;
   owners_count: number;
+  custom_assets?: ToolCustomAssets;
 }
 
 export interface AdminUserItem {

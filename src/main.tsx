@@ -6,6 +6,7 @@ import { App } from "./App";
 import { AuthProvider, useAuth } from "./auth";
 import { CommunityProvider } from "./community";
 import { LoginScreen } from "./components/LoginScreen";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { LabAccessGate, LoadingScreen } from "./components/WhatsAppGate";
 import { EntitlementsProvider } from "./entitlements";
 import { UiProvider } from "./ui";
@@ -66,8 +67,10 @@ function AuthGatekeeper() {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AuthProvider>
-      <AuthGatekeeper />
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <AuthGatekeeper />
+      </AuthProvider>
+    </ErrorBoundary>
   </StrictMode>,
 );

@@ -628,3 +628,285 @@
 .admin-btn--success:hover {
   background: rgba(46, 204, 113, 0.3);
 }
+
+
+/* ==========================================================================
+   Editor e Gerenciador de Banners das Ferramentas
+   ========================================================================== */
+
+.admin-modal--wide {
+  max-width: 860px;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 24px;
+}
+
+.admin-modal__body-scroll {
+  overflow-y: auto;
+  padding-right: 6px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-banner-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid rgb(var(--cm-line-soft));
+  padding-bottom: 12px;
+  overflow-x: auto;
+}
+
+.admin-banner-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--cm-radius-sm, 8px);
+  border: 1px solid rgb(var(--cm-line-soft));
+  background: rgb(var(--cm-surface-2));
+  color: rgb(var(--cm-fg-muted));
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.admin-banner-tab:hover {
+  background: rgb(var(--cm-surface-3));
+  color: rgb(var(--cm-fg));
+}
+
+.admin-banner-tab.is-active {
+  background: rgb(var(--cm-accent, 255 112 26));
+  color: #101014;
+  border-color: rgb(var(--cm-accent, 255 112 26));
+  font-weight: 800;
+}
+
+.admin-banner-tab__indicator {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.admin-banner-tab.is-active .admin-banner-tab__indicator {
+  background: #101014;
+}
+
+.admin-banner-tab.has-custom .admin-banner-tab__indicator {
+  background: #2ecc71;
+}
+
+.admin-banner-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .admin-banner-editor {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-banner-preview-card {
+  background: rgb(var(--cm-surface-2));
+  border: 1px solid rgb(var(--cm-line));
+  border-radius: var(--cm-radius-md, 12px);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-banner-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.admin-banner-preview-box {
+  position: relative;
+  width: 100%;
+  background: #09090c;
+  background-image: 
+    linear-gradient(45deg, #141419 25%, transparent 25%), 
+    linear-gradient(-45deg, #141419 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #141419 75%), 
+    linear-gradient(-45deg, transparent 75%, #141419 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  border: 1px solid rgb(var(--cm-line-soft));
+  border-radius: var(--cm-radius-sm, 8px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-banner-preview--hero {
+  aspect-ratio: 16 / 9;
+}
+
+.admin-banner-preview--header {
+  aspect-ratio: 460 / 215;
+}
+
+.admin-banner-preview--capsule {
+  aspect-ratio: 2 / 3;
+  max-height: 380px;
+}
+
+.admin-banner-preview--icon {
+  aspect-ratio: 1 / 1;
+  max-width: 220px;
+  margin: 0 auto;
+}
+
+.admin-banner-preview--logo {
+  aspect-ratio: 3 / 1;
+}
+
+.admin-banner-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.admin-banner-preview--icon .admin-banner-preview-img {
+  object-fit: contain;
+  padding: 12px;
+}
+
+.admin-banner-preview--logo .admin-banner-preview-img {
+  object-fit: contain;
+  padding: 16px;
+}
+
+.admin-banner-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-banner-dropzone {
+  border: 2px dashed rgb(var(--cm-line-soft));
+  border-radius: var(--cm-radius-md, 12px);
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  background: rgb(var(--cm-surface-2));
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.admin-banner-dropzone:hover,
+.admin-banner-dropzone.is-dragover {
+  border-color: rgb(var(--cm-accent, 255 112 26));
+  background: rgba(255, 112, 26, 0.05);
+}
+
+.admin-banner-dropzone__icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.admin-banner-dropzone__text {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgb(var(--cm-fg));
+}
+
+.admin-banner-dropzone__sub {
+  font-size: 11px;
+  color: rgb(var(--cm-fg-muted));
+}
+
+.admin-banner-strip {
+  background: rgb(var(--cm-surface-2));
+  border: 1px solid rgb(var(--cm-line-soft));
+  border-radius: var(--cm-radius-md, 12px);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-banner-strip__title {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgb(var(--cm-fg-muted));
+}
+
+.admin-banner-strip__items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.admin-banner-strip-item {
+  background: rgb(var(--cm-surface-1));
+  border: 1px solid rgb(var(--cm-line-soft));
+  border-radius: var(--cm-radius-sm, 8px);
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.admin-banner-strip-item:hover {
+  border-color: rgb(var(--cm-line));
+  transform: translateY(-1px);
+}
+
+.admin-banner-strip-item.is-active {
+  border-color: rgb(var(--cm-accent, 255 112 26));
+  box-shadow: 0 0 0 2px rgba(255, 112, 26, 0.2);
+}
+
+.admin-banner-strip-item__thumb {
+  width: 100%;
+  height: 56px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #09090c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.admin-banner-strip-item__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-banner-strip-item__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgb(var(--cm-fg));
+  display: block;
+}
+
+.admin-banner-strip-item__status {
+  font-size: 10px;
+  color: rgb(var(--cm-fg-muted));
+}

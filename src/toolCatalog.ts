@@ -1,4 +1,5 @@
 import type { ArtKind, LibraryApp, LibrarySnapshot, ToolMetadata } from "./types";
+import { supabase } from "./supabase";
 
 /**
  * LAB tools. Every tool is sold in the store; only the ones in public.user_tools for the signed-in
@@ -289,7 +290,65 @@ export function getToolBySlug(slug: string): LibraryApp | undefined {
   return TOOL_CATALOG.find((app) => app.tool?.slug === slug);
 }
 
+let customAssetsByAppId: Record<number, Record<string, string | undefined>> = {};
+const customAssetListeners = new Set<() => void>();
+
+export function setCustomToolAssets(assetsMap: Record<number, Record<string, string | undefined>>) {
+  customAssetsByAppId = { ...customAssetsByAppId, ...assetsMap };
+  customAssetListeners.forEach((fn) => fn());
+}
+
+export function updateCustomToolAssets(appid: number, assets: Record<string, string | undefined>) {
+  customAssetsByAppId = {
+    ...customAssetsByAppId,
+    [appid]: { ...assets },
+  };
+  customAssetListeners.forEach((fn) => fn());
+}
+
+export function getCustomToolAssets(appid: number): Record<string, string | undefined> | undefined {
+  return customAssetsByAppId[appid];
+}
+
+export function subscribeCustomToolAssets(listener: () => void): () => void {
+  customAssetListeners.add(listener);
+  return () => {
+    customAssetListeners.delete(listener);
+  };
+}
+
+export async function syncCustomToolAssets(): Promise<void> {
+  try {
+    const { data, error } = await supabase
+      .from("lab_tools")
+      .select("appid, slug, custom_assets");
+    if (!error && Array.isArray(data)) {
+      const map: Record<number, Record<string, string>> = {};
+      for (const row of data) {
+        if (row.appid && row.custom_assets && typeof row.custom_assets === "object") {
+          map[row.appid] = row.custom_assets;
+        }
+      }
+      setCustomToolAssets(map);
+    }
+  } catch {
+    // Modo offline / fallback
+  }
+}
+
+// Inicia sincronização imediatamente
+syncCustomToolAssets();
+
 export function toolArtUrl(appid: number, kind: ArtKind): string | undefined {
+  const custom = customAssetsByAppId[appid];
+  if (custom) {
+    if (kind === "heroBlur") {
+      if (custom.heroBlur) return custom.heroBlur;
+      if (custom.hero) return custom.hero;
+    } else if (custom[kind]) {
+      return custom[kind];
+    }
+  }
   const assets = getRegisteredTool(appid)?.tool?.assets;
   return assets?.[kind] ?? assets?.header;
 }

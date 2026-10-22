@@ -19,18 +19,20 @@ export function Sidebar({ onContext }: { onContext: (t: ContextTarget) => void }
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
   const visible = useMemo(() => {
-    const hidden = new Set(collections.find((c) => c.id === "hidden")?.appids ?? []);
+    const hiddenCol = (collections ?? []).find((c) => c.id === "hidden");
+    const hidden = new Set(Array.isArray(hiddenCol?.appids) ? hiddenCol.appids : []);
     return (snapshot?.apps ?? []).filter((a) => !hidden.has(a.appid));
   }, [snapshot, collections]);
 
   const sections = useMemo<Section[]>(() => {
     const out: Section[] = [];
     const inSome = new Set<number>();
-    const ordered = [...collections].sort((a, b) => (a.id === "favorite" ? -1 : b.id === "favorite" ? 1 : a.name.localeCompare(b.name)));
+    const ordered = [...(collections ?? [])].sort((a, b) => (a.id === "favorite" ? -1 : b.id === "favorite" ? 1 : a.name.localeCompare(b.name)));
     for (const c of ordered) {
       if (c.id === "hidden") continue;
-      const apps = visible.filter((a) => c.appids.includes(a.appid));
-      c.appids.forEach((id) => inSome.add(id));
+      const appids = Array.isArray(c?.appids) ? c.appids : [];
+      const apps = visible.filter((a) => appids.includes(a.appid));
+      appids.forEach((id) => inSome.add(id));
       if (apps.length) out.push({ key: c.id, label: c.id === "favorite" ? t("GameList_Category_Favorites") : c.name, apps });
     }
     const rest = visible.filter((a) => !inSome.has(a.appid));

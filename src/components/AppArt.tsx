@@ -1,7 +1,7 @@
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { artUrl, steamCdnArtUrl } from "../api";
 import type { ArtKind, LibraryApp } from "../types";
-import { getRegisteredTool } from "../toolCatalog";
+import { getRegisteredTool, subscribeCustomToolAssets } from "../toolCatalog";
 
 /** Hue derived from the appid so placeholder art is stable per game. */
 const hue = (appid: number) => (appid * 47) % 360;
@@ -22,6 +22,15 @@ interface Props {
 export function AppArt({ app, kind, className, fallbackLabel = true }: Props) {
   const [triedCdn, setTriedCdn] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [, setAssetTick] = useState(0);
+
+  useEffect(() => {
+    return subscribeCustomToolAssets(() => {
+      setTriedCdn(false);
+      setFailed(false);
+      setAssetTick((t) => t + 1);
+    });
+  }, []);
 
   const handleError = () => {
     if (!triedCdn && !getRegisteredTool(app.appid) && !app.tool) {
@@ -44,6 +53,7 @@ export function AppArt({ app, kind, className, fallbackLabel = true }: Props) {
 
   return (
     <img
+      key={src}
       className={className}
       src={src}
       alt={kind === "logo" ? app.name : ""}
@@ -56,6 +66,15 @@ export function AppArt({ app, kind, className, fallbackLabel = true }: Props) {
 export function AppIcon({ app, size = 16 }: { app: LibraryApp; size?: number }) {
   const [triedCdn, setTriedCdn] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [, setAssetTick] = useState(0);
+
+  useEffect(() => {
+    return subscribeCustomToolAssets(() => {
+      setTriedCdn(false);
+      setFailed(false);
+      setAssetTick((t) => t + 1);
+    });
+  }, []);
 
   const handleError = () => {
     if (!triedCdn && !getRegisteredTool(app.appid) && !app.tool) {
@@ -77,6 +96,7 @@ export function AppIcon({ app, size = 16 }: { app: LibraryApp; size?: number }) 
 
   return (
     <img
+      key={src}
       className="app-icon"
       width={size}
       height={size}

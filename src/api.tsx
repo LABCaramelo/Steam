@@ -5,7 +5,7 @@ import type { Achievement, ArtKind, LibraryApp, LibrarySnapshot, UserCollection 
 import { useAuth } from "./auth";
 import { supabase } from "./supabase";
 import { useEntitlements } from "./entitlements";
-import { getRegisteredTool, registerTools, toolArtUrl } from "./toolCatalog";
+import { getRegisteredTool, registerTools, syncCustomToolAssets, toolArtUrl } from "./toolCatalog";
 
 export const artUrl = (appid: number, kind: ArtKind) => toolArtUrl(appid, kind) ?? `/api/art/${appid}/${kind}`;
 
@@ -84,7 +84,10 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   // Collections keep ids of tools that are not owned yet (or anymore); they are hidden, not forgotten.
   const collections = useMemo(() => {
     const validIds = new Set(snapshot?.apps.map((a) => a.appid));
-    return storedCollections.map((c) => ({ ...c, appids: c.appids.filter((id) => validIds.has(id)) }));
+    return (storedCollections ?? []).map((c) => ({
+      ...c,
+      appids: Array.isArray(c?.appids) ? c.appids.filter((id) => validIds.has(id)) : [],
+    }));
   }, [snapshot, storedCollections]);
 
   // Persistent storage overrides (never written to Steam files)
@@ -125,6 +128,10 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
     refreshActivities();
     return () => { alive = false; };
   }, [user, refreshActivities]);
+
+  useEffect(() => {
+    syncCustomToolAssets();
+  }, []);
 
   useEffect(() => {
     const onFocus = () => refreshActivities();

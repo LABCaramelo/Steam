@@ -6,6 +6,7 @@ import type {
   AdminUserAchievementItem,
   AdminUserActivityItem,
   AdminUserItem,
+  ToolCustomAssets,
 } from "./types";
 
 export const adminRepo = {
@@ -16,11 +17,17 @@ export const adminRepo = {
   },
 
   async getTools(): Promise<AdminToolItem[]> {
-    const { data, error } = await supabase.rpc("admin_get_tools");
+    // Tenta primeiro a versão v2 que inclui custom_assets
+    const resV2 = await supabase.rpc("admin_get_tools_v2");
+    const { data, error } = !resV2.error
+      ? resV2
+      : await supabase.rpc("admin_get_tools");
+
     if (error) throw new Error(error.message || "Não foi possível carregar ferramentas.");
     return (data ?? []).map((t: any) => ({
       ...t,
       owners_count: Number(t.owners_count ?? 0),
+      custom_assets: (t.custom_assets && typeof t.custom_assets === "object") ? t.custom_assets : {},
     })) as AdminToolItem[];
   },
 
@@ -43,6 +50,45 @@ export const adminRepo = {
       p_available: params.available ?? false,
     });
     if (error) throw new Error(error.message || "Erro ao atualizar dados da ferramenta.");
+  },
+
+  async updateToolAssets(slug: string, customAssets: ToolCustomAssets): Promise<void> {
+    const { error } = await supabase.rpc("admin_update_tool_assets", {
+      p_slug: slug,
+      p_custom_assets: customAssets,
+    });
+    if (error) throw new Error(error.message || "Erro ao atualizar banners da ferramenta.");
+  },
+
+  async uploadBanner(toolSlug: string, kind: string, file: File): Promise<string> {
+    if (file.size > 8 * 1024 * 1024) {
+      throw new Error("A imagem não pode ultrapassar 8 MB.");
+    }
+    const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+    const cleanSlug = toolSlug.toLowerCase().replace(/[^a-z0-9_-]/g, "");
+    const cleanKind = kind.toLowerCase().replace(/[^a-z0-9_-]/g, "");
+    const filePath = `${cleanSlug}/${cleanKind}-${Date.now()}.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("tool-banners")
+      .upload(filePath, file, {
+        cacheControl: "3600",
+        upsert: true,
+      });
+
+    if (uploadError) {
+      throw new Error(uploadError.message || "Erro ao fazer upload do banner.");
+    }
+
+    const { data } = supabase.storage
+      .from("tool-banners")
+      .getPublicUrl(filePath);
+
+    if (!data?.publicUrl) {
+      throw new Error("Não foi possível gerar a URL pública da imagem.");
+    }
+
+    return data.publicUrl;
   },
 
   async getUsers(search = "", role = "", status = ""): Promise<AdminUserItem[]> {

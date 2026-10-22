@@ -114,9 +114,10 @@ export function LibraryHome() {
     }
     return groups;
   }, [recent]);
-  const favorites = collections.find((c) => c.id === "favorite");
-  const favApps = apps.filter((a) => favorites?.appids.includes(a.appid));
-  const bg = recent.find((a) => a.art.heroBlur || a.art.hero);
+  const favorites = (collections ?? []).find((c) => c.id === "favorite");
+  const favAppids = Array.isArray(favorites?.appids) ? favorites.appids : [];
+  const favApps = apps.filter((a) => favAppids.includes(a.appid));
+  const bg = recent.find((a) => Boolean(a.art?.heroBlur || a.art?.hero));
   const firstTool = apps.find((a) => a.tool);
 
   if (!snapshot) return <div className="page-loading">Carregando…</div>;
@@ -150,7 +151,7 @@ export function LibraryHome() {
   return (
     <div className="home">
       <section className="home__recent">
-        {bg && <div className="home__recent-bg" style={{ backgroundImage: `url(${artUrl(bg.appid, bg.art.heroBlur ? "heroBlur" : "hero")})` }} />}
+        {bg && <div className="home__recent-bg" style={{ backgroundImage: `url(${artUrl(bg.appid, bg.art?.heroBlur ? "heroBlur" : "hero")})` }} />}
         <h2 className="shelf-title">
           {recent.length === 0 && firstTool ? "Comece por aqui" : <>Ferramentas recentes <span className="shelf-title__count">{recent.length}</span></>}
         </h2>

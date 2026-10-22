@@ -8,8 +8,71 @@ import type {
   AdminUserAchievementItem,
   AdminUserActivityItem,
   AdminUserItem,
+  ToolBannerKind,
+  ToolCustomAssets,
 } from "./types";
+import { updateCustomToolAssets } from "../../toolCatalog";
 import "./admin.css";
+
+
+const BANNER_SPECS: Record<
+  ToolBannerKind,
+  {
+    title: string;
+    subtitle: string;
+    location: string;
+    aspectRatio: string;
+    aspectClass: string;
+    recommendedSize: string;
+    icon: string;
+  }
+> = {
+  hero: {
+    title: "Hero Banner",
+    subtitle: "Destaque e Capa Principal",
+    location: "Carrossel 'Destaques do LAB' na vitrine da Loja e cabeçalho da ferramenta",
+    aspectRatio: "16 / 9",
+    aspectClass: "admin-banner-preview--hero",
+    recommendedSize: "1920×1080 ou 960×310 (16:9 Landscape)",
+    icon: "🌟",
+  },
+  header: {
+    title: "Header Capsule",
+    subtitle: "Banner horizontal de vitrine",
+    location: "Linhas de produtos na Loja e cards de 'Novidades' na Biblioteca",
+    aspectRatio: "460 / 215",
+    aspectClass: "admin-banner-preview--header",
+    recommendedSize: "920×430 ou 460×215 (~2.14:1 Landscape)",
+    icon: "🏷️",
+  },
+  capsule: {
+    title: "Cápsula Vertical / Poster",
+    subtitle: "Capa vertical em estilo cartaz",
+    location: "Grade de 'Ferramentas Recentes' e cards verticais na Biblioteca",
+    aspectRatio: "2 / 3",
+    aspectClass: "admin-banner-preview--capsule",
+    recommendedSize: "600×900 ou 300×450 (2:3 Portrait)",
+    icon: "📱",
+  },
+  icon: {
+    title: "Ícone do App",
+    subtitle: "Ícone quadrado de navegação",
+    location: "Barra lateral esquerda da Biblioteca, atalhos rápidos e listagens compactas",
+    aspectRatio: "1 / 1",
+    aspectClass: "admin-banner-preview--icon",
+    recommendedSize: "256×256 ou 512×512 (1:1 Quadrado)",
+    icon: "🎨",
+  },
+  logo: {
+    title: "Logotipo Vetorial / PNG",
+    subtitle: "Marca visual da ferramenta",
+    location: "Sobreposição com transparência no topo da página de detalhes",
+    aspectRatio: "3 / 1",
+    aspectClass: "admin-banner-preview--logo",
+    recommendedSize: "800×240 (PNG/SVG com transparência)",
+    icon: "✨",
+  },
+};
 
 export function AdminApp() {
   const toast = useToast();
@@ -28,6 +91,12 @@ export function AdminApp() {
 
   // Modais de edição
   const [editingTool, setEditingTool] = useState<AdminToolItem | null>(null);
+
+  // Banners & Artes de Ferramentas
+  const [bannerModalTool, setBannerModalTool] = useState<AdminToolItem | null>(null);
+  const [bannerDraft, setBannerDraft] = useState<ToolCustomAssets>({});
+  const [selectedBannerKind, setSelectedBannerKind] = useState<ToolBannerKind>("hero");
+  const [uploadingKind, setUploadingKind] = useState<string | null>(null);
   const [editingUser, setEditingUser] = useState<AdminUserItem | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -240,6 +309,58 @@ export function AdminApp() {
     }
   };
 
+
+  // Gestão de Banners de Ferramentas
+  const openBannersModal = (t: AdminToolItem) => {
+    setBannerModalTool(t);
+    setBannerDraft({ ...(t.custom_assets || {}) });
+    setSelectedBannerKind("hero");
+  };
+
+  const handleBannerUpload = async (kind: ToolBannerKind, file: File) => {
+    if (!bannerModalTool) return;
+    setUploadingKind(kind);
+    try {
+      const publicUrl = await adminRepo.uploadBanner(bannerModalTool.slug, kind, file);
+      setBannerDraft((prev) => ({
+        ...prev,
+        [kind]: publicUrl,
+      }));
+      toast(`Imagem de ${kind.toUpperCase()} enviada com sucesso!`, "success");
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Erro ao enviar imagem.", "error");
+    } finally {
+      setUploadingKind(null);
+    }
+  };
+
+  const handleResetBanner = (kind: ToolBannerKind) => {
+    setBannerDraft((prev) => {
+      const next = { ...prev };
+      delete next[kind];
+      return next;
+    });
+    toast(`Banner ${kind.toUpperCase()} restaurado para a arte padrão.`, "info");
+  };
+
+  const handleSaveBanners = async () => {
+    if (!bannerModalTool) return;
+    setSaving(true);
+    try {
+      await adminRepo.updateToolAssets(bannerModalTool.slug, bannerDraft);
+      setTools((prev) =>
+        prev.map((t) => (t.slug === bannerModalTool.slug ? { ...t, custom_assets: { ...bannerDraft } } : t))
+      );
+      updateCustomToolAssets(bannerModalTool.appid, bannerDraft);
+      toast(`Banners de ${bannerModalTool.name} salvos com sucesso!`, "success");
+      setBannerModalTool(null);
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Erro ao salvar banners.", "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   // Salvar cargo ou status de usuário
   const handleSaveUser = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -441,6 +562,14 @@ export function AdminApp() {
                       </label>
                     </td>
                     <td style={{ textAlign: "right" }}>
+                      <button
+                        className="admin-btn admin-btn--secondary admin-btn--sm"
+                        style={{ marginRight: 6 }}
+                        onClick={() => openBannersModal(t)}
+                        title="Modificar banners e artes visuais"
+                      >
+                        🎨 Banners
+                      </button>
                       <button
                         className="admin-btn admin-btn--ghost admin-btn--sm"
                         onClick={() => setEditingTool({ ...t })}
@@ -946,6 +1075,24 @@ export function AdminApp() {
                 </select>
               </div>
 
+              <div style={{ marginTop: 12, marginBottom: 8, padding: 12, background: "rgb(var(--cm-surface-2))", borderRadius: 8, border: "1px solid rgb(var(--cm-line-soft))", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div>
+                  <strong style={{ fontSize: 13, display: "block" }}>🎨 Banners & Artes Visuais</strong>
+                  <span style={{ fontSize: 11, color: "rgb(var(--cm-fg-muted))" }}>Personalize Hero, Header, Cápsula e Ícone</span>
+                </div>
+                <button
+                  type="button"
+                  className="admin-btn admin-btn--secondary admin-btn--sm"
+                  onClick={() => {
+                    const t = editingTool;
+                    setEditingTool(null);
+                    openBannersModal(t);
+                  }}
+                >
+                  Modificar Banners
+                </button>
+              </div>
+
               <div className="admin-modal__actions">
                 <button
                   type="button"
@@ -959,6 +1106,223 @@ export function AdminApp() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      
+      {/* =========================================================================
+          MODAL: BANNERS & ARTES DA FERRAMENTA
+         ========================================================================= */}
+      {bannerModalTool && (
+        <div className="admin-modal-backdrop" onClick={() => !saving && setBannerModalTool(null)}>
+          <div className="admin-modal admin-modal--wide" onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
+              <div>
+                <span className="admin-header__eyebrow" style={{ fontSize: 10 }}>ARTES & VITRINE DA LOJA</span>
+                <h2 className="admin-modal__title" style={{ margin: "4px 0" }}>
+                  Banners de {bannerModalTool.name}
+                </h2>
+                <p className="admin-modal__desc" style={{ margin: 0 }}>
+                  Personalize os banners e imagens promocionais desta ferramenta. Faça upload direto ou insira URLs externas.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="admin-btn admin-btn--ghost admin-btn--sm"
+                onClick={() => !saving && setBannerModalTool(null)}
+              >
+                ✕ Fechar
+              </button>
+            </div>
+
+            <div className="admin-modal__body-scroll">
+              {/* Seletor de Tipo de Banner */}
+              <div className="admin-banner-tabs">
+                {(["hero", "header", "capsule", "icon", "logo"] as ToolBannerKind[]).map((kind) => {
+                  const spec = BANNER_SPECS[kind];
+                  const hasCustom = Boolean(bannerDraft[kind]);
+                  const isActive = selectedBannerKind === kind;
+                  return (
+                    <button
+                      key={kind}
+                      type="button"
+                      className={`admin-banner-tab ${isActive ? "is-active" : ""} ${hasCustom ? "has-custom" : ""}`}
+                      onClick={() => setSelectedBannerKind(kind)}
+                    >
+                      <span className="admin-banner-tab__indicator" />
+                      <span>{spec.icon} {spec.title}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Área de Edição e Visualização */}
+              {(() => {
+                const spec = BANNER_SPECS[selectedBannerKind];
+                const customUrl = bannerDraft[selectedBannerKind];
+                const effectiveUrl = customUrl || `/tools/${bannerModalTool.slug}/art/${selectedBannerKind}.svg`;
+                const isCustom = Boolean(customUrl);
+
+                return (
+                  <div className="admin-banner-editor">
+                    {/* Coluna 1: Preview ao Vivo */}
+                    <div className="admin-banner-preview-card">
+                      <div className="admin-banner-preview-header">
+                        <div>
+                          <strong style={{ fontSize: 13, color: "rgb(var(--cm-fg))" }}>{spec.title}</strong>
+                          <div style={{ fontSize: 11, color: "rgb(var(--cm-fg-muted))" }}>{spec.recommendedSize}</div>
+                        </div>
+                        {isCustom ? (
+                          <span className="admin-badge admin-badge--published">● Personalizado</span>
+                        ) : (
+                          <span className="admin-badge admin-badge--unreleased">○ Padrão SVG</span>
+                        )}
+                      </div>
+
+                      <div className={`admin-banner-preview-box ${spec.aspectClass}`}>
+                        <img
+                          key={effectiveUrl}
+                          src={effectiveUrl}
+                          alt={spec.title}
+                          className="admin-banner-preview-img"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.opacity = "0.5";
+                          }}
+                        />
+                      </div>
+
+                      <p style={{ fontSize: 11, color: "rgb(var(--cm-fg-muted))", margin: 0, lineHeight: 1.4 }}>
+                        📍 <strong>Onde aparece:</strong> {spec.location}
+                      </p>
+                    </div>
+
+                    {/* Coluna 2: Controles de Upload e URL */}
+                    <div className="admin-banner-controls">
+                      {/* Upload Direto */}
+                      <div className="admin-form-group">
+                        <label>1. Enviar nova imagem do computador</label>
+                        <label
+                          className={`admin-banner-dropzone ${uploadingKind === selectedBannerKind ? "is-dragover" : ""}`}
+                          onDragOver={(e) => e.preventDefault()}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            const file = e.dataTransfer.files?.[0];
+                            if (file) handleBannerUpload(selectedBannerKind, file);
+                          }}
+                        >
+                          <input
+                            type="file"
+                            accept="image/png, image/jpeg, image/webp, image/svg+xml"
+                            style={{ display: "none" }}
+                            disabled={uploadingKind !== null}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleBannerUpload(selectedBannerKind, file);
+                            }}
+                          />
+                          <div className="admin-banner-dropzone__icon">
+                            {uploadingKind === selectedBannerKind ? "⏳" : "☁️"}
+                          </div>
+                          <div className="admin-banner-dropzone__text">
+                            {uploadingKind === selectedBannerKind
+                              ? "Enviando arquivo para o Supabase..."
+                              : "Clique para escolher ou arraste o arquivo aqui"}
+                          </div>
+                          <div className="admin-banner-dropzone__sub">
+                            PNG, JPG, WebP ou SVG (máximo 8 MB)
+                          </div>
+                        </label>
+                      </div>
+
+                      {/* URL Direta */}
+                      <div className="admin-form-group">
+                        <label>2. Ou insira a URL direta da imagem</label>
+                        <input
+                          type="url"
+                          placeholder="https://exemplo.com/imagem.png"
+                          value={customUrl || ""}
+                          onChange={(e) => {
+                            const val = e.target.value.trim();
+                            setBannerDraft((prev) => {
+                              const next = { ...prev };
+                              if (val) next[selectedBannerKind] = val;
+                              else delete next[selectedBannerKind];
+                              return next;
+                            });
+                          }}
+                        />
+                      </div>
+
+                      {/* Ações Rápidas */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 4 }}>
+                        {isCustom ? (
+                          <button
+                            type="button"
+                            className="admin-btn admin-btn--ghost admin-btn--sm admin-btn--danger"
+                            onClick={() => handleResetBanner(selectedBannerKind)}
+                          >
+                            ↺ Restaurar Arte Padrão
+                          </button>
+                        ) : (
+                          <span style={{ fontSize: 11, color: "rgb(var(--cm-fg-muted))" }}>
+                            Usando arte SVG padrão do sistema
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Strip com Miniaturas de Todos os Formatos */}
+              <div className="admin-banner-strip">
+                <span className="admin-banner-strip__title">Todas as artes da ferramenta ({bannerModalTool.name})</span>
+                <div className="admin-banner-strip__items">
+                  {(["hero", "header", "capsule", "icon"] as ToolBannerKind[]).map((kind) => {
+                    const spec = BANNER_SPECS[kind];
+                    const custom = bannerDraft[kind];
+                    const url = custom || `/tools/${bannerModalTool.slug}/art/${kind}.svg`;
+                    const isActive = selectedBannerKind === kind;
+                    return (
+                      <button
+                        key={kind}
+                        type="button"
+                        className={`admin-banner-strip-item ${isActive ? "is-active" : ""}`}
+                        onClick={() => setSelectedBannerKind(kind)}
+                      >
+                        <div className="admin-banner-strip-item__thumb">
+                          <img src={url} alt={spec.title} />
+                        </div>
+                        <span className="admin-banner-strip-item__label">{spec.title}</span>
+                        <span className="admin-banner-strip-item__status">
+                          {custom ? "● Personalizado" : "○ Padrão"}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div className="admin-modal__actions" style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid rgb(var(--cm-line-soft))" }}>
+              <button
+                type="button"
+                className="admin-btn admin-btn--ghost"
+                disabled={saving}
+                onClick={() => setBannerModalTool(null)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="admin-btn admin-btn--primary"
+                disabled={saving || uploadingKind !== null}
+                onClick={handleSaveBanners}
+              >
+                {saving ? "Salvando no LAB..." : "💾 Salvar Todos os Banners"}
+              </button>
+            </div>
           </div>
         </div>
       )}

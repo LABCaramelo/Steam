@@ -9,7 +9,7 @@
   "rewrites": [
     { "source": "/aula-head", "destination": "/aula-head/index.html" },
     { "source": "/aula-head/aula-01", "destination": "/aula-head/index.html" },
-    { "source": "/tools/:slug(kanban|prancheta|automation|academy|claquete|comunidade)", "destination": "/tools/:slug/index.html" },
+    { "source": "/tools/:slug(kanban|prancheta|automation|academy|claquete|comunidade|admin|gravador)", "destination": "/tools/:slug/index.html" },
     { "source": "/(.*)", "destination": "/app.html" }
   ]
 }
