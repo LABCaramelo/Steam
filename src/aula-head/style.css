@@ -99,11 +99,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .top-actions>button:hover {
   color: var(--accent);
 }
-.count {
-  font-size: 10px;
-  color: var(--accent);
-  margin-left: 5px;
-}
 .lesson-nav {
   display: grid;
   grid-template-columns: repeat(4,1fr);
@@ -270,16 +265,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   font-weight: 600;
   padding: 10px 0;
 }
-.practice-toggle {
-  font-size: clamp(11px,1cqw,15px);
-  font-weight: 600;
-  padding: 11px 0;
-}
-.practice-toggle:hover,.text-button:hover {
+.text-button:hover {
   text-decoration: underline;
-}
-.practice-toggle.active {
-  color: var(--accent);
 }
 .deck-footer {
   max-width: 1280px;
@@ -377,32 +364,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .slide-dots button.done>span {
   outline: 1px solid var(--accent);
   outline-offset: 2px;
-}
-.course-baseline {
-  max-width: 1280px;
-  margin: 12px auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 9px;
-  letter-spacing: 1px;
-  color: #948c85;
-}
-.course-baseline b {
-  color: var(--accent);
-}
-.course-baseline>span:last-child {
-  letter-spacing: 0;
-}
-.app-message {
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--accent);
-  max-width: 1280px;
-  margin: auto;
-}
-.app-message:empty {
-  display: none;
 }
 .small {
   font-size: clamp(10px,.9cqw,14px);
@@ -981,7 +942,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   color: #101014;
 }
 .tool-focus {
-  padding: .3cqw 0;
+  padding: 0;
   animation: slide-in .2s ease;
 }
 .tool-focus h2 {
@@ -2263,39 +2224,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   font-size: .7cqw;
   color: #baaea4;
 }
-.practice-panel {
-  display: grid;
-  grid-template-columns: 43% 1fr;
-  gap: 4cqw;
-  height: 100%;
-  padding: .5cqw 0;
-}
-.practice-panel>div:first-child {
-  overflow: auto;
-}
-.practice-panel h2 {
-  font-size: 2.3cqw;
-}
-.practice-panel>div>p {
-  font-size: 1.05cqw;
-  color: #d0c3b8;
-}
-.practice-panel>div>.small {
-  font-size: .8cqw;
-  color: #a99d92;
-}
-.practice-fields {
-  min-height: 0;
-  overflow: auto;
-  padding: 0 1cqw 0 0;
-}
-.practice-fields>label:not(.checkbox) {
-  display: flex;
-  flex-direction: column;
-  gap: .8cqw;
-  font-size: 1cqw;
-  height: calc(100% - 4cqw);
-}
 textarea {
   resize: vertical;
   background: #222126;
@@ -2306,44 +2234,6 @@ textarea {
   font-size: 14px;
   line-height: 1.5;
   width: 100%;
-}
-.practice-fields>label>textarea {
-  flex: 1;
-  min-height: 8cqw;
-  font-size: 1cqw;
-  padding: 1cqw;
-}
-.practice-fields .checkbox {
-  font-size: .9cqw;
-  margin-top: .4cqw;
-}
-.brief-fields {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-.brief-fields>label {
-  display: grid;
-  gap: 6px;
-  font-size: 12px;
-  color: #d7c8bb;
-}
-.brief-fields textarea {
-  font-size: 12px;
-  min-height: 60px;
-}
-.practice-fields .brief-fields {
-  gap: .7cqw;
-}
-.practice-fields .brief-fields>label {
-  font-size: .8cqw;
-  gap: .4cqw;
-}
-.practice-fields .brief-fields textarea {
-  font-size: .85cqw;
-  padding: .6cqw;
-  min-height: 4.5cqw;
 }
 .modal {
   color: #fff4e8;
@@ -2455,97 +2345,6 @@ textarea {
   overflow: auto;
   color: #d7c9bd;
   margin-top: 18px;
-}
-.overview {
-  padding: 28px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
-}
-.overview section {
-  padding: 20px;
-  background: #222127;
-  border-top: 2px solid var(--accent);
-}
-.overview h3 {
-  font-family: Montserrat,sans-serif;
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -.7px;
-  margin: 10px 0;
-}
-.overview p {
-  font-size: 13px;
-  line-height: 1.6;
-}
-.overview section>button {
-  display: block;
-  text-align: left;
-  border-top: 1px solid #ffffff20;
-  padding: 12px 0;
-  font-size: 12px;
-  line-height: 1.5;
-  width: 100%;
-  color: #d7c8ba;
-}
-.overview section>button:hover {
-  color: var(--accent);
-}
-.project-panel {
-  padding: 28px;
-}
-.project-panel>p {
-  font-size: 13px;
-  line-height: 1.6;
-  color: #bdb0a5;
-  max-width: 740px;
-}
-.project-actions {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin: 20px 0;
-}
-.project-panel>.progress-label {
-  font-size: 12px;
-  gap: 10px;
-  margin: 25px 0;
-}
-.project-panel h3 {
-  font-family: Montserrat,sans-serif;
-  font-size: 20px;
-  letter-spacing: -.6px;
-  margin: 30px 0 14px;
-}
-.project-lesson {
-  border-top: 1px solid #ffffff20;
-  margin-top: 25px;
-}
-.project-lesson>p {
-  font-size: 12px;
-  color: #ac9d91;
-}
-.project-deliverable {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  border-top: 1px solid #ffffff12;
-  padding: 8px 0;
-}
-.project-deliverable>button {
-  font-size: 11px;
-  color: var(--accent);
-  margin-left: auto;
-}
-.project-deliverable>p {
-  flex-basis: 100%;
-  font-size: 12px;
-  color: #d3c4b8;
-  line-height: 1.6;
-  white-space: pre-wrap;
-  margin: 0 0 8px;
-  overflow-wrap: anywhere;
 }
 .teacher-shell {
   max-width: 760px;
@@ -2726,21 +2525,6 @@ textarea {
   min-height: 0;
   margin: 0 auto;
 }
-.presentation > .app-message {
-  position: fixed;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 20;
-  width: max-content;
-  max-width: calc(100vw - 32px);
-  padding: 10px 14px;
-  background: #19181e;
-  border: 1px solid var(--accent);
-}
-.presentation > .app-message:empty {
-  display: none;
-}
 .deck-progress {
   display: block;
   width: var(--deck-width);
@@ -2780,7 +2564,6 @@ textarea {
   .experiment { font-size: clamp(8px, 1.08cqw, 18px); }
   .slide-footer p { font-size: clamp(7px, .95cqw, 15px); }
   .slide-footer .prompt-link { font-size: clamp(7px, .85cqw, 14px); }
-  .slide-footer .practice-toggle { font-size: clamp(8px, 1cqw, 15px); }
   .small { font-size: clamp(7px, .9cqw, 14px); }
   .hint { font-size: clamp(8px, 1.02cqw, 16px); }
   .choices > button { font-size: clamp(7px, .9cqw, 14px); min-height: 24px; }
@@ -2800,9 +2583,12 @@ textarea {
   .lesson-nav small { font-size: 7px; margin-top: 2px; }
   .slide-footer { min-height: 4.8cqw; margin-top: .7cqw; }
   .slide-footer p { margin: .4cqw 0; }
-  .prompt-link, .practice-toggle { padding-block: 4px; }
+  .prompt-link { padding-block: 4px; }
   .choices > button { min-height: 16px; }
   .hero-editor .choices > button { min-height: 16px; }
+  .tools-demo .text-button { padding-block: 4px; }
+  .identity-bottom { margin-top: .2cqw; }
+  .identity-demo > .small { margin-top: 0; }
   .order-card > div > button { min-width: 16px; min-height: 16px; }
   .checkbox input, .final-checklist .checkbox input { min-width: 8px; min-height: 8px; }
 }
@@ -2844,8 +2630,6 @@ textarea {
   .slide-footer p { max-width: 100%; font-size: 9px; line-height: 1.3; margin: 0; }
   .slide-footer > div { justify-content: space-between; gap: 10px; }
   .slide-footer .prompt-link { font-size: 9px; padding: 5px 0; }
-  .slide-footer .practice-toggle { font-size: 10px; padding: 5px 0; }
-  .slide-footer > div:has(>.practice-toggle:only-child) { justify-content: flex-end; }
   .deck-footer { display: grid; grid-template-columns: 1fr; gap: 2px; align-content: center; }
   .deck-footer > .navigation { grid-row: 1; justify-content: space-between; gap: 8px; }
   .navigation .button { min-height: 30px; font-size: 10px; padding: 7px 10px; }
@@ -3104,18 +2888,6 @@ textarea {
   .final-signature { inset: 38px 0 20px; padding: 10px; gap: 7px; }
   .final-signature > span, .final-signature > small { font-size: 7px; }
   .final-signature > strong { font-size: 4cqw; letter-spacing: -.2cqw; }
-  .practice-panel { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); gap: 10px; padding: 0; }
-  .practice-panel > div:first-child, .practice-fields { overflow: visible; min-height: 0; }
-  .practice-panel h2 { font-size: 4.8cqw; }
-  .practice-panel > div > p { font-size: 10px; margin: 5px 0; }
-  .practice-panel > div > .small { font-size: 9px; }
-  .practice-fields { display: flex; flex-direction: column; padding: 0; }
-  .practice-fields > label:not(.checkbox) { flex: 1; height: auto; min-height: 0; gap: 5px; font-size: 10px; }
-  .practice-fields > label > textarea { min-height: 0; font-size: 11px; padding: 8px; resize: none; }
-  .practice-fields .checkbox { font-size: 10px; padding: 5px 0; margin-top: 4px; }
-  .practice-fields .brief-fields { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 5px 7px; flex: 1; min-height: 0; margin-bottom: 4px; }
-  .practice-fields .brief-fields > label { min-height: 0; grid-template-rows: auto minmax(0, 1fr); font-size: 8px; gap: 3px; }
-  .practice-fields .brief-fields textarea { font-size: 9px; min-height: 0; height: 100%; padding: 5px; resize: none; }
 }
 @media (max-width: 900px) and (orientation: portrait) and (max-height: 700px) {
   .presentation { --header-height: 68px; --footer-height: 78px; --deck-gap: 4px; padding-bottom: 4px; }
@@ -3181,34 +2953,6 @@ textarea {
     font-size: 11px;
     padding: 12px;
   }
-  .overview {
-    grid-template-columns: 1fr;
-    padding: 16px;
-    gap: 16px;
-  }
-  .overview section {
-    padding: 18px;
-  }
-  .project-panel {
-    padding: 18px;
-  }
-  .project-actions {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .brief-fields {
-    grid-template-columns: 1fr;
-  }
-  .project-deliverable>label {
-    max-width: 75%;
-  }
-  .project-deliverable>button {
-    font-size: 10px;
-  }
-  .project-deliverable>p {
-    font-size: 11px;
-  }
   .teacher-shell {
     padding: 24px 18px;
   }
@@ -3227,7 +2971,7 @@ textarea {
   }
 }
 @media print {
-  .topbar,.lesson-nav,.deck-footer,.deck-progress,.course-baseline,.app-message,.slide-footer {
+  .topbar, .lesson-nav, .deck-footer, .deck-progress, .slide-footer {
     display: none;
   }
   .stage {

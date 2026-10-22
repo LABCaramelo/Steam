@@ -1,45 +1,40 @@
 # Landing Pages com IA — validação local
 
-Atualização de `/aula-head`, em 22/10/2026. Quatro aulas de quatro slides principais. Cada slide alterna estados de exploração e prática sem criar novas páginas.
+Versão de 22/10/2026: abertura interativa e quatro apresentações de quatro slides.
 
-## Implementação
+## Comportamento atual
 
-- Entrada Vite: `aula-head/index.html`. Conteúdo e componentes em `src/aula-head/`.
-- Desktop: palco 16:9. Telas menores: conteúdo adaptado com leitura vertical.
-- Estados internos: comparação, zoom por seção, ordenação, ferramentas, wireframe, Hero editável, comparação de imagens, vídeo, moodboard, sistemas visuais, quiz, expansão, inspeção, motion, interação e revisão.
-- Modo Professor: janela separada com os 16 roteiros e instruções; `BroadcastChannel` sincroniza a navegação nas duas direções. A identificação da apresentação permanece durante recargas da janela principal. Compartilhar a tela inteira também mostra as notas; deve-se compartilhar somente a janela da apresentação.
-- Caderno do aluno: briefing, 16 registros de entrega e dez verificações finais, salvos no navegador com exportação Markdown e cópia. Não há sincronização de conta ou envio desses registros ao servidor.
-- Imagens inseridas na comparação permanecem apenas na sessão. A interface não executa geração de imagem, vídeo ou código por IA.
+- Abertura original recuperada com vídeo local controlado pelo mouse, logo HEAD e quatro cards de aula.
+- Cada card abre a apresentação correspondente. Apenas os quatro slides dessa aula ficam disponíveis; o último botão retorna à abertura para escolher outra aula.
+- Cabeçalho, palco e navegação cabem na viewport. A tela principal não depende de rolagem vertical. Prompts integrais e notas do professor mantêm leitura interna quando necessário.
+- Sem “Meu projeto”, caderno, briefing pessoal, registros de entrega, exportação ou painéis “No seu projeto”. As demonstrações usam estado transitório, sem leitura ou gravação de projeto em localStorage.
+- Janela separada do professor, sincronizada com a aula e com o retorno à abertura.
+- O convite “clique em uma seção ←” usa o MagneticButton canônico do MCP Caramelo (magnetic-fill, accent, fill, swap). O clique abre Hero e transfere o foco para a seção do mapa.
 
-## Fontes preservadas
+## Fontes
 
-O roteiro de fala e as instruções foram extraídos do arquivo `Texto colado.txt` anexado ao pedido. Os oito textos integrais foram recuperados do acervo incorporado à apresentação anterior, em `public/aula-head/assets/index-D2Ot7DKX.js`, usando o parser do TypeScript, sem executar o bundle.
+Os oito prompts integrais permanecem idênticos ao acervo anterior, recuperado do bundle original `public/aula-head/assets/index-D2Ot7DKX.js` com o parser do TypeScript. A numeração de uso permanece em `src/aula-head/data.ts`. As notas do professor vieram do roteiro anexado ao pedido.
 
-`src/aula-head/original-prompts.json` mantém os textos e nomes dos documentos originais. A ordem de uso é definida em `data.ts`: Copy, Hero, Reconstrução de Imagem, Image to Video, Design System, System Prompt, Project Report, Motion Experience. A comparação dos oito textos com a fonte anterior confirmou igualdade integral.
+O vídeo, poster, logo e artes da abertura continuam em `public/aula-head/`. A cronologia direcional do mouse e o CSS da abertura foram recuperados do bundle e CSS anteriores. O CSS está isolado em `.head-intro`; ajustes de viewport ficam em `intro.css`.
 
-## Evidências
+O botão do Slide 02 foi conferido com `get_interaction({id: "magnetic-fill", format: "react"})` do MCP Caramelo e usa o componente de `@caramelo/design-system` 2.0.0, com o CSS canônico já servido em `/caramelo/styles.css`.
 
-| Verificação | Resultado observado |
+## Evidências de validação
+
+| Verificação | Resultado |
 | --- | --- |
-| `npm run build` | TypeScript e build Vite concluídos. `/aula-head/index.html` emitido em `dist/`. Aviso de tamanho referente ao bundle já existente da Comunidade. |
-| Versão compilada | `vite preview` carregou a apresentação; `/aula-head`, `/aula-head/`, `/aula-head/index.html` e `/aula-head/aula-01` retornaram 200 com a nova entrada. Sem erros de console dessa versão. |
-| 16 slides em desktop | Todos carregaram; conteúdo do experimento permaneceu antes do rodapé; palco com proporção 16:9, considerando arredondamento de pixels. |
-| 16 slides em celular | Emulação de 390 × 844: zero overflow horizontal em todos os slides. |
-| Slide 02 | Hero e Problema selecionáveis, com mudança da seção ampliada e da pergunta; contador permanece 02/16. |
-| Cópia dos prompts | Os oito textos completos chegaram à área de transferência; comprimentos conferidos com a fonte. |
-| Janela Professor | Navegação 04→05 pelo professor refletiu no aluno; navegação 05→02 pelo aluno refletiu no professor. Nenhum bloco “Como conduzir” no conteúdo projetado. |
-| Briefing e progresso | Texto de teste e entrega marcada permaneceram depois de recarregar. Dados de teste removidos pela interface após a conferência. |
-| Exportação | Cópia do projeto produziu Markdown com briefing e revisão final. Botão de download gerou `minha-landing-page-head.md`. |
-| Hierarquia | Reordenação por botões e feedback de percurso possível funcionaram. |
-| Hero | Edição da headline atualizou a prévia imediatamente. Texto de teste restaurado após a conferência. |
-| Design System | Mudança para Digital essencial preservou a copy. |
-| Quiz | Escolha de alteração localizada revelou o feedback correto. |
-| Expansão | Hero + cinco seções disponíveis, com navegação vertical. |
-| Inspeção | Seleção de Assets exibiu a camada e o documento demonstrativo. |
-| Vídeo | Reprodução com frames carregados, áudio silenciado e pausa disponíveis. |
-| Motion | Reprodução e pausa atualizaram o controle de progresso. Movimento reduzido desativou reprodução automática. |
-| Checklist | Dez marcações revelaram o fechamento; marcações de teste desfeitas. |
+| Build | TypeScript e Vite concluídos. Aviso de tamanho apenas no bundle existente da Comunidade. |
+| Abertura | Vídeo carregado, áudio silenciado; olhar para cards esquerdos em 3,1s e direitos em 1,6s, conforme cronologia original. |
+| Navegação | Quatro pontos e contador 01/04 a 04/04 em cada aula. Abas para trocar de aula removidas. Voltar ao início funciona no fim de cada aula. |
+| Viewports | 16 slides em 1280×720, 390×844 e 844×390: 48 estados sem overflow vertical externo, com rodapé dentro da janela. |
+| Movimento reduzido | Painel de ferramentas conferido sem overflow interno nas três dimensões, desconsiderando o deslocamento transitório da animação de entrada. |
+| Professor | Retorno à abertura sincronizado nas duas janelas; escolher Aula 3 atualizou ambas para 01/04 da aula correspondente. |
+| CTA canônico | Classes cm-btn, cm-btn--accent, cm-btn--lg e cm-btn--fill. Clique revelou “O que é isso?” e focou o botão Hero do mapa. |
+| Dados pessoais | Ausência dos controles de projeto/caderno e de código de persistência localStorage na apresentação. |
+| Prompts | Acervo integral preservado e acesso pelo banco na abertura e nas aulas. |
 
-A conferência foi local. A execução dos prompts em ferramentas externas, o projeto real do aluno e a publicação em produção não foram realizados por esta apresentação.
+## Capturas
 
-![Slide 02 com a Hero selecionada](anatomia.png)
+![Abertura com vídeo e cards das quatro aulas](abertura.png)
+
+![Slide 02 com o botão magnetic-fill](anatomia.png)

@@ -39,9 +39,12 @@
   }
   .head-intro .mini-game-card {
     width: 100%;
-    height: clamp(68px, 11dvh, 100px);
+    height: clamp(88px, 13dvh, 112px);
     min-height: 0;
+    padding: 12px;
   }
+  .head-intro .mini-card-copy { margin-bottom: 0; }
+  .head-intro .mini-card-go-btn { position: absolute; left: 12px; bottom: 9px; width: 24px; height: 24px; font-size: 8px; }
   .head-intro .mini-card-title { font-size: clamp(12px, 3vw, 18px); max-width: 75%; }
   .head-intro .mini-card-lesson { font-size: 9px; }
   .head-intro .left-copy-column { position: absolute; top: 16%; bottom: auto; left: 0; padding-top: 0; }

@@ -1,0 +1,32 @@
+/* MagneticButton uses the canonical styles served by /caramelo/styles.css.
+   Only its dimensions adapt to the slide's container. */
+.section-focus .anatomy-explore.cm-btn {
+  --cm-btn-h: 4.2cqw;
+  max-width: 100%;
+  margin-top: 1.6cqw;
+  font-size: 1.25cqw;
+}
+
+/* The course's own motion preference also disables the magnetic displacement. */
+.reduced-motion .anatomy-explore.cm-btn {
+  --cm-mag-x: 0px !important;
+  --cm-mag-y: 0px !important;
+}
+
+.reduced-motion .anatomy-explore .cm-btn__fill {
+  transform: none;
+  border-radius: 0;
+  opacity: 0;
+}
+
+.reduced-motion .anatomy-explore:is(:hover, :focus-visible) .cm-btn__fill {
+  opacity: 1;
+}
+
+@media (max-width: 900px) and (orientation: portrait) {
+  .section-focus .anatomy-explore.cm-btn {
+    --cm-btn-h: 7.5cqw;
+    margin-top: 3cqw;
+    font-size: 2.5cqw;
+  }
+}
