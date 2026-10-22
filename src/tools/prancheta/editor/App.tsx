@@ -124,8 +124,6 @@ export function App(props: EditorProps = {}) {
           {!s.ui.hidden && <>
             <div className="canvas-page-label">{store.page.name}</div>
             <Toolbar />
-            <button className="canvas-help" title="Atalhos de teclado" aria-label="Ajuda e atalhos"
-              onClick={() => store.update((state) => { state.ui.showShortcuts = true; })}>?</button>
           </>}
         </div>
         {!s.ui.hidden && <RightPanel />}

@@ -33,7 +33,6 @@ svg { vertical-align: middle; }
 .canvas-view { width: 100%; height: 100%; }
 .editor-canvas { display: block; touch-action: none; outline: none; }
 .canvas-page-label { position: absolute; left: 18px; top: 15px; color: var(--muted); font-size: 10px; pointer-events: none; }
-.canvas-help { position: absolute; right: 16px; bottom: 18px; width: 26px; height: 26px; background: var(--surface); border: 1px solid var(--border); border-radius: 50%; box-shadow: 0 1px 3px #0001; font-size: 14px; }
 .canvas-text-editor { padding: 0; margin: 0; resize: none; background: transparent; border: 0; outline: 1px solid var(--blue); overflow: hidden; border-radius: 0; }
 .canvas-drop-hint { position: absolute; inset: 8px; display: grid; place-items: center; border: 2px dashed var(--blue); border-radius: 13px; background: #0d99ff12; color: var(--blue); pointer-events: none; font-size: 16px; }
 .restore-ui { position: absolute; bottom: 20px; right: 20px; z-index: 20; }
@@ -370,20 +369,6 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   padding: 32px 16px;
   color: var(--muted);
   gap: 8px;
-}
-.lp-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 36px;
-  padding: 0 12px;
-  border-top: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 11px;
-}
-.lp-footer button {
-  color: var(--muted);
-  text-decoration: underline;
 }
 .lp-assets {
   padding: 12px;

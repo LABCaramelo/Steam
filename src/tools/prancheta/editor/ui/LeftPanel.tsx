@@ -233,7 +233,6 @@ export function LeftPanel() {
         })}
         {!entries.length && <div className="lp-empty"><I.IconGroup size={28} /><strong>{needle ? 'Nenhuma camada encontrada' : 'Uma página, muitas ideias'}</strong><span>{needle ? 'Experimente outro nome.' : 'Escolha uma ferramenta e desenhe no canvas.'}</span></div>}
       </div>
-      <div className="lp-footer"><I.IconKeyboard size={16} /><button onClick={() => store.update((state) => (state.ui.showShortcuts = true))}>Atalhos de teclado</button><span>?</span></div>
       {pageMenu && <MenuPopup x={pageMenu.x} y={pageMenu.y} items={pageMenuItems} onClose={() => setPageMenu(null)} />}
     </aside>
   );
