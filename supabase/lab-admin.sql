@@ -10,7 +10,10 @@ language sql stable security definer set search_path = public, pg_temp as $$
       or exists (select 1 from public.profiles where id = auth.uid() and role = 'admin');
 $$;
 
--- 2. Registrar a ferramenta admin em lab_tools
+-- 2. Garantir coluna de banners personalizados e registrar ferramenta admin em lab_tools
+alter table public.lab_tools add column if not exists custom_assets jsonb not null default '{}'::jsonb;
+
+-- Registrar a ferramenta admin em lab_tools
 insert into public.lab_tools (slug, appid, name, price_cents, available)
 values ('admin', 8, 'Administração do LAB', 0, true)
 on conflict (slug) do update set
@@ -311,6 +314,97 @@ begin
   return result;
 end $$;
 
+
+
+-- 6b. Obter lista de ferramentas com banners/artes customizadas (v2)
+create or replace function public.admin_get_tools_v2()
+returns table (
+  slug text,
+  appid integer,
+  name text,
+  price_cents integer,
+  available boolean,
+  custom_assets jsonb,
+  created_at timestamptz,
+  owners_count bigint
+)
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $
+begin
+  if not public.is_lab_admin() then
+    raise exception 'Acesso negado: apenas administradores do LAB.' using errcode = '42501';
+  end if;
+
+  return query
+  select 
+    t.slug,
+    t.appid,
+    t.name,
+    t.price_cents,
+    t.available,
+    coalesce(t.custom_assets, '{}'::jsonb) as custom_assets,
+    t.created_at,
+    coalesce(count(u.user_id), 0)::bigint as owners_count
+  from public.lab_tools t
+  left join public.user_tools u on u.tool_slug = t.slug
+  group by t.slug, t.appid, t.name, t.price_cents, t.available, t.custom_assets, t.created_at
+  order by t.appid asc;
+end;
+$;
+
+-- 6c. Atualizar banners/artes customizadas da ferramenta
+create or replace function public.admin_update_tool_assets(
+  p_slug text,
+  p_custom_assets jsonb
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $
+begin
+  if not public.is_lab_admin() then
+    raise exception 'Acesso negado: apenas administradores do LAB.' using errcode = '42501';
+  end if;
+
+  update public.lab_tools
+  set custom_assets = coalesce(p_custom_assets, '{}'::jsonb)
+  where slug = p_slug;
+
+  if not found then
+    raise exception 'Ferramenta não encontrada: %', p_slug using errcode = 'P0002';
+  end if;
+
+  return jsonb_build_object('success', true, 'slug', p_slug, 'custom_assets', coalesce(p_custom_assets, '{}'::jsonb));
+end;
+$;
+
+-- =============================================================================================
+-- Storage Bucket para Banners e Artes das Ferramentas ('tool-banners')
+-- =============================================================================================
+insert into storage.buckets (id, name, public)
+values ('tool-banners', 'tool-banners', true)
+on conflict (id) do nothing;
+
+create policy "Tool banners public select"
+on storage.objects for select
+using (bucket_id = 'tool-banners');
+
+create policy "Tool banners admin insert"
+on storage.objects for insert
+with check (bucket_id = 'tool-banners' and public.is_lab_admin());
+
+create policy "Tool banners admin update"
+on storage.objects for update
+using (bucket_id = 'tool-banners' and public.is_lab_admin())
+with check (bucket_id = 'tool-banners' and public.is_lab_admin());
+
+create policy "Tool banners admin delete"
+on storage.objects for delete
+using (bucket_id = 'tool-banners' and public.is_lab_admin());
+
 -- Permissões de execução
 revoke all on function public.admin_get_stats() from public, anon;
 grant execute on function public.admin_get_stats() to authenticated;
@@ -335,3 +429,9 @@ grant execute on function public.admin_set_user_status(uuid, text, text) to auth
 
 revoke all on function public.acquire_tool(text) from public, anon;
 grant execute on function public.acquire_tool(text) to authenticated;
+
+revoke all on function public.admin_get_tools_v2() from public, anon;
+grant execute on function public.admin_get_tools_v2() to authenticated;
+
+revoke all on function public.admin_update_tool_assets(text, jsonb) from public, anon;
+grant execute on function public.admin_update_tool_assets(text, jsonb) to authenticated;
