@@ -24,6 +24,9 @@ export function Intro({ onLesson, onPrompts }: { onLesson: (index: number) => vo
       return <button type="button" className="mini-game-card" key={lesson.name} style={{ "--intro-delay": `${650 + index * 100}ms` } as React.CSSProperties} data-gaze-side={side} aria-label={`Aula ${index + 1}: ${lesson.name}`} onClick={() => onLesson(index * 4)}>
         <div className="mini-card-copy"><span className="mini-card-lesson">Aula {String(index + 1).padStart(2, "0")}</span><h2 className="mini-card-title">{lesson.name}</h2></div><span className="mini-card-go-btn" aria-hidden="true">GO</span><img src={`/aula-head/assets/${art[index]}`} alt="" className="mini-card-bg-crop" aria-hidden="true" />
       </button>;
-    })}</div>)}</footer>
+    })}</div>)}{lessons[4] && <button type="button" className="bonus-lesson-card" aria-label={`Aula bônus: ${lessons[4].name}`} onClick={() => onLesson(16)}>
+      <span className="bonus-lesson-copy"><span className="bonus-lesson-label">Aula bônus</span><span className="bonus-lesson-title">{lessons[4].name}</span></span>
+      <svg className="bonus-lesson-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9" /><path d="M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5" /></svg>
+    </button>}</footer>
   </div>;
 }

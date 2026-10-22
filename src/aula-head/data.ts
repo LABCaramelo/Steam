@@ -5,6 +5,7 @@ export const lessons = [
   { name: "CRIAR", question: "Da ideia à primeira tela", result: "Copy aprovada, Hero, imagem e vídeo integrados.", color: "#25BFFF" },
   { name: "DAR IDENTIDADE", question: "Uma linguagem visual consistente", result: "Página completa, Design System e regras de execução.", color: "#FFD52A" },
   { name: "DAR VIDA", question: "Da página à experiência", result: "Landing Page revisada e preparada para publicação.", color: "#FF3D8D" },
+  { name: "PUBLICAR", question: "Da sua tela para o mundo", result: "GitHub, Vercel e domínio próprio conectados.", color: "#FFD52A" },
 ];
 export const sections = ["HERO", "PROBLEMA", "SOLUÇÃO", "ENTREGAS", "PROCESSO", "CTA"];
 export const sectionQuestions = ["O que é isso?", "Isso acontece comigo?", "Como isso resolve meu problema?", "O que vou receber?", "Como funciona?", "O que faço agora?"];
@@ -39,5 +40,9 @@ export const slides = [
   { title: "Movimento também comunica", heading: "ANIMAR NÃO É DECORAR.", line: "É comunicar.", invite: "Escolha uma cena. Controle o movimento e observe a mensagem.", prompt: -1 },
   { title: "Construindo uma experiência interativa", heading: "SCROLL, MOVIMENTO E INTERAÇÃO PODEM GUIAR O USUÁRIO.", line: "Escolha onde o movimento ajuda a entender.", invite: "Experimente entrada, scroll e resposta à interação.", prompt: 7 },
   { title: "Sua Landing Page está pronta?", heading: "BONITA É BOM.", line: "Funcionando é essencial.", invite: "Verifique sua página real antes de marcar cada item.", prompt: -1 },
+  { title: "Da sua tela para o mundo", heading: "SUA LANDING PAGE ESTÁ PRONTA.", line: "Mas como o mundo vai encontrá-la?", invite: "Explore as ferramentas, organize o caminho e descubra o papel do endereço.", prompt: -1 },
+  { title: "Salvando o projeto no GitHub", heading: "NÃO BASTA TER UM PROJETO.", line: "Precisamos ter controle sobre suas versões.", invite: "Percorra o histórico, salve uma alteração e experimente restaurar uma versão.", prompt: -1 },
+  { title: "Publicando na Vercel", heading: "DO GITHUB PARA A INTERNET.", line: "Agora seu projeto pode ganhar um link.", invite: "Simule a publicação, investigue os erros e acompanhe uma atualização.", prompt: -1 },
+  { title: "Conectando um domínio próprio", heading: "SUA LANDING PAGE JÁ ESTÁ ONLINE.", line: "Agora ela precisa do seu endereço.", invite: "Conecte o domínio no simulador e confira os passos da publicação real.", prompt: -1 },
 ].map((slide, i) => ({ ...slide, lesson: Math.floor(i / 4) }));
 export const finalChecks = ["A oferta está clara?", "Os textos estão corretos?", "O Design System está consistente?", "Os botões funcionam?", "Os formulários funcionam?", "A página funciona no celular?", "O vídeo e as animações carregam corretamente?", "A experiência continua compreensível sem animações?", "Existem erros, elementos quebrados ou informações inventadas?", "A página está preparada para publicação?"];

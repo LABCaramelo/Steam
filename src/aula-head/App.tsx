@@ -22,6 +22,7 @@ export default function App() {
   const introRef = useRef(showIntro);
   const slide = slides[index];
   const lesson = lessons[slide.lesson];
+  const lessonLabel = slide.lesson === 4 ? "Aula Bônus" : `Aula ${slide.lesson + 1}`;
   slideRef.current = index;
   introRef.current = showIntro;
   const lessonStart = slide.lesson * 4;
@@ -32,7 +33,7 @@ export default function App() {
   }, []);
 
   const go = useCallback((next: number) => {
-    const value = Math.min(15, Math.max(0, next));
+    const value = Math.min(slides.length - 1, Math.max(0, next));
     setShowIntro(false); setIndex(value);
   }, []);
   useEffect(() => {
@@ -43,8 +44,8 @@ export default function App() {
       return;
     }
     history.replaceState(null, "", `${location.pathname}${location.search}#slide-${index + 1}`);
-    document.title = `${index % 4 + 1}/4 · Aula ${Math.floor(index / 4) + 1} · ${slide.title} · HEAD`;
-  }, [index, slide.title, showIntro]);
+    document.title = `${index % 4 + 1}/4 · ${lessonLabel} · ${slide.title} · HEAD`;
+  }, [index, lessonLabel, slide.title, showIntro]);
   useEffect(() => {
     const syncHash = () => { setShowIntro(!isLessonLocation()); setIndex(hashSlide()); };
     window.addEventListener("hashchange", syncHash);
@@ -72,9 +73,9 @@ export default function App() {
   return <>
     {showIntro ? <Intro onLesson={go} onPrompts={() => setModal("prompts")} /> : <main className={`presentation ${reduced ? "reduced-motion" : ""}`} style={{ "--accent": lesson.color } as React.CSSProperties}>
     <header className="topbar"><a className="wordmark" href="/">UM CARA<br />CARAMELO<span>®</span></a><div className="course-brand"><strong>LANDING PAGES COM IA</strong><span>HEAD ACADEMY × LABORATÓRIO DE INTERAÇÃO</span></div><div className="top-actions"><button onClick={returnHome}>← Início</button></div></header>
-    <section className="stage" aria-label={`Aula ${slide.lesson + 1}, slide ${index - lessonStart + 1}: ${slide.title}`}>
+    <section className="stage" aria-label={`${lessonLabel}, slide ${index - lessonStart + 1}: ${slide.title}`}>
       <div className="slide-content" key={index}>
-        <header className="slide-header"><div className="eyebrow"><span className="live-dot" /> AULA 0{slide.lesson + 1} / {lesson.name}<span className="slide-caption">{String(index - lessonStart + 1).padStart(2, "0")} — EXPLORAR</span></div><h1>{slide.heading}</h1><p className="slide-line">{slide.line}</p></header>
+        <header className="slide-header"><div className="eyebrow"><span className="live-dot" /> {slide.lesson === 4 ? "AULA BÔNUS" : `AULA 0${slide.lesson + 1}`} / {lesson.name}<span className="slide-caption">{String(index - lessonStart + 1).padStart(2, "0")} — EXPLORAR</span></div><h1>{slide.heading}</h1><p className="slide-line">{slide.line}</p></header>
         <div className="experiment"><Experiences index={index} lab={lab} setLab={setLab} demo={demo} openPrompt={openPrompt} media={media} setMedia={setMedia} reduced={reduced} /></div>
         <footer className="slide-footer"><p>{slide.invite}</p>{slide.prompt >= 0 && <button className="prompt-link" onClick={() => openPrompt(slide.prompt)}>PROMPT {String(slide.prompt + 1).padStart(2, "0")} ↗</button>}</footer>
       </div>

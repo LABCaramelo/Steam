@@ -3,6 +3,7 @@ import { MagneticButton } from "@caramelo/design-system";
 import { finalChecks, promptNames, sectionQuestions, sections, sectionTexts, toolIO } from "./data";
 import type { DemoValue, LabState } from "./model";
 import { Choices, Copy, Hint, Range } from "./ui";
+import { BonusExperience } from "./bonus/BonusExperience";
 import "./anatomy-button.css";
 
 type Props = { index: number; lab: LabState; setLab: Dispatch<SetStateAction<LabState>>; demo: (key: string, value: DemoValue) => void; openPrompt: (n: number) => void; media: Record<string, string>; setMedia: Dispatch<SetStateAction<Record<string, string>>>; reduced: boolean };
@@ -26,7 +27,8 @@ export function Experiences(p: Props) {
     case 12: return <Inspection {...p} />;
     case 13: return <StoryMotion {...p} />;
     case 14: return <Interaction {...p} />;
-    default: return <Review {...p} />;
+    case 15: return <Review {...p} />;
+    default: return <BonusExperience index={p.index} lab={p.lab} demo={p.demo} reduced={p.reduced} />;
   }
 }
 function BrowserTop({ label = "seu-projeto.com.br" }: { label?: string }) { return <div className="browser-top"><span>● ● ●</span><small>{label}</small><span>↗</span></div>; }
