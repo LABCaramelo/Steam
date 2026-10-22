@@ -13,6 +13,7 @@ export class CanvasView {
     this.isDragging = false;
     this.dragStart = { x: 0, y: 0 };
     this.sourceStart = { x: 0, y: 0, w: 0, h: 0 };
+    this.onTransformEnd = null;
 
     this._setupUI();
     this._attachEvents();
@@ -161,6 +162,9 @@ export class CanvasView {
     });
 
     window.addEventListener('mouseup', () => {
+      if (this.isDragging || this.activeHandle) {
+        if (this.onTransformEnd) this.onTransformEnd();
+      }
       this.isDragging = false;
       this.activeHandle = null;
     });
@@ -181,6 +185,7 @@ export class CanvasView {
       if (handled) {
         e.preventDefault();
         this.updateGizmo();
+        if (this.onTransformEnd) this.onTransformEnd();
       }
     });
   }

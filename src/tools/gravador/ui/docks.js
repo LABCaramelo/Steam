@@ -163,9 +163,11 @@ export class DocksView {
           if (action === 'toggle-vis') {
             source.visible = !source.visible;
             this.renderSources();
+            this.appState.saveCurrentSetup();
           } else if (action === 'toggle-lock') {
             source.locked = !source.locked;
             this.renderSources();
+            this.appState.saveCurrentSetup();
           }
           return;
         }
@@ -190,10 +192,12 @@ export class DocksView {
 
     select.addEventListener('change', (e) => {
       this.transitions.type = e.target.value;
+      this.appState.saveCurrentSetup();
     });
 
     durationInput.addEventListener('change', (e) => {
       this.transitions.duration = parseInt(e.target.value, 10) || 300;
+      this.appState.saveCurrentSetup();
     });
   }
 

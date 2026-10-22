@@ -26,6 +26,8 @@ export function GravadorApp() {
   useEffect(() => {
     let alive = true;
     let compositorInstance: any = null;
+    let appStateInstance: any = null;
+    let onBeforeUnload: (() => void) | null = null;
 
     const initStudio = async () => {
       if (!rootRef.current) return;
@@ -48,7 +50,13 @@ export function GravadorApp() {
       const recordingService = new RecordingService(compositor, audioEngine);
       const streamingService = new StreamingService(compositor, audioEngine);
 
-      // 2. Setup Default Scene Setup (Main Stream & BRB)
+      appStateInstance = appState;
+      onBeforeUnload = () => {
+        appState.saveCurrentSetup();
+      };
+      window.addEventListener("beforeunload", onBeforeUnload);
+
+      // 2. Setup Default Scene Setup
       await appState.initDefaultSetup();
       if (!alive) {
         compositor.destroy?.();
@@ -60,7 +68,10 @@ export function GravadorApp() {
       const studioContainer = document.getElementById("studio-mode-area");
       const workspaceEl = document.getElementById("obs-workspace");
 
-      const canvasView = new CanvasView(singleContainer, compositor);
+      const canvasView: any = new CanvasView(singleContainer, compositor);
+      canvasView.onTransformEnd = () => {
+        appState.saveCurrentSetup();
+      };
       const studioModeView = new StudioModeView(studioContainer, compositor, transitions);
 
       const mixerContent = document.getElementById("audio-mixer-content");
@@ -72,7 +83,9 @@ export function GravadorApp() {
       const audioFiltersModalEl = document.getElementById("modal-audio-filters");
       const settingsModalEl = document.getElementById("modal-settings");
 
-      const audioFiltersDialog = new AudioFiltersDialog(audioFiltersModalEl, audioEngine, () => {});
+      const audioFiltersDialog = new AudioFiltersDialog(audioFiltersModalEl, audioEngine, () => {
+        appState.saveCurrentSetup();
+      });
 
       let docksView: any = null;
 
@@ -94,6 +107,7 @@ export function GravadorApp() {
           docksView?.renderSources();
           canvasView.updateGizmo();
           audioMixerView.setSources(appState.currentScene.sources);
+          appState.saveCurrentSetup();
         },
         (source: any) => {
           audioFiltersDialog.open(source);
@@ -195,6 +209,12 @@ export function GravadorApp() {
 
     return () => {
       alive = false;
+      if (onBeforeUnload) {
+        window.removeEventListener("beforeunload", onBeforeUnload);
+      }
+      if (appStateInstance?.saveCurrentSetup) {
+        appStateInstance.saveCurrentSetup();
+      }
       if (compositorInstance?.destroy) {
         compositorInstance.destroy();
       }

@@ -1,5 +1,7 @@
-// Application State Manager
+// Application State Manager — Gravador LAB Caramelo
 import { SourceItem } from './sources/source-item.js';
+
+const STORAGE_KEY = 'lab:tool:gravador:state';
 
 export class AppState {
   constructor(compositor, sourceFactory) {
@@ -11,99 +13,114 @@ export class AppState {
   }
 
   async initDefaultSetup() {
-    // Scene 1: Main Stream / Gaming / Presentation
+    // 1. Tenta carregar a última configuração salva pelo usuário
+    if (this.loadSavedSetup()) {
+      return;
+    }
+
+    // 2. Sem templates: inicia com uma cena limpa e sem fontes
     const scene1 = {
-      id: 'scene_main',
-      name: 'Main Stream',
+      id: 'scene_' + Math.random().toString(36).substring(2, 9),
+      name: 'Cena 1',
       sources: []
     };
 
-    // Color background
-    const bg = this.sourceFactory.createColorSource('Background');
-    bg.props.color = '#12141c';
-    scene1.sources.push(bg);
-
-    // Color Test Pattern / Main content
-    const testPattern = this.sourceFactory.createImageSource('SMPTE Color Bars');
-    testPattern.x = 200;
-    testPattern.y = 120;
-    testPattern.width = 1100;
-    testPattern.height = 620;
-    scene1.sources.push(testPattern);
-
-    // Webcam source box
-    const webcam = new SourceItem({
-      name: 'Facecam Overlay',
-      type: 'camera',
-      x: 1340,
-      y: 120,
-      width: 480,
-      height: 270
-    });
-    scene1.sources.push(webcam);
-
-    // Twitch Chat overlay
-    const chat = this.sourceFactory.createBrowserSource('Stream Chat Overlay');
-    chat.x = 1340;
-    chat.y = 410;
-    chat.width = 480;
-    chat.height = 480;
-    scene1.sources.push(chat);
-
-    // Lower-third scrolling ticker
-    const ticker = this.sourceFactory.createTextSource('Lower Third Ticker');
-    ticker.x = 80;
-    ticker.y = 920;
-    ticker.width = 1760;
-    ticker.height = 90;
-    ticker.props.text = '🔴 LIVE: OBS STUDIO WEB EDITION • 60 FPS CANVAS COMPOSITING • REAL WEBRTC & RECORDING • DEVELOPED WITH REA';
-    ticker.props.fontSize = 32;
-    ticker.props.scrollSpeed = 80;
-    ticker.props.textBgColor = '#1f2433';
-    scene1.sources.push(ticker);
-
-    // Scene 2: Be Right Back (BRB)
-    const scene2 = {
-      id: 'scene_brb',
-      name: 'Be Right Back',
-      sources: []
-    };
-
-    const brbMedia = this.sourceFactory.createMediaSource('BRB Cyber Loop');
-    brbMedia.x = 0;
-    brbMedia.y = 0;
-    brbMedia.width = 1920;
-    brbMedia.height = 1080;
-    scene2.sources.push(brbMedia);
-
-    const brbText = this.sourceFactory.createTextSource('BRB Title');
-    brbText.x = 360;
-    brbText.y = 460;
-    brbText.width = 1200;
-    brbText.height = 160;
-    brbText.props.text = 'BE RIGHT BACK';
-    brbText.props.fontSize = 80;
-    brbText.props.textColor = '#FF701A';
-    brbText.props.textBgColor = 'rgba(0, 0, 0, 0.7)';
-    brbText.props.scrollSpeed = 0;
-    scene2.sources.push(brbText);
-
-    this.scenes = [scene1, scene2];
+    this.scenes = [scene1];
     this.currentScene = scene1;
-    this.previewScene = scene2;
+    this.previewScene = scene1;
 
     this.compositor.activeScene = this.currentScene;
     this.compositor.previewScene = this.previewScene;
+    this.saveCurrentSetup();
+  }
+
+  saveCurrentSetup() {
+    try {
+      const payload = {
+        formatVersion: 2,
+        savedAt: Date.now(),
+        currentSceneId: this.currentScene ? this.currentScene.id : null,
+        previewSceneId: this.previewScene ? this.previewScene.id : null,
+        scenes: this.scenes.map(sc => ({
+          id: sc.id,
+          name: sc.name,
+          sources: (sc.sources || []).map(s => ({
+            id: s.id,
+            name: s.name,
+            type: s.type,
+            x: s.x,
+            y: s.y,
+            width: s.width,
+            height: s.height,
+            rotation: s.rotation,
+            opacity: s.opacity,
+            visible: s.visible,
+            locked: s.locked,
+            volume: s.volume,
+            muted: s.muted,
+            filters: s.filters,
+            audioFilters: s.audioFilters,
+            props: {
+              color: s.props?.color,
+              text: s.props?.text,
+              fontSize: s.props?.fontSize,
+              font: s.props?.font,
+              textColor: s.props?.textColor,
+              textBgColor: s.props?.textBgColor,
+              scrollSpeed: s.props?.scrollSpeed,
+              url: s.props?.url
+            }
+          }))
+        }))
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    } catch (e) {
+      console.warn('Gravador: não foi possível salvar o estado no localStorage', e);
+    }
+  }
+
+  loadSavedSetup() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return false;
+      const data = JSON.parse(raw);
+      if (!data || !Array.isArray(data.scenes) || data.scenes.length === 0) return false;
+
+      this.scenes = data.scenes.map(sc => ({
+        id: sc.id || 'scene_' + Math.random().toString(36).substring(2, 9),
+        name: sc.name || 'Cena',
+        sources: (sc.sources || []).map(s => new SourceItem(s))
+      }));
+
+      const active = this.scenes.find(s => s.id === data.currentSceneId) || this.scenes[0];
+      const preview = this.scenes.find(s => s.id === data.previewSceneId) || this.scenes[1] || active;
+
+      this.currentScene = active;
+      this.previewScene = preview;
+      this.compositor.activeScene = active;
+      this.compositor.previewScene = preview;
+      return true;
+    } catch (e) {
+      console.warn('Gravador: erro ao carregar configuração salva, iniciando limpo', e);
+      return false;
+    }
+  }
+
+  clearSavedSetup() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {}
   }
 
   addScene(name) {
     const newScene = {
       id: 'scene_' + Math.random().toString(36).substring(2, 9),
-      name: name || `Scene ${this.scenes.length + 1}`,
+      name: name || `Cena ${this.scenes.length + 1}`,
       sources: []
     };
     this.scenes.push(newScene);
     this.setCurrentScene(newScene);
+    this.saveCurrentSetup();
     return newScene;
   }
 
@@ -113,6 +130,7 @@ export class AppState {
     if (idx !== -1) {
       this.scenes.splice(idx, 1);
       this.setCurrentScene(this.scenes[Math.max(0, idx - 1)]);
+      this.saveCurrentSetup();
     }
   }
 
@@ -120,17 +138,20 @@ export class AppState {
     this.currentScene = scene;
     this.compositor.activeScene = scene;
     this.compositor.selectSource(null);
+    this.saveCurrentSetup();
   }
 
   setPreviewScene(scene) {
     this.previewScene = scene;
     this.compositor.previewScene = scene;
+    this.saveCurrentSetup();
   }
 
   addSource(source) {
     if (!this.currentScene) return;
     this.currentScene.sources.push(source);
     this.compositor.selectSource(source);
+    this.saveCurrentSetup();
   }
 
   removeSource(source) {
@@ -138,6 +159,7 @@ export class AppState {
     const idx = this.currentScene.sources.indexOf(source);
     if (idx !== -1) {
       this.currentScene.sources.splice(idx, 1);
+      this.saveCurrentSetup();
     }
   }
 
@@ -149,6 +171,7 @@ export class AppState {
       const temp = list[idx];
       list[idx] = list[idx + 1];
       list[idx + 1] = temp;
+      this.saveCurrentSetup();
     }
   }
 
@@ -160,6 +183,7 @@ export class AppState {
       const temp = list[idx];
       list[idx] = list[idx - 1];
       list[idx - 1] = temp;
+      this.saveCurrentSetup();
     }
   }
 
@@ -169,6 +193,7 @@ export class AppState {
       const temp = this.scenes[idx];
       this.scenes[idx] = this.scenes[idx - 1];
       this.scenes[idx - 1] = temp;
+      this.saveCurrentSetup();
     }
   }
 
@@ -178,18 +203,19 @@ export class AppState {
       const temp = this.scenes[idx];
       this.scenes[idx] = this.scenes[idx + 1];
       this.scenes[idx + 1] = temp;
+      this.saveCurrentSetup();
     }
   }
 
   exportScenesJSON() {
     const data = {
       formatVersion: 1,
-      generator: 'OBS Studio Web Edition',
+      generator: 'Gravador LAB Caramelo',
       exportedAt: new Date().toISOString(),
       scenes: this.scenes.map(sc => ({
         id: sc.id,
         name: sc.name,
-        sources: sc.sources.map(s => ({
+        sources: (sc.sources || []).map(s => ({
           id: s.id,
           name: s.name,
           type: s.type,
@@ -204,15 +230,16 @@ export class AppState {
           volume: s.volume,
           muted: s.muted,
           filters: s.filters,
+          audioFilters: s.audioFilters,
           props: {
-            color: s.props.color,
-            text: s.props.text,
-            fontSize: s.props.fontSize,
-            font: s.props.font,
-            textColor: s.props.textColor,
-            textBgColor: s.props.textBgColor,
-            scrollSpeed: s.props.scrollSpeed,
-            url: s.props.url
+            color: s.props?.color,
+            text: s.props?.text,
+            fontSize: s.props?.fontSize,
+            font: s.props?.font,
+            textColor: s.props?.textColor,
+            textBgColor: s.props?.textBgColor,
+            scrollSpeed: s.props?.scrollSpeed,
+            url: s.props?.url
           }
         }))
       }))
@@ -223,12 +250,12 @@ export class AppState {
   importScenesJSON(jsonStr) {
     const data = JSON.parse(jsonStr);
     if (!data.scenes || !Array.isArray(data.scenes)) {
-      throw new Error('Invalid scene collection file');
+      throw new Error('Arquivo de coleção de cenas inválido');
     }
 
     this.scenes = data.scenes.map(sc => ({
       id: sc.id || 'scene_' + Math.random().toString(36).substring(2, 9),
-      name: sc.name || 'Scene',
+      name: sc.name || 'Cena',
       sources: (sc.sources || []).map(s => new SourceItem(s))
     }));
 
@@ -236,5 +263,6 @@ export class AppState {
       this.setCurrentScene(this.scenes[0]);
       this.setPreviewScene(this.scenes[1] || this.scenes[0]);
     }
+    this.saveCurrentSetup();
   }
 }
