@@ -5,6 +5,7 @@ Versão de 22/10/2026: abertura interativa e quatro apresentações de quatro sl
 ## Comportamento atual
 
 - Abertura original recuperada com vídeo local controlado pelo mouse, logo HEAD e quatro cards de aula.
+- Cards de aula compactos: 112–132 px de altura no desktop, 84–96 px no celular e 88–108 px em paisagem baixa. Títulos alinhados à esquerda, personagens e indicador GO proporcionais.
 - Cada card abre a apresentação correspondente. Apenas os quatro slides dessa aula ficam disponíveis; o último botão retorna à abertura para escolher outra aula.
 - Cabeçalho, palco e navegação cabem na viewport. A tela principal não depende de rolagem vertical. Prompts integrais mantêm leitura interna quando necessário.
 - Sem “Meu projeto”, caderno, briefing pessoal, registros de entrega, exportação ou painéis “No seu projeto”. As demonstrações usam estado transitório, sem leitura ou gravação de projeto em localStorage.
@@ -25,6 +26,7 @@ O botão do Slide 02 foi conferido com `get_interaction({id: "magnetic-fill", fo
 | --- | --- |
 | Build | TypeScript e Vite concluídos. Aviso de tamanho apenas no bundle existente da Comunidade. |
 | Abertura | Vídeo carregado, áudio silenciado; olhar para cards esquerdos em 3,1s e direitos em 1,6s, conforme cronologia original. |
+| Cards compactos | Conferidos em 1440×900, 1280×720, 390×844 e 844×390, sem rolagem externa. |
 | Navegação | Quatro pontos e contador 01/04 a 04/04 em cada aula. Abas para trocar de aula removidas. Voltar ao início funciona no fim de cada aula. |
 | Viewports | 16 slides em 1280×720, 390×844 e 844×390: 48 estados sem overflow vertical externo, com rodapé dentro da janela. |
 | Movimento reduzido | Painel de ferramentas conferido sem overflow interno nas três dimensões, desconsiderando o deslocamento transitório da animação de entrada. |

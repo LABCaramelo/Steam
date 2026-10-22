@@ -13,11 +13,22 @@
 }
 .head-intro .mini-card-title {
   font-family: Montserrat, Inter, sans-serif;
-  font-size: clamp(12px, 1.25vw, 21px);
+  font-size: clamp(12px, 1.2vw, 18px);
 }
 .head-intro .prompt-bank-trigger-btn { gap: 7px; }
 .head-intro .hero-bottom-actions { pointer-events: none; }
-.head-intro .mini-game-card { pointer-events: auto; }
+.head-intro .mini-game-card {
+  pointer-events: auto;
+  height: clamp(112px, 16dvh, 132px);
+  min-height: 0;
+  padding: 14px 16px;
+  border-radius: 20px;
+  text-align: left;
+}
+.head-intro .mini-card-copy { margin-bottom: 0; }
+.head-intro .mini-card-lesson { margin-bottom: 4px; }
+.head-intro .mini-card-go-btn { width: 30px; height: 30px; font-size: 9px; }
+.head-intro .mini-card-bg-crop { width: 76px; height: 76px; bottom: -4px; right: -3px; }
 @media (max-width: 767px) {
   .head-intro.hero-scene { height: 100dvh; min-height: 0; position: fixed; overflow: hidden; }
   .head-intro .hero-bottom-actions {
@@ -39,7 +50,7 @@
   }
   .head-intro .mini-game-card {
     width: 100%;
-    height: clamp(88px, 13dvh, 112px);
+    height: clamp(84px, 11.5dvh, 96px);
     min-height: 0;
     padding: 12px;
   }
@@ -47,6 +58,7 @@
   .head-intro .mini-card-go-btn { position: absolute; left: 12px; bottom: 9px; width: 24px; height: 24px; font-size: 8px; }
   .head-intro .mini-card-title { font-size: clamp(12px, 3vw, 18px); max-width: 75%; }
   .head-intro .mini-card-lesson { font-size: 9px; }
+  .head-intro .mini-card-bg-crop { width: 62px; height: 62px; }
   .head-intro .left-copy-column { position: absolute; top: 16%; bottom: auto; left: 0; padding-top: 0; }
   .head-intro .hero-display-headline { font-size: clamp(36px, 11vw, 72px); }
   .head-intro .course-pill-tag { margin-top: 12px; font-size: 11px; }
@@ -62,7 +74,9 @@
   .head-intro .hero-display-headline { font-size: clamp(42px, 8vw, 80px); }
   .head-intro .left-copy-column { top: 16%; }
   .head-intro .hero-bottom-actions { bottom: 18px; }
-  .head-intro .mini-game-card { height: clamp(78px, 23dvh, 120px); }
+  .head-intro .mini-game-card { height: clamp(88px, 23dvh, 108px); padding: 12px; }
+  .head-intro .mini-card-go-btn { width: 26px; height: 26px; }
+  .head-intro .mini-card-bg-crop { width: 56px; height: 56px; }
 }
 @media (max-height: 500px) and (max-width: 767px) {
   .head-intro .left-copy-column { top: 22%; }
@@ -70,7 +84,7 @@
   .head-intro .hero-bottom-actions { display: flex; gap: 8px; }
   .head-intro .bottom-cards-cluster { display: contents; }
   .head-intro .mini-game-card { height: 70px; flex: 1; }
-  .head-intro .mini-card-copy { padding: 10px; }
+  .head-intro .mini-card-copy { padding: 0; }
   .head-intro .mini-card-title { font-size: 10px; max-width: 90%; }
   .head-intro .mini-card-go-btn { display: none; }
 }
