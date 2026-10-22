@@ -1,19 +1,21 @@
 /* Editorial identity + kinetic type. Controls never sit on a tilted surface. */
 .maker-section{overflow:clip;padding-block:76px 64px}
-.maker-section .section-meta{padding-bottom:18px;margin-bottom:32px}
-.maker-composition,.maker-section .maker-bottom{display:grid;grid-template-columns:.62fr 1.38fr;gap:48px}
-.maker-intro{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:36px;margin:0;padding-block:12px 40px;min-width:0}
-.maker-intro .maker-title{margin:0;font-size:clamp(28px,2.9vw,42px);line-height:1;letter-spacing:-.055em;transform-origin:0% 55%}
-.maker-author{display:flex;align-items:center;gap:18px;margin-bottom:6px}
-.maker-photo-frame{position:relative;flex-shrink:0;width:clamp(92px,8.5vw,114px);aspect-ratio:4/5;background:var(--cream);padding:5px 5px 6px;border:2px solid var(--ink);border-radius:6px;box-shadow:3px 3px 0 var(--ink);transform:rotate(-3deg);transition:transform .25s var(--cm-ease-out),box-shadow .25s var(--cm-ease-out);touch-action:pan-y}
-.maker-photo-frame:hover{transform:rotate(0deg) scale(1.03);box-shadow:4px 4px 0 var(--ink)}
-.maker-photo{width:100%;height:100%;object-fit:cover;border-radius:3px;display:block}
-.maker-author-intro{min-width:0;flex:1}
-.maker-intro .maker-note{position:static;margin:0;display:block;font-size:clamp(24px,2.1vw,31px);line-height:1.15;text-align:left;transform:rotate(-3deg)}
-.maker-hello{display:grid;gap:12px}
-.maker-hello p{max-width:360px;font-size:14px;line-height:1.6}
-.maker-workbench{min-width:0}
-.maker-art{position:relative;height:clamp(320px,31vw,446px);perspective:1400px;isolation:isolate;touch-action:pan-y}
+.maker-section .section-meta{padding-bottom:18px;margin-bottom:28px}
+.maker-composition,.maker-section .maker-bottom{display:grid;grid-template-columns:1.02fr 0.98fr;gap:44px;align-items:start}
+.maker-intro{display:flex;flex-direction:column;align-items:flex-start;gap:22px;margin:0;padding:0;min-width:0}
+.maker-intro .maker-title{margin:0;font-size:clamp(25px,2.4vw,36px);line-height:1.06;letter-spacing:-.055em;max-width:540px;transform-origin:0% 55%}
+.maker-profile{display:grid;grid-template-columns:clamp(136px,12.5vw,162px) 1fr;gap:22px;align-items:start;width:100%}
+.maker-photo-card{display:flex;flex-direction:column;align-items:center;background:var(--cream);padding:6px 6px 10px;border:2px solid var(--ink);border-radius:8px;box-shadow:4px 4px 0 var(--ink);transform:rotate(-2.5deg);transition:transform .25s var(--cm-ease-out),box-shadow .25s var(--cm-ease-out);touch-action:pan-y}
+.maker-photo-card:hover{transform:rotate(0deg) scale(1.02);box-shadow:6px 6px 0 var(--ink)}
+.maker-photo-frame{width:100%;aspect-ratio:4/5;overflow:hidden;border-radius:4px;background:var(--ink)}
+.maker-photo{width:100%;height:100%;object-fit:cover;display:block}
+.maker-photo-tag{margin-top:5px;font-size:18px;line-height:1;color:var(--ink);letter-spacing:.02em}
+.maker-bio{display:flex;flex-direction:column;gap:10px;min-width:0}
+.maker-bio .maker-note{position:static;margin:0;display:block;font-size:clamp(23px,2vw,27px);line-height:1.15;text-align:left;transform:rotate(-2deg);transform-origin:0% 50%}
+.maker-bio-text{display:grid;gap:8px}
+.maker-bio-text p{font-size:13.5px;line-height:1.55;color:var(--ink);margin:0;max-width:360px}
+.maker-workbench{min-width:0;display:flex;flex-direction:column}
+.maker-art{position:relative;height:clamp(300px,28vw,390px);perspective:1400px;isolation:isolate;touch-action:pan-y}
 .maker-scroll-shell,.maker-pointer-shell{position:absolute;inset:0;transform-style:preserve-3d}
 .maker-scroll-shell{transform-origin:50% 55%}
 .maker-pointer-shell{background:var(--ink);color:var(--cream);border-radius:6px;box-shadow:0 18px 0 -10px rgb(var(--cm-fg) / .16)}
@@ -29,82 +31,87 @@
 .maker-direction-point{position:absolute;left:calc(50% - 9px);bottom:calc(8% - 9px);width:18px;height:18px;background:var(--cream);border:4px solid var(--ink);border-radius:50%;transform:translateZ(2px)}
 .maker-signature{position:absolute;right:36px;bottom:38px;width:64px;height:64px;transform:rotate(-7deg)}
 .maker-art-line{position:absolute;left:36px;right:36px;bottom:24px;height:1px;background:rgba(255,244,232,.22)}
-.maker-section .maker-credits{display:flex;flex-wrap:wrap;gap:9px 6px;max-width:100%;margin-top:26px;font:600 11px/1.6 var(--body);letter-spacing:.025em;text-transform:uppercase;color:var(--ink)}
+.maker-section .maker-credits{display:flex;flex-wrap:wrap;gap:8px 6px;max-width:100%;margin-top:20px;font:600 11px/1.5 var(--body);letter-spacing:.025em;text-transform:uppercase;color:var(--ink)}
 .maker-separator{display:none}
 .maker-discipline{appearance:none;display:inline-flex;align-items:center;justify-content:center;position:relative;background:transparent;border:1px solid rgb(var(--cm-fg) / .35);border-radius:30px;padding:9px 13px;min-height:38px;margin:0;color:var(--ink);font:inherit;letter-spacing:inherit;line-height:1.35;white-space:nowrap;text-decoration:none;transition:background-color .18s,color .18s,border-color .18s}
 .maker-discipline:hover{border-color:var(--ink)}
 .maker-discipline[aria-pressed='true']{background:var(--ink);border-color:var(--ink);color:var(--cream)}
 .maker-discipline:focus-visible{outline-color:var(--ink);outline-offset:4px}
-.maker-section .maker-bottom{align-items:end;margin-top:36px;padding-top:25px;border-top:1px solid rgb(var(--cm-fg) / .25)}
-.maker-section .maker-bottom p{font-size:14px;max-width:440px;line-height:1.65}
+.maker-section .maker-bottom{align-items:end;margin-top:28px;padding-top:20px;border-top:1px solid rgb(var(--cm-fg) / .22)}
+.maker-section .maker-bottom p{font-size:13.5px;max-width:440px;line-height:1.6}
 .maker-section .maker-bottom .maker-closing{justify-self:end;max-width:none;text-align:right}
-.maker-closing strong{display:block;margin-top:6px;font:900 clamp(22px,2.3vw,34px)/1.05 var(--display);letter-spacing:-.055em;text-transform:uppercase}
+.maker-closing strong{display:block;margin-top:4px;font:900 clamp(20px,2vw,28px)/1.05 var(--display);letter-spacing:-.055em;text-transform:uppercase}
 .maker-section[data-maker-mode='scrub']{height:220svh;padding:0}
-.maker-section[data-maker-mode='scrub'] .maker-sticky-stage{position:sticky;top:var(--header-height);height:calc(100svh - var(--header-height));display:flex;align-items:center;padding-block:24px}
+.maker-section[data-maker-mode='scrub'] .maker-sticky-stage{position:sticky;top:var(--header-height);height:calc(100svh - var(--header-height));display:flex;align-items:center;padding-block:clamp(12px,2.2vh,24px)}
 .maker-sticky-stage>.container{min-width:0}
-.maker-section[data-maker-mode='scrub'] .section-meta{margin-bottom:25px;padding-bottom:14px}
-.maker-section[data-maker-mode='scrub'] .maker-art{height:min(420px,calc(100svh - 340px))}
-.maker-section[data-maker-mode='scrub'] .maker-bottom{margin-top:24px;padding-top:20px}
+.maker-section[data-maker-mode='scrub'] .section-meta{margin-bottom:18px;padding-bottom:12px}
+.maker-section[data-maker-mode='scrub'] .maker-art{height:min(380px,calc(100svh - 340px))}
+.maker-section[data-maker-mode='scrub'] .maker-bottom{margin-top:20px;padding-top:16px}
 
 @media(min-width:1000px) and (max-height:760px){
-  .maker-section[data-maker-mode='scrub'] .maker-sticky-stage{padding-block:18px}
-  .maker-section[data-maker-mode='scrub'] .section-meta{margin-bottom:18px;padding-bottom:12px}
-  .maker-section[data-maker-mode='scrub'] .maker-intro{padding-block:6px 24px}
-  .maker-section[data-maker-mode='scrub'] .maker-author{gap:12px;margin-bottom:4px}
-  .maker-section[data-maker-mode='scrub'] .maker-photo-frame{width:clamp(78px,7.2vw,92px)}
-  .maker-section[data-maker-mode='scrub'] .maker-title{font-size:clamp(26px,2.6vw,38px)}
-  .maker-section[data-maker-mode='scrub'] .maker-words{inset:24px 30px auto}
-  .maker-section[data-maker-mode='scrub'] .maker-word{font-size:clamp(42px,5vw,72px)}
-  .maker-section[data-maker-mode='scrub'] .maker-direction{bottom:26px;left:30px;width:190px;height:118px}
-  .maker-section[data-maker-mode='scrub'] .maker-beam{height:94px;width:13px;left:calc(50% - 6.5px)}
-  .maker-section[data-maker-mode='scrub'] .maker-credits{margin-top:18px;gap:7px 5px;font-size:10px}
-  .maker-section[data-maker-mode='scrub'] .maker-discipline{min-height:34px;padding:8px 10px}
-  .maker-section[data-maker-mode='scrub'] .maker-bottom{margin-top:18px;padding-top:16px}
-  .maker-section[data-maker-mode='scrub'] .maker-bottom p{font-size:12px}
+  .maker-section[data-maker-mode='scrub'] .maker-sticky-stage{padding-block:10px}
+  .maker-section[data-maker-mode='scrub'] .section-meta{margin-bottom:12px;padding-bottom:8px}
+  .maker-section[data-maker-mode='scrub'] .maker-intro{gap:14px}
+  .maker-section[data-maker-mode='scrub'] .maker-profile{gap:16px;grid-template-columns:122px 1fr}
+  .maker-section[data-maker-mode='scrub'] .maker-photo-card{padding:5px 5px 8px}
+  .maker-section[data-maker-mode='scrub'] .maker-photo-tag{font-size:16px;margin-top:3px}
+  .maker-section[data-maker-mode='scrub'] .maker-title{font-size:clamp(21px,2.1vw,28px)}
+  .maker-section[data-maker-mode='scrub'] .maker-bio-text p{font-size:12px;line-height:1.45}
+  .maker-section[data-maker-mode='scrub'] .maker-art{height:min(300px,calc(100svh - 310px))}
+  .maker-section[data-maker-mode='scrub'] .maker-direction{bottom:22px;left:26px;width:175px;height:110px}
+  .maker-section[data-maker-mode='scrub'] .maker-beam{height:88px;width:12px;left:calc(50% - 6px)}
+  .maker-section[data-maker-mode='scrub'] .maker-credits{margin-top:14px;gap:6px 5px;font-size:9.5px}
+  .maker-section[data-maker-mode='scrub'] .maker-discipline{min-height:32px;padding:6px 9px}
+  .maker-section[data-maker-mode='scrub'] .maker-bottom{margin-top:14px;padding-top:12px}
+  .maker-section[data-maker-mode='scrub'] .maker-bottom p{font-size:11.5px}
+  .maker-closing strong{font-size:clamp(17px,1.8vw,23px)}
 }
 @media(max-width:1100px){
-  .maker-composition,.maker-section .maker-bottom{gap:30px;grid-template-columns:.64fr 1.36fr}
-  .maker-photo-frame{width:96px}
-  .maker-intro .maker-title{font-size:clamp(26px,2.9vw,34px)}
-  .maker-intro .maker-note{font-size:26px}
+  .maker-composition,.maker-section .maker-bottom{gap:28px;grid-template-columns:1fr 1fr}
+  .maker-profile{grid-template-columns:126px 1fr;gap:16px}
+  .maker-intro .maker-title{font-size:clamp(23px,2.6vw,30px)}
+  .maker-bio .maker-note{font-size:24px}
   .maker-signature{width:55px;height:55px;right:30px}
   .maker-direction{width:180px;height:132px;left:30px}
   .maker-beam{height:109px}
 }
-@media(max-width:999px){
-  .maker-section{padding-block:62px}
-  .maker-intro{padding-bottom:30px}
-  .maker-intro .maker-title{font-size:3.3vw}
-  .maker-intro .maker-note{font-size:23px}
+@media(max-width:860px){
+  .maker-section{padding-block:56px}
+  .maker-composition,.maker-section .maker-bottom{grid-template-columns:1fr;gap:32px}
+  .maker-profile{grid-template-columns:136px 1fr}
+  .maker-intro .maker-title{font-size:clamp(26px,4vw,34px)}
   .maker-art{height:320px}
   .maker-words{inset:26px 26px auto}
   .maker-word{font-size:5.4vw}
-  .maker-section .maker-credits{font-size:10px;margin-top:20px}
+  .maker-section .maker-credits{font-size:10px;margin-top:18px}
   .maker-discipline{padding:9px 11px}
   .maker-section .maker-bottom p{font-size:13px}
 }
 @media(max-width:650px){
-  .maker-composition,.maker-section .maker-bottom{grid-template-columns:1fr;gap:26px}
-  .maker-section .section-meta{margin-bottom:26px;padding-bottom:15px}
-  .maker-intro{gap:24px;padding:0}
-  .maker-intro .maker-title{font-size:8.4vw;line-height:1.02}
-  .maker-author{gap:14px;margin-bottom:8px}
-  .maker-photo-frame{width:86px}
-  .maker-intro .maker-note{font-size:24px;text-align:left;margin:0;transform:rotate(-3deg)}
-  .maker-hello p{font-size:13px;line-height:1.7}
-  .maker-art{height:310px}
-  .maker-words{inset:25px 23px auto;height:53%}
+  .maker-composition,.maker-section .maker-bottom{grid-template-columns:1fr;gap:24px}
+  .maker-section .section-meta{margin-bottom:20px;padding-bottom:12px}
+  .maker-intro{gap:16px;padding:0}
+  .maker-intro .maker-title{font-size:8vw;line-height:1.04}
+  .maker-profile{display:grid;grid-template-columns:110px 1fr;gap:16px;align-items:center}
+  .maker-photo-card{width:110px;transform:rotate(-2deg);padding:5px 5px 8px}
+  .maker-photo-tag{font-size:16px;margin-top:4px}
+  .maker-bio{gap:6px}
+  .maker-bio .maker-note{font-size:23px;text-align:left;margin:0;transform:rotate(-2deg)}
+  .maker-bio-text{grid-column:1 / -1;margin-top:6px;gap:8px}
+  .maker-bio-text p{font-size:13.5px;line-height:1.65;max-width:none}
+  .maker-art{height:300px}
+  .maker-words{inset:22px 20px auto;height:53%}
   .maker-word{font-size:11vw;line-height:1.08;letter-spacing:-.055em}
   .maker-direction{left:21px;bottom:26px;width:185px;height:130px}
   .maker-beam{height:106px;width:13px;left:calc(50% - 6.5px)}
   .maker-signature{right:23px;bottom:38px;width:46px;height:46px}
   .maker-art-line{left:23px;right:23px;bottom:22px}
-  .maker-section .maker-credits{margin-top:21px;gap:8px 5px;font-size:9px;letter-spacing:.01em}
-  .maker-discipline{padding:12px 10px;min-height:42px}
-  .maker-section .maker-bottom{margin-top:28px;padding-top:22px;gap:22px}
-  .maker-section .maker-bottom p{font-size:13px;line-height:1.7}
+  .maker-section .maker-credits{margin-top:18px;gap:7px 5px;font-size:9px;letter-spacing:.01em}
+  .maker-discipline{padding:10px 9px;min-height:38px}
+  .maker-section .maker-bottom{margin-top:24px;padding-top:18px;gap:18px}
+  .maker-section .maker-bottom p{font-size:13px;line-height:1.65}
   .maker-section .maker-bottom .maker-closing{justify-self:start;text-align:left}
-  .maker-closing strong{font-size:24px}
+  .maker-closing strong{font-size:22px}
 }
 @media(prefers-reduced-motion:reduce){.maker-discipline,.maker-beam{transition:none}}
 /* In flow the word change is a short cut: the next word rises into place. */
