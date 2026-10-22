@@ -206,6 +206,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           app: path.resolve(import.meta.dirname, "app.html"),
+          "aula-head": path.resolve(import.meta.dirname, "aula-head/index.html"),
           // LAB tools: each one is its own page, embedded by the LAB and usable in a tab of its own.
           ...Object.fromEntries(TOOL_PAGES.map((slug) => [`tool-${slug}`, path.resolve(import.meta.dirname, "tools", slug, "index.html")])),
         },
