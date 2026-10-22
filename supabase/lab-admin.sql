@@ -435,3 +435,123 @@ grant execute on function public.admin_get_tools_v2() to authenticated;
 
 revoke all on function public.admin_update_tool_assets(text, jsonb) from public, anon;
 grant execute on function public.admin_update_tool_assets(text, jsonb) to authenticated;
+
+-- 13. Excluir usuário e cadastro completo de autenticação e dados
+create or replace function public.admin_delete_user(p_user_id uuid)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, auth, pg_temp
+as $$
+declare
+  v_target_email text;
+  v_target_role text;
+  tbl text;
+  v_tables text[] := array[
+    'user_activity_log',
+    'user_achievements',
+    'user_app_progress',
+    'user_tools',
+    'lab_access',
+    'lab_admins',
+    'academy_comment_likes',
+    'academy_comments',
+    'academy_notes',
+    'academy_favorites',
+    'academy_progress',
+    'kanban_activity',
+    'kanban_comments',
+    'kanban_cards',
+    'kanban_lists',
+    'kanban_labels',
+    'kanban_boards',
+    'prancheta_files',
+    'automation_executions',
+    'automation_flux_versions',
+    'automation_fluxes',
+    'automation_connections',
+    'flick_chat_threads',
+    'flick_projects',
+    'prospect_interactions',
+    'prospects',
+    'strategy_versions',
+    'strategies',
+    'content_stage_versions',
+    'content_pieces',
+    'content_cycles',
+    'landing_versions',
+    'landing_projects',
+    'brand_documents',
+    'brand_links',
+    'ideas',
+    'visual_assets',
+    'visual_asset_batches',
+    'tutorial_progress'
+  ];
+begin
+  if not public.is_lab_admin() then
+    raise exception 'Acesso negado: apenas administradores do LAB podem excluir usuários.' using errcode = '42501';
+  end if;
+
+  if p_user_id = auth.uid() then
+    raise exception 'Operação não permitida: você não pode deletar sua própria conta de administrador.' using errcode = '22023';
+  end if;
+
+  select email, role::text into v_target_email, v_target_role
+  from public.profiles
+  where id = p_user_id;
+
+  if v_target_email is null then
+    select email into v_target_email from auth.users where id = p_user_id;
+    if v_target_email is null then
+      raise exception 'Usuário não encontrado: %', p_user_id using errcode = 'P0002';
+    end if;
+  end if;
+
+  if lower(v_target_email) = 'holaluiz.mail@gmail.com' then
+    raise exception 'A conta principal do LAB é protegida e não pode ser excluída.' using errcode = '42501';
+  end if;
+
+  if v_target_role = 'admin' or exists (select 1 from public.lab_admins where user_id = p_user_id) then
+    raise exception 'Este usuário possui cargo de Administrador. Para excluí-lo, primeiro altere o cargo dele para Membro.' using errcode = '42501';
+  end if;
+
+  foreach tbl in array v_tables loop
+    if to_regclass('public.' || tbl) is not null then
+      execute format('delete from public.%I where user_id = $1', tbl) using p_user_id;
+    end if;
+  end loop;
+
+  if to_regclass('public.caramelo_personal_prompts') is not null then
+    execute 'delete from public.caramelo_personal_prompts where owner_user_id = $1' using p_user_id;
+  end if;
+  if to_regclass('public.caramelo_media_assets') is not null then
+    execute 'delete from public.caramelo_media_assets where owner_user_id = $1' using p_user_id;
+  end if;
+  if to_regclass('public.caramelo_media_folders') is not null then
+    execute 'delete from public.caramelo_media_folders where owner_user_id = $1' using p_user_id;
+  end if;
+  if to_regclass('public.caramelo_prompt_observations') is not null then
+    execute 'delete from public.caramelo_prompt_observations where user_id = $1' using p_user_id;
+  end if;
+  if to_regclass('public.caramelo_anonymous_identities') is not null then
+    execute 'update public.caramelo_anonymous_identities set claimed_by_user_id = null where claimed_by_user_id = $1' using p_user_id;
+  end if;
+  if to_regclass('public.access_audit_logs') is not null then
+    execute 'delete from public.access_audit_logs where target_user_id = $1' using p_user_id;
+  end if;
+
+  delete from public.profiles where id = p_user_id;
+  delete from auth.users where id = p_user_id;
+
+  return jsonb_build_object(
+    'success', true,
+    'user_id', p_user_id,
+    'email', v_target_email,
+    'message', 'Usuário e cadastro excluídos com sucesso.'
+  );
+end;
+$$;
+
+revoke all on function public.admin_delete_user(uuid) from public, anon;
+grant execute on function public.admin_delete_user(uuid) to authenticated;

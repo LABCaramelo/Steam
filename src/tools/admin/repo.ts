@@ -122,6 +122,13 @@ export const adminRepo = {
     if (error) throw new Error(error.message || "Erro ao alterar status do usuário.");
   },
 
+  async deleteUser(userId: string): Promise<void> {
+    const { error } = await supabase.rpc("admin_delete_user", {
+      p_user_id: userId,
+    });
+    if (error) throw new Error(error.message || "Erro ao excluir usuário e cadastro.");
+  },
+
   // ---------------------------------------------------------------------------
   // Conquistas
   // ---------------------------------------------------------------------------
@@ -211,5 +218,10 @@ export const adminRepo = {
       p_last_played_at: params.lastPlayedAt || new Date().toISOString(),
     });
     if (error) throw new Error(error.message || "Erro ao atualizar atividade da ferramenta.");
+  },
+
+  async getCurrentUserId(): Promise<string | null> {
+    const { data } = await supabase.auth.getUser();
+    return data.user?.id ?? null;
   },
 };

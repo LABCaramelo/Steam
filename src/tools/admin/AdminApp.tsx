@@ -100,6 +100,12 @@ export function AdminApp() {
   const [editingUser, setEditingUser] = useState<AdminUserItem | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // Exclusão de Membro e Cadastro
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [userToDelete, setUserToDelete] = useState<AdminUserItem | null>(null);
+  const [deletingUser, setDeletingUser] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+
   // Conquistas
   const [userAchModalUser, setUserAchModalUser] = useState<AdminUserItem | null>(null);
   const [userAchievements, setUserAchievements] = useState<AdminUserAchievementItem[]>([]);
@@ -149,6 +155,10 @@ export function AdminApp() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  useEffect(() => {
+    adminRepo.getCurrentUserId().then(setCurrentUserId);
+  }, []);
 
   // Carregar conquistas de um usuário específico
   const openUserAchievements = async (u: AdminUserItem) => {
@@ -380,6 +390,26 @@ export function AdminApp() {
       toast(err instanceof Error ? err.message : "Erro ao atualizar membro.", "error");
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Excluir membro e cadastro definitivo
+  const handleDeleteUser = async () => {
+    if (!userToDelete) return;
+    setDeletingUser(true);
+    try {
+      await adminRepo.deleteUser(userToDelete.id);
+      toast(`Membro ${userToDelete.name || userToDelete.email} excluído com sucesso.`, "info");
+      setUserToDelete(null);
+      setDeleteConfirmText("");
+      if (editingUser?.id === userToDelete.id) {
+        setEditingUser(null);
+      }
+      await loadData();
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Erro ao excluir membro.", "error");
+    } finally {
+      setDeletingUser(false);
     }
   };
 
@@ -804,6 +834,23 @@ export function AdminApp() {
                           onClick={() => setEditingUser({ ...u })}
                         >
                           Gerenciar
+                        </button>
+                        <button
+                          className="admin-btn admin-btn--ghost admin-btn--danger admin-btn--sm"
+                          title={
+                            u.id === currentUserId
+                              ? "Você não pode excluir sua própria conta"
+                              : u.email === "holaluiz.mail@gmail.com"
+                              ? "A conta do proprietário é protegida"
+                              : "Excluir usuário e cadastro"
+                          }
+                          onClick={() => {
+                            setUserToDelete(u);
+                            setDeleteConfirmText("");
+                          }}
+                          disabled={u.id === currentUserId || u.email === "holaluiz.mail@gmail.com"}
+                        >
+                          🗑️
                         </button>
                       </div>
                     </td>
@@ -1392,6 +1439,150 @@ export function AdminApp() {
                 </button>
               </div>
             </form>
+
+            <div
+              style={{
+                marginTop: "24px",
+                padding: "16px",
+                borderRadius: "8px",
+                border: "1px solid rgba(231, 76, 60, 0.3)",
+                background: "rgba(231, 76, 60, 0.05)",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+                <div>
+                  <strong style={{ color: "#ff6b6b", display: "block", fontSize: "13px" }}>
+                    Zona de Perigo: Excluir Cadastro
+                  </strong>
+                  <span style={{ fontSize: "12px", opacity: 0.7 }}>
+                    Remove o login, dados de autenticação e histórico deste membro do sistema.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className="admin-btn admin-btn--danger admin-btn--sm"
+                  onClick={() => {
+                    const target = editingUser;
+                    setEditingUser(null);
+                    setUserToDelete(target);
+                    setDeleteConfirmText("");
+                  }}
+                  disabled={editingUser.id === currentUserId || editingUser.email === "holaluiz.mail@gmail.com"}
+                  title={
+                    editingUser.id === currentUserId
+                      ? "Você não pode excluir sua própria conta"
+                      : editingUser.email === "holaluiz.mail@gmail.com"
+                      ? "A conta do proprietário é protegida"
+                      : "Excluir usuário e cadastro"
+                  }
+                >
+                  🗑️ Excluir Membro
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL: CONFIRMAÇÃO DE EXCLUSÃO DE USUÁRIO
+         ========================================================================= */}
+      {userToDelete && (
+        <div className="admin-modal-backdrop" onClick={() => !deletingUser && setUserToDelete(null)}>
+          <div
+            className="admin-modal"
+            style={{ maxWidth: "520px", border: "1px solid rgba(231, 76, 60, 0.5)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+              <span style={{ fontSize: "28px" }}>⚠️</span>
+              <div>
+                <h2 className="admin-modal__title" style={{ color: "#ff6b6b", margin: 0 }}>
+                  Excluir Usuário e Cadastro
+                </h2>
+                <p className="admin-modal__desc" style={{ margin: "4px 0 0" }}>
+                  Esta ação é irreversível e removerá permanentemente o acesso.
+                </p>
+              </div>
+            </div>
+
+            <div
+              style={{
+                background: "rgba(255, 255, 255, 0.03)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                borderRadius: "8px",
+                padding: "12px 16px",
+                margin: "16px 0",
+                fontSize: "13px",
+                lineHeight: "1.6",
+              }}
+            >
+              <div><strong>Nome:</strong> {userToDelete.name || "Sem nome"}</div>
+              <div><strong>E-mail:</strong> {userToDelete.email}</div>
+              <div><strong>Cargo atual:</strong> {userToDelete.role}</div>
+            </div>
+
+            <p style={{ fontSize: "13px", color: "rgba(255, 244, 232, 0.8)", lineHeight: "1.5" }}>
+              Ao confirmar a exclusão:
+            </p>
+            <ul style={{ fontSize: "12px", opacity: 0.75, margin: "0 0 16px 20px", lineHeight: "1.6" }}>
+              <li>A conta de autenticação será removida (o usuário não conseguirá mais fazer login).</li>
+              <li>O perfil, dados de progresso e histórico de atividades serão apagados.</li>
+              <li>O e-mail será liberado para um novo cadastro futuro, caso desejado.</li>
+            </ul>
+
+            {userToDelete.role === "admin" && (
+              <div
+                style={{
+                  background: "rgba(231, 76, 60, 0.15)",
+                  border: "1px solid rgba(231, 76, 60, 0.4)",
+                  borderRadius: "6px",
+                  padding: "10px 12px",
+                  marginBottom: "16px",
+                  fontSize: "12px",
+                  color: "#ff6b6b",
+                }}
+              >
+                ⚠️ Este usuário é um Administrador. Para excluí-lo por segurança, altere o cargo dele para Membro primeiro.
+              </div>
+            )}
+
+            <div className="admin-form-group">
+              <label style={{ fontSize: "12px" }}>
+                Para confirmar, digite <strong>EXCLUIR</strong> abaixo:
+              </label>
+              <input
+                type="text"
+                placeholder="Digite EXCLUIR para confirmar"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                disabled={deletingUser}
+                autoFocus
+              />
+            </div>
+
+            <div className="admin-modal__actions">
+              <button
+                type="button"
+                className="admin-btn admin-btn--ghost"
+                onClick={() => setUserToDelete(null)}
+                disabled={deletingUser}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="admin-btn admin-btn--danger"
+                onClick={handleDeleteUser}
+                disabled={
+                  deletingUser ||
+                  deleteConfirmText.trim().toUpperCase() !== "EXCLUIR" ||
+                  userToDelete.role === "admin"
+                }
+              >
+                {deletingUser ? "Excluindo…" : "Sim, Excluir Definitivamente"}
+              </button>
+            </div>
           </div>
         </div>
       )}
