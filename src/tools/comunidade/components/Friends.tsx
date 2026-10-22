@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ME, directMessages, users } from '../data';
+import { ME, users } from '../data';
 import { Friends as FriendsIcon, Search } from '../icons';
 import type { Action } from '../store';
 import { NavButton } from '../ui';
@@ -15,11 +15,6 @@ export function FriendsView({ dispatch }: { dispatch: (a: Action) => void }) {
     .filter((u) => (tab === 'online' ? u.status !== 'offline' : true))
     .filter((u) => u.name.toLowerCase().includes(query.toLowerCase()));
   const active = friends.filter((u) => u.status === 'online' && u.activity);
-
-  const openDm = (userId: string) => {
-    const dm = directMessages.find((d) => d.userId === userId);
-    if (dm) dispatch({ type: 'openHome', dmId: dm.id });
-  };
 
   return (
     <div className="friends">

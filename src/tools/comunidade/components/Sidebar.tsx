@@ -90,7 +90,7 @@ export function ServerSidebar({ server, state, voiceUi, dispatch }: ServerSideba
                       <ChannelIcon channel={ch} />
                       <span className="channel-name">{ch.name}</span>
                     </button>
-                    {ch.kind === 'voice' && <VoiceUserList channelId={ch.id} state={state} voiceUi={voiceUi} />}
+                    {ch.kind === 'voice' && <VoiceUserList channelId={ch.id} state={state} voiceUi={voiceUi} dispatch={dispatch} />}
                   </div>
                 ))}
             </section>
@@ -164,7 +164,7 @@ function ServerMenu({ server, dispatch }: { server: Server; dispatch: (a: Action
   );
 }
 
-function VoiceUserList({ channelId, state, voiceUi }: { channelId: string; state: State; voiceUi: VoiceUi }) {
+function VoiceUserList({ channelId, state, voiceUi, dispatch }: { channelId: string; state: State; voiceUi: VoiceUi; dispatch: (a: Action) => void }) {
   const { session, occupancy } = voiceUi;
   // No canal em que você está, a lista vem da própria chamada (ao vivo); nos outros, do servidor.
   const live = state.voice?.channelId === channelId && session.members.length > 0;

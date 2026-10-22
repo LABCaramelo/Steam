@@ -25,7 +25,7 @@ export function UserProfileModal({ user, onClose, dispatch, currentUserId }: Pro
   };
 
   const handleEditProfile = () => {
-    dispatch({ type: 'openModal', modal: { kind: 'settings', section: 'profile' } });
+    dispatch({ type: 'openModal', modal: { kind: 'settings', section: 'perfis' } });
   };
 
   const handleOpenLabProfile = () => {

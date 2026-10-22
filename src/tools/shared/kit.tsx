@@ -181,12 +181,12 @@ export function ToolGate({ tool, children }: { tool: ToolInfo; children: ReactNo
   useEffect(() => {
     if (state.kind !== "ready") return;
     // Log initial open/session activity
-    supabase.rpc("record_tool_activity", { p_slug: tool.slug, p_minutes: 1 }).catch(() => {});
+    void Promise.resolve(supabase.rpc("record_tool_activity", { p_slug: tool.slug, p_minutes: 1 })).catch(() => {});
 
     // Heartbeat every 60s while the page is active
     const timer = setInterval(() => {
       if (document.visibilityState === "visible") {
-        supabase.rpc("record_tool_activity", { p_slug: tool.slug, p_minutes: 1 }).catch(() => {});
+        void Promise.resolve(supabase.rpc("record_tool_activity", { p_slug: tool.slug, p_minutes: 1 })).catch(() => {});
       }
     }, 60_000);
 

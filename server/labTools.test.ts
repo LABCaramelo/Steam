@@ -84,12 +84,12 @@ before(async () => {
 describe("loja e biblioteca", () => {
   test("o catálogo é público e a biblioteca começa vazia", async () => {
     const tools = await as(null, (tx) => rows<{ slug: string; available: boolean }>(tx, "select slug, available from public.lab_tools order by appid"));
-    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" })));
+    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" || slug === "prancheta" })));
     const owned = await as(ALICE, (tx) => rows(tx, "select * from public.user_tools"));
     assert.equal(owned.length, 0);
   });
 
-  test("apenas a biblioteca de prompts fica liberada (beta) e as demais ficam em breve", async () => {
+  test("biblioteca de prompts e prancheta ficam liberadas (beta) e as demais ficam em breve", async () => {
     // Simula um banco já configurado: catálogo liberado e uma aquisição anterior à mudança.
     await db.query("insert into auth.users (id) values ($1)", [PREVIOUS_OWNER]);
     await db.query("insert into public.lab_access (user_id, verified_at, member_at) values ($1, now(), now())", [PREVIOUS_OWNER]);
@@ -99,11 +99,11 @@ describe("loja e biblioteca", () => {
     await db.exec(sql("lab-tools.sql"));
 
     const tools = await as(null, (tx) => rows<{ slug: string; available: boolean }>(tx, "select slug, available from public.lab_tools order by appid"));
-    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" })));
+    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" || slug === "prancheta" })));
     const future = await db.query<{ available: boolean }>("insert into public.lab_tools (slug, appid, name) values ('futura', 99, 'Futura') returning available");
     assert.deepEqual(future.rows, [{ available: false }]);
     await db.exec("delete from public.lab_tools where slug = 'futura'");
-    for (const slug of TOOL_SLUGS.filter((s) => s !== "prompt-library")) {
+    for (const slug of TOOL_SLUGS.filter((s) => s !== "prompt-library" && s !== "prancheta")) {
       assert.match(await rejects(ALICE, "select public.acquire_tool($1)", [slug]), /Em breve/);
     }
     assert.deepEqual(await as(PREVIOUS_OWNER, (tx) => rows(tx, "select * from public.user_tools")), [previous]);
