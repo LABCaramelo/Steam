@@ -133,7 +133,8 @@ export function initMaker(getLenis = () => null) {
       reduced: '(prefers-reduced-motion: reduce)'
     }, context => {
       const { wide, fine, reduced } = context.conditions;
-      if (!wide || !fine || reduced) return;
+      // The full biography needs document flow; discipline controls keep working in flow mode.
+      if (!wide || !fine || reduced || section.classList.contains('maker-section-expanded')) return;
       mode = 'scrub';
       section.dataset.makerMode = mode;
       const sheet = section.querySelector('.maker-scroll-shell');
