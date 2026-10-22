@@ -1,0 +1,73 @@
+/* Keep the original opening within one viewport at every breakpoint. */
+.head-intro.hero-scene {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  font-family: Inter, sans-serif;
+}
+.head-intro .hero-display-headline {
+  font-family: "Bowlby One SC", Anton, Montserrat, sans-serif;
+}
+.head-intro .mini-card-title {
+  font-family: Montserrat, Inter, sans-serif;
+  font-size: clamp(12px, 1.25vw, 21px);
+}
+.head-intro .prompt-bank-trigger-btn { gap: 7px; }
+.head-intro .hero-bottom-actions { pointer-events: none; }
+.head-intro .mini-game-card { pointer-events: auto; }
+@media (max-width: 767px) {
+  .head-intro.hero-scene { height: 100dvh; min-height: 0; position: fixed; overflow: hidden; }
+  .head-intro .hero-bottom-actions {
+    position: absolute;
+    inset: auto 16px max(16px, env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 0;
+    width: auto;
+    padding: 0;
+  }
+  .head-intro .bottom-cards-cluster {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: auto;
+    min-width: 0;
+  }
+  .head-intro .mini-game-card {
+    width: 100%;
+    height: clamp(68px, 11dvh, 100px);
+    min-height: 0;
+  }
+  .head-intro .mini-card-title { font-size: clamp(12px, 3vw, 18px); max-width: 75%; }
+  .head-intro .mini-card-lesson { font-size: 9px; }
+  .head-intro .left-copy-column { position: absolute; top: 16%; bottom: auto; left: 0; padding-top: 0; }
+  .head-intro .hero-display-headline { font-size: clamp(36px, 11vw, 72px); }
+  .head-intro .course-pill-tag { margin-top: 12px; font-size: 11px; }
+  .head-intro .course-pill-tag strong { font-size: 12px; }
+  .head-intro .game-navbar { position: absolute; top: 20px; left: auto; right: 18px; width: 110px; height: 30px; padding: 0; }
+  .head-intro .hero-top-bar { top: 20px; left: 18px; right: auto; }
+  .head-intro .nav-partner-logo { max-width: 110px; }
+  .head-intro .prompt-bank-trigger-btn { font-size: 10px; height: 32px; padding: 0 12px; }
+  .head-intro .hero-media { position: absolute; inset: 0; height: 100%; }
+  .head-intro .hero-background { height: 100%; object-fit: cover; object-position: 55% center; }
+}
+@media (max-height: 600px) and (min-width: 768px) {
+  .head-intro .hero-display-headline { font-size: clamp(42px, 8vw, 80px); }
+  .head-intro .left-copy-column { top: 16%; }
+  .head-intro .hero-bottom-actions { bottom: 18px; }
+  .head-intro .mini-game-card { height: clamp(78px, 23dvh, 120px); }
+}
+@media (max-height: 500px) and (max-width: 767px) {
+  .head-intro .left-copy-column { top: 22%; }
+  .head-intro .hero-display-headline { font-size: clamp(28px, 7vw, 44px); }
+  .head-intro .hero-bottom-actions { display: flex; gap: 8px; }
+  .head-intro .bottom-cards-cluster { display: contents; }
+  .head-intro .mini-game-card { height: 70px; flex: 1; }
+  .head-intro .mini-card-copy { padding: 10px; }
+  .head-intro .mini-card-title { font-size: 10px; max-width: 90%; }
+  .head-intro .mini-card-go-btn { display: none; }
+}
