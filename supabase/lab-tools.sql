@@ -72,7 +72,7 @@ grant select on table public.lab_tools to anon, authenticated;
 drop policy if exists "lab_tools_select" on public.lab_tools;
 create policy "lab_tools_select" on public.lab_tools for select using (true);
 
--- Estado atual da Loja: Biblioteca de prompts e Prancheta liberadas em Beta. As demais permanecem em breve.
+-- Estado atual da Loja: Biblioteca de prompts liberada; Prancheta liberada em Beta. As demais permanecem em breve.
 insert into public.lab_tools (slug, appid, name, available) values
   ('prompt-library', 1, 'Biblioteca de prompts', true),
   ('kanban', 2, 'Kanban', false),
@@ -80,7 +80,8 @@ insert into public.lab_tools (slug, appid, name, available) values
   ('automation', 4, 'Automation', false),
   ('academy', 5, 'Academy', false),
   ('claquete', 6, 'Claquete', false),
-  ('comunidade', 7, 'Comunidade', false)
+  ('comunidade', 7, 'Comunidade', false),
+  ('gravador', 9, 'Gravador', false)
 on conflict (slug) do update set appid = excluded.appid, name = excluded.name, available = excluded.available;
 
 create table if not exists public.user_tools (

@@ -150,7 +150,7 @@ function ToolWorkspace({ app }: { app: LibraryApp }) {
         className="tool-workspace__frame"
         src={`${app.tool!.publicPage}?embed=1`}
         title={app.name}
-        allow="clipboard-write; fullscreen; autoplay; picture-in-picture"
+        allow="clipboard-write; fullscreen; autoplay; picture-in-picture; camera; microphone; display-capture"
         allowFullScreen
         onLoad={() => setLoading(false)}
       />

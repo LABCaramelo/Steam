@@ -26,7 +26,7 @@ A primeira ferramenta do LAB é a **Biblioteca de prompts**, disponível na pág
 
 A biblioteca preserva o acervo e as interações de `LP/prompts.html`. A identidade segue o MCP Caramelo: tokens canônicos em `tools/prompt-library/caramelo-tokens.css`, isotipo canônico e a ação principal com as cinco cores. A API `/api/prompt-library` atende tanto ao Vite local quanto à função Vercel; os metadados são incluídos no projeto e os textos completos e as prévias usam os serviços públicos originais. Favoritos e preferências da biblioteca ficam no armazenamento do navegador. A pasta LP original não é alterada.
 
-A biblioteca conecta-se diretamente à base do Supabase (`fzhzpzxsttflgtassyex.supabase.co`) através da RPC canônica `get_caramelo_prompt_copy`, garantindo acesso em tempo real e de alta performance a todos os textos completos dos 419 prompts autorais sem depender de servidores intermediários. O deploy em produção é servido em `https://lab-caramelo.vercel.app/`.
+A biblioteca conecta-se diretamente à base do Supabase (`fzhzpzxsttflgtassyex.supabase.co`) através da RPC canônica `get_caramelo_prompt_copy`, garantindo acesso em tempo real e de alta performance a todos os textos completos dos 419 prompts catalogados sem depender de servidores intermediários. O deploy em produção é servido em `https://lab-caramelo.vercel.app/`.
 
 Downloads simulados podem ser pausados, retomados e cancelados; conclusão e execução continuam ao navegar entre páginas. Atualizar a página reinicia as simulações. Os registros locais da Steam são somente leitura; envio de comandos `steam://` é uma opção explícita em Configurações > Biblioteca.
 
@@ -38,7 +38,7 @@ Projeto de estudo sem afiliação com a Valve Corporation.
 
 ## Ferramentas e aquisição
 
-A Loja disponibiliza a **Biblioteca de prompts** em versão **Beta** para membros do LAB. As demais ferramentas aparecem como **Em breve**, com aquisição em preparação. O catálogo do frontend usa `available: true` para a Biblioteca de prompts e `available: false` para as demais; o banco libera a aquisição apenas das ferramentas ativas.
+A Loja disponibiliza a **Biblioteca de prompts** para membros do LAB. As demais ferramentas aparecem como **Em breve**, com aquisição em preparação. O catálogo do frontend usa `available: true` para a Biblioteca de prompts e `available: false` para as demais; o banco libera a aquisição apenas das ferramentas ativas.
 
 Quem já adquiriu pode escolher **Remover da biblioteca…** nos detalhes ou no menu da ferramenta. A confirmação **Remover e apagar meus dados** chama `release_tool(p_slug)`: aquisição e registros próprios da ferramenta são excluídos na mesma transação, inclusive dados vinculados por cascata. A RPC usa a conta autenticada e permite a exclusão mesmo após perda de acesso ao LAB. Gravações autenticadas concorrentes seguram a posse até terminar, para a limpeza acontecer depois delas. Adquirir novamente, quando liberado, começa sem esses registros.
 

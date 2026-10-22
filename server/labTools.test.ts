@@ -18,7 +18,7 @@ const BRUNO = "00000000-0000-4000-8000-00000000000b";
 const CLARA = "00000000-0000-4000-8000-00000000000c"; // signed up, never confirmed the WhatsApp group
 const ADMIN = "00000000-0000-4000-8000-0000000000ad";
 const PREVIOUS_OWNER = "00000000-0000-4000-8000-00000000000e";
-const TOOL_SLUGS = ["prompt-library", "kanban", "prancheta", "automation", "academy", "claquete", "comunidade"];
+const TOOL_SLUGS = ["prompt-library", "kanban", "prancheta", "automation", "academy", "claquete", "comunidade", "gravador"];
 
 const SUPABASE_STUB = `
   create role anon nologin;
@@ -89,7 +89,7 @@ describe("loja e biblioteca", () => {
     assert.equal(owned.length, 0);
   });
 
-  test("biblioteca de prompts e prancheta ficam liberadas (beta) e as demais ficam em breve", async () => {
+  test("biblioteca de prompts e prancheta ficam liberadas e as demais ficam em breve", async () => {
     // Simula um banco já configurado: catálogo liberado e uma aquisição anterior à mudança.
     await db.query("insert into auth.users (id) values ($1)", [PREVIOUS_OWNER]);
     await db.query("insert into public.lab_access (user_id, verified_at, member_at) values ($1, now(), now())", [PREVIOUS_OWNER]);

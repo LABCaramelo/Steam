@@ -40,14 +40,13 @@ function tool(appid: number, name: string, meta: Omit<ToolMetadata, "available">
 export const PROMPT_LIBRARY_APP = tool(PROMPT_LIBRARY_APP_ID, "Biblioteca de prompts", {
   slug: "prompt-library",
   available: true,
-  stage: "beta",
   launchPath: `/library/app/${PROMPT_LIBRARY_APP_ID}/open`,
   publicPage: "/tools/prompt-library/index.html",
   description: "Encontre, organize e copie prompts para criar com inteligência artificial.",
   assets: art("/tools/prompt-library/art"),
   store: {
-    tagline: "Prompts autorais para interfaces, motion e design.",
-    eyebrow: "ACERVO CRIATIVO / VERSÃO BETA",
+    tagline: "Prompts para interfaces, motion e design.",
+    eyebrow: "ACERVO CRIATIVO / ACESSO LIVRE",
     headline: "Menos página em branco.\nMais ideias em ação.",
     features: [
       { title: "Encontre sua referência", text: "Busque por nome, assunto ou tecnologia e filtre o acervo por categoria." },
@@ -56,7 +55,7 @@ export const PROMPT_LIBRARY_APP = tool(PROMPT_LIBRARY_APP_ID, "Biblioteca de pro
       { title: "Copie e faça do seu jeito", text: "Abra o prompt completo, copie o texto e compartilhe a referência." },
     ],
     steps: ["Abra a biblioteca e explore o acervo.", "Escolha uma referência e veja o prompt.", "Copie o texto e transforme a ideia no seu projeto."],
-    about: [["Formato", "Biblioteca interativa"], ["Versão", "Beta"], ["Idioma", "Português"], ["Instalação", "Acesso direto pelo LAB"]],
+    about: [["Formato", "Biblioteca interativa"], ["Idioma", "Português"], ["Instalação", "Acesso direto pelo LAB"]],
     dataNote: "Favoritos e preferências ficam no seu navegador. Os textos completos e as prévias precisam de internet.",
     category: "Referências",
   },
@@ -205,6 +204,41 @@ export const CLAQUETE_APP = tool(CLAQUETE_APP_ID, "Claquete", {
 /** Store order. */
 
 export const ADMIN_APP_ID = 8;
+export const GRAVADOR_APP_ID = 9;
+
+export const GRAVADOR_APP = tool(GRAVADOR_APP_ID, "Gravador", {
+  slug: "gravador",
+  available: true,
+  stage: "beta",
+  launchPath: `/library/app/${GRAVADOR_APP_ID}/open`,
+  publicPage: "/tools/gravador/index.html",
+  description: "Estúdio de gravação de tela, webcam e áudio profissional em 1080p a 60 FPS com Modo Estúdio e mixer em tempo real.",
+  assets: art("/tools/gravador/art"),
+  store: {
+    tagline: "Gravação profissional de tela, webcam e áudio no navegador.",
+    eyebrow: "AUDIOVISUAL / ESTÚDIO 1080P60 / VERSÃO BETA",
+    headline: "Grave com precisão de estúdio,\ndo canvas ao corte final.",
+    features: [
+      { title: "Canvas 60 FPS com Cenas & Fontes", text: "Componha telas, webcams, imagens, textos rolantes e sobreposições com renderização a 60 FPS e gizmo tátil." },
+      { title: "Modo Estúdio & Transições com T-Bar", text: "Pré-visualize a cena antes de ir ao ar, transicione com Fade, Cut e controle manual milimétrico no fader analógico." },
+      { title: "Mixer de Áudio com V-Meters em dB", text: "Medidores segmentados em decibéis, faders independentes por canal, botão de mute suave e suporte a filtros de áudio." },
+      { title: "Gravação Real em MP4 e WebM", text: "Grave e baixe instantaneamente arquivos em resolução Full HD a 60 quadros sem precisar de software instalado." },
+    ],
+    steps: [
+      "Adquira o Gravador e abra o estúdio pelo LAB.",
+      "Adicione suas fontes de tela, câmera e microfone organizadas em cenas.",
+      "Inicie a gravação e baixe seu vídeo em alta qualidade direto no navegador.",
+    ],
+    about: [
+      ["Formato", "Estúdio de Gravação Web"],
+      ["Versão", "Beta"],
+      ["Taxa de quadros", "60 FPS (Full HD)"],
+      ["Exportação", "MP4 e WebM"],
+    ],
+    dataNote: "Todo o processamento de captura e gravação roda localmente no seu navegador. Nenhuma imagem ou áudio passa por servidores externos.",
+    category: "Audiovisual",
+  },
+});
 
 export const ADMIN_APP = tool(ADMIN_APP_ID, "Administração do LAB", {
   slug: "admin",
@@ -240,6 +274,7 @@ export const TOOL_CATALOG: readonly LibraryApp[] = [
   ADMIN_APP,
   COMUNIDADE_APP,
   CLAQUETE_APP,
+  GRAVADOR_APP,
   ACADEMY_APP,
   KANBAN_APP,
   PRANCHETA_APP,
