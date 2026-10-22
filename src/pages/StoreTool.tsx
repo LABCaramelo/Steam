@@ -1,17 +1,23 @@
 import { TiltSurface } from "@caramelo/design-system";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { AcquireButton, OwnedBadge } from "../components/AcquireButton";
 import { AppArt } from "../components/AppArt";
 import { PointerTrail } from "../components/PointerTrail";
 import { useAuth } from "../auth";
 import { useEntitlements } from "../entitlements";
-import { getRegisteredTool } from "../toolCatalog";
+import { getRegisteredTool, subscribeToolCatalog } from "../toolCatalog";
 
 /** Página da ferramenta na loja: o que ela faz, onde ficam os dados e o botão de adquirir. */
 export function StoreToolPage() {
   const { appid } = useParams();
-  const app = getRegisteredTool(Number(appid));
+  const [catalogVersion, setCatalogVersion] = useState(0);
+
+  useEffect(() => {
+    return subscribeToolCatalog(() => setCatalogVersion((v: number) => v + 1));
+  }, []);
+
+  const app = useMemo(() => getRegisteredTool(Number(appid)), [appid, catalogVersion]);
   const { owns } = useEntitlements();
   const { profile } = useAuth();
 
@@ -72,13 +78,13 @@ export function StoreToolPage() {
           <span className="tool-details__eyebrow">{store.eyebrow}</span>
           <TiltSurface max={2.5}>
             <h2 className="store-tool__headline">
-              {store.headline.split("\n").map((line, i) => (
+              {store.headline.split("\n").map((line: string, i: number) => (
                 <span key={i}>{line}</span>
               ))}
             </h2>
           </TiltSurface>
           <div className="tool-details__features">
-            {store.features.map((f) => (
+            {store.features.map((f: { title: string; text: string }) => (
               <div key={f.title} className="cm-surface--spotlight">
                 <h3>{f.title}</h3>
                 <p>{f.text}</p>
@@ -89,7 +95,7 @@ export function StoreToolPage() {
         <section className="panel store-tool__steps">
           <h2 className="panel__title">Como funciona</h2>
           <ol className="tool-details__steps">
-            {store.steps.map((step) => (
+            {store.steps.map((step: string) => (
               <li key={step}>{step}</li>
             ))}
           </ol>

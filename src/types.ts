@@ -42,6 +42,7 @@ export interface ToolMetadata {
   adminOnly?: boolean;
   /** Estágio de disponibilidade: 'beta' | 'stable' */
   stage?: "beta" | "stable";
+  price_cents?: number;
 }
 
 export interface LibraryApp {

@@ -11,7 +11,7 @@ import type {
   ToolBannerKind,
   ToolCustomAssets,
 } from "./types";
-import { updateCustomToolAssets } from "../../toolCatalog";
+import { updateCustomToolAssets, updateDynamicToolMeta } from "../../toolCatalog";
 import "./admin.css";
 
 
@@ -280,6 +280,7 @@ export function AdminApp() {
     setTools((prev) =>
       prev.map((t) => (t.slug === tool.slug ? { ...t, available: nextState } : t))
     );
+    updateDynamicToolMeta(tool.appid, { available: nextState });
     try {
       await adminRepo.setToolAvailability(tool.slug, nextState);
       toast(
@@ -305,6 +306,11 @@ export function AdminApp() {
     setSaving(true);
     try {
       await adminRepo.updateTool(editingTool.slug, {
+        name: editingTool.name,
+        price_cents: editingTool.price_cents,
+        available: editingTool.available,
+      });
+      updateDynamicToolMeta(editingTool.appid, {
         name: editingTool.name,
         price_cents: editingTool.price_cents,
         available: editingTool.available,

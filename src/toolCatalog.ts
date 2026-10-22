@@ -282,54 +282,113 @@ export const TOOL_CATALOG: readonly LibraryApp[] = [
   AUTOMATION_APP,
 ];
 
-export function getRegisteredTool(appid: number): LibraryApp | undefined {
-  return TOOL_CATALOG.find((app) => app.appid === appid);
+export interface DynamicToolMeta {
+  name?: string;
+  available?: boolean;
+  price_cents?: number;
+  custom_assets?: Record<string, string | undefined>;
 }
 
-export function getToolBySlug(slug: string): LibraryApp | undefined {
-  return TOOL_CATALOG.find((app) => app.tool?.slug === slug);
+let dynamicToolMetaByAppId: Record<number, DynamicToolMeta> = {};
+const catalogChangeListeners = new Set<() => void>();
+
+export function getDynamicToolMeta(appid: number): DynamicToolMeta | undefined {
+  return dynamicToolMetaByAppId[appid];
 }
 
-let customAssetsByAppId: Record<number, Record<string, string | undefined>> = {};
-const customAssetListeners = new Set<() => void>();
+export function setDynamicToolMeta(map: Record<number, DynamicToolMeta>) {
+  dynamicToolMetaByAppId = { ...dynamicToolMetaByAppId, ...map };
+  catalogChangeListeners.forEach((fn) => fn());
+}
+
+export function updateDynamicToolMeta(appid: number, patch: Partial<DynamicToolMeta>) {
+  dynamicToolMetaByAppId = {
+    ...dynamicToolMetaByAppId,
+    [appid]: { ...dynamicToolMetaByAppId[appid], ...patch },
+  };
+  catalogChangeListeners.forEach((fn) => fn());
+}
+
+export function subscribeToolCatalog(listener: () => void): () => void {
+  catalogChangeListeners.add(listener);
+  return () => {
+    catalogChangeListeners.delete(listener);
+  };
+}
+
+// Backward compatibility alias for banners
+export const subscribeCustomToolAssets = subscribeToolCatalog;
 
 export function setCustomToolAssets(assetsMap: Record<number, Record<string, string | undefined>>) {
-  customAssetsByAppId = { ...customAssetsByAppId, ...assetsMap };
-  customAssetListeners.forEach((fn) => fn());
+  const metaMap: Record<number, DynamicToolMeta> = {};
+  for (const [appidStr, assets] of Object.entries(assetsMap)) {
+    const appid = Number(appidStr);
+    metaMap[appid] = {
+      ...(dynamicToolMetaByAppId[appid] || {}),
+      custom_assets: assets,
+    };
+  }
+  setDynamicToolMeta(metaMap);
 }
 
 export function updateCustomToolAssets(appid: number, assets: Record<string, string | undefined>) {
-  customAssetsByAppId = {
-    ...customAssetsByAppId,
-    [appid]: { ...assets },
-  };
-  customAssetListeners.forEach((fn) => fn());
+  updateDynamicToolMeta(appid, { custom_assets: assets });
 }
 
 export function getCustomToolAssets(appid: number): Record<string, string | undefined> | undefined {
-  return customAssetsByAppId[appid];
+  return dynamicToolMetaByAppId[appid]?.custom_assets;
 }
 
-export function subscribeCustomToolAssets(listener: () => void): () => void {
-  customAssetListeners.add(listener);
-  return () => {
-    customAssetListeners.delete(listener);
+export function applyToolOverrides(app: LibraryApp): LibraryApp {
+  const meta = dynamicToolMetaByAppId[app.appid];
+  if (!meta) return app;
+  return {
+    ...app,
+    name: meta.name?.trim() ? meta.name : app.name,
+    tool: app.tool
+      ? {
+          ...app.tool,
+          available: meta.available !== undefined ? meta.available : app.tool.available,
+          price_cents: meta.price_cents !== undefined ? meta.price_cents : app.tool.price_cents,
+        }
+      : undefined,
   };
+}
+
+export function getRegisteredTool(appid: number): LibraryApp | undefined {
+  const base = TOOL_CATALOG.find((app) => app.appid === appid);
+  return base ? applyToolOverrides(base) : undefined;
+}
+
+export function getToolBySlug(slug: string): LibraryApp | undefined {
+  const base = TOOL_CATALOG.find((app) => app.tool?.slug === slug);
+  return base ? applyToolOverrides(base) : undefined;
+}
+
+export function getCatalogApps(isAdmin = false): LibraryApp[] {
+  return TOOL_CATALOG
+    .filter((app) => !app.tool?.adminOnly || isAdmin)
+    .map(applyToolOverrides);
 }
 
 export async function syncCustomToolAssets(): Promise<void> {
   try {
     const { data, error } = await supabase
       .from("lab_tools")
-      .select("appid, slug, custom_assets");
+      .select("appid, slug, name, available, price_cents, custom_assets");
     if (!error && Array.isArray(data)) {
-      const map: Record<number, Record<string, string>> = {};
+      const metaMap: Record<number, DynamicToolMeta> = {};
       for (const row of data) {
-        if (row.appid && row.custom_assets && typeof row.custom_assets === "object") {
-          map[row.appid] = row.custom_assets;
+        if (row.appid) {
+          metaMap[row.appid] = {
+            name: row.name || undefined,
+            available: typeof row.available === "boolean" ? row.available : undefined,
+            price_cents: typeof row.price_cents === "number" ? row.price_cents : undefined,
+            custom_assets: (row.custom_assets && typeof row.custom_assets === "object") ? row.custom_assets : undefined,
+          };
         }
       }
-      setCustomToolAssets(map);
+      setDynamicToolMeta(metaMap);
     }
   } catch {
     // Modo offline / fallback
@@ -340,7 +399,7 @@ export async function syncCustomToolAssets(): Promise<void> {
 syncCustomToolAssets();
 
 export function toolArtUrl(appid: number, kind: ArtKind): string | undefined {
-  const custom = customAssetsByAppId[appid];
+  const custom = dynamicToolMetaByAppId[appid]?.custom_assets;
   if (custom) {
     if (kind === "heroBlur") {
       if (custom.heroBlur) return custom.heroBlur;
@@ -358,9 +417,13 @@ export function toolArtUrl(appid: number, kind: ArtKind): string | undefined {
  * are removed, so a Steam snapshot can never bring one in either.
  */
 export function registerTools(snapshot: LibrarySnapshot, owned: ReadonlySet<string>, isAdmin = false): LibrarySnapshot {
-  const catalogIds = new Set(TOOL_CATALOG.map((app) => app.appid));
+  const dynamicCatalog = getCatalogApps(isAdmin);
+  const catalogIds = new Set(dynamicCatalog.map((app) => app.appid));
   return {
     ...snapshot,
-    apps: [...TOOL_CATALOG.filter((app) => (!app.tool?.adminOnly || isAdmin) && owned.has(app.tool!.slug)), ...snapshot.apps.filter((app) => !catalogIds.has(app.appid))],
+    apps: [
+      ...dynamicCatalog.filter((app) => owned.has(app.tool!.slug)),
+      ...snapshot.apps.filter((app) => !catalogIds.has(app.appid)),
+    ],
   };
 }

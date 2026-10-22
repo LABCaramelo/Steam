@@ -5,7 +5,7 @@ import { AcquireButton, OwnedBadge } from "../components/AcquireButton";
 import { AppArt } from "../components/AppArt";
 import { IconChevronRight } from "../components/Icons";
 import { UNCONFIGURED_MESSAGE, useEntitlements } from "../entitlements";
-import { TOOL_CATALOG } from "../toolCatalog";
+import { getCatalogApps, subscribeToolCatalog } from "../toolCatalog";
 import type { LibraryApp } from "../types";
 
 /**
@@ -16,16 +16,23 @@ export function StorePage() {
   const { owns, status } = useEntitlements();
   const { profile } = useAuth();
   const isAdmin = profile?.role === "admin";
-  const catalog = useMemo(() => TOOL_CATALOG.filter((a) => !a.tool?.adminOnly || isAdmin), [isAdmin]);
+  const [catalogVersion, setCatalogVersion] = useState(0);
+
+  useEffect(() => {
+    return subscribeToolCatalog(() => setCatalogVersion((v) => v + 1));
+  }, []);
+
+  const catalog = useMemo(() => getCatalogApps(isAdmin), [isAdmin, catalogVersion]);
   const [slide, setSlide] = useState(0);
   const featured = catalog;
 
   useEffect(() => {
+    if (!featured.length) return;
     const id = setInterval(() => setSlide((s) => (s + 1) % featured.length), 7000);
     return () => clearInterval(id);
   }, [featured.length]);
 
-  const cur = featured[slide];
+  const cur = featured[slide] || featured[0];
   const ownedCount = catalog.filter((a) => owns(a.tool!.slug)).length;
   const allComingSoon = catalog.every((a) => !a.tool!.available);
 

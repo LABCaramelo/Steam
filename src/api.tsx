@@ -5,7 +5,7 @@ import type { Achievement, ArtKind, LibraryApp, LibrarySnapshot, UserCollection 
 import { useAuth } from "./auth";
 import { supabase } from "./supabase";
 import { useEntitlements } from "./entitlements";
-import { getRegisteredTool, registerTools, syncCustomToolAssets, toolArtUrl } from "./toolCatalog";
+import { getRegisteredTool, registerTools, subscribeToolCatalog, syncCustomToolAssets, toolArtUrl } from "./toolCatalog";
 
 export const artUrl = (appid: number, kind: ArtKind) => toolArtUrl(appid, kind) ?? `/api/art/${appid}/${kind}`;
 
@@ -77,9 +77,15 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   const [storedCollections, setCollections] = useState<UserCollection[]>([]);
   // Owned tools join the library once the person's library is known, so a tool never flashes in and out.
   const isAdmin = profile?.role === "admin";
+  const [catalogVersion, setCatalogVersion] = useState(0);
+
+  useEffect(() => {
+    return subscribeToolCatalog(() => setCatalogVersion((v) => v + 1));
+  }, []);
+
   const snapshot = useMemo(
     () => (source && entitlements.status !== "loading" ? registerTools(source, entitlements.owned, isAdmin) : null),
-    [source, entitlements.status, entitlements.owned, isAdmin],
+    [source, entitlements.status, entitlements.owned, isAdmin, catalogVersion],
   );
   // Collections keep ids of tools that are not owned yet (or anymore); they are hidden, not forgotten.
   const collections = useMemo(() => {
