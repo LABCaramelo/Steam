@@ -145,9 +145,7 @@ function StoryMotion(p: Props) {
     const tick = (now: number) => { const value = Math.min(100, initial + (now - start) / 30); p.demo("motion-progress", value); if (value < 100) frame.current = requestAnimationFrame(tick); else setPlaying(false); };
     frame.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame.current);
-    // The animation reads its starting point once, then owns progress until stopped.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, p.reduced]);
+  }, [playing, p.reduced, p.demo]);
   const positions = [[-160, -60, -22], [120, 70, 15], [-65, 80, 25], [150, -70, -16], [10, -85, 8], [-170, 55, -8]];
   const labels = ["IDEIA", "COPY", "IMAGEM", "AÇÃO", "SISTEMA", "EXPERIÊNCIA"];
   return <div className="story-motion"><Choices labels={["01 · Caos → ordem", "02 · Processo", "03 · Resultado"]} selected={scene} onChange={n => { setPlaying(false); p.demo("motion-scene", n); p.demo("motion-progress", 0); }} /><div className={`motion-scene scene-${scene}`}>

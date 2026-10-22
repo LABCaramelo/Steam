@@ -8,7 +8,17 @@ import "./style.css";
 
 const params = new URLSearchParams(location.search);
 const isTeacher = params.get("professor") === "1";
-const session = params.get("session") || crypto.randomUUID();
+function presentationSession() {
+  const supplied = params.get("session");
+  if (supplied) return supplied;
+  try {
+    const key = "head-presentation-session";
+    const id = sessionStorage.getItem(key) || crypto.randomUUID();
+    sessionStorage.setItem(key, id);
+    return id;
+  } catch { return crypto.randomUUID(); }
+}
+const session = presentationSession();
 const channelName = `aula-head-presenter-${session}`;
 
 function App() {
@@ -77,14 +87,16 @@ function App() {
     return () => preference.removeEventListener("change", change);
   }, []);
 
-  function demo(key: string, value: DemoValue) { setProject(p => ({ ...p, demo: { ...p.demo, [key]: value } })); }
+  const demo = useCallback((key: string, value: DemoValue) => { setProject(p => ({ ...p, demo: { ...p.demo, [key]: value } })); }, []);
   function updateList(key: "brief" | "notes", i: number, value: string) { setProject(p => ({ ...p, [key]: p[key].map((old, n) => n === i ? value : old) })); }
   function toggleComplete(i: number) { setProject(p => ({ ...p, completed: p.completed.map((v, n) => n === i ? !v : v) })); }
   function openPrompt(i: number) { setPromptIndex(i); setModal("prompts"); }
-  function openTeacher() {
+  const teacherUrl = new URL(location.href);
+  teacherUrl.search = new URLSearchParams({ professor: "1", session }).toString();
+  function openTeacher(event: React.MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
     if (teacherWindow.current && !teacherWindow.current.closed) { teacherWindow.current.focus(); return; }
-    const url = new URL(location.href); url.search = new URLSearchParams({ professor: "1", session }).toString();
-    const popup = window.open(url, `head-professor-${session}`, "popup,width=720,height=860"); teacherWindow.current = popup;
+    const popup = window.open(teacherUrl, `head-professor-${session}`, "popup,width=720,height=860"); teacherWindow.current = popup;
     setMessage(popup ? "Janela do professor aberta. Projete apenas a janela da apresentação; mantenha as notas na outra tela." : "O navegador bloqueou a janela do professor. Permita pop-ups para este site e tente novamente.");
   }
   const briefText = briefLabels.map((label, i) => `${label}\n${project.brief[i] || "[preencher]"}`).join("\n\n");
@@ -108,7 +120,7 @@ function App() {
   </main>;
 
   return <main className={`presentation ${reduced ? "reduced-motion" : ""}`} style={{ "--accent": lesson.color } as React.CSSProperties}>
-    <header className="topbar"><a className="wordmark" href="/">UM CARA<br />CARAMELO<span>®</span></a><div className="course-brand"><strong>LANDING PAGES COM IA</strong><span>HEAD ACADEMY × LABORATÓRIO DE INTERAÇÃO</span></div><div className="top-actions"><button onClick={() => setModal("overview")}>Roteiro</button><button onClick={() => setModal("project")}>Meu projeto <span className="count">{count}/16</span></button><button onClick={openTeacher}>Professor ↗</button></div></header>
+    <header className="topbar"><a className="wordmark" href="/">UM CARA<br />CARAMELO<span>®</span></a><div className="course-brand"><strong>LANDING PAGES COM IA</strong><span>HEAD ACADEMY × LABORATÓRIO DE INTERAÇÃO</span></div><div className="top-actions"><button onClick={() => setModal("overview")}>Roteiro</button><button onClick={() => setModal("project")}>Meu projeto <span className="count">{count}/16</span></button><a href={teacherUrl.href} target="_blank" rel="noopener" onClick={openTeacher}>Professor ↗</a></div></header>
     <nav className="lesson-nav" aria-label="Quatro aulas">{lessons.map((l, i) => <button key={l.name} className={slide.lesson === i ? "active" : ""} aria-current={slide.lesson === i ? "step" : undefined} onClick={() => go(i * 4)}><span className="lesson-number">0{i + 1}</span><span><b>{l.name}</b><small>Slides {i * 4 + 1}–{i * 4 + 4}</small></span><span className="lesson-check">{project.completed.slice(i * 4, i * 4 + 4).every(Boolean) ? "✓" : "↗"}</span></button>)}</nav>
     <section className="stage" aria-label={`Slide ${index + 1}: ${slide.title}`}>
       <div className="slide-content" key={index}>
