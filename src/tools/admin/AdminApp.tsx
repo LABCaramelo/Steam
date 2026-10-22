@@ -29,11 +29,11 @@ const BANNER_SPECS: Record<
 > = {
   hero: {
     title: "Hero Banner",
-    subtitle: "Destaque e Capa Principal",
-    location: "Carrossel 'Destaques do LAB' na vitrine da Loja e cabeçalho da ferramenta",
-    aspectRatio: "16 / 9",
+    subtitle: "Destaque e Capa Panorâmica Ultra-Wide",
+    location: "Carrossel 'Destaques do LAB' e topo da ferramenta na Loja",
+    aspectRatio: "1920 / 620",
     aspectClass: "admin-banner-preview--hero",
-    recommendedSize: "1920×1080 ou 960×310 (16:9 Landscape)",
+    recommendedSize: "1920×620 px ou 960×310 px (Proporção ~3.1:1 Panorâmica)",
     icon: "🌟",
   },
   header: {

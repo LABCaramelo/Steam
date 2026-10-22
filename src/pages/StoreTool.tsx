@@ -50,6 +50,7 @@ export function StoreToolPage() {
 
       <div className="store-tool__top">
         <PointerTrail className="store-tool__hero">
+          <AppArt app={app} kind="hero" className="store-tool__hero-bg" aria-hidden="true" fallbackLabel={false} />
           <AppArt app={app} kind="hero" className="store-tool__hero-img" fallbackLabel={false} />
         </PointerTrail>
 

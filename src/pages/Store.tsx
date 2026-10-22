@@ -52,6 +52,7 @@ export function StorePage() {
         <h2 className="store__heading">Destaques do LAB</h2>
         <div className="store__carousel">
           <button className="store__carousel-main" onClick={() => nav(`/store/app/${cur.appid}`)} aria-label={`Conhecer ${cur.name}`}>
+            <AppArt app={cur} kind="hero" className="store__carousel-bg" aria-hidden="true" fallbackLabel={false} />
             <AppArt app={cur} kind="hero" className="store__carousel-img" />
           </button>
           <div className="store__carousel-side">
