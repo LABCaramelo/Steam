@@ -18,7 +18,15 @@ export function Avatar({ user, size = 32, status, ring = 'var(--bg-secondary)', 
       style={{ width: size, height: size, '--ring-gap': ring } as React.CSSProperties}
     >
       <div className="avatar-img" style={{ background: user.color, fontSize: size * 0.42 }}>
-        {user.name[0].toUpperCase()}
+        {user.avatarUrl ? (
+          <img
+            src={user.avatarUrl}
+            alt=""
+            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+          />
+        ) : (
+          user.name[0]?.toUpperCase() || 'U'
+        )}
       </div>
       {status && (
         <span

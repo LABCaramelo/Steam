@@ -8,6 +8,7 @@ import { Avatar } from './components/Avatar';
 import { Chat } from './components/Chat';
 import { FriendsView } from './components/Friends';
 import { AddServerModal, ConfirmModal, CreateChannelModal, InviteModal } from './components/Modals';
+import { UserProfileModal } from './components/UserProfileModal';
 import { NamePrompt } from './components/NamePrompt';
 import { QuickSwitcher, type QuickDestination } from './components/QuickSwitcher';
 import { ServerRail } from './components/ServerRail';
@@ -286,6 +287,14 @@ export function App({ user }: { user?: ToolUser } = {}) {
                 Tem certeza de que deseja sair? Na próxima vez, o app vai perguntar seu nome de novo e você entra nas
                 salas de voz como outra pessoa.
               </ConfirmModal>
+            )}
+            {modal?.kind === 'userProfile' && (
+              <UserProfileModal
+                user={modal.user}
+                currentUserId={user?.id}
+                onClose={close}
+                dispatch={dispatch}
+              />
             )}
             {!profile.name && <NamePrompt dispatch={dispatch} />}
             {quickSwitcherOpen && profile.name && (

@@ -6,6 +6,7 @@ import type {
   AdminStats,
   AdminToolItem,
   AdminUserAchievementItem,
+  AdminUserActivityItem,
   AdminUserItem,
 } from "./types";
 import "./admin.css";
@@ -34,6 +35,13 @@ export function AdminApp() {
   const [userAchModalUser, setUserAchModalUser] = useState<AdminUserItem | null>(null);
   const [userAchievements, setUserAchievements] = useState<AdminUserAchievementItem[]>([]);
   const [loadingUserAch, setLoadingUserAch] = useState(false);
+
+  // Atividades Recentes e Horas
+  const [userActivityModalUser, setUserActivityModalUser] = useState<AdminUserItem | null>(null);
+  const [userActivities, setUserActivities] = useState<AdminUserActivityItem[]>([]);
+  const [loadingUserAct, setLoadingUserAct] = useState(false);
+  const [editingActTool, setEditingActTool] = useState<AdminUserActivityItem | null>(null);
+  const [editActMinutes, setEditActMinutes] = useState(0);
 
   const [grantTargetAchievement, setGrantTargetAchievement] = useState<AdminAchievementItem | null>(null);
   const [grantSelectedUserId, setGrantSelectedUserId] = useState<string>("");
@@ -152,6 +160,38 @@ export function AdminApp() {
       toast(err instanceof Error ? err.message : "Erro ao criar conquista.", "error");
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Carregar atividades e histórico de um membro
+  const openUserActivities = async (u: AdminUserItem) => {
+    setUserActivityModalUser(u);
+    setLoadingUserAct(true);
+    setEditingActTool(null);
+    try {
+      const acts = await adminRepo.getUserActivities(u.id);
+      setUserActivities(acts);
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Erro ao buscar atividades do usuário.", "error");
+    } finally {
+      setLoadingUserAct(false);
+    }
+  };
+
+  // Atualizar tempo de uso de um membro em uma ferramenta
+  const handleUpdateActivity = async (u: AdminUserItem, toolSlug: string, minutes: number) => {
+    try {
+      await adminRepo.updateUserToolActivity({
+        userId: u.id,
+        toolSlug,
+        playtimeMinutes: Math.max(0, minutes),
+      });
+      toast(`Tempo de uso atualizado com sucesso (${minutes} min).`, "info");
+      const acts = await adminRepo.getUserActivities(u.id);
+      setUserActivities(acts);
+      setEditingActTool(null);
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Erro ao atualizar tempo de uso.", "error");
     }
   };
 
@@ -617,6 +657,13 @@ export function AdminApp() {
                     <td style={{ textAlign: "right" }}>
                       <div style={{ display: "inline-flex", gap: "6px" }}>
                         <button
+                          className="admin-btn admin-btn--ghost admin-btn--sm"
+                          title="Ver histórico de atividades e gerenciar horas deste membro"
+                          onClick={() => openUserActivities(u)}
+                        >
+                          ⏱️ Atividades
+                        </button>
+                        <button
                           className="admin-btn admin-btn--primary admin-btn--sm"
                           title="Gerenciar Conquistas deste membro"
                           onClick={() => openUserAchievements(u)}
@@ -981,6 +1028,151 @@ export function AdminApp() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL: ATIVIDADES E TEMPO DE USO DE UM MEMBRO
+         ========================================================================= */}
+      {userActivityModalUser && (
+        <div className="admin-modal-backdrop" onClick={() => setUserActivityModalUser(null)}>
+          <div className="admin-modal" style={{ maxWidth: "760px" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+              <div>
+                <h2 className="admin-modal__title">Atividades & Horas de Uso</h2>
+                <p className="admin-modal__desc">
+                  Histórico e controle de horas para <strong>{userActivityModalUser.name}</strong> ({userActivityModalUser.email})
+                </p>
+              </div>
+              <button
+                type="button"
+                className="admin-modal__close-btn"
+                onClick={() => setUserActivityModalUser(null)}
+              >
+                ✕
+              </button>
+            </div>
+
+            {loadingUserAct ? (
+              <div style={{ padding: "40px", textAlign: "center", color: "rgb(var(--cm-muted))" }}>
+                Carregando registros de atividade…
+              </div>
+            ) : userActivities.length === 0 ? (
+              <p style={{ color: "rgb(var(--cm-muted))", padding: "20px 0" }}>
+                Nenhuma ferramenta vinculada a este membro.
+              </p>
+            ) : (
+              <div className="admin-table-wrap" style={{ maxHeight: "400px", overflowY: "auto" }}>
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Ferramenta</th>
+                      <th>Último Acesso</th>
+                      <th>Tempo Registrado</th>
+                      <th style={{ textAlign: "right" }}>Ajustar Horas</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userActivities.map((act) => {
+                      const hours = (act.playtime_minutes / 60).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
+                      const isEditingThis = editingActTool?.tool_slug === act.tool_slug;
+                      return (
+                        <tr key={act.tool_slug}>
+                          <td>
+                            <strong>{act.tool_name}</strong>
+                            <div style={{ fontSize: "11px", opacity: 0.6 }}>{act.tool_slug}</div>
+                          </td>
+                          <td style={{ fontSize: "12px" }}>
+                            {act.last_played_unix > 0 ? (
+                              <span>
+                                {new Date(act.last_played_unix * 1000).toLocaleString("pt-BR", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+                            ) : (
+                              <span style={{ opacity: 0.4 }}>Nunca utilizado</span>
+                            )}
+                          </td>
+                          <td>
+                            <strong style={{ color: "rgb(var(--cm-accent, 255 112 26))" }}>
+                              {act.playtime_minutes} min
+                            </strong>{" "}
+                            <span style={{ fontSize: "12px", opacity: 0.7 }}>({hours}h)</span>
+                          </td>
+                          <td style={{ textAlign: "right" }}>
+                            {isEditingThis ? (
+                              <div style={{ display: "inline-flex", gap: "6px", alignItems: "center" }}>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  className="admin-input"
+                                  style={{ width: "80px", padding: "4px 8px", fontSize: "12px" }}
+                                  value={editActMinutes}
+                                  onChange={(e) => setEditActMinutes(parseInt(e.target.value, 10) || 0)}
+                                />
+                                <button
+                                  className="admin-btn admin-btn--primary admin-btn--sm"
+                                  onClick={() => handleUpdateActivity(userActivityModalUser, act.tool_slug, editActMinutes)}
+                                >
+                                  Salvar
+                                </button>
+                                <button
+                                  className="admin-btn admin-btn--ghost admin-btn--sm"
+                                  onClick={() => setEditingActTool(null)}
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            ) : (
+                              <div style={{ display: "inline-flex", gap: "6px", justifyContent: "flex-end" }}>
+                                <button
+                                  className="admin-btn admin-btn--ghost admin-btn--sm"
+                                  title="Adicionar 30 minutos de uso"
+                                  onClick={() => handleUpdateActivity(userActivityModalUser, act.tool_slug, act.playtime_minutes + 30)}
+                                >
+                                  +30m
+                                </button>
+                                <button
+                                  className="admin-btn admin-btn--ghost admin-btn--sm"
+                                  title="Adicionar 1 hora de uso"
+                                  onClick={() => handleUpdateActivity(userActivityModalUser, act.tool_slug, act.playtime_minutes + 60)}
+                                >
+                                  +1h
+                                </button>
+                                <button
+                                  className="admin-btn admin-btn--primary admin-btn--sm"
+                                  onClick={() => {
+                                    setEditingActTool(act);
+                                    setEditActMinutes(act.playtime_minutes);
+                                  }}
+                                >
+                                  Editar
+                                </button>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            <div className="admin-modal__actions" style={{ marginTop: "20px" }}>
+              <button
+                type="button"
+                className="admin-btn admin-btn--ghost"
+                onClick={() => setUserActivityModalUser(null)}
+              >
+                Fechar
+              </button>
+            </div>
           </div>
         </div>
       )}

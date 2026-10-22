@@ -89,6 +89,29 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
 
   // Persistent storage overrides (never written to Steam files)
   const [achSummary, setAchSummary] = useState<{ total_unlocked: number; total_available: number; by_appid: Record<string, { total: number; achieved: number }> } | null>(null);
+  const [toolActivities, setToolActivities] = useState<Record<string, { last_played_unix: number; playtime_minutes: number }>>({});
+
+  const refreshActivities = useCallback(() => {
+    if (!user) {
+      setToolActivities({});
+      return;
+    }
+    supabase.rpc("get_my_tool_activities").then(
+      ({ data, error }) => {
+        if (!error && Array.isArray(data)) {
+          const map: Record<string, { last_played_unix: number; playtime_minutes: number }> = {};
+          for (const row of data) {
+            map[row.tool_slug] = {
+              last_played_unix: Number(row.last_played_unix ?? 0),
+              playtime_minutes: Number(row.playtime_minutes ?? 0),
+            };
+          }
+          setToolActivities(map);
+        }
+      },
+      () => {},
+    );
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
@@ -99,8 +122,15 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       },
       () => {},
     );
+    refreshActivities();
     return () => { alive = false; };
-  }, [user]);
+  }, [user, refreshActivities]);
+
+  useEffect(() => {
+    const onFocus = () => refreshActivities();
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [refreshActivities]);
 
   const [appPathOverrides, setAppPathOverrides] = useState<Record<number, string>>(() => {
     try {
@@ -252,10 +282,13 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       const achievements = byApp
         ? { total: Number(byApp.total ?? 0), achieved: Number(byApp.achieved ?? 0) }
         : a.achievements;
+      const activity = a.tool?.slug ? toolActivities[a.tool.slug] : undefined;
       return {
         ...a,
         libraryPath: overridden || a.libraryPath,
         achievements,
+        lastPlayed: activity && activity.last_played_unix > 0 ? activity.last_played_unix : a.lastPlayed,
+        playtimeMinutes: activity && activity.playtime_minutes > 0 ? activity.playtime_minutes : a.playtimeMinutes,
       };
     });
 
@@ -282,7 +315,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       libraryFolders,
       apps,
     };
-  }, [snapshot, appPathOverrides, extraFolders, removedFolderPaths, folderLabels, user, profile, achSummary]);
+  }, [snapshot, appPathOverrides, extraFolders, removedFolderPaths, folderLabels, user, profile, achSummary, toolActivities]);
 
   const value = useMemo<LibraryState>(() => {
     const byId = new Map(effectiveSnapshot?.apps.map((a) => [a.appid, a]));
@@ -292,7 +325,10 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
     return {
       snapshot: effectiveSnapshot,
       error,
-      refresh: () => load(true),
+      refresh: () => {
+        load(true);
+        refreshActivities();
+      },
       app: (appid) => byId.get(appid),
       collections,
       isFavorite: (appid) => !!fav?.appids.includes(appid),
@@ -319,7 +355,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       defaultFolder: activeDefaultFolder,
       achievementSummary: achSummary,
     };
-  }, [effectiveSnapshot, error, collections, load, updateCollections, defaultFolder, moveApps, addLibraryFolder, removeLibraryFolder, renameLibraryFolder, setDefaultFolder, achSummary]);
+  }, [effectiveSnapshot, error, collections, load, refreshActivities, updateCollections, defaultFolder, moveApps, addLibraryFolder, removeLibraryFolder, renameLibraryFolder, setDefaultFolder, achSummary]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

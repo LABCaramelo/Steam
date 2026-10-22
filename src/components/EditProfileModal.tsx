@@ -243,16 +243,6 @@ export function EditProfileModal({ onClose }: { onClose: () => void }) {
                   <div className="muted small" style={{ marginTop: "4px" }}>
                     PNG, JPG, WEBP ou GIF até 5 MB.
                   </div>
-
-                  <div style={{ marginTop: "8px" }}>
-                    <input
-                      type="url"
-                      className="input edit-profile-url-input"
-                      placeholder="Ou cole o link direto de uma imagem (https://…)"
-                      value={avatarUrl}
-                      onChange={(e) => setAvatarUrl(e.target.value)}
-                    />
-                  </div>
                 </div>
               </div>
             </div>

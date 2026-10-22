@@ -4,6 +4,7 @@ import type {
   AdminStats,
   AdminToolItem,
   AdminUserAchievementItem,
+  AdminUserActivityItem,
   AdminUserItem,
 } from "./types";
 
@@ -131,5 +132,38 @@ export const adminRepo = {
       p_hidden: params.hidden ?? false,
     });
     if (error) throw new Error(error.message || "Erro ao criar conquista.");
+  },
+
+  // ---------------------------------------------------------------------------
+  // Atividades Recentes e Horas de Uso
+  // ---------------------------------------------------------------------------
+  async getUserActivities(userId: string): Promise<AdminUserActivityItem[]> {
+    const { data, error } = await supabase.rpc("admin_get_user_activities", {
+      p_user_id: userId,
+    });
+    if (error) throw new Error(error.message || "Erro ao carregar atividades do usuário.");
+    return (data ?? []).map((a: any) => ({
+      tool_slug: a.tool_slug,
+      tool_name: a.tool_name,
+      appid: Number(a.appid ?? 0),
+      last_played_at: a.last_played_at || null,
+      last_played_unix: Number(a.last_played_unix ?? 0),
+      playtime_minutes: Number(a.playtime_minutes ?? 0),
+    })) as AdminUserActivityItem[];
+  },
+
+  async updateUserToolActivity(params: {
+    userId: string;
+    toolSlug: string;
+    playtimeMinutes: number;
+    lastPlayedAt?: string;
+  }): Promise<void> {
+    const { error } = await supabase.rpc("admin_update_tool_activity", {
+      p_user_id: params.userId,
+      p_slug: params.toolSlug,
+      p_playtime_minutes: params.playtimeMinutes,
+      p_last_played_at: params.lastPlayedAt || new Date().toISOString(),
+    });
+    if (error) throw new Error(error.message || "Erro ao atualizar atividade da ferramenta.");
   },
 };

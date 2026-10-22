@@ -3369,3 +3369,254 @@ a.attachment-file-name:hover {
     display: flex;
   }
 }
+
+
+/* ==========================================================================
+   Modal de Perfil do Usuário no Chat da Comunidade (Caramelo / Steam / Discord)
+   ========================================================================== */
+.modal.dialog.user-profile-card {
+  width: min(460px, calc(100vw - 32px));
+  max-height: 90vh;
+  border-radius: 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--divider);
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.user-profile-banner {
+  position: relative;
+  height: 110px;
+  width: 100%;
+}
+
+.user-profile-banner-pattern {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.15), transparent 70%);
+  pointer-events: none;
+}
+
+.user-profile-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.15s ease;
+}
+
+.user-profile-close:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: scale(1.05);
+}
+
+.user-profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 20px;
+  margin-top: -46px;
+  position: relative;
+  z-index: 2;
+}
+
+.user-profile-avatar-wrap {
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  display: inline-flex;
+}
+
+.user-profile-header-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.user-profile-btn {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  padding: 6px 12px !important;
+  height: 32px !important;
+  border-radius: 6px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.user-profile-body {
+  padding: 16px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  max-height: calc(90vh - 170px);
+}
+
+.user-profile-ident {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-profile-names {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-profile-name {
+  margin: 0 !important;
+  font-size: 20px !important;
+  font-weight: 700;
+  color: var(--header-primary);
+  text-align: left !important;
+  letter-spacing: -0.01em;
+}
+
+.user-profile-handle {
+  font-size: 13px;
+  font-family: var(--font-mono, monospace);
+  color: var(--text-muted);
+}
+
+.user-profile-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.user-profile-role-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+
+.user-profile-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--header-secondary);
+  background: var(--bg-secondary);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.user-profile-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.user-profile-activity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--divider);
+  font-size: 12px;
+  color: var(--header-primary);
+}
+
+.user-profile-activity-icon {
+  font-size: 14px;
+}
+
+.user-profile-divider {
+  height: 1px;
+  background: var(--divider);
+  margin: 2px 0;
+}
+
+.user-profile-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.user-profile-section-title {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--header-secondary);
+}
+
+.user-profile-bio {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-normal);
+  font-style: italic;
+  background: var(--bg-secondary);
+  padding: 10px 12px;
+  border-radius: 6px;
+  border-left: 3px solid var(--brand);
+}
+
+.user-profile-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.user-profile-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--divider);
+  color: var(--header-primary);
+}
+
+.user-profile-chip.tool-chip {
+  border-color: rgba(37, 191, 255, 0.3);
+}
+
+.user-profile-chip.ach-chip {
+  border-color: rgba(255, 112, 26, 0.4);
+  background: rgba(255, 112, 26, 0.08);
+  color: rgb(var(--cm-accent, 255 112 26));
+}
+
+.user-profile-footer {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--divider);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.message-author:focus-visible,
+.message-avatar:focus-visible,
+.mention:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

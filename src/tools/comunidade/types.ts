@@ -7,6 +7,14 @@ export interface User {
   status: Status;
   activity?: string;
   bot?: boolean;
+  avatarUrl?: string;
+  bio?: string;
+  nickname?: string;
+  roleName?: string;
+  roleColor?: string;
+  tools?: string[];
+  achievements?: string[];
+  joinedAt?: string;
 }
 
 export interface Role {

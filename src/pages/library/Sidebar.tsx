@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDownloads, useLibrary, useRun } from "../../api";
 import { AppIcon } from "../../components/AppArt";
-import { IconHome } from "../../components/Icons";
 import { t } from "../../i18n";
 import type { LibraryApp } from "../../types";
 import { useUi } from "../../ui";
@@ -41,12 +40,6 @@ export function Sidebar({ onContext }: { onContext: (t: ContextTarget) => void }
 
   return (
     <aside className="sidebar">
-      <div className="sidebar__home">
-        <NavLink to="/library/home" className={({ isActive }) => `sidebar__home-btn ${isActive ? "is-active" : ""}`}>
-          <IconHome size={16} /> {t("GameList_Home").toUpperCase()}
-        </NavLink>
-      </div>
-
       <div className="sidebar__list">
         {!snapshot && <div className="sidebar__loading">Carregando biblioteca…</div>}
         {sections.map((s) => (

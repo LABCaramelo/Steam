@@ -107,6 +107,7 @@ export function VoiceView({ serverId, channel, state, session, occupancy, unread
           canSend={connected && session.status === 'connected'}
           session={session}
           onClose={() => dispatch({ type: 'toggleVoiceChat' })}
+          dispatch={dispatch}
         />
       )}
     </main>
@@ -170,12 +171,14 @@ function VoiceChat({
   canSend,
   session,
   onClose,
+  dispatch,
 }: {
   channel: Channel;
   messages: Message[];
   canSend: boolean;
   session: VoiceSession;
   onClose: () => void;
+  dispatch: (a: Action) => void;
 }) {
   return (
     <aside className="voice-chat" aria-label={`Chat de ${channel.name}`}>
@@ -203,6 +206,7 @@ function VoiceChat({
         disabled={!canSend}
         onSend={session.sendChat}
         onDelete={canSend ? session.deleteChat : undefined}
+        onSelectUser={(u) => dispatch({ type: 'openModal', modal: { kind: 'userProfile', user: u } })}
       />
     </aside>
   );

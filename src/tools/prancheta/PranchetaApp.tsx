@@ -209,7 +209,7 @@ function Workspace({ repo }: { repo: PranchetaRepo }) {
         </div>
       </> : <main className="pr-library">
         <header className="pr-library__header">
-          <div className="pr-brand"><Isotype size={32} decorative /><span>PRANCHETA <small>UM CARA CARAMELO · LAB</small></span></div>
+          <div className="pr-brand"><Isotype size={32} decorative /><span>PRANCHETA <small>UM CARA CARAMELO · LAB</small></span><span className="pr-badge-beta">Beta</span></div>
           <span className="pr-owner">Arquivos de {user.name}</span>
         </header>
         <section className="pr-intro"><span className="tk-eyebrow">SEU ESPAÇO DE DESIGN</span><h1>Uma ideia merece<br />espaço para crescer.</h1><p>Desenhe, organize camadas e crie componentes. Cada arquivo fica salvo na sua conta.</p></section>

@@ -69,7 +69,13 @@ export function FriendsView({ dispatch }: { dispatch: (a: Action) => void }) {
                 {tab === 'online' ? 'Disponível' : 'Todos os amigos'} — {shown.length}
               </h2>
               {shown.map((u) => (
-                <div key={u.id} className="friend-row" onClick={() => openDm(u.id)}>
+                <div
+                  key={u.id}
+                  className="friend-row"
+                  onClick={() => dispatch({ type: 'openModal', modal: { kind: 'userProfile', user: u } })}
+                  title={`Ver perfil de ${u.name}`}
+                  style={{ cursor: 'pointer' }}
+                >
                   <Avatar user={u} size={32} status={u.status} ring="var(--bg-primary)" />
                   <div className="friend-text">
                     <span className="friend-name">{u.name}</span>
@@ -85,7 +91,13 @@ export function FriendsView({ dispatch }: { dispatch: (a: Action) => void }) {
       <aside className="active-now">
         <h2>Ativo agora</h2>
         {active.map((u) => (
-          <div key={u.id} className="active-card">
+          <div
+            key={u.id}
+            className="active-card"
+            onClick={() => dispatch({ type: 'openModal', modal: { kind: 'userProfile', user: u } })}
+            style={{ cursor: 'pointer' }}
+            title={`Ver perfil de ${u.name}`}
+          >
             <Avatar user={u} size={32} status={u.status} ring="var(--bg-secondary)" />
             <div className="friend-text">
               <span className="friend-name">{u.name}</span>

@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react';
 import { subscribeToolReleases, toolStorageKey } from '../../toolLifecycle';
 import { ME, seedMessages, servers as seedServers } from './data';
-import type { Attachment, Channel, Message, Server, Status } from './types';
+import type { Attachment, Channel, Message, Server, Status, User } from './types';
 
 export type View = { kind: 'home'; dmId: string | null } | { kind: 'server'; serverId: string };
 
@@ -50,7 +50,8 @@ export type Modal =
   | { kind: 'invite'; serverId: string }
   | { kind: 'createChannel'; serverId: string; categoryId: string | null }
   | { kind: 'leaveServer'; serverId: string }
-  | { kind: 'logout' };
+  | { kind: 'logout' }
+  | { kind: 'userProfile'; user: User };
 
 export interface State {
   profile: Profile;

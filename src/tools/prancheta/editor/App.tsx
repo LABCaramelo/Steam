@@ -74,7 +74,7 @@ function Header({ onBack, saveSlot, busy }: EditorProps) {
 
       <FileName />
       {saveSlot ? (
-        <div className="header-save-slot">{saveSlot}</div>
+        <div className="header-save-slot">{saveSlot}<span className="pr-editor-beta-tag" title="Prancheta em estágio Beta">Beta</span></div>
       ) : (
         <span className="local-badge" title="Este arquivo pertence à sua conta no LAB"><IconCheck size={14} />LAB</span>
       )}

@@ -975,7 +975,7 @@ select {
 .sidebar__list {
   flex: 1;
   overflow-y: auto;
-  padding: 0 4px 12px;
+  padding: 8px 4px 12px;
 }
 .sidebar__loading {
   padding: 16px;

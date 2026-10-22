@@ -87,13 +87,15 @@ export const KANBAN_APP = tool(KANBAN_APP_ID, "Kanban", {
 
 export const PRANCHETA_APP = tool(PRANCHETA_APP_ID, "Prancheta", {
   slug: "prancheta",
+  available: true,
+  stage: "beta",
   launchPath: `/library/app/${PRANCHETA_APP_ID}/open`,
   publicPage: "/tools/prancheta/index.html",
   description: "Editor de design no navegador: frames, formas, texto, camadas, componentes e exportação.",
   assets: art("/tools/prancheta/art"),
   store: {
     tagline: "Editor de design com canvas, camadas e exportação.",
-    eyebrow: "DESIGN / CANVAS INFINITO",
+    eyebrow: "DESIGN / CANVAS INFINITO / VERSÃO BETA",
     headline: "Do rascunho\nà tela final.",
     features: [
       { title: "Canvas sem limites", text: "Pan, zoom, seleção, encaixe, redimensionamento e rotação com guias inteligentes." },
@@ -102,7 +104,7 @@ export const PRANCHETA_APP = tool(PRANCHETA_APP_ID, "Prancheta", {
       { title: "Exporte do seu jeito", text: "PNG, JPG e SVG, além de uma cópia do arquivo para guardar no computador." },
     ],
     steps: ["Adquira a Prancheta e abra o arquivo de boas-vindas.", "Desenhe com as ferramentas da barra inferior e organize as camadas.", "Exporte o resultado ou continue depois: tudo é salvo sozinho."],
-    about: [["Formato", "Editor vetorial"], ["Atalhos", "Ctrl+K e Ctrl+Shift+?"], ["Exportação", "PNG, JPG, SVG e JSON"]],
+    about: [["Formato", "Editor vetorial"], ["Versão", "Beta"], ["Atalhos", "Ctrl+K e Ctrl+Shift+?"], ["Exportação", "PNG, JPG e SVG"]],
     dataNote: "Seus arquivos ficam no seu banco da Prancheta no LAB: só você abre e edita.",
     category: "Design",
   },

@@ -64,3 +64,12 @@ export interface AdminUserAchievementItem {
   unlocked_at: string | null;
   granted_by: string | null;
 }
+
+export interface AdminUserActivityItem {
+  tool_slug: string;
+  tool_name: string;
+  appid: number;
+  last_played_at: string | null;
+  last_played_unix: number;
+  playtime_minutes: number;
+}

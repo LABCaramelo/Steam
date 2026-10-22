@@ -135,6 +135,7 @@ export function Chat(p: Props) {
         onEdit={(id, content) => p.dispatch({ type: 'edit', conversationId: p.conversationId, messageId: id, content })}
         onPin={(id) => p.dispatch({ type: 'togglePin', conversationId: p.conversationId, messageId: id })}
         jump={jump}
+        onSelectUser={(user) => p.dispatch({ type: 'openModal', modal: { kind: 'userProfile', user } })}
       />
       {panel && (
         <aside className="chat-message-panel" id={panelId} aria-label={panel === 'pins' ? 'Mensagens fixadas' : 'Resultados da busca'}>
@@ -158,7 +159,17 @@ export function Chat(p: Props) {
                 aria-label={`Ir à mensagem de ${users[message.authorId]?.name ?? message.authorName ?? 'Alguém'}: ${message.content || 'Anexo'}`}
               >
                 <span className="chat-panel-result-meta">
-                  <strong>{users[message.authorId]?.name ?? message.authorName ?? 'Alguém'}</strong>
+                  <strong
+                    style={{ cursor: 'pointer' }}
+                    onClick={(e) => {
+                      const author = users[message.authorId] ?? memberUser({ identity: message.authorId, name: message.authorName ?? 'Alguém', color: message.authorColor });
+                      e.stopPropagation();
+                      p.dispatch({ type: 'openModal', modal: { kind: 'userProfile', user: author } });
+                    }}
+                    title="Ver perfil do autor"
+                  >
+                    {users[message.authorId]?.name ?? message.authorName ?? 'Alguém'}
+                  </strong>
                   <time>{formatDateTime(message.timestamp)}</time>
                 </span>
                 {message.content && <span className="chat-panel-result-text">{message.content}</span>}
@@ -200,6 +211,7 @@ interface ConversationProps {
   onEdit?: (id: string, content: string) => void;
   onPin?: (id: string) => void;
   jump?: { id: string; sequence: number } | null;
+  onSelectUser?: (user: User) => void;
 }
 
 /** Mensagens e caixa de envio, usadas nos canais de texto e no chat das salas de voz. */
@@ -318,6 +330,7 @@ export function Conversation(p: ConversationProps) {
             }}
             onCancelEdit={finishEdit}
             onOpen={(attachment, url) => setViewing({ attachment, url })}
+            onSelectUser={p.onSelectUser}
           />
         </div>
       </div>
@@ -359,6 +372,7 @@ function MessageList({
   onSaveEdit,
   onCancelEdit,
   onOpen,
+  onSelectUser,
 }: {
   messages: Message[];
   onDelete?: (id: string) => void;
@@ -369,6 +383,7 @@ function MessageList({
   onSaveEdit: (id: string, content: string) => void;
   onCancelEdit: () => void;
   onOpen: (a: Attachment, url: string) => void;
+  onSelectUser?: (u: User) => void;
 }) {
   const { compactMessages: compact } = useContext(SettingsContext);
   return (
@@ -380,8 +395,27 @@ function MessageList({
         // Quem fala nas salas de voz não está no diretório local: usa o nome que veio com a mensagem.
         const author =
           users[m.authorId] ?? memberUser({ identity: m.authorId, name: m.authorName ?? 'Alguém', color: m.authorColor });
+        const handleAuthorClick = (e: React.MouseEvent) => {
+          e.stopPropagation();
+          onSelectUser?.(author);
+        };
+        const handleAuthorKey = (e: React.KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            e.stopPropagation();
+            onSelectUser?.(author);
+          }
+        };
         const name = (
-          <span className="message-author" style={{ color: author.color }}>
+          <span
+            className="message-author"
+            style={{ color: author.color }}
+            onClick={handleAuthorClick}
+            onKeyDown={handleAuthorKey}
+            role="button"
+            tabIndex={0}
+            title={`Ver perfil de ${author.name}`}
+          >
             {author.name}
           </span>
         );
@@ -391,7 +425,7 @@ function MessageList({
               <InlineMessageEditor message={m} onSave={(content) => onSaveEdit(m.id, content)} onCancel={onCancelEdit} />
             ) : (m.content || m.editedAt) ? (
               <div className="message-content">
-                <RichText text={m.content} />
+                <RichText text={m.content} onSelectUser={onSelectUser} />
                 {m.editedAt ? <span className="message-edited" title={`Editada em ${formatDateTime(m.editedAt)}`}>(editado)</span> : null}
               </div>
             ) : null}
@@ -422,7 +456,14 @@ function MessageList({
                 {grouped ? (
                   <time className="message-hover-time">{formatTime(m.timestamp)}</time>
                 ) : (
-                  <div className="message-avatar">
+                  <div
+                    className="message-avatar"
+                    onClick={handleAuthorClick}
+                    onKeyDown={handleAuthorKey}
+                    role="button"
+                    tabIndex={0}
+                    title={`Ver perfil de ${author.name}`}
+                  >
                     <Avatar user={author} size={32} />
                   </div>
                 )}
@@ -622,8 +663,8 @@ const URL_PATTERN = /https?:\/\/[^\s<]+[^\s<.,:;"')\]!?]/;
 const TOKEN_PATTERN = new RegExp(`(\`[^\`]+\`|${URL_PATTERN.source}|${/@\w+/.source})`, 'g');
 
 /** Destaca menções (@Nome), links e trechos `código`, preservando quebras de linha. */
-function RichText({ text }: { text: string }) {
-  const names = Object.values(users).map((u: User) => u.name);
+function RichText({ text, onSelectUser }: { text: string; onSelectUser?: (u: User) => void }) {
+  const userList = Object.values(users);
   const parts = text.split(TOKEN_PATTERN);
   return (
     <>
@@ -638,12 +679,34 @@ function RichText({ text }: { text: string }) {
             </a>
           );
         }
-        if (part.startsWith('@') && names.includes(part.slice(1))) {
-          return (
-            <span key={i} className="mention">
-              {part}
-            </span>
-          );
+        if (part.startsWith('@')) {
+          const mentionName = part.slice(1);
+          const target = userList.find((u) => u.name.toLowerCase() === mentionName.toLowerCase());
+          if (target) {
+            return (
+              <span
+                key={i}
+                className="mention"
+                style={{ cursor: 'pointer' }}
+                title={`Ver perfil de ${target.name}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelectUser?.(target);
+                }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onSelectUser?.(target);
+                  }
+                }}
+              >
+                {part}
+              </span>
+            );
+          }
         }
         return <Fragment key={i}>{part}</Fragment>;
       })}

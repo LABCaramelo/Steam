@@ -7,6 +7,7 @@ import { AppArt } from "../../components/AppArt";
 import { IconPlay, IconStar } from "../../components/Icons";
 import { PointerTrail } from "../../components/PointerTrail";
 import { RemoveToolButton } from "../../components/RemoveToolDialog";
+import { formatLastPlayed, formatPlaytime } from "../../format";
 import { getRegisteredTool } from "../../toolCatalog";
 import type { LibraryApp } from "../../types";
 import { usePlayAction } from "./play";
@@ -41,6 +42,14 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
           <div className="playbar__stat">
             <span className="playbar__stat-label">Categoria</span>
             <span className="playbar__stat-value">{store.category} · No navegador</span>
+          </div>
+          <div className="playbar__stat">
+            <span className="playbar__stat-label">Último uso</span>
+            <span className="playbar__stat-value">{formatLastPlayed(app.lastPlayed)}</span>
+          </div>
+          <div className="playbar__stat">
+            <span className="playbar__stat-label">Tempo de uso</span>
+            <span className="playbar__stat-value">{formatPlaytime(app.playtimeMinutes)}</span>
           </div>
         </div>
         <button className={`btn btn--ghost tool-details__favorite ${favorite ? "is-fav" : ""}`} aria-pressed={favorite} onClick={() => toggleFavorite(app.appid)}>

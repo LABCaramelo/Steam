@@ -180,7 +180,13 @@ function VoiceUserList({ channelId, state, voiceUi }: { channelId: string; state
       {people.map((m) => {
         const deafened = m.isLocal && state.deafened;
         return (
-          <li key={m.identity} className={`voice-user ${m.speaking ? 'speaking' : ''}`}>
+          <li
+            key={m.identity}
+            className={`voice-user ${m.speaking ? 'speaking' : ''}`}
+            onClick={() => dispatch({ type: 'openModal', modal: { kind: 'userProfile', user: memberUser(m) } })}
+            style={{ cursor: 'pointer' }}
+            title={`Ver perfil de ${m.name}`}
+          >
             <Avatar user={memberUser(m)} size={24} speaking={m.speaking} />
             <span className="voice-user-name">{m.name}</span>
             {(m.micMuted || deafened || m.camera || m.screen) && (
