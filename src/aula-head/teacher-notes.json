@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Uma Landing Page não é só uma página bonita",
+    "speech": "\"Antes de aprender a construir um site, precisamos entender o que ele precisa fazer. Uma Landing Page não existe apenas para ser bonita. Ela existe para ajudar uma pessoa a entender uma oferta e decidir o que fazer.\"",
+    "instructions": "**Conceito entregue:**\r\n\r\nLanding Page = comunicação organizada para uma ação."
+  },
+  {
+    "title": "A anatomia de uma Landing Page",
+    "speech": "\"Pense na Landing Page como uma conversa. Você não começa uma conversa explicando todas as informações de uma vez. Primeiro apresenta o assunto. Depois responde às perguntas que aparecem naturalmente.\"",
+    "instructions": "**Conceito entregue:**\r\n\r\nCada seção possui uma função. A estrutura pode mudar conforme a oferta e a necessidade do usuário."
+  },
+  {
+    "title": "Hierarquia da informação",
+    "speech": "\"Hierarquia da informação é decidir o que a pessoa precisa entender primeiro, depois e por último. O nosso trabalho é facilitar esse caminho.\"",
+    "instructions": "**Conceito entregue:**\r\n\r\nA estrutura deve acompanhar a decisão do usuário, não simplesmente um template."
+  },
+  {
+    "title": "A IA executa. Você dirige.",
+    "speech": "\"Durante este treinamento, não vamos tentar aprender tudo sobre programação, design ou animação. Vamos usar ferramentas especializadas. Nosso papel é fornecer as informações certas e avaliar o que a IA constrói.\"",
+    "instructions": "**Prática de encerramento:**\r\n\r\nCada aluno prepara o briefing inicial da sua própria LP.\r\n\r\n**Resultado da Aula 1:** o aluno compreende o que vai construir e possui as informações iniciais do seu projeto."
+  },
+  {
+    "title": "Toda Landing Page começa com uma mensagem",
+    "speech": "\"Você não precisa começar escrevendo uma headline incrível. Primeiro precisamos compreender sua oferta. Nosso prompt vai entrevistar você, organizar as informações e produzir os textos da página.\"",
+    "instructions": "**Demonstração prática:**\r\n\r\nAbrir a ferramenta de IA, colar o prompt de Copy e responder à entrevista.\r\n\r\n**Atividade:**\r\n\r\nCada aluno gera e revisa sua copy inicial.\r\n\r\n**Resultado:** copy estruturada e aprovada para o projeto."
+  },
+  {
+    "title": "Construindo a Hero",
+    "speech": "\"Nosso prompt já sabe construir a estrutura técnica. Precisamos personalizar aquilo que comunica nossa mensagem: texto, imagem, identidade e chamada para ação.\"",
+    "instructions": "**Demonstração prática:**\r\n\r\nExecutar o Prompt 02 — Hero Animada.\r\n\r\nSubstituir a copy de exemplo pela copy criada anteriormente.\r\n\r\n**Atividade:**\r\n\r\nCada aluno gera sua primeira Hero funcional.\r\n\r\n**Resultado:** primeira tela construída."
+  },
+  {
+    "title": "Criando uma imagem personalizada",
+    "speech": "\"Em vez de pedir para a IA inventar uma fotografia, podemos mostrar uma referência daquilo que queremos construir. Ela define o ambiente e a linguagem visual. A segunda imagem define a identidade da pessoa.\"",
+    "instructions": "**Demonstração prática:**\r\n\r\nExecutar o Prompt 03 — Reconstrução de Imagem utilizando referências próprias ou autorizadas.\r\n\r\n**Atividade:**\r\n\r\nCada aluno cria sua imagem principal para a Hero.\r\n\r\n**Resultado:** imagem personalizada para substituir o material demonstrativo."
+  },
+  {
+    "title": "Dando movimento à imagem",
+    "speech": "\"Vamos transformar nossa imagem em um vídeo curto que pode se repetir continuamente. O segredo é escolher movimentos naturais. A imagem deve ganhar vida sem perder sua composição.\"",
+    "instructions": "**Demonstração prática:**\r\n\r\nExecutar o Prompt 04 — Image to Video.\r\n\r\nGerar um loop de aproximadamente 8 segundos, verificar se a transição entre início e fim é adequada e adicionar o vídeo à Hero.\r\n\r\n**Atividade:**\r\n\r\nIntegrar a mídia final na página.\r\n\r\n**Resultado da Aula 2:** copy aprovada, Hero criada, imagem personalizada e vídeo de fundo integrado."
+  },
+  {
+    "title": "Moodboard: criando o universo visual",
+    "speech": "\"Um moodboard não é uma coleção de coisas bonitas. Ele serve para mostrar a linguagem visual que queremos construir. Nosso próximo passo é transformar essa inspiração em regras.\"",
+    "instructions": "**Atividade:**\r\n\r\nCada aluno reúne referências para seu próprio projeto.\r\n\r\n**Resultado:** moodboard inicial."
+  },
+  {
+    "title": "Design System: transformando inspiração em regras",
+    "speech": "\"Quando definimos uma cor, um tipo de título, um botão e uma forma de organizar os espaços, estamos criando regras reutilizáveis. Essas regras ajudam a manter todas as partes da página coerentes.\"",
+    "instructions": "**Demonstração prática:**\r\n\r\nExecutar o Prompt 05 — Moodboard para Design System.\r\n\r\nAplicar o resultado ao projeto, autorizando somente as mudanças visuais desejadas.\r\n\r\n**Resultado:** identidade visual organizada em um sistema."
+  },
+  {
+    "title": "Ensinando a IA a respeitar decisões",
+    "speech": "\"Uma IA pode tentar melhorar coisas que você não pediu. Por isso vamos estabelecer regras. Quando alguma decisão está aprovada, queremos que ela permaneça estável.\"",
+    "instructions": "**Demonstração prática:**\r\n\r\nConfigurar o Prompt 06 — System Prompt no Google AI Studio antes de expandir o projeto.\r\n\r\n**Resultado:** o ambiente possui regras explícitas de execução e preservação das decisões aprovadas."
+  },
+  {
+    "title": "De uma Hero para uma Landing Page completa",
+    "speech": "\"Manter uma identidade consistente não significa repetir a mesma composição. Podemos criar seções completamente diferentes que ainda parecem pertencer ao mesmo site.\"",
+    "instructions": "**Demonstração prática:**\r\n\r\nUtilizar a copy aprovada e as regras do Google AI Studio para construir as seções restantes.\r\n\r\nA Hero deve continuar preservada. Como o prompt inicial criou uma tela sem scroll, o projeto também precisa adaptar a estrutura geral para permitir a navegação vertical pelas novas seções.\r\n\r\n**Atividade:**\r\n\r\nCada aluno constrói o restante da página.\r\n\r\n**Resultado da Aula 3:** Landing Page com conteúdo completo, identidade visual consistente e regras de execução configuradas."
+  },
+  {
+    "title": "Antes de modificar, precisamos entender",
+    "speech": "\"Imagine pedir para alguém reformar uma casa sem explicar como ela foi construída. O relatório é o mapa da nossa página. Ele explica para outra IA o que existe e como funciona.\"",
+    "instructions": "**Demonstração prática:**\r\n\r\nExecutar o Prompt 07 — Project Report.\r\n\r\nExplicar que ele analisa o projeto em modo somente leitura: não deve modificar arquivos, copy ou layout.\r\n\r\n**Resultado:** relatório do projeto disponível."
+  },
+  {
+    "title": "Movimento também comunica",
+    "speech": "\"Quando nossa copy fala sobre organização, podemos fazer a organização acontecer visualmente. Quando fala sobre processo, podemos permitir que o visitante percorra as etapas. O movimento deve ajudar a contar a história.\"",
+    "instructions": "**Conceito entregue:**\r\n\r\nMotion deve representar ou reforçar a mensagem, não competir com ela."
+  },
+  {
+    "title": "Construindo uma experiência interativa",
+    "speech": "\"Agora podemos transformar uma página estática em uma experiência. Não precisamos adicionar animações em tudo. Precisamos escolher onde o movimento ajuda o visitante a entender o conteúdo.\"",
+    "instructions": "**Demonstração prática:**\r\n\r\nExecutar o Prompt 08 — Motion Experience utilizando o relatório gerado no slide anterior.\r\n\r\nRevisar o plano de animações e, em seguida, implementá-lo no Google AI Studio preservando a copy, o Design System e a funcionalidade existente.\r\n\r\n**Resultado:** Landing Page com animações e interações planejadas."
+  },
+  {
+    "title": "Sua Landing Page está pronta?",
+    "speech": "\"Você começou com uma ideia e agora possui uma Landing Page construída com direção, identidade e movimento. Mais importante do que ter criado esta página é saber repetir o processo em outro projeto.\"",
+    "instructions": "**Atividade final:**\r\n\r\nRevisar a página real, corrigir os problemas encontrados e preparar os passos de publicação.\r\n\r\n**Resultado da Aula 4:** uma Landing Page revisada, interativa e pronta para a etapa de publicação."
+  }
+]
