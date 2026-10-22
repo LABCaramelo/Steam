@@ -11,6 +11,7 @@ Versão de 22/10/2026: abertura interativa e quatro apresentações de quatro sl
 - Sem “Meu projeto”, caderno, briefing pessoal, registros de entrega, exportação ou painéis “No seu projeto”. As demonstrações usam estado transitório, sem leitura ou gravação de projeto em localStorage.
 - Modo Professor removido: sem botão, notas, janela separada ou sincronização entre janelas. Links antigos com `?professor=1` abrem a apresentação normal.
 - O convite “clique em uma seção ←” usa o MagneticButton canônico do MCP Caramelo (magnetic-fill, accent, fill, swap). O clique abre Hero e transfere o foco para a seção do mapa.
+- No resultado do Slide 14, os blocos desaparecem antes da entrada do título final. No Slide 16, o encerramento substitui a prévia dentro do quadro, sem camada sobreposta.
 
 ## Fontes
 
@@ -34,6 +35,9 @@ O botão do Slide 02 foi conferido com `get_interaction({id: "magnetic-fill", fo
 | CTA canônico | Classes cm-btn, cm-btn--accent, cm-btn--lg e cm-btn--fill. Clique revelou “O que é isso?” e focou o botão Hero do mapa. |
 | Dados pessoais | Ausência dos controles de projeto/caderno e de código de persistência localStorage na apresentação. |
 | Prompts | Acervo integral preservado e acesso pelo banco na abertura e nas aulas. |
+| Correções dos slides 14 e 16 | Renderização React conferida em 402 estados da animação, com e sem movimento reduzido, e oito estados de revisão, incluindo conclusão e desmarcação em Desktop/Celular. Sem coexistência dos blocos e título final, ou da prévia e encerramento. |
+
+A correção dos slides 14 e 16 passou no TypeScript e no build. A inspeção visual desta alteração ficou pendente: a revisão automática de acesso ao navegador não pôde ser concluída por limite de uso. As capturas abaixo pertencem às verificações anteriores da abertura e do Slide 02.
 
 ## Capturas
 
