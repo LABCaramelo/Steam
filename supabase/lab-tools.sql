@@ -72,11 +72,11 @@ grant select on table public.lab_tools to anon, authenticated;
 drop policy if exists "lab_tools_select" on public.lab_tools;
 create policy "lab_tools_select" on public.lab_tools for select using (true);
 
--- Estado atual da Loja: Biblioteca de prompts liberada em Beta. As demais permanecem em breve.
+-- Estado atual da Loja: Biblioteca de prompts e Prancheta liberadas em Beta. As demais permanecem em breve.
 insert into public.lab_tools (slug, appid, name, available) values
   ('prompt-library', 1, 'Biblioteca de prompts', true),
   ('kanban', 2, 'Kanban', false),
-  ('prancheta', 3, 'Prancheta', false),
+  ('prancheta', 3, 'Prancheta', true),
   ('automation', 4, 'Automation', false),
   ('academy', 5, 'Academy', false),
   ('claquete', 6, 'Claquete', false),

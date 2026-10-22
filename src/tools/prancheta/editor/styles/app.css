@@ -588,3 +588,5 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 @media (max-width: 1000px) { :root { --panel-width: 220px; } .file-location, .local-badge { display: none; } .app-header { gap: 6px; } }
 @media (max-width: 760px) { :root { --panel-width: 200px; } .right-panel { display: none; } .file-name { max-width: 40vw; } .save-copy { font-size: 10px; padding: 6px 8px; } }
 @media (max-width: 520px) { .left-panel { display: none; } .header-divider { display: none; } .app-header > .icon-btn { display: none; } .file-name { max-width: 48vw; } }
+
+.pr-editor-beta-tag { font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--cm-accent, 255 112 26)); background: rgb(var(--cm-accent, 255 112 26) / 0.12); border: 1px solid rgb(var(--cm-accent, 255 112 26) / 0.35); border-radius: 999px; padding: 1px 6px; display: inline-flex; align-items: center; line-height: 1.4; }
