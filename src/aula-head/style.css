@@ -2346,95 +2346,6 @@ textarea {
   color: #d7c9bd;
   margin-top: 18px;
 }
-.teacher-shell {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 36px 28px 60px;
-  --accent: #ff701a;
-}
-.teacher-shell>.eyebrow {
-  font-size: 10px;
-  color: var(--accent);
-}
-.teacher-shell>h1 {
-  font-family: Montserrat,sans-serif;
-  font-size: 36px;
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -1px;
-}
-.teacher-shell em {
-  color: var(--accent);
-  font-style: normal;
-}
-.teacher-status {
-  font-size: 12px;
-  color: var(--accent);
-}
-.teacher-warning {
-  font-size: 12px;
-  line-height: 1.6;
-  color: #baada2;
-}
-.teacher-current {
-  border-top: 2px solid var(--accent);
-  background: #1c1b20;
-  padding: 25px;
-  margin: 25px 0;
-}
-.teacher-current>.eyebrow {
-  font-size: 10px;
-  color: var(--accent);
-}
-.teacher-current>h2 {
-  font-family: Montserrat,sans-serif;
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -.7px;
-}
-.teacher-current blockquote {
-  font-size: 20px;
-  line-height: 1.6;
-  border-left: 2px solid var(--accent);
-  padding-left: 20px;
-  margin: 24px 0;
-}
-.teacher-current h3 {
-  font-size: 12px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-top: 28px;
-}
-.teacher-current p {
-  font-size: 14px;
-  line-height: 1.8;
-}
-.teacher-current .teacher-instructions {
-  white-space: pre-line;
-}
-.teacher-current .hint {
-  font-size: 12px;
-  padding-left: 12px;
-}
-.teacher-shell>.navigation {
-  justify-content: space-between;
-}
-.teacher-next {
-  border-top: 1px solid #ffffff20;
-  margin-top: 24px;
-  padding-top: 20px;
-}
-.teacher-next>.eyebrow {
-  font-size: 10px;
-  color: var(--accent);
-}
-.teacher-next>p {
-  font-size: 14px;
-}
-.teacher-shell>.small {
-  font-size: 11px;
-}
 .reduced-motion *, .reduced-motion *::before,.reduced-motion *::after {
   animation: none!important;
   transition: none!important;
@@ -2953,22 +2864,6 @@ textarea {
     font-size: 11px;
     padding: 12px;
   }
-  .teacher-shell {
-    padding: 24px 18px;
-  }
-  .teacher-shell>h1 {
-    font-size: 28px;
-  }
-  .teacher-current {
-    padding: 18px;
-  }
-  .teacher-current>h2 {
-    font-size: 21px;
-  }
-  .teacher-current blockquote {
-    font-size: 17px;
-    padding-left: 14px;
-  }
 }
 @media print {
   .topbar, .lesson-nav, .deck-footer, .deck-progress, .slide-footer {
@@ -2984,13 +2879,5 @@ textarea {
     display: block;
     height: auto;
     padding: 0;
-  }
-  .teacher-shell {
-    max-width: 100%;
-    color: #101014;
-    background: white;
-  }
-  .teacher-shell>.navigation {
-    display: none;
   }
 }
