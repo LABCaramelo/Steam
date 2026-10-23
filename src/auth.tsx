@@ -305,25 +305,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return { ok: false, error: "A imagem não pode ultrapassar 5 MB." };
         }
 
-        const fileExt = file.name.split(".").pop() || "png";
-        const filePath = `${user.id}/avatar-${Date.now()}.${fileExt}`;
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData.session?.access_token;
+        if (!token) return { ok: false, error: "Sessão inválida." };
 
-        const { error: uploadError } = await supabase.storage
-          .from("avatars")
-          .upload(filePath, file, {
-            cacheControl: "3600",
-            upsert: true,
-          });
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": file.type || "image/png",
+            "x-folder": "avatars",
+            "x-filename": file.name,
+          },
+          body: file,
+        });
 
-        if (uploadError) {
-          return { ok: false, error: uploadError.message };
+        const data = await res.json();
+        if (!res.ok || !data.url) {
+          return { ok: false, error: data.error || "Erro ao enviar avatar para o Cloudflare R2." };
         }
 
-        const { data: { publicUrl } } = supabase.storage
-          .from("avatars")
-          .getPublicUrl(filePath);
-
-        return { ok: true, url: publicUrl };
+        return { ok: true, url: data.url };
       } catch (err) {
         return { ok: false, error: err instanceof Error ? err.message : "Erro ao enviar imagem." };
       }

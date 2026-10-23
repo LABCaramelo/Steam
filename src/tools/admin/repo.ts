@@ -64,31 +64,32 @@ export const adminRepo = {
     if (file.size > 8 * 1024 * 1024) {
       throw new Error("A imagem não pode ultrapassar 8 MB.");
     }
-    const ext = file.name.split(".").pop()?.toLowerCase() || "png";
     const cleanSlug = toolSlug.toLowerCase().replace(/[^a-z0-9_-]/g, "");
     const cleanKind = kind.toLowerCase().replace(/[^a-z0-9_-]/g, "");
-    const filePath = `${cleanSlug}/${cleanKind}-${Date.now()}.${ext}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from("tool-banners")
-      .upload(filePath, file, {
-        cacheControl: "3600",
-        upsert: true,
-      });
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (!token) throw new Error("Usuário não autenticado.");
 
-    if (uploadError) {
-      throw new Error(uploadError.message || "Erro ao fazer upload do banner.");
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": file.type || "image/png",
+        "x-folder": "tool-banners",
+        "x-tool-slug": cleanSlug,
+        "x-kind": cleanKind,
+        "x-filename": file.name,
+      },
+      body: file,
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.url) {
+      throw new Error(data.error || "Erro ao fazer upload do banner para o Cloudflare R2.");
     }
 
-    const { data } = supabase.storage
-      .from("tool-banners")
-      .getPublicUrl(filePath);
-
-    if (!data?.publicUrl) {
-      throw new Error("Não foi possível gerar a URL pública da imagem.");
-    }
-
-    return data.publicUrl;
+    return data.url;
   },
 
   async getUsers(search = "", role = "", status = ""): Promise<AdminUserItem[]> {

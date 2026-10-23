@@ -7,7 +7,14 @@ const PUBLIC_URL = (process.env.CLOUDFLARE_R2_PUBLIC_URL || "https://media.umcar
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://fzhzpzxsttflgtassyex.supabase.co";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6aHpwenhzdHRmbGd0YXNzeWV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNTU2NTIsImV4cCI6MjEwNDkzMTY1Mn0.rWO90rI-O8XVOWAlvuylkFWMNpjkocC0HRHBNbmrJj4";
 
-const ALLOWED_MIME_TYPES = new Set(["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif"]);
+const ALLOWED_MIME_TYPES = new Set([
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+  "image/gif",
+  "image/svg+xml",
+]);
 
 type Req = IncomingMessage & { body?: unknown };
 
@@ -72,8 +79,8 @@ export default async function handler(req: Req, res: ServerResponse) {
       return send(res, 400, { error: "Nenhum arquivo enviado." });
     }
 
-    if (buffer.length > 5 * 1024 * 1024) {
-      return send(res, 413, { error: "O arquivo excede o limite de 5 MB." });
+    if (buffer.length > 10 * 1024 * 1024) {
+      return send(res, 413, { error: "O arquivo excede o limite de 10 MB." });
     }
 
     const contentType = ((req.headers["content-type"] as string) || "image/png").split(";")[0].trim().toLowerCase();
@@ -81,7 +88,7 @@ export default async function handler(req: Req, res: ServerResponse) {
       return send(res, 400, { error: "Tipo de arquivo não permitido. Apenas imagens são aceitas." });
     }
 
-    const rawFilename = (req.headers["x-filename"] as string) || "avatar.png";
+    const rawFilename = (req.headers["x-filename"] as string) || "banner.png";
     const ext =
       rawFilename.split(".").pop()?.toLowerCase() ||
       (contentType.includes("webp")
@@ -90,12 +97,42 @@ export default async function handler(req: Req, res: ServerResponse) {
         ? "jpg"
         : contentType.includes("gif")
         ? "gif"
+        : contentType.includes("svg")
+        ? "svg"
         : "png");
 
-    // Identidade garantida pelo token de autenticação, impedindo spoofing de x-user-id
     const safeUser = userData.id.replace(/[^a-zA-Z0-9_-]/g, "");
-    const safeFolder = "avatars";
-    const key = `${safeFolder}/${safeUser}/avatar-${Date.now()}.${ext}`;
+    const requestedFolder = ((req.headers["x-folder"] as string) || "avatars").toLowerCase().trim();
+
+    let key: string;
+
+    if (requestedFolder === "tool-banners") {
+      // Verificar se o usuário possui papel de administrador no LAB
+      const adminRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/is_lab_admin`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const isAdmin = (await adminRes.json().catch(() => false)) === true;
+      if (!isAdmin) {
+        return send(res, 403, { error: "Acesso negado: apenas administradores podem alterar banners de ferramentas." });
+      }
+
+      const rawSlug = (req.headers["x-tool-slug"] as string) || "tool";
+      const rawKind = (req.headers["x-kind"] as string) || "banner";
+      const cleanSlug = rawSlug.replace(/[^a-z0-9_-]/gi, "").toLowerCase();
+      const cleanKind = rawKind.replace(/[^a-z0-9_-]/gi, "").toLowerCase();
+
+      key = `tool-banners/${cleanSlug}/${cleanKind}-${Date.now()}.${ext}`;
+    } else if (requestedFolder === "media") {
+      key = `media/${safeUser}/${Date.now()}.${ext}`;
+    } else {
+      // Default: avatars
+      key = `avatars/${safeUser}/avatar-${Date.now()}.${ext}`;
+    }
 
     const r2Url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/r2/buckets/${BUCKET}/objects/${key}`;
     const uploadRes = await fetch(r2Url, {
