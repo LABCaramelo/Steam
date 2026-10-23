@@ -5,6 +5,13 @@ import "./intro.css";
 
 const art = ["1-86IA2QJP.png", "2-Bea114wa.png", "3-BJq5GkJP.png", "4-D2CD8jcP.png"];
 
+const lessonTitles = [
+  { action: "ENTENDER", target: "UMA LP" },
+  { action: "ENTENDER", target: "CRIAÇÃO COM IA" },
+  { action: "ENTENDER", target: "LP COM IA" },
+  { action: "CRIANDO", target: "LP COM IA" },
+];
+
 export function Intro({ onLesson, onPrompts }: { onLesson: (index: number) => void; onPrompts: () => void }) {
   const { sceneRef, videoRef, status } = useIntroVideo();
 
@@ -58,24 +65,32 @@ export function Intro({ onLesson, onPrompts }: { onLesson: (index: number) => vo
           <div className={`bottom-cards-cluster bottom-cards-${side}`} key={side}>
             {lessons.slice(group * 2, group * 2 + 2).map((lesson, offset) => {
               const index = group * 2 + offset;
+              const titleData = lessonTitles[index] || { action: "AULA", target: lesson.name };
               return (
                 <button
                   type="button"
                   className="mini-game-card"
                   key={lesson.name}
-                  style={{ "--intro-delay": `${650 + index * 100}ms` } as React.CSSProperties}
+                  style={
+                    {
+                      "--intro-delay": `${650 + index * 100}ms`,
+                      "--lesson-accent": lesson.color,
+                    } as React.CSSProperties
+                  }
                   data-gaze-side={side}
                   aria-label={`Aula ${index + 1}: ${lesson.name}`}
                   onClick={() => onLesson(index * 4)}
                 >
                   <div className="mini-card-copy">
-                    <span className="mini-card-lesson">Aula {String(index + 1).padStart(2, "0")}</span>
-                    <h2 className="mini-card-title">{lesson.name}</h2>
-                    <small className="mini-card-sub">{lesson.result}</small>
+                    <span className="mini-card-lesson">
+                      <span className="mini-card-dot" aria-hidden="true" />
+                      Aula {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h2 className="mini-card-title">
+                      <span className="title-action">{titleData.action}</span>
+                      <span className="title-target">{titleData.target}</span>
+                    </h2>
                   </div>
-                  <span className="mini-card-go-btn" aria-hidden="true">
-                    GO
-                  </span>
                   <img
                     src={`/aula-head/assets/${art[index]}`}
                     alt=""

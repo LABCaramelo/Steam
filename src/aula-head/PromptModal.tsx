@@ -89,6 +89,14 @@ export function PromptModal({ initialIndex = 0, onClose }: PromptModalProps) {
               {showFullPrompt ? "Ocultar texto completo" : "Ver prompt completo"} ↗
             </button>
             <Copy text={prompt.prompt} label="Copiar prompt integral" />
+            <a
+              href="/8-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
+              download="8-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
+              className="button"
+              title="Baixar arquivo TXT com todos os 8 prompts completos"
+            >
+              Baixar os 8 (.txt) ↓
+            </a>
           </div>
 
           {showFullPrompt && (
