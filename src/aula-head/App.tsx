@@ -275,13 +275,6 @@ export default function App() {
           >
             <div className="slide-content" key={index}>
               <header className="slide-header">
-                <div className="eyebrow">
-                  <span className="live-dot" /> {lessonLabel} / {lesson.name}
-                  <span className="slide-caption">
-                    {String(index - lessonStart + 1).padStart(2, "0")} — {lesson.shortName}
-                  </span>
-                </div>
-
                 <h1>{slide.heading}</h1>
                 <p className="slide-line">{slide.line}</p>
               </header>
