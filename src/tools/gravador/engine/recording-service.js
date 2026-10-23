@@ -1,171 +1,193 @@
-// MediaRecorder & MP4 High-Quality Recording Service
+/** Canvas + mixed audio recording with owned track cleanup. */
+export function selectRecordingMime(format, Recorder = globalThis.MediaRecorder) {
+  if (!Recorder) throw new Error('Este navegador não oferece gravação de vídeo.');
+  const mp4 = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4'];
+  const webm = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+  const types = format === 'mp4' ? [...mp4, ...webm] : [...webm, ...mp4];
+  const mime = types.find(type => Recorder.isTypeSupported(type));
+  if (!mime) throw new Error('Nenhum codec de gravação compatível está disponível.');
+  return mime;
+}
+
 export class RecordingService {
   constructor(compositor, audioEngine, config = {}) {
     this.compositor = compositor;
     this.audioEngine = audioEngine;
-    this.format = config.format || 'mp4'; // 'mp4' or 'webm'
-    this.bitrateKbps = config.bitrateKbps || 16000; // 16 Mbps for crisp Full HD
+    this.format = config.format || 'mp4';
+    this.bitrateKbps = config.bitrateKbps || 16000;
     this.fps = config.fps || 60;
-
     this.mediaRecorder = null;
     this.recordedChunks = [];
     this.isRecording = false;
     this.isPaused = false;
-    this.startTime = 0;
     this.elapsedTime = 0;
+    this.accumulatedMs = 0;
+    this.startedAt = 0;
     this.timerInterval = null;
     this.currentMimeType = '';
-
+    this.ownedTracks = new Set();
+    this.exportUrls = new Map();
     this.onStateChange = null;
     this.onTimerUpdate = null;
+    this.onExport = null;
+    this.onError = null;
+    this.destroyed = false;
+    this.finalizing = false;
   }
 
   setConfig(config = {}) {
+    if (this.isRecording) return false;
     if (config.format) this.format = config.format.toLowerCase();
-    if (config.bitrateKbps) this.bitrateKbps = parseInt(config.bitrateKbps, 10);
-    if (config.fps) this.fps = parseInt(config.fps, 10);
+    if (Number.isFinite(Number(config.bitrateKbps))) this.bitrateKbps = Math.max(500, Math.min(60000, Number(config.bitrateKbps)));
+    if ([24, 25, 30, 50, 60].includes(Number(config.fps))) this.fps = Number(config.fps);
+    return true;
   }
 
   startRecording() {
-    if (this.isRecording) return;
-
-    // Capture pristine 60FPS stream from the master offscreen canvas
-    const videoStream = this.compositor.getStream(this.fps);
-    if (!videoStream) {
-      alert('Cannot start recording: canvas stream unavailable.');
-      return;
-    }
-
-    // Combine Video + Audio
-    const mixedStream = new MediaStream();
-    videoStream.getVideoTracks().forEach(track => mixedStream.addTrack(track));
-
-    const audioStream = this.audioEngine.getMixedAudioStream();
-    if (audioStream) {
-      audioStream.getAudioTracks().forEach(track => mixedStream.addTrack(track));
-    }
-
-    // Determine target MIME type according to user's configured format
-    let selectedMime = '';
-    const bps = this.bitrateKbps * 1000; // e.g. 16,000,000 bps = 16 Mbps
-
-    if (this.format === 'mp4') {
-      const mp4Candidates = [
-        'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
-        'video/mp4;codecs=avc1.4D401F,mp4a.40.2',
-        'video/mp4;codecs=avc1.640028,mp4a.40.2',
-        'video/mp4;codecs=avc1',
-        'video/mp4;codecs=h264,opus',
-        'video/mp4;codecs=h264',
-        'video/mp4'
-      ];
-      selectedMime = mp4Candidates.find(t => MediaRecorder.isTypeSupported(t));
-
-      if (!selectedMime) {
-        // Fallback if browser doesn't have native MP4 in MediaRecorder
-        console.warn('Native video/mp4 MediaRecorder not supported in this browser, using high-profile WebM fallback');
-        selectedMime = 'video/webm;codecs=vp9,opus';
-      }
-    } else {
-      const webmCandidates = [
-        'video/webm;codecs=vp9,opus',
-        'video/webm;codecs=vp8,opus',
-        'video/webm'
-      ];
-      selectedMime = webmCandidates.find(t => MediaRecorder.isTypeSupported(t)) || 'video/webm';
-    }
-
+    if (this.destroyed || this.isRecording || this.finalizing) return false;
     try {
-      const recorderOptions = {
-        videoBitsPerSecond: bps,
-        audioBitsPerSecond: 320000 // 320 Kbps High Quality Audio
-      };
-      if (selectedMime) {
-        recorderOptions.mimeType = selectedMime;
-      }
-
-      this.currentMimeType = selectedMime;
-      this.mediaRecorder = new MediaRecorder(mixedStream, recorderOptions);
+      const mimeType = selectRecordingMime(this.format);
+      const videoStream = this.compositor.getStream(this.fps);
+      videoStream?.getTracks().forEach(track => this.ownedTracks.add(track));
+      if (!videoStream?.getVideoTracks().length) throw new Error('O canvas não disponibilizou uma faixa de vídeo.');
+      const tracks = [...videoStream.getVideoTracks()];
+      const audioStream = this.audioEngine.getMixedAudioStream();
+      audioStream?.getAudioTracks().forEach(track => {
+        const clone = track.clone();
+        tracks.push(clone);
+        this.ownedTracks.add(clone);
+      });
+      const recorder = new MediaRecorder(new MediaStream(tracks), {
+        mimeType, videoBitsPerSecond: this.bitrateKbps * 1000, audioBitsPerSecond: 192000,
+      });
+      this.mediaRecorder = recorder;
+      this.currentMimeType = recorder.mimeType || mimeType;
       this.recordedChunks = [];
-
-      this.mediaRecorder.ondataavailable = (e) => {
-        if (e.data && e.data.size > 0) {
-          this.recordedChunks.push(e.data);
-        }
+      recorder.ondataavailable = event => {
+        if (!this.destroyed && this.mediaRecorder === recorder && event.data?.size) this.recordedChunks.push(event.data);
       };
-
-      this.mediaRecorder.onstop = () => {
-        this._finalizeRecording();
+      recorder.onstop = () => this._finishRecording(recorder);
+      recorder.onerror = event => {
+        this.onError?.(event.error || new Error('A gravação foi interrompida pelo navegador.'));
+        this.stopRecording();
       };
-
-      this.mediaRecorder.start(1000); // 1-second chunks
+      recorder.start(1000);
       this.isRecording = true;
       this.isPaused = false;
-      this.startTime = Date.now();
       this.elapsedTime = 0;
-
-      this.timerInterval = setInterval(() => {
-        if (!this.isPaused) {
-          this.elapsedTime = Math.floor((Date.now() - this.startTime) / 1000);
-          if (this.onTimerUpdate) {
-            this.onTimerUpdate(this.getFormattedTime());
-          }
-        }
-      }, 1000);
-
-      if (this.onStateChange) this.onStateChange(true);
-      console.log(`Recording started in ${this.format.toUpperCase()} (${selectedMime}) at ${this.bitrateKbps} Kbps, ${this.fps} FPS.`);
-    } catch (err) {
-      console.error('Error starting MediaRecorder:', err);
-      alert('Could not start recording: ' + err.message);
+      this.accumulatedMs = 0;
+      this.startedAt = performance.now();
+      this.timerInterval = setInterval(() => this._tick(), 250);
+      this.onStateChange?.(true, false);
+      return true;
+    } catch (error) {
+      this._releaseTracks();
+      if (this.mediaRecorder) this.mediaRecorder.onstop = this.mediaRecorder.ondataavailable = this.mediaRecorder.onerror = null;
+      this.mediaRecorder = null;
+      this.isRecording = false;
+      this.isPaused = false;
+      this.recordedChunks = [];
+      this.currentMimeType = '';
+      this.onError?.(error);
+      return false;
     }
+  }
+
+  _tick() {
+    const ms = this.accumulatedMs + (this.isRecording && !this.isPaused ? performance.now() - this.startedAt : 0);
+    this.elapsedTime = Math.floor(ms / 1000);
+    this.onTimerUpdate?.(this.getFormattedTime());
   }
 
   pauseRecording() {
-    if (!this.isRecording || !this.mediaRecorder) return;
-    if (this.isPaused) {
-      this.mediaRecorder.resume();
-      this.isPaused = false;
-    } else {
-      this.mediaRecorder.pause();
-      this.isPaused = true;
-    }
+    if (!this.isRecording || !this.mediaRecorder || this.mediaRecorder.state === 'inactive') return false;
+    try {
+      if (this.isPaused) {
+        this.mediaRecorder.resume();
+        this.startedAt = performance.now();
+        this.isPaused = false;
+      } else {
+        this.mediaRecorder.pause();
+        this.accumulatedMs += performance.now() - this.startedAt;
+        this.isPaused = true;
+      }
+      this._tick();
+      this.onStateChange?.(true, this.isPaused);
+      return true;
+    } catch (error) { this.onError?.(error); return false; }
   }
 
   stopRecording() {
-    if (!this.isRecording || !this.mediaRecorder) return;
+    if (!this.isRecording || !this.mediaRecorder) return false;
+    this._tick();
     clearInterval(this.timerInterval);
-    this.mediaRecorder.stop();
     this.isRecording = false;
     this.isPaused = false;
-    if (this.onStateChange) this.onStateChange(false);
+    this.finalizing = true;
+    try {
+      if (this.mediaRecorder.state !== 'inactive') this.mediaRecorder.stop();
+      else this._finishRecording(this.mediaRecorder);
+    } catch (error) { this.onError?.(error); this._finishRecording(this.mediaRecorder); }
+    if (this.finalizing) this.onStateChange?.(false, false);
+    return true;
+  }
+
+  _finishRecording(recorder) {
+    if (!recorder || this.mediaRecorder !== recorder) return;
+    this.isRecording = false;
+    this.isPaused = false;
+    clearInterval(this.timerInterval);
+    this._releaseTracks();
+    this.mediaRecorder = null;
+    recorder.onstop = recorder.ondataavailable = recorder.onerror = null;
+    try { this._finalizeRecording(); }
+    catch (error) { this.onError?.(error); }
+    finally {
+      this.finalizing = false;
+      this.onStateChange?.(false, false);
+    }
+  }
+
+  _releaseTracks() {
+    for (const track of this.ownedTracks) track.stop();
+    this.ownedTracks.clear();
   }
 
   _finalizeRecording() {
-    if (this.recordedChunks.length === 0) return;
-
-    // Use user-requested format
-    const isMp4 = this.format === 'mp4';
-    const mime = this.currentMimeType || (isMp4 ? 'video/mp4' : 'video/webm');
-    const blob = new Blob(this.recordedChunks, { type: mime });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-
-    const ext = isMp4 ? 'mp4' : 'webm';
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    a.download = `Gravador_${timestamp}.${ext}`;
-    a.href = url;
-    a.click();
-
-    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    if (this.destroyed || !this.recordedChunks.length) { this.recordedChunks = []; return; }
+    const mimeType = this.currentMimeType;
+    const blob = new Blob(this.recordedChunks, { type: mimeType });
+    const ext = mimeType.startsWith('video/mp4') ? 'mp4' : 'webm';
+    const filename = 'Estudio_' + new Date().toISOString().replace(/[:.]/g, '-') + '.' + ext;
     this.recordedChunks = [];
+    const url = URL.createObjectURL(blob);
+    try {
+      const anchor = document.createElement('a');
+      anchor.download = filename;
+      anchor.href = url;
+      anchor.click();
+    } catch (error) { URL.revokeObjectURL(url); throw error; }
+    const timeout = setTimeout(() => { URL.revokeObjectURL(url); this.exportUrls.delete(url); }, 60000);
+    this.exportUrls.set(url, timeout);
+    this.onExport?.({ blob, filename, mimeType });
   }
 
   getFormattedTime() {
-    const s = this.elapsedTime;
-    const hrs = String(Math.floor(s / 3600)).padStart(2, '0');
-    const mins = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
-    const secs = String(s % 60).padStart(2, '0');
-    return `${hrs}:${mins}:${secs}`;
+    const seconds = this.elapsedTime;
+    return [Math.floor(seconds / 3600), Math.floor(seconds % 3600 / 60), seconds % 60].map(value => String(value).padStart(2, '0')).join(':');
+  }
+
+  destroy() {
+    this.destroyed = true;
+    this.stopRecording();
+    clearInterval(this.timerInterval);
+    this._releaseTracks();
+    this.recordedChunks = [];
+    for (const [url, timeout] of this.exportUrls) { clearTimeout(timeout); URL.revokeObjectURL(url); }
+    this.exportUrls.clear();
+    this.onExport = null;
+    this.onStateChange = null;
+    this.onTimerUpdate = null;
+    this.onError = null;
   }
 }

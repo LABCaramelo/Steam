@@ -84,10 +84,10 @@ export async function clearToolLocalData(notice: ToolReleaseNotice): Promise<voi
       if (notice.slug === "kanban") storage.removeItem(`lab:kanban:board:${notice.userId}`);
     } catch { /* Local restrictions must not undo a successful server-side release. */ }
   }
-  if (notice.slug === "comunidade" && typeof indexedDB !== "undefined") {
+  if ((notice.slug === "comunidade" || notice.slug === "montagem") && typeof indexedDB !== "undefined") {
     await new Promise<void>((resolve) => {
       try {
-        const deletion = indexedDB.deleteDatabase(toolAttachmentDatabaseName(notice.userId));
+        const deletion = indexedDB.deleteDatabase(notice.slug === "montagem" ? toolStorageKey(notice.userId, "montagem", "projects") : toolAttachmentDatabaseName(notice.userId));
         deletion.onsuccess = () => resolve();
         deletion.onerror = () => resolve();
         // Other tabs close their scoped connections on versionchange. A blocked deletion

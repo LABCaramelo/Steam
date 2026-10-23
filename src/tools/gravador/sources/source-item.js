@@ -36,7 +36,7 @@ export class SourceItem {
     };
 
     // Audio properties
-    this.hasAudio = ['camera', 'monitor', 'mic', 'video'].includes(this.type);
+    this.hasAudio = config.hasAudio ?? Boolean(config.props?.stream?.getAudioTracks?.().length);
     this.volume = config.volume ?? 1.0;
     this.muted = config.muted ?? false;
     this.db = -60;
@@ -56,13 +56,13 @@ export class SourceItem {
     // Payload specific data
     this.props = Object.assign({
       color: '#476bd7',
-      text: 'OBS STUDIO WEB',
+      text: 'Seu conteúdo começa aqui.',
       font: 'Inter, sans-serif',
       fontSize: 48,
       textColor: '#FFFFFF',
       textBgColor: 'transparent',
       scrollSpeed: 0, // px per second
-      url: 'https://example.com',
+      url: '',
       imageElement: null,
       videoElement: null,
       stream: null
@@ -177,12 +177,22 @@ export class SourceItem {
       ctx.fillRect(0, 0, this.width, this.height);
     }
 
-    ctx.font = `${this.props.fontSize || 48}px ${this.props.font || 'sans-serif'}`;
+    const lines = String(this.props.text || 'No Ar').split(/\r?\n/);
+    const maxSize = this.props.fontSize || 48;
+    const lineHeight = this.props.lineHeight || 1.08;
+    let fontSize = Math.min(maxSize, this.height / (lines.length * lineHeight));
+    ctx.font = `${fontSize}px ${this.props.font || 'sans-serif'}`;
+    const widest = Math.max(...lines.map(line => ctx.measureText(line).width));
+    if (widest > this.width && widest > 0) {
+      fontSize *= this.width / widest;
+      ctx.font = `${fontSize}px ${this.props.font || 'sans-serif'}`;
+    }
     ctx.fillStyle = this.props.textColor || '#FFFFFF';
     ctx.textBaseline = 'middle';
 
-    const text = this.props.text || 'OBS Studio';
-    const textMetrics = ctx.measureText(text);
+    const textMetrics = { width: Math.max(...lines.map(line => ctx.measureText(line).width)) };
+    const spacing = fontSize * lineHeight;
+    const top = this.height / 2 - (lines.length - 1) * spacing / 2;
 
     if (this.props.scrollSpeed && this.props.scrollSpeed !== 0) {
       this.textScrollOffset += this.props.scrollSpeed * delta;
@@ -192,18 +202,17 @@ export class SourceItem {
       } else if (this.textScrollOffset < -totalWidth) {
         this.textScrollOffset = totalWidth;
       }
-      ctx.fillText(text, -this.textScrollOffset, this.height / 2);
+      lines.forEach((line, index) => ctx.fillText(line, -this.textScrollOffset, top + index * spacing));
     } else {
-      ctx.fillText(text, (this.width - textMetrics.width) / 2, this.height / 2);
+      lines.forEach((line, index) => ctx.fillText(line, (this.width - ctx.measureText(line).width) / 2, top + index * spacing));
     }
   }
 
   _renderImage(ctx) {
-    if (this.props.imageElement && this.props.imageElement.complete) {
+    if (this.props.imageElement?.complete && this.props.imageElement.naturalWidth > 0) {
       ctx.drawImage(this.props.imageElement, 0, 0, this.width, this.height);
     } else {
-      // Default SMPTE Color Bars pattern!
-      this._renderSMPTEBars(ctx);
+      this._renderVideoPlaceholder(ctx);
     }
   }
 
@@ -256,46 +265,12 @@ export class SourceItem {
     ctx.drawImage(this._chromaCanvas, 0, 0, this.width, this.height);
   }
 
-  _renderBrowser(ctx, time) {
-    // Render high-tech simulated browser overlay / widget
-    ctx.fillStyle = '#1e222d';
+  _renderBrowser(ctx) {
+    ctx.fillStyle = '#101014';
     ctx.fillRect(0, 0, this.width, this.height);
-
-    // Browser address bar header
-    ctx.fillStyle = '#141720';
-    ctx.fillRect(0, 0, this.width, 32);
-    ctx.fillStyle = '#ff5f56'; ctx.beginPath(); ctx.arc(14, 16, 5, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#ffbd2e'; ctx.beginPath(); ctx.arc(28, 16, 5, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#27c93f'; ctx.beginPath(); ctx.arc(42, 16, 5, 0, Math.PI * 2); ctx.fill();
-
-    // URL bar
-    ctx.fillStyle = '#232838';
-    ctx.roundRect?.(58, 6, this.width - 70, 20, 4) || ctx.fillRect(58, 6, this.width - 70, 20);
-    ctx.fillStyle = '#7a869e';
-    ctx.font = '11px monospace';
-    ctx.fillText(this.props.url || 'https://twitch.tv/chat', 68, 20);
-
-    // Dynamic stream chat / animated content
-    ctx.fillStyle = '#f0f2f5';
-    ctx.font = '14px Inter, sans-serif';
-    ctx.fillText('LIVE STREAM CHAT OVERLAY', 24, 70);
-
-    const msgs = [
-      { user: 'Streamer101', text: 'Welcome to OBS Web!', color: '#476bd7' },
-      { user: 'Viewer42', text: 'Insane 60FPS browser canvas!', color: '#37d247' },
-      { user: 'StudioPro', text: 'Studio Mode transitions are so smooth', color: '#e5af24' },
-      { user: 'LuizCaramelo', text: 'Menos ferramenta. Mais sistema.', color: '#FF701A' }
-    ];
-
-    msgs.forEach((m, idx) => {
-      const y = 110 + idx * 36;
-      ctx.fillStyle = m.color;
-      ctx.font = 'bold 12px sans-serif';
-      ctx.fillText(m.user + ':', 24, y);
-      ctx.fillStyle = '#cfd5e3';
-      ctx.font = '12px sans-serif';
-      ctx.fillText(m.text, 130, y);
-    });
+    ctx.fillStyle = '#fff4e8';
+    ctx.font = '16px sans-serif';
+    ctx.fillText('Adicione uma captura da aba para compor este site.', 20, 40);
   }
 
   _renderSMPTEBars(ctx) {
@@ -334,7 +309,7 @@ export class SourceItem {
     ctx.fillText(`${this.name} (${this.type.toUpperCase()})`, this.width / 2, this.height / 2 - 10);
     ctx.font = '12px sans-serif';
     ctx.fillStyle = '#515970';
-    ctx.fillText('Click to configure or activate media stream', this.width / 2, this.height / 2 + 16);
+    ctx.fillText(this.captureEnded ? 'Captura encerrada. Reconecte esta fonte.' : 'Selecione um arquivo ou conecte esta fonte.', this.width / 2, this.height / 2 + 16);
     ctx.textAlign = 'start';
   }
 
@@ -344,5 +319,39 @@ export class SourceItem {
     ctx.fillStyle = '#fff';
     ctx.font = '14px sans-serif';
     ctx.fillText(this.name, 20, 30);
+  }
+
+  /** Release live resources while retaining the editable source and transform. */
+  releaseMedia() {
+    this._cancelMediaLoad?.();
+    this._cancelMediaLoad = null;
+    const video = this.props.videoElement;
+    const tracks = new Set([...(this.props.stream?.getTracks() || []), ...(video?.srcObject?.getTracks() || [])]);
+    tracks.forEach(track => track.stop());
+    if (video) {
+      video.onloadedmetadata = null;
+      video.onerror = null;
+      video.pause?.();
+      video.srcObject = null;
+      video.removeAttribute?.('src');
+      video.load?.();
+    }
+    const image = this.props.imageElement;
+    if (image) { image.onload = null; image.onerror = null; }
+    if (this.props.objectUrl) URL.revokeObjectURL(this.props.objectUrl);
+    this.props.stream = null;
+    this.props.videoElement = null;
+    this.props.imageElement = null;
+    this.props.objectUrl = null;
+    this.hasAudio = false;
+  }
+
+  /** Idempotent teardown; streams and file URLs never survive release or account change. */
+  destroy() {
+    if (this.destroyed) return;
+    this.destroyed = true;
+    this.releaseMedia();
+    this.onDestroy?.();
+    this.onDestroy = null;
   }
 }

@@ -1,6 +1,7 @@
 // Canvas View & Interactive Gizmo
 export class CanvasView {
   constructor(container, compositor) {
+    this.events = new AbortController();
     this.container = container;
     this.compositor = compositor;
     this.viewportCanvas = null;
@@ -13,6 +14,7 @@ export class CanvasView {
     this.isDragging = false;
     this.dragStart = { x: 0, y: 0 };
     this.sourceStart = { x: 0, y: 0, w: 0, h: 0 };
+    this.dragSource = null;
     this.onTransformEnd = null;
 
     this._setupUI();
@@ -42,7 +44,7 @@ export class CanvasView {
 
     this.compositor.init(this.viewportCanvas);
     this._updateViewportScale();
-    window.addEventListener('resize', () => this._updateViewportScale());
+    this._listen(window, 'resize', () => this._updateViewportScale());
   }
 
   _updateViewportScale() {
@@ -56,7 +58,7 @@ export class CanvasView {
 
     const scaleX = availW / canvasW;
     const scaleY = availH / canvasH;
-    this.scale = Math.min(scaleX, scaleY, 1.0); // Don't upscale past 1:1
+    this.scale = Math.max(0.001, Math.min(scaleX, scaleY, 1.0)); // Don't upscale past 1:1
 
     const displayW = Math.floor(canvasW * this.scale);
     const displayH = Math.floor(canvasH * this.scale);
@@ -86,7 +88,8 @@ export class CanvasView {
 
   _attachEvents() {
     // Mouse down on canvas or gizmo
-    this.wrapper.addEventListener('mousedown', (e) => {
+    this._listen(this.wrapper, 'mousedown', (e) => {
+      if (e.button !== 0 || this.compositor.isStudioMode) return;
       const rect = this.wrapper.getBoundingClientRect();
       const clickX = (e.clientX - rect.left) / this.scale;
       const clickY = (e.clientY - rect.top) / this.scale;
@@ -97,6 +100,7 @@ export class CanvasView {
       if (handle && selected && !selected.locked) {
         // Start Resizing via Gizmo Handle
         this.activeHandle = handle;
+        this.dragSource = selected;
         this.dragStart = { x: e.clientX, y: e.clientY };
         this.sourceStart = { x: selected.x, y: selected.y, w: selected.width, h: selected.height };
         e.stopPropagation();
@@ -110,14 +114,15 @@ export class CanvasView {
 
       if (hit && !hit.locked) {
         this.isDragging = true;
+        this.dragSource = hit;
         this.dragStart = { x: e.clientX, y: e.clientY };
         this.sourceStart = { x: hit.x, y: hit.y, w: hit.width, h: hit.height };
       }
     });
 
-    window.addEventListener('mousemove', (e) => {
-      const selected = this.compositor.selectedSource;
-      if (!selected || selected.locked) return;
+    this._listen(window, 'mousemove', (e) => {
+      const selected = this.dragSource;
+      if (!selected || selected.destroyed || selected.locked || selected !== this.compositor.selectedSource || this.compositor.isStudioMode) return;
 
       const dx = (e.clientX - this.dragStart.x) / this.scale;
       const dy = (e.clientY - this.dragStart.y) / this.scale;
@@ -161,16 +166,20 @@ export class CanvasView {
       }
     });
 
-    window.addEventListener('mouseup', () => {
+    const endDrag = () => {
       if (this.isDragging || this.activeHandle) {
         if (this.onTransformEnd) this.onTransformEnd();
       }
       this.isDragging = false;
       this.activeHandle = null;
-    });
+      this.dragSource = null;
+    };
+    this._listen(window, 'mouseup', endDrag);
+    this._listen(window, 'blur', endDrag);
 
     // Keyboard Nudge
-    window.addEventListener('keydown', (e) => {
+    this._listen(window, 'keydown', (e) => {
+      if (e.target?.closest?.('input, textarea, select, button, [contenteditable=true], [role=dialog]') || document.querySelector('.obs-modal-overlay.open')) return;
       const s = this.compositor.selectedSource;
       if (!s || s.locked) return;
 
@@ -189,4 +198,12 @@ export class CanvasView {
       }
     });
   }
+  _listen(element, event, listener) { element.addEventListener(event, listener, { signal: this.events.signal }); }
+  destroy() {
+    this.events.abort();
+    this.isDragging = false;
+    this.activeHandle = null;
+    this.dragSource = null;
+  }
+
 }

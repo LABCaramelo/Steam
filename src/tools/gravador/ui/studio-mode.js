@@ -1,103 +1,85 @@
-// Studio Mode Manager
 export class StudioModeView {
   constructor(container, compositor, transitions) {
-    this.container = container;
-    this.compositor = compositor;
-    this.transitions = transitions;
-    this.previewCanvas = null;
-    this.programCanvas = null;
-    this.tbar = null;
-
+    Object.assign(this, { container, compositor, transitions });
+    this.events = new AbortController();
     this.onTransition = null;
+    this.onTransformEnd = null;
+    this.drag = null;
     this._setupUI();
   }
-
   _setupUI() {
     this.container.innerHTML = `
       <div class="studio-pane">
-        <div class="studio-pane-header studio-preview-header">
-          <span>● PREVIEW</span>
-        </div>
-        <div class="canvas-viewport-wrapper" id="studio-preview-wrapper" style="width: 100%; height: 100%;">
-          <canvas class="obs-render-canvas" id="studio-preview-canvas"></canvas>
-        </div>
+        <div class="studio-pane-header studio-preview-header"><span>● PRÉVIA</span></div>
+        <div class="canvas-viewport-wrapper" id="studio-preview-wrapper"><canvas class="obs-render-canvas" id="studio-preview-canvas" aria-label="Prévia: selecione e arraste uma fonte"></canvas></div>
       </div>
-
       <div class="studio-transition-col">
-        <button class="obs-btn primary" id="btn-studio-cut" style="width: 100%;">Cut</button>
-        <button class="obs-btn primary" id="btn-studio-fade" style="width: 100%;">Fade</button>
-        <div class="studio-tbar-container">
-          <span style="font-size: 10px; color: var(--obs-text-muted); font-weight: 600;">T-BAR</span>
-          <input type="range" class="studio-tbar" id="studio-tbar" min="0" max="100" value="0">
-        </div>
+        <button class="obs-btn primary" id="btn-studio-cut" style="width:100%">Cortar</button>
+        <button class="obs-btn" id="btn-studio-fade" style="width:100%">Esmaecer</button>
       </div>
-
       <div class="studio-pane">
-        <div class="studio-pane-header studio-program-header">
-          <span>● PROGRAM</span>
-        </div>
-        <div class="canvas-viewport-wrapper" id="studio-program-wrapper" style="width: 100%; height: 100%;">
-          <canvas class="obs-render-canvas" id="studio-program-canvas"></canvas>
-        </div>
-      </div>
-    `;
-
+        <div class="studio-pane-header studio-program-header"><span>● SAÍDA</span></div>
+        <div class="canvas-viewport-wrapper" id="studio-program-wrapper"><canvas class="obs-render-canvas" id="studio-program-canvas" aria-label="Saída da gravação e transmissão"></canvas></div>
+      </div>`;
     this.previewCanvas = this.container.querySelector('#studio-preview-canvas');
     this.programCanvas = this.container.querySelector('#studio-program-canvas');
-    this.tbar = this.container.querySelector('#studio-tbar');
-
-    // Attach Cut button
-    this.container.querySelector('#btn-studio-cut').addEventListener('click', () => {
-      if (this.onTransition) this.onTransition('cut', 0);
-    });
-
-    // Attach Fade button
-    this.container.querySelector('#btn-studio-fade').addEventListener('click', () => {
-      if (this.onTransition) this.onTransition('fade', this.transitions.duration);
-    });
-
-    // Attach T-Bar
-    this.tbar.addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value) / 100;
-      this.transitions.setManualProgress(val, this.compositor.activeScene, this.compositor.previewScene);
-    });
-
-    this.tbar.addEventListener('change', () => {
-      // Snap to end when released
-      if (parseFloat(this.tbar.value) > 90) {
-        if (this.onTransition) this.onTransition('fade', 0);
-        this.tbar.value = 0;
+    const signal = this.events.signal;
+    const transition = (type, duration) => {
+      if (this.transitions.isTransitioning || this.compositor.activeScene === this.compositor.previewScene) return;
+      this.onTransition?.(type, duration);
+    };
+    this.container.querySelector('#btn-studio-cut').addEventListener('click', () => transition('cut', 0), { signal });
+    this.container.querySelector('#btn-studio-fade').addEventListener('click', () => transition(this.transitions.type, this.transitions.duration), { signal });
+    this.previewCanvas.addEventListener('pointerdown', event => {
+      if (!this.compositor.isStudioMode || this.transitions.isTransitioning || event.button !== 0) return;
+      const rect = this.previewCanvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const source = this.compositor.hitTestSource((event.clientX - rect.left) * this.compositor.width / rect.width, (event.clientY - rect.top) * this.compositor.height / rect.height, this.compositor.previewScene);
+      this.compositor.selectSource(source);
+      if (source && !source.locked) {
+        this.drag = { source, x: event.clientX, y: event.clientY, sourceX: source.x, sourceY: source.y, scaleX: this.compositor.width / rect.width, scaleY: this.compositor.height / rect.height };
+        this.previewCanvas.setPointerCapture?.(event.pointerId);
+        event.preventDefault();
       }
-    });
-
+    }, { signal });
+    this.previewCanvas.addEventListener('pointermove', event => {
+      if (!this.drag) return;
+      const drag = this.drag;
+      if (!this.compositor.isStudioMode || this.transitions.isTransitioning || drag.source.destroyed || drag.source.locked || !this.compositor.previewScene?.sources.includes(drag.source)) { this.drag = null; return; }
+      drag.source.x = Math.round(drag.sourceX + (event.clientX - drag.x) * drag.scaleX);
+      drag.source.y = Math.round(drag.sourceY + (event.clientY - drag.y) * drag.scaleY);
+    }, { signal });
+    const endDrag = () => { if (this.drag) { this.drag = null; this.onTransformEnd?.(); } };
+    this.previewCanvas.addEventListener('pointerup', endDrag, { signal });
+    this.previewCanvas.addEventListener('pointercancel', endDrag, { signal });
+    this.previewCanvas.addEventListener('lostpointercapture', endDrag, { signal });
+    window.addEventListener('blur', endDrag, { signal });
     this.compositor.previewCanvas = this.previewCanvas;
-    this.compositor.previewCanvas.width = this.compositor.width;
-    this.compositor.previewCanvas.height = this.compositor.height;
+    this.previewCanvas.width = this.compositor.width;
+    this.previewCanvas.height = this.compositor.height;
     this.compositor.previewCtx = this.previewCanvas.getContext('2d', { alpha: false });
     this.compositor.setStudioProgramCanvas(this.programCanvas);
-
     this.updateLayout();
-    window.addEventListener('resize', () => this.updateLayout());
+    window.addEventListener('resize', () => this.updateLayout(), { signal });
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => this.updateLayout());
+      this.resizeObserver.observe(this.container);
+    }
   }
-
   updateLayout() {
-    const panes = this.container.querySelectorAll('.studio-pane');
-    panes.forEach(pane => {
+    this.container.querySelectorAll('.studio-pane').forEach(pane => {
       const rect = pane.getBoundingClientRect();
-      const availW = rect.width - 24;
-      const availH = rect.height - 40;
-      const scale = Math.min(availW / this.compositor.width, availH / this.compositor.height, 1.0);
-      const dw = Math.floor(this.compositor.width * scale);
-      const dh = Math.floor(this.compositor.height * scale);
-
-      const canvas = pane.querySelector('canvas');
-      const wrapper = pane.querySelector('.canvas-viewport-wrapper');
-      if (canvas && wrapper) {
-        canvas.style.width = `${dw}px`;
-        canvas.style.height = `${dh}px`;
-        wrapper.style.width = `${dw}px`;
-        wrapper.style.height = `${dh}px`;
-      }
+      const scale = Math.max(0, Math.min((rect.width - 24) / this.compositor.width, (rect.height - 40) / this.compositor.height, 1));
+      const width = `${Math.floor(this.compositor.width * scale)}px`;
+      const height = `${Math.floor(this.compositor.height * scale)}px`;
+      [pane.querySelector('canvas'), pane.querySelector('.canvas-viewport-wrapper')].forEach(element => { if (element) { element.style.width = width; element.style.height = height; } });
     });
+  }
+  destroy() {
+    this.events.abort();
+    this.resizeObserver?.disconnect();
+    this.drag = null;
+    if (this.compositor.previewCanvas === this.previewCanvas) { this.compositor.previewCanvas = null; this.compositor.previewCtx = null; }
+    if (this.compositor.studioProgramCanvas === this.programCanvas) { this.compositor.studioProgramCanvas = null; this.compositor.studioProgramCtx = null; }
   }
 }

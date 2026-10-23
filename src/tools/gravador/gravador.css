@@ -1,29 +1,9 @@
 /* =============================================================================
-   Gravador — Estúdio Audiovisual Caramelo (1080p60)
+   No Ar — Estúdio Criativo / LAB Caramelo
    Manual de Identidade Visual V1 2026 · Caramelo Design System
    ============================================================================= */
 
 :root {
-  --caramelo-color-ink: #101014;
-  --cm-stage: 10 10 13;
-  --cm-surface-1: 16 16 20;
-  --cm-surface-2: 24 24 29;
-  --cm-surface-3: 31 31 38;
-  --cm-line-soft: 26 26 32;
-  --cm-line: 39 39 47;
-  --cm-line-strong: 58 58 68;
-  --cm-fg: 255 244 232;
-  --cm-fg-2: 217 211 204;
-  --cm-fg-muted: 163 163 176;
-  --cm-fg-dim: 139 139 152;
-  --cm-fg-faint: 90 90 102;
-  --cm-accent: 255 112 26;
-  --cm-accent-bright: 255 138 61;
-  --cm-focus: 37 191 255;
-  --cm-success: 61 220 151;
-  --cm-warning: 255 213 42;
-  --cm-danger: 255 61 141;
-
   --obs-bg-main: rgb(var(--cm-stage));
   --obs-bg-darker: #060608;
   --obs-bg-panel: rgb(var(--cm-surface-1));
@@ -222,8 +202,7 @@ body, html {
 /* Canvas Elements */
 canvas.obs-render-canvas {
   display: block;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  image-rendering: auto;
 }
 
 /* Transform Bounding Box Gizmo with Caramelo Accent */

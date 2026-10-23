@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-23",
+  "name": "Montagem",
+  "stage": "beta",
+  "url": "https://www.umcaracaramelo.com.br/store/app/10",
+  "supabase": {
+    "project_id": "fzhzpzxsttflgtassyex",
+    "migration": "add_montagem_tool",
+    "appid": 10,
+    "available": true,
+    "authenticated_release": true,
+    "anonymous_release": false
+  },
+  "vercel": {
+    "project_id": "prj_6vsGBG8mmziOn4rdCDIIwy19VCd0",
+    "deployment_id": "dpl_ARY1Mxd2S2jzmchLX1zEMDMnMX3W",
+    "deployment_url": "https://lab-caramelo-52991zoln-holaluiz.vercel.app",
+    "target": "production",
+    "status": "READY",
+    "framework": "vite",
+    "build_seconds": 56,
+    "base_commit": "de65e83f85b52b5383c244763a77fe62a3564b55",
+    "source": "isolated local changes on base commit; no new Git commit",
+    "catalog_source_sha256": "24bb8b73e4f16917601a3e6b3a33d95799b4ab0d691e7fb96e49c991d1901ce3",
+    "editor_bundle": "tool-montagem-Bz8aCllk.js",
+    "catalog_bundle": "toolCatalog-sJiJtbbS.js",
+    "editor_css": "tool-montagem-B-3G_mo4.css"
+  },
+  "verification": {
+    "http_assets": "passed",
+    "public_domain_matches_tested_build": true,
+    "login_gate_visible": true,
+    "production_authenticated_acquisition_tested": true,
+    "production_authenticated_launch_tested": true,
+    "production_authenticated_editing_tested": false,
+    "local_automated_tests_passed": 50,
+    "runtime_errors_last_5_minutes": 0,
+    "drains": 0,
+    "production_panel_drag_and_reload_tested": true
+  },
+  "workspace": {
+    "ui_font_px": [
+      11,
+      12
+    ],
+    "header_height_px": 56,
+    "resizable": [
+      "media",
+      "properties",
+      "timeline"
+    ],
+    "account_scoped_preferences": true,
+    "preview_aspect_preserved": true
+  }
+}

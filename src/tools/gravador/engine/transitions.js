@@ -11,6 +11,7 @@ export class TransitionsEngine {
     this.onComplete = null;
   }
 
+  /** @param {(() => void) | null} [onComplete] */
   startTransition(fromScene, toScene, type = this.type, duration = this.duration, onComplete = null) {
     if (type === 'cut' || duration <= 0) {
       this.progress = 1;

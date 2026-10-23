@@ -6,6 +6,9 @@ export class AudioEngine {
     this.audioDestination = null;
     this.channels = new Map(); // sourceId -> ChannelDSP
     this.isInitialized = false;
+    this.monitoringEnabled = false;
+    this.activeSourceIds = null;
+    this.gateTimer = null;
   }
 
   init() {
@@ -18,8 +21,11 @@ export class AudioEngine {
     this.audioDestination = this.ctx.createMediaStreamDestination();
 
     this.masterGain.connect(this.audioDestination);
-    this.masterGain.connect(this.ctx.destination); // Audio monitor
     this.isInitialized = true;
+    // DSP gates keep working even if the mixer is hidden or showing another scene.
+    this.gateTimer = setInterval(() => {
+      for (const sourceId of this.channels.keys()) this.getAudioLevels(sourceId);
+    }, 40);
   }
 
   ensureContext() {
@@ -27,17 +33,20 @@ export class AudioEngine {
       this.init();
     }
     if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      void this.ctx.resume().catch(() => {});
     }
   }
 
   // Attach audio stream and build DSP filter chain
-  attachSourceAudio(source, mediaStream) {
+  attachSourceAudio(source, mediaStream, mediaElement = null) {
     this.ensureContext();
     if (!this.ctx) return;
 
     try {
-      const sourceNode = this.ctx.createMediaStreamSource(mediaStream);
+      this.removeSourceAudio(source.id);
+      const sourceNode = mediaElement
+        ? this.ctx.createMediaElementSource(mediaElement)
+        : this.ctx.createMediaStreamSource(mediaStream);
 
       // 1. Noise Suppression Filter (High-pass Rumble Cut)
       const noiseSuppressionNode = this.ctx.createBiquadFilter();
@@ -95,12 +104,15 @@ export class AudioEngine {
 
       // 8. Mixer Fader & Mute Gain
       const faderGainNode = this.ctx.createGain();
-      faderGainNode.gain.value = source.volume ?? 1.0;
+      const active = !this.activeSourceIds || this.activeSourceIds.has(source.id);
+      faderGainNode.gain.value = source.muted || !active ? 0 : (source.volume ?? 1.0);
 
       // 9. Peak/RMS Analyser
       const analyserNode = this.ctx.createAnalyser();
       analyserNode.fftSize = 512;
       analyserNode.smoothingTimeConstant = 0.6;
+      const gateAnalyserNode = this.ctx.createAnalyser();
+      gateAnalyserNode.fftSize = 512;
 
       // Connect Complete DSP Graph in Series
       sourceNode.connect(noiseSuppressionNode);
@@ -108,7 +120,8 @@ export class AudioEngine {
       eqLowNode.connect(eqMidNode);
       eqMidNode.connect(eqHighNode);
       eqHighNode.connect(gainFilterNode);
-      gainFilterNode.connect(noiseGateNode);
+      gainFilterNode.connect(gateAnalyserNode);
+      gateAnalyserNode.connect(noiseGateNode);
       noiseGateNode.connect(compressorNode);
       compressorNode.connect(makeupGainNode);
       makeupGainNode.connect(limiterNode);
@@ -135,17 +148,21 @@ export class AudioEngine {
         delayNode,
         faderGainNode,
         analyserNode,
+        gateAnalyserNode,
         dataArray,
         gateIsOpen: true
       };
 
       this.channels.set(source.id, channel);
+      source.hasAudio = true;
 
       // Apply initial filters & volume
       this.applyAudioFilters(source.id, source.audioFilters);
       this.setSourceVolume(source.id, source.volume, source.muted);
+      return true;
     } catch (e) {
-      console.warn('Could not attach source audio:', e);
+      this.onError?.(new Error('Não foi possível conectar o áudio da fonte.'));
+      return false;
     }
   }
 
@@ -155,7 +172,10 @@ export class AudioEngine {
     if (!ch || !this.ctx) return;
     const now = this.ctx.currentTime;
 
-    filters.forEach(f => {
+    // Removed filters must bypass their DSP node instead of retaining the last value.
+    const configured = new Map(filters.map(filter => [filter.type, filter]));
+    ['gain', 'noiseSuppression', 'eq', 'compressor', 'limiter', 'delay'].forEach(type => {
+      const f = configured.get(type) || { type, enabled: false };
       switch (f.type) {
         case 'gain': {
           // Linear gain = 10^(dB / 20)
@@ -213,7 +233,7 @@ export class AudioEngine {
         }
 
         case 'delay': {
-          const delaySec = f.enabled ? Math.max(0, (f.delayMs || 0) / 1000) : 0;
+          const delaySec = f.enabled ? Math.max(0, Math.min(2, (f.delayMs || 0) / 1000)) : 0;
           ch.delayNode.delayTime.setTargetAtTime(delaySec, now, 0.02);
           break;
         }
@@ -238,15 +258,18 @@ export class AudioEngine {
         channel.delayNode.disconnect();
         channel.faderGainNode.disconnect();
         channel.analyserNode.disconnect();
+        channel.gateAnalyserNode.disconnect();
       } catch (e) {}
       this.channels.delete(sourceId);
+      channel.source.hasAudio = false;
     }
   }
 
   setSourceVolume(sourceId, volume, muted = false) {
     const channel = this.channels.get(sourceId);
     if (channel && channel.faderGainNode && this.ctx) {
-      const targetGain = muted ? 0 : Math.max(0, volume);
+      const active = !this.activeSourceIds || this.activeSourceIds.has(sourceId);
+      const targetGain = muted || !active ? 0 : Math.max(0, Number(volume) || 0);
       channel.faderGainNode.gain.setTargetAtTime(targetGain, this.ctx.currentTime, 0.02);
     }
   }
@@ -255,8 +278,7 @@ export class AudioEngine {
   getAudioLevels(sourceId) {
     const channel = this.channels.get(sourceId);
     if (!channel) {
-      const simDb = -60 + Math.random() * 8;
-      return { rmsDb: simDb, peakDb: simDb, linear: 0 };
+      return { rmsDb: -60, peakDb: -60, linear: 0 };
     }
 
     const { analyserNode, dataArray, source, noiseGateNode } = channel;
@@ -284,11 +306,16 @@ export class AudioEngine {
       const closeThresh = gateFilter.closeThreshold ?? -38;
       const openThresh = gateFilter.openThreshold ?? -32;
 
-      if (channel.gateIsOpen && peakDb < closeThresh) {
+      const gateData = new Float32Array(channel.dataArray.length);
+      channel.gateAnalyserNode.getFloatTimeDomainData(gateData);
+      let inputPeak = 0;
+      for (const sample of gateData) inputPeak = Math.max(inputPeak, Math.abs(sample));
+      const inputDb = inputPeak > 0.0001 ? 20 * Math.log10(inputPeak) : -60;
+      if (channel.gateIsOpen && inputDb < closeThresh) {
         // Close gate smoothly (100ms)
         channel.gateIsOpen = false;
         noiseGateNode.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08);
-      } else if (!channel.gateIsOpen && peakDb > openThresh) {
+      } else if (!channel.gateIsOpen && inputDb > openThresh) {
         // Open gate fast (10ms)
         channel.gateIsOpen = true;
         noiseGateNode.gain.setTargetAtTime(1.0, this.ctx.currentTime, 0.01);
@@ -307,5 +334,40 @@ export class AudioEngine {
   getMixedAudioStream() {
     this.ensureContext();
     return this.audioDestination ? this.audioDestination.stream : null;
+  }
+
+  attachMediaElement(source, element) {
+    // createMediaElementSource routes local-file sound into the mixer without speaker feedback.
+    element.muted = true;
+    const attached = this.attachSourceAudio(source, null, element) === true;
+    element.muted = !attached;
+    return attached;
+  }
+
+  syncActiveSources(sources = []) {
+    this.activeSourceIds = new Set(sources.map(source => source.id));
+    for (const [id, channel] of this.channels) this.setSourceVolume(id, channel.source.volume, channel.source.muted);
+  }
+
+  setMonitoring(enabled = false) {
+    this.ensureContext();
+    if (!this.ctx || enabled === this.monitoringEnabled) return;
+    if (enabled) this.masterGain.connect(this.ctx.destination);
+    else { try { this.masterGain.disconnect(this.ctx.destination); } catch {} }
+    this.monitoringEnabled = enabled;
+  }
+
+  destroy() {
+    clearInterval(this.gateTimer);
+    for (const id of [...this.channels.keys()]) this.removeSourceAudio(id);
+    this.audioDestination?.stream.getTracks().forEach(track => track.stop());
+    try { this.masterGain?.disconnect(); } catch {}
+    void this.ctx?.close().catch(() => {});
+    this.ctx = null;
+    this.masterGain = null;
+    this.audioDestination = null;
+    this.isInitialized = false;
+    this.activeSourceIds = null;
+    this.monitoringEnabled = false;
   }
 }

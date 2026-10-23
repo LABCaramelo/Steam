@@ -128,14 +128,20 @@ export class CanvasCompositor {
   _startRenderLoop() {
     let frameCount = 0;
     let fpsTimer = performance.now();
+    let previousRender = -Infinity;
 
     const loop = (currentTime) => {
+      this.animationFrameId = requestAnimationFrame(loop);
+      const interval = 1000 / this.targetFps;
+      if (currentTime - previousRender < interval - 0.5) return;
+      previousRender = currentTime - (Number.isFinite(previousRender) ? (currentTime - previousRender) % interval : 0);
       const renderStart = performance.now();
 
       // Update Transitions
       if (this.transitions) {
         this.transitions.update(currentTime);
       }
+      this.audioEngine?.syncActiveSources?.(this.activeScene?.sources || []);
 
       // 1. Render Master Broadcast Output (Always un-throttled, pristine 1080p)
       this._renderMasterProgram(currentTime);
@@ -171,7 +177,6 @@ export class CanvasCompositor {
         }
       }
 
-      this.animationFrameId = requestAnimationFrame(loop);
     };
 
     this.animationFrameId = requestAnimationFrame(loop);
@@ -265,13 +270,13 @@ export class CanvasCompositor {
 
   saveScreenshot() {
     const a = document.createElement('a');
-    a.download = `OBS_Screenshot_${new Date().toISOString().replace(/[:.]/g, '-')}.png`;
+    a.download = `NoAr_Captura_${new Date().toISOString().replace(/[:.]/g, '-')}.png`;
     a.href = this.masterCanvas.toDataURL('image/png', 1.0);
     a.click();
   }
 
   // Master crystal-clear output stream for recording and broadcasting
-  getStream(fps = 60) {
+  getStream(fps = this.targetFps) {
     return this.masterCanvas.captureStream(fps || this.targetFps || 60);
   }
 

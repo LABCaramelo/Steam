@@ -1,0 +1,11 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>No Ar — prévia local de desenvolvimento</title></head><body><div id="root"></div><script type="module">
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import '@caramelo/design-system/styles.css';
+import '../gravador/gravador.css';
+import { NoArStudio } from '../gravador/GravadorApp.tsx';
+if (!import.meta.env.DEV) throw new Error('Prévia exclusiva do desenvolvimento local.');
+const params = new URLSearchParams(location.search);
+document.documentElement.dataset.carameloTheme = params.get('theme') === 'light' ? 'light' : 'dark';
+createRoot(document.getElementById('root')).render(React.createElement(React.StrictMode, null, React.createElement(NoArStudio, {userId:'qa-local:'+ (params.get('case') || 'default')})));
+</script></body></html>

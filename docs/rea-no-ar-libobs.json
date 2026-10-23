@@ -1,0 +1,223 @@
+{
+  "evidence_id": "ev_feab6b44565c17f210b0ad344489cdeb754dbab05a054e8a08c56726c4485b9d",
+  "subject": {
+    "name": "obs.dll",
+    "digest": {
+      "sha256": "9b9a76f64a1d27262209f1cfbeaf6d57a175cc4e823c71882bb7d5b5ab99bdcf"
+    },
+    "local_path": "D:\\obs-studio\\bin\\64bit\\obs.dll",
+    "format": "pe",
+    "architecture": "x86_64"
+  },
+  "provider": {
+    "id": "rea-pe-resources",
+    "name": "REA PE resource parser",
+    "version": "1"
+  },
+  "analysis_profile": null,
+  "predicate_type": "rea.analysis",
+  "operation": "inspect_pe_resources",
+  "parameters": {
+    "path": "D:\\obs-studio\\bin\\64bit\\obs.dll",
+    "max_file_bytes": 67108864,
+    "max_entries": 16384
+  },
+  "raw_result": null,
+  "normalized_result": {
+    "artifact": {
+      "path": "D:\\obs-studio\\bin\\64bit\\obs.dll",
+      "sha256": "9b9a76f64a1d27262209f1cfbeaf6d57a175cc4e823c71882bb7d5b5ab99bdcf",
+      "bytes": 1176848
+    },
+    "format": "pe32-plus",
+    "machine": 34404,
+    "directory": {
+      "rva": 1179648,
+      "location": {
+        "offset": 1164288,
+        "bytes": 1376
+      },
+      "data_directory_location": {
+        "offset": 280,
+        "bytes": 8
+      }
+    },
+    "directories": [
+      {
+        "location": {
+          "offset": 1164288,
+          "bytes": 32
+        },
+        "characteristics": 0,
+        "timestamp": 0,
+        "major_version": 0,
+        "minor_version": 0,
+        "named_entries": 0,
+        "id_entries": 2
+      },
+      {
+        "location": {
+          "offset": 1164320,
+          "bytes": 24
+        },
+        "characteristics": 0,
+        "timestamp": 0,
+        "major_version": 0,
+        "minor_version": 0,
+        "named_entries": 0,
+        "id_entries": 1
+      },
+      {
+        "location": {
+          "offset": 1164368,
+          "bytes": 24
+        },
+        "characteristics": 0,
+        "timestamp": 0,
+        "major_version": 0,
+        "minor_version": 0,
+        "named_entries": 0,
+        "id_entries": 1
+      },
+      {
+        "location": {
+          "offset": 1164344,
+          "bytes": 24
+        },
+        "characteristics": 0,
+        "timestamp": 0,
+        "major_version": 0,
+        "minor_version": 0,
+        "named_entries": 0,
+        "id_entries": 1
+      },
+      {
+        "location": {
+          "offset": 1164392,
+          "bytes": 24
+        },
+        "characteristics": 0,
+        "timestamp": 0,
+        "major_version": 0,
+        "minor_version": 0,
+        "named_entries": 0,
+        "id_entries": 1
+      }
+    ],
+    "resources": [
+      {
+        "index": 0,
+        "type": {
+          "kind": "id",
+          "id": 16
+        },
+        "name": {
+          "kind": "id",
+          "id": 1
+        },
+        "language": {
+          "kind": "id",
+          "id": 1033
+        },
+        "entry_locations": [
+          {
+            "offset": 1164304,
+            "bytes": 8
+          },
+          {
+            "offset": 1164336,
+            "bytes": 8
+          },
+          {
+            "offset": 1164384,
+            "bytes": 8
+          }
+        ],
+        "data_entry_location": {
+          "offset": 1164416,
+          "bytes": 16
+        },
+        "code_page": 0,
+        "reserved": 0,
+        "payload": {
+          "rva": 1179808,
+          "location": {
+            "offset": 1164448,
+            "bytes": 832
+          },
+          "sha256": "822b314cc340e4d93a1327497b6fcf172ab51f1d5b951eaa42eedab8a414a836"
+        }
+      },
+      {
+        "index": 1,
+        "type": {
+          "kind": "id",
+          "id": 24
+        },
+        "name": {
+          "kind": "id",
+          "id": 2
+        },
+        "language": {
+          "kind": "id",
+          "id": 1033
+        },
+        "entry_locations": [
+          {
+            "offset": 1164312,
+            "bytes": 8
+          },
+          {
+            "offset": 1164360,
+            "bytes": 8
+          },
+          {
+            "offset": 1164408,
+            "bytes": 8
+          }
+        ],
+        "data_entry_location": {
+          "offset": 1164432,
+          "bytes": 16
+        },
+        "code_page": 0,
+        "reserved": 0,
+        "payload": {
+          "rva": 1180640,
+          "location": {
+            "offset": 1165280,
+            "bytes": 381
+          },
+          "sha256": "4bb79dcea0a901f7d9eac5aa05728ae92acb42e0cb22e5dd14134f4421a3d8df"
+        }
+      }
+    ],
+    "icon_groups": [],
+    "coverage": {
+      "status": "complete",
+      "examined_entries": 6,
+      "resources": 2
+    },
+    "limitations": [
+      "Static PE32/PE32+ type/name/language resource inventory; payloads other than RT_GROUP_ICON remain opaque.",
+      "Icon candidates are resource-table relationships. Language fallback, image decoding and actual shell/window loading are not observed.",
+      "Exact shared byte ranges are retained; non-identical overlapping resource structures or payloads are rejected."
+    ]
+  },
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Static PE32/PE32+ type/name/language resource inventory; payloads other than RT_GROUP_ICON remain opaque.",
+    "Icon candidates are resource-table relationships. Language fallback, image decoding and actual shell/window loading are not observed.",
+    "Exact shared byte ranges are retained; non-identical overlapping resource structures or payloads are rejected."
+  ],
+  "relationship_coverage": null,
+  "locations": [
+    {
+      "kind": "artifact-path",
+      "path": "D:\\obs-studio\\bin\\64bit\\obs.dll"
+    }
+  ],
+  "evidence_links": []
+}

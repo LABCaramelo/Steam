@@ -6,7 +6,8 @@ export function initWork(getLenis = () => null) {
   const stage = showcase?.querySelector('.work-stage');
   const cards = [...(showcase?.querySelectorAll('.project-card') || [])];
   const disabled = new URLSearchParams(location.search).get('motion') === 'off';
-  if (!gsap || !ScrollTrigger || !showcase || !stage || cards.length < 2 || disabled) {
+  // A compact home presents every project in flow instead of reserving four scroll scenes.
+  if (!gsap || !ScrollTrigger || !showcase || !stage || cards.length < 2 || disabled || showcase.closest('.work-section-compact')) {
     return { destroy() {} };
   }
 

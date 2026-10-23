@@ -64,6 +64,20 @@ No SQL Editor do projeto Supabase, aplique **`supabase/lab-access.sql` antes de 
 
 As implementações novas não exigem chaves privilegiadas no navegador nem alteração de permissões. O Kanban e a Prancheta preservam dados locais pendentes quando uma gravação falha. Na Prancheta, conflitos de revisão interrompem o autosave para evitar sobrescrever outra aba. As notas da Academy têm salvamento explícito e avisam antes de sair com alterações pendentes. A restauração da rotina do Kanban usa várias requisições, pois o SQL atual não tem uma RPC transacional para isso; uma falha parcial é informada e o quadro é recarregado.
 
+A **Montagem** (app 10, beta) adapta o editor de vídeo local à plataforma, com identidade do MCP Caramelo, timeline com várias faixas, cortes, textos, legendas SRT, áudio e exportação real WebM/MP4 conforme os codecs do navegador. A entrada é `/tools/montagem/index.html`, com o controle de acesso padrão do LAB. Projetos e mídias ficam neste navegador, separados por conta; não há sincronização na nuvem. Em bancos existentes, aplicar `supabase/montagem.sql` depois dos scripts-base. Evidências REA, implementação, verificações e limites em [docs/rea-montagem.md](docs/rea-montagem.md).
+
+### No Ar — estúdio web (beta)
+
+O **No Ar** é o estúdio de gravação e transmissão do LAB. Mantém o app `9`, o slug interno `gravador` e a entrada `/tools/gravador/index.html`, com a verificação de acesso comum das ferramentas. A interface e as artes próprias usam o design system Caramelo: Ink, Cream, Caramel, assinatura em cinco cores, Montserrat e Inter. O produto foi reconstruído para APIs web a partir da análise do OBS; não usa o nome, o logotipo nem o código do aplicativo original.
+
+Componha cenas com tela, webcam, microfone, arquivos, texto e cor; prepare uma cena em **PREVIEW** e envie-a ao **PROGRAM** com corte ou transição. A composição usa Canvas e Web Audio. A gravação usa MediaRecorder, com download local em WebM ou MP4 conforme os codecs do navegador. Resolução, taxa de quadros, captura de áudio da tela e desempenho dependem do dispositivo e das permissões; use HTTPS ou localhost.
+
+A transmissão envia áudio e vídeo de PROGRAM por WebRTC a um **endpoint WHIP HTTPS** de serviço externo compatível. O serviço precisa aceitar a origem do LAB por CORS e expor os cabeçalhos necessários ao WHIP. Endpoint e token são informados pelo usuário; o token fica somente na memória da sessão e não entra nas configurações exportadas. Não há ingestão RTMP nativa nem servidor de transmissão incluído.
+
+Somente a configuração das cenas fica no `localStorage`, separada por conta. Arquivos de mídia e permissões de captura precisam ser adicionados novamente ao reabrir. Downloads ficam no computador; a ferramenta não sincroniza mídia na nuvem. A remoção pela biblioteca limpa a configuração local daquela conta.
+
+Para bancos existentes, aplique `supabase/no-ar.sql` **depois** de `lab-tools.sql` e de `montagem.sql`, quando usado. O mesmo SQL está em `supabase/migrations/20261023013201_no_ar.sql`, gerado com a CLI; escolha um fluxo de instalação. O script renomeia o catálogo e inclui `gravador` na remoção transacional, preservando preço e disponibilidade já configurados. Se a entrada continuar em breve, o administrador deve liberá-la no painel. Nenhum SQL foi aplicado em produção durante a implementação.
+
 ### Verificação das ferramentas
 
 ```powershell

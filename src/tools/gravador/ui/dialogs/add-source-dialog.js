@@ -1,79 +1,50 @@
-// Add Source Dialog
 import { ICONS } from '../../assets/icons.js';
+import { setupDialog, openDialog, closeDialog, destroyDialog } from './dialog-utils.js';
 
 export class AddSourceDialog {
   constructor(container, sourceFactory, onSourceCreated) {
-    this.container = container;
-    this.sourceFactory = sourceFactory;
-    this.onSourceCreated = onSourceCreated;
+    Object.assign(this, { container, sourceFactory, onSourceCreated });
     this.isOpen = false;
-
+    this.pending = false;
+    this.destroyed = false;
     this._setupUI();
+    setupDialog(this, 'Adicionar fonte à cena');
   }
-
   _setupUI() {
-    this.container.innerHTML = `
-      <div class="obs-modal">
-        <div class="obs-modal-header">
-          <span>Adicionar Fonte</span>
-          <button class="obs-modal-close-btn" id="modal-add-source-close">&times;</button>
-        </div>
-        <div class="obs-modal-body">
-          <p style="font-size: 11.5px; color: var(--obs-text-secondary); margin-bottom: 6px;">
-            Selecione o tipo de fonte para compor na cena ativa:
-          </p>
-          <div class="source-type-grid" id="source-type-grid">
-            <!-- Cards will be populated here -->
-          </div>
-        </div>
-      </div>
-    `;
-
-    const grid = this.container.querySelector('#source-type-grid');
-    const sourceTypes = [
-      { id: 'monitor', name: 'Captura de Tela', desc: 'Captura tela inteira, janela ou aba do navegador', icon: ICONS.monitor },
-      { id: 'camera', name: 'Câmera / Webcam', desc: 'Dispositivo de vídeo USB, webcam ou placa de captura', icon: ICONS.camera },
-      { id: 'mic', name: 'Microfone & Áudio', desc: 'Microfone interno/externo ou entrada de linha', icon: ICONS.mic },
-      { id: 'video', name: 'Fonte de Mídia', desc: 'Vídeo local ou animação contínua em loop', icon: ICONS.video },
-      { id: 'image', name: 'Imagem / Padrão', desc: 'Arquivo PNG, JPG, SVG ou barras de teste SMPTE', icon: ICONS.image },
-      { id: 'browser', name: 'Navegador Web', desc: 'URL web interativa, widget ou overlay de chat', icon: ICONS.browser },
-      { id: 'text', name: 'Texto Estilizado', desc: 'Tipografia estática ou letreiro digital rolante', icon: ICONS.text },
-      { id: 'color', name: 'Cor Sólida', desc: 'Fundo ou moldura de cor sólida personalizada', icon: ICONS.color }
+    this.container.innerHTML = `<div class="obs-modal"><div class="obs-modal-header"><span>Adicionar fonte</span><button class="obs-modal-close-btn" id="modal-add-source-close" aria-label="Fechar seleção de fontes">&times;</button></div><div class="obs-modal-body"><p style="font-size:12px;color:var(--obs-text-secondary)">Escolha o conteúdo desta cena. O navegador solicita acesso para câmera, tela e microfone.</p><div class="source-type-grid" id="source-type-grid"></div></div></div>`;
+    const types = [
+      { id: 'monitor', name: 'Tela ou janela', desc: 'Compartilhe uma tela, janela ou aba', icon: ICONS.monitor },
+      { id: 'camera', name: 'Câmera', desc: 'Conecte sua webcam ou placa de captura', icon: ICONS.camera },
+      { id: 'mic', name: 'Microfone', desc: 'Conecte uma entrada de áudio', icon: ICONS.mic },
+      { id: 'video', name: 'Vídeo local', desc: 'Escolha um vídeo nas propriedades da fonte', icon: ICONS.video },
+      { id: 'image', name: 'Imagem', desc: 'Escolha uma imagem nas propriedades da fonte', icon: ICONS.image },
+      { id: 'text', name: 'Texto', desc: 'Adicione um título ou letreiro', icon: ICONS.text },
+      { id: 'color', name: 'Cor sólida', desc: 'Crie um fundo ou uma moldura', icon: ICONS.color }
     ];
-
-    sourceTypes.forEach(t => {
-      const card = document.createElement('div');
-      card.className = 'source-type-card';
-      card.innerHTML = `
-        ${t.icon}
-        <div class="source-type-info">
-          <span class="source-type-name">${t.name}</span>
-          <span class="source-type-desc">${t.desc}</span>
-        </div>
-      `;
-      card.addEventListener('click', async () => {
+    const grid = this.container.querySelector('#source-type-grid');
+    types.forEach(type => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'source-type-card';
+      button.innerHTML = `${type.icon}<div class="source-type-info"><span class="source-type-name">${type.name}</span><span class="source-type-desc">${type.desc}</span></div>`;
+      button.addEventListener('click', async () => {
+        if (this.pending) return;
+        this.pending = true;
         this.close();
-        const source = await this.sourceFactory.createSource(t.id);
-        if (source && this.onSourceCreated) {
-          this.onSourceCreated(source);
-        }
+        try {
+          const source = await this.sourceFactory.createSource(type.id);
+          if (this.destroyed) { this.sourceFactory.audioEngine?.removeSourceAudio?.(source?.id); source?.destroy?.(); return; }
+          if (source) this.onSourceCreated?.(source);
+        } catch (error) { if (!this.destroyed) alert(error?.message || 'Não foi possível adicionar esta fonte.'); }
+        finally { this.pending = false; }
       });
-      grid.appendChild(card);
+      grid.appendChild(button);
     });
-
     this.container.querySelector('#modal-add-source-close').addEventListener('click', () => this.close());
-    this.container.addEventListener('click', (e) => {
-      if (e.target === this.container) this.close();
-    });
+    this.backdropClick = event => { if (event.target === this.container) this.close(); };
+    this.container.addEventListener('click', this.backdropClick);
   }
-
-  open() {
-    this.container.classList.add('open');
-    this.isOpen = true;
-  }
-
-  close() {
-    this.container.classList.remove('open');
-    this.isOpen = false;
-  }
+  open() { if (!this.pending) openDialog(this); }
+  close() { closeDialog(this); }
+  destroy() { this.destroyed = true; this.container.removeEventListener('click', this.backdropClick); destroyDialog(this); }
 }

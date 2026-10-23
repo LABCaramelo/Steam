@@ -206,37 +206,61 @@ export const CLAQUETE_APP = tool(CLAQUETE_APP_ID, "Claquete", {
 
 export const ADMIN_APP_ID = 8;
 export const GRAVADOR_APP_ID = 9;
+export const MONTAGEM_APP_ID = 10;
 
-export const GRAVADOR_APP = tool(GRAVADOR_APP_ID, "Gravador", {
+export const MONTAGEM_APP = tool(MONTAGEM_APP_ID, "Montagem", {
+  slug: "montagem", available: true, stage: "beta",
+  launchPath: `/library/app/${MONTAGEM_APP_ID}/open`,
+  publicPage: "/tools/montagem/index.html",
+  description: "Editor de vídeo do LAB: timeline com várias faixas, cortes, textos, legendas SRT, ajustes de imagem e mixagem de áudio.",
+  assets: art("/tools/montagem/art"),
+  store: {
+    tagline: "Sua história, do primeiro corte ao vídeo final.",
+    eyebrow: "VÍDEO / EDIÇÃO NO NAVEGADOR / BETA",
+    headline: "Crie. Corte.\nConte.",
+    features: [
+      {title:"Uma timeline para suas ideias",text:"Importe vídeos, imagens e áudios. Apare, divida, duplique e organize clipes em várias faixas."},
+      {title:"A imagem do seu jeito",text:"Ajuste proporção, posição, escala, rotação, cores, velocidade e transições."},
+      {title:"Dê voz à sua história",text:"Adicione textos, importe legendas SRT e misture trilhas com volume e fades por clipe."},
+      {title:"Exporte e publique",text:"Baixe seu vídeo com áudio em WebM ou MP4, conforme os codecs disponíveis no navegador."},
+    ],
+    steps:["Abra a Montagem e importe suas mídias.","Monte a sequência, corte os clipes e ajuste textos, cor e som.","Exporte o vídeo e baixe o resultado no computador."],
+    about:[["Formato","Editor de vídeo web"],["Versão","Beta"],["Legendas","Importação SRT"],["Exportação","WebM / MP4 conforme o navegador"]],
+    dataNote:"Projetos e arquivos são salvos neste navegador, separados por conta. A exportação ocorre em tempo real. Não há sincronização na nuvem nem transcrição automática.",
+    category:"Audiovisual",
+  },
+});
+
+export const GRAVADOR_APP = tool(GRAVADOR_APP_ID, "No Ar", {
   slug: "gravador",
   available: true,
   stage: "beta",
   launchPath: `/library/app/${GRAVADOR_APP_ID}/open`,
   publicPage: "/tools/gravador/index.html",
-  description: "Estúdio de gravação de tela, webcam e áudio profissional em 1080p a 60 FPS com Modo Estúdio e mixer em tempo real.",
+  description: "Estúdio web para compor cenas, capturar tela e câmera, misturar áudio, gravar vídeos e transmitir por WHIP.",
   assets: art("/tools/gravador/art"),
   store: {
-    tagline: "Gravação profissional de tela, webcam e áudio no navegador.",
-    eyebrow: "AUDIOVISUAL / ESTÚDIO 1080P60 / VERSÃO BETA",
-    headline: "Grave com precisão de estúdio,\ndo canvas ao corte final.",
+    tagline: "Seu próximo programa começa aqui.",
+    eyebrow: "AUDIOVISUAL / GRAVAÇÃO E TRANSMISSÃO / BETA",
+    headline: "Sua ideia.\nNo Ar.",
     features: [
-      { title: "Canvas 60 FPS com Cenas & Fontes", text: "Componha telas, webcams, imagens, textos rolantes e sobreposições com renderização a 60 FPS e gizmo tátil." },
-      { title: "Modo Estúdio & Transições com T-Bar", text: "Pré-visualize a cena antes de ir ao ar, transicione com Fade, Cut e controle manual milimétrico no fader analógico." },
-      { title: "Mixer de Áudio com V-Meters em dB", text: "Medidores segmentados em decibéis, faders independentes por canal, botão de mute suave e suporte a filtros de áudio." },
-      { title: "Gravação Real em MP4 e WebM", text: "Grave e baixe instantaneamente arquivos em resolução Full HD a 60 quadros sem precisar de software instalado." },
+      { title: "Monte seu estúdio", text: "Organize cenas com tela, webcam, arquivos de mídia, texto e cor. Posicione e ajuste cada fonte no canvas." },
+      { title: "Prepare antes de entrar", text: "Use PREVIEW e PROGRAM para ensaiar a próxima cena e fazer cortes ou transições durante o programa." },
+      { title: "Cuide do som", text: "Misture microfone e áudio das fontes com volumes independentes, mute e medidores em tempo real." },
+      { title: "Grave ou transmita", text: "Baixe a gravação em WebM ou MP4 conforme o navegador. Transmita por um endpoint WHIP HTTPS de serviço externo compatível." },
     ],
     steps: [
-      "Adquira o Gravador e abra o estúdio pelo LAB.",
-      "Adicione suas fontes de tela, câmera e microfone organizadas em cenas.",
-      "Inicie a gravação e baixe seu vídeo em alta qualidade direto no navegador.",
+      "Adquira o No Ar e abra seu estúdio pelo LAB.",
+      "Monte suas cenas e autorize as capturas que quiser usar.",
+      "Prepare no PREVIEW, envie ao PROGRAM e grave ou conecte seu serviço WHIP.",
     ],
     about: [
-      ["Formato", "Estúdio de Gravação Web"],
+      ["Formato", "Estúdio de gravação e transmissão web"],
       ["Versão", "Beta"],
-      ["Taxa de quadros", "60 FPS (Full HD)"],
-      ["Exportação", "MP4 e WebM"],
+      ["Exportação", "WebM / MP4 conforme o navegador"],
+      ["Transmissão", "WHIP HTTPS com serviço externo"],
     ],
-    dataNote: "Todo o processamento de captura e gravação roda localmente no seu navegador. Nenhuma imagem ou áudio passa por servidores externos.",
+    dataNote: "Configurações ficam neste navegador, separadas por conta; mídias precisam ser adicionadas novamente. Gravações são locais. A transmissão envia áudio e vídeo ao serviço WHIP escolhido; o token fica só na sessão. Captura, codecs e CORS dependem do navegador e do serviço. Sem sincronização de mídia na nuvem ou RTMP nativo.",
     category: "Audiovisual",
   },
 });
@@ -276,6 +300,7 @@ export const TOOL_CATALOG: readonly LibraryApp[] = [
   COMUNIDADE_APP,
   CLAQUETE_APP,
   GRAVADOR_APP,
+  MONTAGEM_APP,
   ACADEMY_APP,
   KANBAN_APP,
   PRANCHETA_APP,

@@ -1,0 +1,11 @@
+.git/
+.env
+.env.*
+node_modules/
+dist/
+.rea-reference/
+docs/
+src/tools/_dev/
+**/*.test.ts
+**/*.test.tsx
+**/*.log
