@@ -145,134 +145,155 @@ function MiniLanding({
    SLIDE 01 — QUEM SOU EU E O QUE VAMOS CONSTRUIR
    ========================================================================== */
 function Slide01QuemSouEu(p: SlideComponentProps) {
-  const [showPath, setShowPath] = useState(() => flag(p, "show-path"));
+  const [showPathModal, setShowPathModal] = useState(false);
   const projectInput = p.lab.projectIdea || "";
 
   const handleProjectChange = (val: string) => {
     p.setLab((prev) => ({ ...prev, projectIdea: val }));
   };
 
-  const togglePath = () => {
-    const next = !showPath;
-    setShowPath(next);
-    p.demo("show-path", next);
-  };
-
   return (
-    <div className="slide-intro-creator">
-      <div className="creator-split-grid">
-        {/* Coluna 1: Apresentação Pessoal */}
-        <div className="creator-bio-card">
-          <div className="creator-header">
-            <span className="bio-tag">DIREÇÃO & CRIAÇÃO</span>
-            <h3>Luiz · Um Cara Caramelo</h3>
-          </div>
-          <p className="bio-lead">
+    <div className="slide01-container">
+      <div className="slide01-grid">
+        {/* Coluna 1: Apresentação Pessoal & Propósito */}
+        <div className="slide01-col bio-col">
+          <div className="card-kicker-badge">DIREÇÃO & CRIAÇÃO</div>
+          <h2 className="bio-name">Luiz · Um Cara Caramelo</h2>
+          
+          <p className="bio-quote">
             "Sou o criador do <strong>Um Cara Caramelo</strong>. Trabalho com criatividade, inteligência artificial, design, experiências digitais e estratégia de conteúdo."
           </p>
-          <p className="bio-body">
+          
+          <p className="bio-sub">
             "Tenho uma mania de tentar coisas que ainda não sei fazer. Aprendo experimentando, construindo e mostrando como."
           </p>
-          <div className="bio-purpose">
+
+          <div className="bio-mission">
             <small>POR QUE ESTOU AQUI?</small>
             <p>
-              Para ensinar você a assumir a <strong>direção</strong>: a IA executa, mas o olhar estratégico, o gosto visual e a decisão são sempre seus.
+              Para ensinar você a assumir a <strong>direção</strong>: a IA executa, mas o olhar estratégico e a decisão são sempre seus.
             </p>
           </div>
+
+          <div className="bio-roadmap-action">
+            <button
+              type="button"
+              className="button primary small"
+              onClick={() => setShowPathModal(true)}
+            >
+              VER O CAMINHO (4 AULAS) ↗
+            </button>
+            <small>Descubra a entrega de cada etapa</small>
+          </div>
         </div>
 
-        {/* Coluna 2: Alinhamento de Expectativas */}
-        <div className="expectations-card">
-          <div className="expectations-header">
-            <span className="bio-tag">ALINHAMENTO</span>
+        {/* Coluna 2: Alinhamento de Expectativas & Primeira Prática */}
+        <div className="slide01-col expect-col">
+          <div className="expect-box">
+            <div className="card-kicker-badge">ALINHAMENTO</div>
             <h3>O que você vai — e não vai — aprender aqui</h3>
-          </div>
 
-          <div className="expectations-dual-list">
-            <div className="exp-column will-learn">
-              <h4>✓ VAMOS</h4>
-              <ul>
-                <li>Entender a mecânica de uma Landing Page que converte.</li>
-                <li>Aprender a usar IA para criar interfaces e mídias.</li>
-                <li>Utilizar prompts profissionais prontos e testados.</li>
-                <li>Construir uma LP própria do zero.</li>
-                <li>Publicar o projeto na Vercel com domínio próprio.</li>
-              </ul>
-            </div>
-
-            <div className="exp-column wont-learn">
-              <h4>✕ NÃO VAMOS</h4>
-              <ul>
-                <li>Fazer um curso completo e cansativo de programação.</li>
-                <li>Dominar todas as ferramentas de IA do mercado.</li>
-                <li>Aprender desenvolvimento web avançado.</li>
-                <li>Construir sistemas complexos com bancos de dados.</li>
-                <li>Garantir resultados comerciais apenas com a publicação.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Linha Inferior: Jornada das 4 Aulas & Primeira Prática */}
-      <div className="creator-bottom-actions">
-        <div className="path-toggle-row">
-          <button
-            type="button"
-            className={`button ${showPath ? "primary" : ""}`}
-            onClick={togglePath}
-          >
-            {showPath ? "Ocultar o caminho" : "VER O CAMINHO"} ↗
-          </button>
-          <span className="path-subtext">
-            4 aulas conectadas · 16 slides · 1 Landing Page sua no ar.
-          </span>
-        </div>
-
-        {showPath && (
-          <div className="roadmap-grid-4">
-            {lessons.map((lesson, idx) => (
-              <div
-                className="roadmap-step-card"
-                key={lesson.name}
-                style={{ "--step-accent": lesson.color } as CSSProperties}
-              >
-                <div className="step-num">AULA 0{idx + 1}</div>
-                <strong>{lesson.name}</strong>
-                <p className="step-q">{lesson.question}</p>
-                <div className="step-result">
-                  <small>ENTREGA:</small>
-                  <span>{lesson.result}</span>
-                </div>
+            <div className="expect-columns">
+              <div className="expect-list will">
+                <span className="list-title">✓ VAMOS:</span>
+                <ul>
+                  <li>Entender a mecânica de uma LP que converte</li>
+                  <li>Aprender a usar IA para criar interfaces</li>
+                  <li>Utilizar prompts profissionais testados</li>
+                  <li>Construir uma LP própria do zero</li>
+                  <li>Publicar o projeto na Vercel com domínio</li>
+                </ul>
               </div>
-            ))}
-          </div>
-        )}
 
-        <div className="student-project-starter">
-          <div className="starter-label-group">
-            <span className="eyebrow">SUA PRIMEIRA DECISÃO PRÁTICA</span>
-            <label htmlFor="student-project-input">
-              Qual projeto você gostaria de transformar em uma Landing Page?
-            </label>
+              <div className="expect-list wont">
+                <span className="list-title">✕ NÃO VAMOS:</span>
+                <ul>
+                  <li>Fazer um curso cansativo de programação</li>
+                  <li>Dominar todas as ferramentas de IA</li>
+                  <li>Aprender desenvolvimento web avançado</li>
+                  <li>Construir sistemas complexos de dados</li>
+                  <li>Garantir vendas apenas pela publicação</li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <div className="starter-input-wrapper">
-            <input
-              id="student-project-input"
-              type="text"
-              placeholder="Ex: Minha mentoria de estratégia de conteúdo para criadores autônomos"
-              value={projectInput}
-              onChange={(e) => handleProjectChange(e.target.value)}
-            />
-            {projectInput && (
-              <Copy text={projectInput} label="Copiar ideia" />
-            )}
+
+          {/* Primeira Prática Integrada */}
+          <div className="starter-box">
+            <div className="starter-header">
+              <span className="card-kicker-badge">PRIMEIRA PRÁTICA</span>
+              <label htmlFor="student-project-input">
+                Qual projeto você gostaria de transformar em uma Landing Page?
+              </label>
+            </div>
+
+            <div className="starter-input-row">
+              <input
+                id="student-project-input"
+                type="text"
+                placeholder="Ex: Minha mentoria de estratégia de conteúdo para criadores autônomos"
+                value={projectInput}
+                onChange={(e) => handleProjectChange(e.target.value)}
+              />
+              {projectInput && (
+                <Copy text={projectInput} label="Copiar" />
+              )}
+            </div>
+            <small className="starter-tip">
+              Sua resposta fica salva no navegador e abastecerá os próximos exercícios.
+            </small>
           </div>
-          <p className="small">
-            Sua resposta fica salva no seu navegador e será reutilizada nas atividades dos próximos slides.
-          </p>
         </div>
       </div>
+
+      {/* Modal do Caminho das 4 Aulas */}
+      {showPathModal && (
+        <div className="roadmap-overlay" onClick={() => setShowPathModal(false)}>
+          <div className="roadmap-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="roadmap-modal-header">
+              <div>
+                <span className="card-kicker-badge">JORNADA COMPLETA</span>
+                <h2>As quatro aulas conectadas</h2>
+              </div>
+              <button
+                type="button"
+                className="close-btn"
+                onClick={() => setShowPathModal(false)}
+                aria-label="Fechar"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="roadmap-grid-modal">
+              {lessons.map((lesson, idx) => (
+                <div
+                  className="roadmap-card-item"
+                  key={lesson.name}
+                  style={{ "--step-accent": lesson.color } as CSSProperties}
+                >
+                  <div className="card-step-badge">AULA 0{idx + 1}</div>
+                  <strong>{lesson.name}</strong>
+                  <p className="card-step-q">{lesson.question}</p>
+                  <div className="card-step-deliver">
+                    <small>ENTREGA REAL:</small>
+                    <span>{lesson.result}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className="button primary"
+              style={{ marginTop: "16px", alignSelf: "flex-end" }}
+              onClick={() => setShowPathModal(false)}
+            >
+              Entendido! Fechar percurso →
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -654,7 +675,7 @@ ${briefing.nextStep}
       {/* Coluna Direita: Representação Visual do Wireframe */}
       <div className="wireframe-visual-preview">
         <BrowserTop label="preview-wireframe.local" />
-        <div className="wireframe-sections">
+        <div className="wireframe-scrollable-blocks">
           <div className="wf-block wf-hero">
             <span className="wf-tag">HERO</span>
             <strong>{briefing.offer || "Sua Oferta Principal"}</strong>

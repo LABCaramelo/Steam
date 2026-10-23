@@ -254,9 +254,18 @@ export default function App() {
               <strong>LANDING PAGES COM IA</strong>
               <span>HEAD ACADEMY × LABORATÓRIO DE INTERAÇÃO</span>
             </div>
+
+            <div className="topbar-mode-center">
+              <LectureModeBar
+                currentMode={currentMode}
+                onSelectMode={setSlideMode}
+                hasPrompt={slide.prompt >= 0}
+              />
+            </div>
+
             <div className="top-actions">
               <button onClick={() => setModal("prompts")}>8 Prompts ↗</button>
-              <button onClick={returnHome}>← Início / Visão Geral</button>
+              <button onClick={returnHome}>← Início</button>
             </div>
           </header>
 
@@ -266,20 +275,11 @@ export default function App() {
           >
             <div className="slide-content" key={index}>
               <header className="slide-header">
-                <div className="slide-top-row">
-                  <div className="eyebrow">
-                    <span className="live-dot" /> {lessonLabel} / {lesson.name}
-                    <span className="slide-caption">
-                      {String(index - lessonStart + 1).padStart(2, "0")} — {lesson.shortName}
-                    </span>
-                  </div>
-
-                  {/* Barra de Momentos da Aula: Conceito | Agora na Prática | Voltamos à Aula */}
-                  <LectureModeBar
-                    currentMode={currentMode}
-                    onSelectMode={setSlideMode}
-                    hasPrompt={slide.prompt >= 0}
-                  />
+                <div className="eyebrow">
+                  <span className="live-dot" /> {lessonLabel} / {lesson.name}
+                  <span className="slide-caption">
+                    {String(index - lessonStart + 1).padStart(2, "0")} — {lesson.shortName}
+                  </span>
                 </div>
 
                 <h1>{slide.heading}</h1>
