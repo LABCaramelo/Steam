@@ -157,8 +157,22 @@ function Slide01QuemSouEu(p: SlideComponentProps) {
       <div className="slide01-grid">
         {/* Coluna 1: Apresentação Pessoal & Propósito */}
         <div className="slide01-col bio-col">
-          <div className="card-kicker-badge">DIREÇÃO & CRIAÇÃO</div>
-          <h2 className="bio-name">Luiz · Um Cara Caramelo</h2>
+          <div className="bio-author-header">
+            <div className="bio-avatar-frame">
+              <img
+                src="/aula-head/eu.jpg"
+                alt="Luiz · Um Cara Caramelo"
+                className="bio-avatar-img"
+              />
+              <span className="bio-avatar-badge">Luiz</span>
+            </div>
+
+            <div className="bio-author-meta">
+              <div className="card-kicker-badge">DIREÇÃO & CRIAÇÃO</div>
+              <h2 className="bio-name">Luiz · Um Cara Caramelo</h2>
+              <span className="bio-role">Criador do Laboratório de Interação</span>
+            </div>
+          </div>
           
           <p className="bio-quote">
             "Sou o criador do <strong>Um Cara Caramelo</strong>. Trabalho com criatividade, inteligência artificial, design, experiências digitais e estratégia de conteúdo."
