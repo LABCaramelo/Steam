@@ -1,6 +1,11 @@
 import { supabase } from "../../supabase";
 import type {
   AdminAchievementItem,
+  AdminSeedAnalytics,
+  AdminSeedDetail,
+  AdminSeedPromptItem,
+  AdminSeedPublication,
+  AdminSeedStats,
   AdminStats,
   AdminToolItem,
   AdminUserAchievementItem,
@@ -224,5 +229,90 @@ export const adminRepo = {
   async getCurrentUserId(): Promise<string | null> {
     const { data } = await supabase.auth.getUser();
     return data.user?.id ?? null;
+  },
+
+  // ---------------------------------------------------------------------------
+  // Seeds & Proveniência v1
+  // ---------------------------------------------------------------------------
+  async getSeedStats(): Promise<AdminSeedStats> {
+    const { data, error } = await supabase.rpc("get_caramelo_admin_stats");
+    if (error) throw new Error(error.message || "Erro ao carregar métricas de seeds.");
+    return data as AdminSeedStats;
+  },
+
+  async getSeedAnalytics(range = "30d"): Promise<AdminSeedAnalytics> {
+    const { data, error } = await supabase.rpc("get_caramelo_admin_analytics", {
+      p_range: range,
+    });
+    if (error) throw new Error(error.message || "Erro ao carregar telemetria de seeds.");
+    return data as AdminSeedAnalytics;
+  },
+
+  async getSeedPublications(): Promise<AdminSeedPublication[]> {
+    const { data, error } = await supabase.rpc("get_caramelo_admin_publications");
+    if (error) throw new Error(error.message || "Erro ao carregar publicações de seeds.");
+    return (data ?? []) as AdminSeedPublication[];
+  },
+
+  async getSeedPrompts(): Promise<AdminSeedPromptItem[]> {
+    const { data, error } = await supabase.rpc("get_caramelo_admin_prompts");
+    if (error) throw new Error(error.message || "Erro ao carregar catálogo de prompts para seeds.");
+    return (data ?? []) as AdminSeedPromptItem[];
+  },
+
+  async getSeedDetail(promptId: string): Promise<AdminSeedDetail> {
+    const { data, error } = await supabase.rpc("get_caramelo_seed_detail", {
+      p_prompt_id: promptId,
+    });
+    if (error) throw new Error(error.message || "Erro ao buscar detalhes da seed.");
+    return data as AdminSeedDetail;
+  },
+
+  async triggerVerifyNow(publicationId: string): Promise<any> {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (!token) throw new Error("Usuário não autenticado.");
+
+    const res = await fetch("/api/admin/seed", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "verify-now",
+        publication_id: publicationId,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || "Falha ao executar verificação imediata.");
+    }
+    return data;
+  },
+
+  async triggerScanBatch(limit = 10): Promise<any> {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (!token) throw new Error("Usuário não autenticado.");
+
+    const res = await fetch("/api/admin/seed", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "scan-batch",
+        limit,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || "Falha ao executar lote de varredura.");
+    }
+    return data;
   },
 };

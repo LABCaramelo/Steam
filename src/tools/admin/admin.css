@@ -910,3 +910,208 @@
   font-size: 10px;
   color: rgb(var(--cm-fg-muted));
 }
+
+
+/* =========================================================================
+   SEEDS & PROVENIÊNCIA v1
+   ========================================================================= */
+
+.admin-seeds-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 640px) {
+  .admin-seeds-metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-seeds-metrics-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.admin-seed-card {
+  background: rgb(var(--cm-surface-1));
+  border: 1px solid rgb(var(--cm-line-soft));
+  border-radius: var(--cm-radius-md, 12px);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-seed-card:hover {
+  transform: translateY(-2px);
+  border-color: rgb(var(--cm-line));
+}
+
+.admin-seed-card__tag {
+  font-size: 10px;
+  font-family: var(--caramelo-font-mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: rgb(var(--cm-fg-muted));
+}
+
+.admin-seed-card__val {
+  font-size: 26px;
+  font-weight: 900;
+  font-family: var(--caramelo-font-display, inherit);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: rgb(var(--cm-fg));
+}
+
+.admin-seed-card__sub {
+  font-size: 11px;
+  color: rgb(var(--cm-fg-muted));
+  font-family: var(--caramelo-font-mono, monospace);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-range-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid rgb(var(--cm-line-soft));
+}
+
+.admin-range-btn {
+  background: transparent;
+  border: none;
+  color: rgb(var(--cm-fg-muted));
+  font-size: 11px;
+  font-family: var(--caramelo-font-mono, monospace);
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.admin-range-btn:hover {
+  color: rgb(var(--cm-fg));
+}
+
+.admin-range-btn.is-active {
+  background: rgb(var(--cm-accent, 255 112 26));
+  color: #101014;
+}
+
+.admin-seed-context {
+  font-size: 12px;
+  font-family: var(--caramelo-font-mono, monospace);
+  margin-top: 4px;
+}
+
+.admin-badge--verified {
+  background: rgba(46, 204, 113, 0.15);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.admin-badge--observed {
+  background: rgba(37, 191, 255, 0.15);
+  color: #25BFFF;
+  border: 1px solid rgba(37, 191, 255, 0.3);
+}
+
+.admin-badge--not_confirmed {
+  background: rgba(255, 170, 0, 0.15);
+  color: #ffaa00;
+  border: 1px solid rgba(255, 170, 0, 0.3);
+}
+
+.admin-badge--offline {
+  background: rgba(231, 76, 60, 0.15);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.admin-badge--removed {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgb(var(--cm-fg-muted));
+  border: 1px solid rgb(var(--cm-line-soft));
+}
+
+.admin-subnav {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid rgb(var(--cm-line-soft));
+  margin-bottom: 20px;
+  padding-bottom: 4px;
+}
+
+.admin-subnav-btn {
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgb(var(--cm-fg-muted));
+  padding: 8px 16px;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.admin-subnav-btn:hover {
+  color: rgb(var(--cm-fg));
+}
+
+.admin-subnav-btn.is-active {
+  color: rgb(var(--cm-accent, 255 112 26));
+}
+
+.admin-subnav-btn.is-active::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgb(var(--cm-accent, 255 112 26));
+  border-radius: 2px;
+}
+
+.admin-code-snippet {
+  background: #09090c;
+  border: 1px solid rgb(var(--cm-line-soft));
+  border-radius: 8px;
+  padding: 12px;
+  font-family: var(--caramelo-font-mono, monospace);
+  font-size: 11px;
+  color: #FFF4E8;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.admin-seed-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--caramelo-font-mono, monospace);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgb(var(--cm-line-soft));
+  color: rgb(var(--cm-fg));
+}
