@@ -1,4 +1,4 @@
-// Sincroniza o acervo da Biblioteca de Prompts (api/data/prompt-catalog.json) com novos prompts do Supabase.
+// Sincroniza o acervo da Biblioteca de Prompts (api/data/prompt-catalog.json) com todos os prompts do Supabase.
 // Execução: node scripts/import-prompts.mjs
 
 import fs from "node:fs";
@@ -13,16 +13,12 @@ const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_
 
 const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf8"));
 const existingSlugs = new Set(catalog.items.map((i) => i.slug));
-const latestCreatedAt = catalog.items[0]?.created_at;
 
-console.log(`Último prompt no catálogo local: ${catalog.items[0]?.slug} (${latestCreatedAt})`);
-console.log("Buscando novos prompts no Supabase...");
+console.log(`Catálogo local atual: ${catalog.items.length} itens (${existingSlugs.size} slugs únicos).`);
+console.log("Buscando todos os prompts ativos no Supabase...");
 
 const selectFields = "id,slug,title,category,type,tags,thumbnail,preview_url,free,has_full_prompt,created_at,author,active,enabled";
-let url = `${SUPABASE_URL}/rest/v1/prompts?select=${selectFields}&active=eq.true&enabled=eq.true&order=created_at.desc`;
-if (latestCreatedAt) {
-  url += `&created_at=gt.${encodeURIComponent(latestCreatedAt)}`;
-}
+const url = `${SUPABASE_URL}/rest/v1/prompts?select=${selectFields}&active=eq.true&enabled=eq.true&order=created_at.desc&limit=2000`;
 
 const response = await fetch(url, {
   headers: {
@@ -37,43 +33,51 @@ if (!response.ok) {
   process.exit(1);
 }
 
-const newPrompts = await response.json();
+const allPrompts = await response.json();
 
-if (!Array.isArray(newPrompts) || newPrompts.length === 0) {
-  console.log("Nenhum novo prompt encontrado. O acervo local já está atualizado.");
+if (!Array.isArray(allPrompts) || allPrompts.length === 0) {
+  console.log("Nenhum prompt encontrado no Supabase.");
 } else {
+  console.log(`Total de prompts ativos no Supabase: ${allPrompts.length}`);
 
-console.log(`Encontrados ${newPrompts.length} novos prompts para importar:`);
-const toAdd = [];
-for (const p of newPrompts) {
-  if (existingSlugs.has(p.slug)) {
-    console.warn(`[Pular] Slug '${p.slug}' já existe no catálogo.`);
-    continue;
+  const toAdd = [];
+  for (const p of allPrompts) {
+    if (existingSlugs.has(p.slug)) {
+      continue;
+    }
+
+    const item = {
+      id: p.id,
+      slug: p.slug,
+      title: p.title,
+      category: p.category || "Outros",
+      type: p.type || "hero",
+      tags: Array.isArray(p.tags) ? p.tags : [],
+      thumbnail: p.thumbnail,
+      preview_url: p.preview_url,
+      free: Boolean(p.free),
+      has_full_prompt: Boolean(p.has_full_prompt),
+      created_at: typeof p.created_at === "string" ? (p.created_at.includes("T") ? p.created_at : p.created_at.replace(" ", "T") + "+00:00") : p.created_at,
+      author: p.author || "Um Cara Caramelo",
+      animated_preview_url: p.preview_url,
+      animated_preview_source: "catalog",
+      verified_count: 0,
+    };
+
+    toAdd.push(item);
+    existingSlugs.add(p.slug);
+    console.log(` + [${p.slug}] ${p.title} (${p.author} / ${p.category})`);
   }
 
-  toAdd.push({
-    id: p.id,
-    slug: p.slug,
-    title: p.title,
-    category: p.category || "Outros",
-    type: p.type || "hero",
-    tags: Array.isArray(p.tags) ? p.tags : [],
-    thumbnail: p.thumbnail,
-    preview_url: p.preview_url,
-    free: Boolean(p.free),
-    has_full_prompt: Boolean(p.has_full_prompt),
-    created_at: typeof p.created_at === "string" ? (p.created_at.includes("T") ? p.created_at : p.created_at.replace(" ", "T") + "+00:00") : p.created_at,
-    author: p.author || "MotionSites",
-    animated_preview_url: p.preview_url,
-    animated_preview_source: "catalog",
-    verified_count: 0,
-  });
-  console.log(` + [${p.slug}] ${p.title} (${p.category} / ${p.type})`);
-}
+  if (toAdd.length === 0) {
+    console.log("\nNenhum novo prompt pendente. O catálogo local já está 100% sincronizado com o Supabase!");
+  } else {
+    catalog.items.push(...toAdd);
+    // Ordena por data de criação descendente
+    catalog.items.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    catalog.syncedAt = new Date().toISOString();
 
-catalog.items.unshift(...toAdd);
-catalog.syncedAt = new Date().toISOString();
-
-fs.writeFileSync(catalogPath, JSON.stringify(catalog));
-console.log(`\nImportação concluída com sucesso! Total no catálogo: ${catalog.items.length} prompts (+${toAdd.length}).`);
+    fs.writeFileSync(catalogPath, JSON.stringify(catalog));
+    console.log(`\nImportação concluída com sucesso! Total no catálogo: ${catalog.items.length} prompts (+${toAdd.length} adicionados).`);
+  }
 }
