@@ -1,0 +1,70 @@
+{
+  "sourceRoot": "D:\\meus documentos\\flick",
+  "files": [
+    {
+      "path": "server/access.ts",
+      "baselineSha256": null,
+      "patchedSha256": "20d59635246f05ee084bc3d18b8ff9f9df24e07756cb3046f53d0bb1a1113e2f"
+    },
+    {
+      "path": "server/events.ts",
+      "baselineSha256": "a564e26347250546b888dfac876aec3ee167179727dc79397eb747233f630c50",
+      "patchedSha256": "9c00226bef2fc690857aec53b785f293af222c919f3f73272e35c2ee181aedda"
+    },
+    {
+      "path": "server/export.ts",
+      "baselineSha256": "8b09d0943bee39b66bb98175df96a14fdd36337c374fded50b6e7ab40eb7b153",
+      "patchedSha256": "ddb9924dce5835f96313ad8d6fa97167fab3233492103ae2bd8002a14445c531"
+    },
+    {
+      "path": "server/index.ts",
+      "baselineSha256": "3bdf4c091e85c67926023a809f34f4ef6123fb140117c9b0ae269d5a1b296003",
+      "patchedSha256": "e82b0d41c3eed29895c4b1a494c2ee9ea7c22568f634fab9ed508073081267e4"
+    },
+    {
+      "path": "server/media.ts",
+      "baselineSha256": "8e51ded5cebb085eec00c5c20af5bbee7eea282e04a0f2a1fe4ba4134f6f3376",
+      "patchedSha256": "f110e5b3d3aacc92e4f888ca233e323b0a70997527285c03e26e4a94ec72b42b"
+    },
+    {
+      "path": "server/storage.ts",
+      "baselineSha256": "bf9895ac98b405fb28cf9ea7b440d931040e08ec8e3cbe735d4c55bd2428aaa6",
+      "patchedSha256": "caa72be89285a61140d66036fa937af82e82669548508ae5390b7183e9d91b11"
+    },
+    {
+      "path": "server/agent/agent.ts",
+      "baselineSha256": "690f3c825262240eb0f2d40e99508fc84c127f4721762bb17af6e950b98edcbd",
+      "patchedSha256": "42da108d00f437821d73a2248404a71457f30b6dd808aa274a0abfcd92d41a4d"
+    },
+    {
+      "path": "src/LabGate.tsx",
+      "baselineSha256": null,
+      "patchedSha256": "70fe24b4164fb25d8fc7491996c4c43ca9cdb4a7722ad670be660ce453144481"
+    },
+    {
+      "path": "src/main.tsx",
+      "baselineSha256": "37658ef3203350f88f027a1c250bc28f6c3f0074131736479d9c1c3689ba862e",
+      "patchedSha256": "e4694fe6b31761c3a19a0cae37b03545809caf756230e2f406e61b5ef1bc0c56"
+    },
+    {
+      "path": "src/lib/api.ts",
+      "baselineSha256": "17f9ade58558da63c332a720d1452623ce6664a6c402a0edf8a3626478979da5",
+      "patchedSha256": "081fb0e90583a650b91901fea58a3d5162333a90509589b5b0798c469e0905a1"
+    },
+    {
+      "path": "src/lib/labAccess.ts",
+      "baselineSha256": null,
+      "patchedSha256": "2a552bd56f2ae84f5be5d904ab0f76d4982a91012232c879b2bad5493c1bf231"
+    },
+    {
+      "path": "src/lib/projectEvents.ts",
+      "baselineSha256": null,
+      "patchedSha256": "93d3987f802bc0f6f2f0bfc4d1cf68d08507bee14b2a6d4c6124a27d6a00ece8"
+    },
+    {
+      "path": "src/pages/ProjectPage.tsx",
+      "baselineSha256": "a9e9e0ef6f1b9583e0c572331cae6544327a16774e8331b935d03b26d6d72007",
+      "patchedSha256": "ffef382fe16cca1a9f82190f62041dabeeb0fb725a953eccd91d29890835c15a"
+    }
+  ]
+}

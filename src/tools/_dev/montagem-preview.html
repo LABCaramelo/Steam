@@ -1,10 +1,6 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Montagem — prévia local de desenvolvimento</title></head><body class="montagem-dark-theme"><div id="montagem-editor"></div><script type="module">
-import '@caramelo/design-system/styles.css';
-import { MontagemApp } from '../montagem/editor/App.ts';
-import '../montagem/montagem.css';
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Montagem — prévia local de desenvolvimento</title></head><body><div id="root"></div><script type="module">
 if (!import.meta.env.DEV) throw new Error('Prévia exclusiva do desenvolvimento local.');
 const params=new URLSearchParams(location.search);
 if(params.get('theme')==='light')document.documentElement.dataset.carameloTheme='light';
-const app = new MontagemApp(document.getElementById('montagem-editor'), 'qa-local:'+(params.get('case')||'default'));
-window.addEventListener('pagehide',()=>app.destroy(),{once:true});
+await import('../montagem/main.tsx');
 </script></body></html>

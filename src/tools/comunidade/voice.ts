@@ -1,9 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Room, RoomEvent, Track, type AudioCaptureOptions, type Participant } from 'livekit-client';
+import { supabase } from '../../supabase';
 import { blobToDataUrl, captureAttachmentSession, dataUrlToBlob, deleteBlobs, safeType, storeFiles } from './attachments';
 import { ME, users } from './data';
 import type { Profile, Settings, VoiceConnection } from './store';
 import type { Attachment, Message, User } from './types';
+
+async function voiceAuthorization(): Promise<{ Authorization: string }> {
+  const { data, error } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (error || !token) throw new Error('Entre no LAB novamente para usar a voz.');
+  return { Authorization: `Bearer ${token}` };
+}
 
 /* ---------------------------------------------------------------- tipos */
 
@@ -340,7 +348,7 @@ export function useVoiceSession(
 
     const onChatPacket = async (packet: Record<string, unknown>, from: string) => {
       const store = chatRef.current;
-      const profileId = profileRef.current.id;
+      const profileId = room.localParticipant.identity;
       switch (packet.type) {
         case 'message': {
           const m = parseChatMessage(packet.message, profileId);
@@ -367,7 +375,7 @@ export function useVoiceSession(
           const recent = store.history.slice(-CHAT_HISTORY_LIMIT);
           const budget = { left: HISTORY_FILE_BYTES };
           const messages: WireMessage[] = [];
-          for (let i = recent.length - 1; i >= 0; i--) messages[i] = await toWire(recent[i], profileRef.current, budget);
+          for (let i = recent.length - 1; i >= 0; i--) messages[i] = await toWire(recent[i], { ...profileRef.current, id: room.localParticipant.identity }, budget);
           await sendChatPacket(room, { type: 'history', messages }, [from]).catch(() => {});
           break;
         }
@@ -397,10 +405,12 @@ export function useVoiceSession(
 
     (async () => {
       try {
+        const authorization = await voiceAuthorization();
+        if (cancelled) return;
         const res = await fetch('/api/livekit?action=token', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ channelId, identity: profile.id, name: profile.name, color: profile.color }),
+          headers: { ...authorization, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ channelId, color: profile.color }),
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(errorMessage(res.status, data.error));
@@ -531,12 +541,12 @@ export function useVoiceSession(
     async (content: string, files: File[]) => {
       const room = roomRef.current;
       const text = content.trim().slice(0, CHAT_MAX_LENGTH);
-      if (!room || !channelId || (!text && !files.length)) return;
+      if (!room || room.state !== 'connected' || !room.localParticipant.identity || !channelId || (!text && !files.length)) return;
       const attachments = files.length ? await storeFiles(files) : undefined;
       const message: Message = { id: crypto.randomUUID(), authorId: ME, content: text, timestamp: Date.now(), attachments };
       chatRef.current.receive(channelId, [message]);
       try {
-        await sendChatPacket(room, { type: 'message', message: await toWire(message, profileRef.current) });
+        await sendChatPacket(room, { type: 'message', message: await toWire(message, { ...profileRef.current, id: room.localParticipant.identity }) });
       } catch {
         setDeviceError('Não foi possível enviar a mensagem para a sala.');
       }
@@ -604,7 +614,15 @@ export function useVoiceOccupancy(refreshKey: string | null): Occupancy {
     const load = async () => {
       if (document.visibilityState !== 'visible') return;
       try {
-        const res = await fetch('/api/livekit?action=rooms');
+        const authorization = await voiceAuthorization();
+        if (stopped) return;
+        const res = await fetch('/api/livekit?action=rooms', { headers: authorization });
+        if (stopped) return;
+        if (res.status === 401 || res.status === 403) {
+          setOccupancy({});
+          stopped = true;
+          return;
+        }
         if (res.status === 503) {
           stopped = true; // sem LiveKit configurado: não adianta insistir
           return;
@@ -619,6 +637,7 @@ export function useVoiceOccupancy(refreshKey: string | null): Occupancy {
     const onVisible = () => !stopped && void load();
     document.addEventListener('visibilitychange', onVisible);
     return () => {
+      stopped = true;
       clearInterval(id);
       document.removeEventListener('visibilitychange', onVisible);
     };

@@ -1,11 +1,11 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
+import { assertToolAccess, requireLabAdmin, requireUser, ToolAccessError } from "../server/toolAccess.ts";
 
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || "0b85653a3fda604ea469fb2723afa5cb";
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || "";
 const BUCKET = process.env.CLOUDFLARE_R2_BUCKET || "umcaracaramelo";
 const PUBLIC_URL = (process.env.CLOUDFLARE_R2_PUBLIC_URL || "https://media.umcaracaramelo.com.br").replace(/\/$/, "");
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://fzhzpzxsttflgtassyex.supabase.co";
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6aHpwenhzdHRmbGd0YXNzeWV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNTU2NTIsImV4cCI6MjEwNDkzMTY1Mn0.rWO90rI-O8XVOWAlvuylkFWMNpjkocC0HRHBNbmrJj4";
+const MAX_BYTES = 10 * 1024 * 1024;
 
 const ALLOWED_MIME_TYPES = new Set([
   "image/png",
@@ -31,30 +31,19 @@ export default async function handler(req: Req, res: ServerResponse) {
     return send(res, 405, { error: "Método não permitido." });
   }
 
-  // Verificação de autenticação: impede envio anônimo / abuso de armazenamento
-  const authHeader = (req.headers["authorization"] as string) || "";
-  const tokenMatch = authHeader.match(/^Bearer\s+(.+)$/i);
-  if (!tokenMatch) {
-    return send(res, 401, { error: "Autenticação necessária para envio de arquivos." });
-  }
-
-  const token = tokenMatch[1];
   try {
-    const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${token}`,
-      },
-      signal: AbortSignal.timeout(10_000),
-    });
-
-    if (!userRes.ok) {
-      return send(res, 401, { error: "Sessão inválida ou expirada." });
-    }
-
-    const userData = (await userRes.json()) as { id?: string };
-    if (!userData.id) {
-      return send(res, 401, { error: "Usuário inválido." });
+    const access = await requireUser(req);
+    const requestedFolder = ((req.headers["x-folder"] as string) || "avatars").toLowerCase().trim();
+    if (requestedFolder === "tool-banners") {
+      await requireLabAdmin(access);
+    } else if (requestedFolder === "media") {
+      const slug = String(req.headers["x-tool-slug"] ?? "");
+      if (!["claquete", "prancheta", "comunidade"].includes(slug)) {
+        return send(res, 403, { error: "Informe a ferramenta responsável por este envio." });
+      }
+      await assertToolAccess(access, slug);
+    } else if (requestedFolder !== "avatars") {
+      return send(res, 400, { error: "Destino de upload inválido." });
     }
 
     if (!API_TOKEN) {
@@ -67,11 +56,19 @@ export default async function handler(req: Req, res: ServerResponse) {
       buffer = req.body;
     } else if (req.body && typeof req.body === "object" && "data" in req.body) {
       const dataStr = (req.body as { data: string }).data;
+      if (typeof dataStr !== "string") return send(res, 400, { error: "Arquivo inválido." });
+      if (dataStr.length > Math.ceil(MAX_BYTES * 4 / 3) + 256) return send(res, 413, { error: "O arquivo excede o limite de 10 MB." });
       const base64Data = dataStr.replace(/^data:[^;]+;base64,/, "");
       buffer = Buffer.from(base64Data, "base64");
     } else {
       const chunks: Buffer[] = [];
-      for await (const chunk of req) chunks.push(chunk as Buffer);
+      let size = 0;
+      for await (const chunk of req) {
+        const part = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+        size += part.length;
+        if (size > MAX_BYTES) return send(res, 413, { error: "O arquivo excede o limite de 10 MB." });
+        chunks.push(part);
+      }
       buffer = Buffer.concat(chunks);
     }
 
@@ -79,7 +76,7 @@ export default async function handler(req: Req, res: ServerResponse) {
       return send(res, 400, { error: "Nenhum arquivo enviado." });
     }
 
-    if (buffer.length > 10 * 1024 * 1024) {
+    if (buffer.length > MAX_BYTES) {
       return send(res, 413, { error: "O arquivo excede o limite de 10 MB." });
     }
 
@@ -87,40 +84,16 @@ export default async function handler(req: Req, res: ServerResponse) {
     if (!ALLOWED_MIME_TYPES.has(contentType)) {
       return send(res, 400, { error: "Tipo de arquivo não permitido. Apenas imagens são aceitas." });
     }
+    if (contentType === "image/svg+xml" && requestedFolder !== "tool-banners") {
+      return send(res, 400, { error: "Use PNG, JPEG, WebP ou GIF neste envio." });
+    }
 
-    const rawFilename = (req.headers["x-filename"] as string) || "banner.png";
-    const ext =
-      rawFilename.split(".").pop()?.toLowerCase() ||
-      (contentType.includes("webp")
-        ? "webp"
-        : contentType.includes("jpeg") || contentType.includes("jpg")
-        ? "jpg"
-        : contentType.includes("gif")
-        ? "gif"
-        : contentType.includes("svg")
-        ? "svg"
-        : "png");
-
-    const safeUser = userData.id.replace(/[^a-zA-Z0-9_-]/g, "");
-    const requestedFolder = ((req.headers["x-folder"] as string) || "avatars").toLowerCase().trim();
+    const ext = ({ "image/png": "png", "image/jpeg": "jpg", "image/jpg": "jpg", "image/webp": "webp", "image/gif": "gif", "image/svg+xml": "svg" } as Record<string, string>)[contentType];
+    const safeUser = access.user.id;
 
     let key: string;
 
     if (requestedFolder === "tool-banners") {
-      // Verificar se o usuário possui papel de administrador no LAB
-      const adminRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/is_lab_admin`, {
-        method: "POST",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const isAdmin = (await adminRes.json().catch(() => false)) === true;
-      if (!isAdmin) {
-        return send(res, 403, { error: "Acesso negado: apenas administradores podem alterar banners de ferramentas." });
-      }
-
       const rawSlug = (req.headers["x-tool-slug"] as string) || "tool";
       const rawKind = (req.headers["x-kind"] as string) || "banner";
       const cleanSlug = rawSlug.replace(/[^a-z0-9_-]/gi, "").toLowerCase();
@@ -146,13 +119,13 @@ export default async function handler(req: Req, res: ServerResponse) {
     });
 
     if (!uploadRes.ok) {
-      const errData = await uploadRes.json().catch(() => ({}));
-      return send(res, uploadRes.status, { error: "Falha ao enviar para o Cloudflare R2.", details: errData });
+      return send(res, 502, { error: "Falha ao enviar para o Cloudflare R2. Tente novamente." });
     }
 
     const publicFileUrl = `${PUBLIC_URL}/${key}`;
     return send(res, 200, { ok: true, url: publicFileUrl, key });
   } catch (err) {
-    return send(res, 500, { error: err instanceof Error ? err.message : "Erro interno no servidor." });
+    if (err instanceof ToolAccessError) return send(res, err.status, { error: err.message, code: err.code });
+    return send(res, 502, { error: "Não foi possível concluir o envio. Tente novamente." });
   }
 }

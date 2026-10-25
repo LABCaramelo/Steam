@@ -1,6 +1,32 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
+  const parentOrigin = new URL(document.baseURI).origin;
+  const pageUrl = new URL(document.querySelector('meta[name="lab-page-url"]')?.content || document.baseURI);
+  const account = document.querySelector('meta[name="lab-account"]')?.content;
+  const favoritesKey = account ? `lab:tool:prompt-library:${encodeURIComponent(account)}:favorites` : null;
+  const requests = new Map();
+  let markReady;
+  const ready = new Promise(resolve => { markReady = resolve; });
+  window.addEventListener('message', event => {
+    if (event.source !== parent || event.origin !== parentOrigin) return;
+    const message = event.data;
+    if (message?.type === 'lab:prompts:ready') markReady();
+    if (message?.type !== 'lab:prompts:response' || !requests.has(message.id)) return;
+    const pending = requests.get(message.id);
+    requests.delete(message.id);
+    clearTimeout(pending.timeout);
+    if (message.status >= 200 && message.status < 300) pending.resolve(message.body);
+    else {
+      const error = Error(message.body?.error || 'Não foi possível carregar. Tente novamente.');
+      error.code = message.body?.code;
+      pending.reject(error);
+    }
+  });
+  function selectPrompt(slug) {
+    if (slug === null) pageUrl.searchParams.delete('prompt'); else pageUrl.searchParams.set('prompt', slug);
+    parent.postMessage({ type: 'lab:prompts:select', slug }, parentOrigin);
+  }
   const PAGE_SIZE = 24;
   const GLOW_GRADIENTS = [
     'linear-gradient(137deg,#FF3D77 0%,#FFB1CE 45%,#FF9D3C 100%)',
@@ -19,7 +45,7 @@
   let searchTimer;
   let favorites;
   try {
-    const stored = JSON.parse(localStorage.getItem('caramelo-library-saved') || '[]');
+    const stored = JSON.parse((favoritesKey && localStorage.getItem(favoritesKey)) || '[]');
     favorites = new Set(Array.isArray(stored) ? stored.filter(id => typeof id === 'string') : []);
   } catch { favorites = new Set(); }
   const normalize = text => String(text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -73,14 +99,16 @@
     return true;
   }
   async function getJson(url) {
-    const response = await fetch(url, { cache: 'no-cache', signal: AbortSignal.timeout(30000), headers: { Accept: 'application/json' } });
-    const data = await response.json();
-    if (!response.ok) {
-      const error = Error(data.error || 'Não foi possível carregar. Tente novamente.');
-      error.code = data.code;
-      throw error;
-    }
-    return data;
+    if (parent === window || !account) throw Error('Entre no LAB para acessar a biblioteca.');
+    const target = new URL(url, document.baseURI);
+    if (target.origin !== parentOrigin || target.pathname !== '/api/prompt-library') throw Error('Requisição inválida.');
+    await Promise.race([ready, new Promise((_, reject) => setTimeout(() => reject(Error('Acesso indisponível. Reabra pelo LAB.')), 30000))]);
+    return new Promise((resolve, reject) => {
+      const id = crypto.randomUUID();
+      const timeout = setTimeout(() => { requests.delete(id); reject(Error('A consulta demorou demais. Tente novamente.')); }, 30000);
+      requests.set(id, { resolve, reject, timeout });
+      parent.postMessage({ type: 'lab:prompts:request', id, slug: target.searchParams.get('slug') }, parentOrigin);
+    });
   }
   function getPrompt(item) {
     if (!cache.has(item.slug)) {
@@ -95,7 +123,7 @@
   }
   function bookmark(item, element) {
     if (favorites.has(item.id)) favorites.delete(item.id); else favorites.add(item.id);
-    try { localStorage.setItem('caramelo-library-saved', JSON.stringify([...favorites])); } catch { notify('Salvo nesta sessão. Seu navegador bloqueou o armazenamento.'); }
+    try { if (favoritesKey) localStorage.setItem(favoritesKey, JSON.stringify([...favorites])); } catch { notify('Salvo nesta sessão. Seu navegador bloqueou o armazenamento.'); }
     updateFavoriteCount();
     element.setAttribute('aria-pressed', String(favorites.has(item.id)));
     element.setAttribute('aria-label', `${favorites.has(item.id) ? 'Remover dos salvos' : 'Salvar'}: ${item.title}`);
@@ -234,9 +262,7 @@
     const preview = safeUrl(item.animated_preview_url || item.preview_url);
     $('previewLink').hidden = !preview;
     if (preview) $('previewLink').href = preview; else $('previewLink').removeAttribute('href');
-    const url = new URL(location.href);
-    url.searchParams.set('prompt', item.slug);
-    history.replaceState(null, '', url);
+    selectPrompt(item.slug);
     categoryControl.close();
     sortControl.close();
     if (!$('promptDialog').open) {
@@ -267,7 +293,7 @@
       categoryControl.setOptions([{ value: '', label: 'Todas as categorias' }, ...categories.map(category => ({ value: category, label: category }))]);
       updateFavoriteCount();
       render();
-      const slug = new URL(location.href).searchParams.get('prompt');
+      const slug = pageUrl.searchParams.get('prompt');
       if (slug) {
         const item = state.items.find(item => item.slug === slug);
         if (item) openPrompt(item); else notify('Esse prompt não está disponível no acervo.');
@@ -301,9 +327,7 @@
     detailVersion++;
     selected = null;
     $('dialogPrompt').textContent = '';
-    const url = new URL(location.href);
-    url.searchParams.delete('prompt');
-    history.replaceState(null, '', url);
+    selectPrompt(null);
   }
   function closePrompt() {
     $('promptDialog').close();
@@ -331,7 +355,7 @@
   $('copyDialogPrompt').addEventListener('click', () => copyText($('dialogPrompt').textContent, 'Prompt copiado. Agora é fazer do seu jeito.').then(markCopied($('copyDialogPrompt'))));
   $('sharePrompt').addEventListener('click', () => {
     if (!selected) return;
-    const url = new URL(location.pathname, location.origin);
+    const url = new URL('/tools/prompt-library/index.html', parentOrigin);
     url.searchParams.set('prompt', selected.slug);
     copyText(url.href, 'Link copiado para compartilhar.').then(markCopied($('sharePrompt')));
   });

@@ -1,5 +1,5 @@
 import { Isotype, MagneticButton } from "@caramelo/design-system";
-import type { Session } from "@supabase/supabase-js";
+import type { Session, User } from "@supabase/supabase-js";
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { supabase } from "../../supabase";
@@ -97,18 +97,30 @@ type GateState =
 const UserCtx = createContext<ToolUser | null>(null);
 const MISSING = new Set(["PGRST202", "PGRST205", "42P01"]);
 
-function toUser(session: Session, profile?: { name?: string | null; nickname?: string | null; role?: string | null } | null): ToolUser {
-  const meta = session.user.user_metadata ?? {};
-  const email = session.user.email ?? "";
+function toUser(user: User, admin: boolean, profile?: { name?: string | null; nickname?: string | null } | null): ToolUser {
+  const meta = user.user_metadata ?? {};
+  const text = (value: unknown) => typeof value === "string" ? value.trim() : "";
+  const email = user.email ?? "";
   const name =
-    profile?.nickname?.trim() ||
-    profile?.name?.trim() ||
-    (meta.nickname as string)?.trim() ||
-    (meta.name as string)?.trim() ||
+    text(profile?.nickname) ||
+    text(profile?.name) ||
+    text(meta.nickname) ||
+    text(meta.name) ||
     email.split("@")[0] ||
     "Você";
-  const role = profile?.role?.trim() || (meta.role as string)?.trim() || "member";
-  return { id: session.user.id, email, name, role };
+  return { id: user.id, email, name, role: admin ? "admin" : "member" };
+}
+
+/** Only used to stop an already server-validated token at its signed expiry, never to grant access. */
+function tokenExpiresAt(session: Session): number {
+  try {
+    const encoded = session.access_token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const payload = JSON.parse(atob(encoded));
+    if (typeof payload.exp !== "number" || !Number.isFinite(payload.exp)) return 0;
+    const jwtExpiry = payload.exp * 1000;
+    return typeof session.expires_at === "number" && Number.isFinite(session.expires_at)
+      ? Math.min(jwtExpiry, session.expires_at * 1000) : jwtExpiry;
+  } catch { return 0; }
 }
 
 /** Renders the tool only for a signed-in person who has it in the library. */
@@ -120,56 +132,97 @@ export function ToolGate({ tool, children }: { tool: ToolInfo; children: ReactNo
   useEffect(() => {
     let alive = true;
     let request = 0;
+    let expiryTimer = 0;
+    let authTimer = 0;
+    let readyToken: string | null = null;
+    const clearExpiry = () => { window.clearTimeout(expiryTimer); expiryTimer = 0; };
+    const signedOut = () => {
+      ++request;
+      clearExpiry();
+      readyToken = null;
+      userId.current = null;
+      if (alive) setState({ kind: "signed_out" });
+    };
     const check = async (session: Session | null) => {
       const version = ++request;
-      if (!session) {
-        userId.current = null;
-        if (alive) setState({ kind: "signed_out" });
-        return;
+      if (!session?.access_token || !session.user?.id) { signedOut(); return; }
+      if ((session.user.id !== userId.current || session.access_token !== readyToken) && alive) {
+        readyToken = null;
+        setState({ kind: "loading" });
       }
-      if (session.user.id !== userId.current && alive) setState({ kind: "loading" });
       userId.current = session.user.id;
+      // A local session is only a credential source. Its cached user/metadata cannot authorize a tool.
+      const auth = await supabase.auth.getUser(session.access_token).catch(() => null);
+      if (!alive || version !== request) return;
+      const verified = auth?.data.user;
+      const expiresAt = tokenExpiresAt(session);
+      if (!auth || auth.error || !verified || verified.is_anonymous || verified.id !== session.user.id || expiresAt <= Date.now()) {
+        signedOut(); return;
+      }
+      clearExpiry();
+      expiryTimer = window.setTimeout(() => signedOut(), Math.min(expiresAt - Date.now(), 2_147_000_000));
       const result = await Promise.all([
-        supabase.rpc("has_tool", { p_slug: tool.slug }),
-        supabase.from("profiles").select("name, nickname, role").eq("id", session.user.id).maybeSingle(),
+        tool.slug === "admin" ? Promise.resolve({ data: true, error: null }) : supabase.rpc("has_tool", { p_slug: tool.slug }),
+        supabase.from("profiles").select("name, nickname").eq("id", verified.id).maybeSingle(),
+        supabase.rpc("is_lab_admin"),
+        supabase.rpc("is_admin"),
       ]).catch(() => null);
       if (!alive || version !== request) return;
+      if (expiresAt <= Date.now()) { signedOut(); return; }
       if (!result) { setState({ kind: "error", message: "Não foi possível abrir a ferramenta agora." }); return; }
-      const [{ data, error }, profRes] = result;
+      const [{ data, error }, profRes, adminRes, legacyAdminRes] = result;
+      const admin = (!adminRes.error && adminRes.data === true) || (!legacyAdminRes.error && legacyAdminRes.data === true);
       if (error) setState(MISSING.has(error.code) ? { kind: "unconfigured" } : { kind: "error", message: "Não foi possível abrir a ferramenta agora." });
-      else if (!data) setState({ kind: "locked" });
+      else if (tool.slug === "admin" && adminRes.error && legacyAdminRes.error) setState(MISSING.has(adminRes.error.code) && MISSING.has(legacyAdminRes.error.code) ? { kind: "unconfigured" } : { kind: "error", message: "Não foi possível conferir seu acesso de administrador." });
+      else if (data !== true || (tool.slug === "admin" && !admin)) setState({ kind: "locked" });
       else {
-        userId.current = session.user.id;
-        setState({ kind: "ready", user: toUser(session, profRes?.data) });
+        readyToken = session.access_token;
+        setState({ kind: "ready", user: toUser(verified, admin, profRes?.error ? null : profRes?.data) });
       }
     };
     const refresh = () => {
       const version = ++request;
-      void supabase.auth.getSession().then(({ data }) => {
-        if (alive && version === request) return check(data.session);
+      void supabase.auth.getSession().then(({ data, error }) => {
+        if (!alive || version !== request) return;
+        if (error) { signedOut(); return; }
+        return check(data.session);
       }).catch(() => {
-        if (alive && version === request) setState({ kind: "error", message: "Não foi possível conferir seu acesso agora." });
+        if (alive && version === request) { readyToken = null; setState({ kind: "error", message: "Não foi possível conferir seu acesso agora." }); }
       });
     };
     const unsubscribeRelease = subscribeToolReleases((notice) => {
       if (notice.slug !== tool.slug || notice.appid !== tool.appid || notice.userId !== userId.current) return;
       // Unmount immediately and invalidate any ownership response started before removal.
       ++request;
+      readyToken = null;
       setState({ kind: "locked" });
     });
+    const onVisible = () => { if (document.visibilityState === "visible") refresh(); };
     window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", onVisible);
+    const validationTimer = window.setInterval(onVisible, 60_000);
     refresh();
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      // Token refreshes keep the same person: nothing to re-check.
-      if (event === "TOKEN_REFRESHED" && session?.user.id === userId.current) return;
-      if (event === "INITIAL_SESSION") return;
-      check(session);
+      if (!alive) return;
+      window.clearTimeout(authTimer);
+      if (event === "SIGNED_OUT" || !session) { signedOut(); return; }
+      const version = ++request;
+      if (session.user.id !== userId.current || session.access_token !== readyToken) {
+        readyToken = null;
+        setState({ kind: "loading" });
+      }
+      // Auth callbacks run under the SDK's lock. Validate after the callback has returned.
+      authTimer = window.setTimeout(() => { if (alive && version === request) void check(session); }, 0);
     });
     return () => {
       alive = false;
       ++request;
+      clearExpiry();
+      window.clearTimeout(authTimer);
+      window.clearInterval(validationTimer);
       unsubscribeRelease();
       window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", onVisible);
       data.subscription.unsubscribe();
     };
   }, [tool.slug, tool.appid, attempt]);
@@ -201,8 +254,8 @@ export function ToolGate({ tool, children }: { tool: ToolInfo; children: ReactNo
     return (
       <GateScreen
         title={tool.name}
-        text={`${tool.name} ainda não está na sua biblioteca. Adquira na Loja do LAB para começar.`}
-        action={{ label: "Ver na Loja", href: STORE_URL(tool.appid) }}
+        text={tool.slug === "admin" ? "Esta área é reservada aos administradores do LAB." : `${tool.name} ainda não está na sua biblioteca. Adquira na Loja do LAB para começar.`}
+        action={tool.slug === "admin" ? { label: "Voltar ao LAB", href: "/library/home" } : { label: "Ver na Loja", href: STORE_URL(tool.appid) }}
       />
     );
   if (state.kind === "unconfigured")

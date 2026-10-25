@@ -102,7 +102,9 @@ create policy "user_tools_select_own" on public.user_tools for select to authent
 -- A ferramenta está na biblioteca de quem pergunta (e a pessoa continua com acesso ao LAB).
 create or replace function public.has_tool(p_slug text) returns boolean
 language sql stable security definer set search_path = public, pg_temp as $$
-  select exists (select 1 from public.user_tools where user_id = auth.uid() and tool_slug = p_slug)
+  select auth.uid() is not null
+    and coalesce(auth.jwt()->>'is_anonymous', 'false') <> 'true'
+    and exists (select 1 from public.user_tools where user_id = auth.uid() and tool_slug = p_slug)
     and public.lab_member();
 $$;
 

@@ -1,0 +1,42 @@
+[
+  {
+    "slug": "prompt-library",
+    "blocked": true
+  },
+  {
+    "slug": "kanban",
+    "blocked": true
+  },
+  {
+    "slug": "prancheta",
+    "blocked": true
+  },
+  {
+    "slug": "automation",
+    "blocked": true
+  },
+  {
+    "slug": "academy",
+    "blocked": true
+  },
+  {
+    "slug": "claquete",
+    "blocked": true
+  },
+  {
+    "slug": "comunidade",
+    "blocked": true
+  },
+  {
+    "slug": "admin",
+    "blocked": true
+  },
+  {
+    "slug": "gravador",
+    "blocked": true
+  },
+  {
+    "slug": "montagem",
+    "blocked": true
+  }
+]

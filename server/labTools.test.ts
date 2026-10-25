@@ -29,6 +29,9 @@ const SUPABASE_STUB = `
   create function auth.uid() returns uuid language sql stable as $$
     select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
   $$;
+  create function auth.jwt() returns jsonb language sql stable as $$
+    select coalesce(nullif(current_setting('request.jwt.claims', true), ''), '{}')::jsonb
+  $$;
   grant usage on schema auth to anon, authenticated, service_role;
   grant usage on schema public to anon, authenticated, service_role;
   create table public.profiles (id uuid primary key references auth.users (id), name text, nickname text, avatar_url text);
@@ -113,6 +116,13 @@ describe("loja e biblioteca", () => {
     assert.equal(acquired.tool_slug, "prompt-library");
     // Limpeza de Alice para não interferir nos testes seguintes
     await db.query("delete from public.user_tools where user_id = $1", [ALICE]);
+  });
+
+  test("login anônimo do Supabase não autoriza ferramenta mesmo com aquisição e LAB confirmado", async () => {
+    await as(PREVIOUS_OWNER, async (tx) => {
+      await tx.exec(`select set_config('request.jwt.claims', '{"is_anonymous":true}', true)`);
+      assert.deepEqual(await rows(tx, "select public.lab_member() as member, public.has_tool('prompt-library') as owned"), [{ member: true, owned: false }]);
+    });
   });
 
   test("ninguém grava direto na biblioteca", async () => {
