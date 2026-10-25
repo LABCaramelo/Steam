@@ -4,6 +4,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import test from 'node:test';
 import ts from 'typescript';
+import { PGlite } from '@electric-sql/pglite';
 
 // The external-app patch is reviewable text, not part of Steam's build. Compile
 // only its independent access helper; no external app config or secrets load.
@@ -13,7 +14,8 @@ const require = createRequire(import.meta.url);
 const sdk = pathToFileURL(require.resolve('@supabase/supabase-js')).href;
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
   .replace(/from ['"]@supabase\/supabase-js['"]/g, `from ${JSON.stringify(sdk)}`);
-const security = await import(`data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`);
+const securityUrl = `data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`;
+const security = await import(securityUrl);
 const USER = '00000000-0000-4000-8000-000000000001';
 const TOKEN = `signed.${Buffer.from(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600 })).toString('base64url')}.signature`;
 type MockResponse = { status?: number; body?: unknown } | Error;
@@ -85,4 +87,59 @@ test('Claquete media cookies are short lived, HttpOnly and restricted to the med
   assert.match(cookie, /Path=\/media; HttpOnly; SameSite=Strict; Max-Age=300; Secure$/);
   assert.equal(security.mediaAuthorization(cookie), `Bearer ${TOKEN}`);
   assert.equal(security.mediaAuthorization('claquete_media_session=forged token'), undefined);
+});
+
+test('Claquete writeChat stamps the verified owner so new conversations pass owner RLS', async () => {
+  const dataModule = (js: string) => `data:text/javascript;base64,${Buffer.from(js).toString('base64')}`;
+  const configUrl = dataModule("export const PROJECTS_DIR='/unused', DATA_DIR='/unused', MEDIA_DIR='/unused', SUPABASE_SERVICE_ROLE_KEY='', SUPABASE_URL='';");
+  const projectUrl = dataModule('export const normalizeProject = p => p; export const createEmptyProject = () => { throw new Error("not used"); };');
+  const storageSource = readFileSync(new URL('../security/claquete/files/server/storage.ts.txt', import.meta.url), 'utf8');
+  const storageJs = ts.transpileModule(storageSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
+    .replace(/from ['"]@supabase\/supabase-js['"]/g, `from ${JSON.stringify(sdk)}`)
+    .replace(/from ['"]\.\/config['"]/g, `from ${JSON.stringify(configUrl)}`)
+    .replace(/from ['"]\.\.\/shared\/project['"]/g, `from ${JSON.stringify(projectUrl)}`)
+    .replace(/from ['"]\.\/access['"]/g, `from ${JSON.stringify(securityUrl)}`);
+  const storage = await import(dataModule(storageJs));
+  const verified = await mocked<{ db: unknown; userId: string }>([{ body: { id: USER } }, { body: true }], () => security.verifyAccess(`Bearer ${TOKEN}`));
+  const db = new PGlite();
+  const originalFetch = globalThis.fetch;
+  try {
+    await db.exec(`
+      create role authenticated;
+      create schema auth;
+      create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
+      grant usage on schema auth,public to authenticated;
+      create table flick_projects(id text primary key,user_id uuid);
+      create table flick_chat_threads(id text primary key,project_id text references flick_projects(id),user_id uuid,title text,messages jsonb,openai_history jsonb,updated_at timestamptz);
+      alter table flick_chat_threads enable row level security;
+      grant select on flick_projects to authenticated;
+      grant select,insert,update on flick_chat_threads to authenticated;
+      create policy owned_threads on flick_chat_threads to authenticated
+        using(user_id=auth.uid() and exists(select 1 from flick_projects p where p.id=project_id and p.user_id=auth.uid()))
+        with check(user_id=auth.uid() and exists(select 1 from flick_projects p where p.id=project_id and p.user_id=auth.uid()));
+    `);
+    await db.query('insert into flick_projects values($1,$2),($3,$4)', ['project-owned', USER, 'victim-project', '00000000-0000-4000-8000-000000000002']);
+    const insert = (row: Record<string, unknown>) => db.transaction(async (tx) => {
+      await tx.query("select set_config('request.jwt.claim.sub',$1,true)", [USER]);
+      await tx.exec('set local role authenticated');
+      return tx.query('insert into flick_chat_threads(id,project_id,user_id,title,messages,openai_history,updated_at) values($1,$2,$3,$4,$5,$6,$7)',
+        [row.id, row.project_id, row.user_id ?? null, row.title, JSON.stringify(row.messages), JSON.stringify(row.openai_history), row.updated_at]);
+    });
+    let payload: Record<string, unknown> | undefined;
+    globalThis.fetch = async (input, options) => {
+      assert.match(String(input), /\/rest\/v1\/flick_chat_threads/);
+      assert.equal(new Headers(options?.headers).get('Authorization'), `Bearer ${TOKEN}`);
+      if (options?.method === 'DELETE') return new Response(null, { status: 204 });
+      assert.equal(options?.method, 'POST');
+      payload = JSON.parse(String(options.body))[0] as Record<string, unknown>;
+      await insert(payload);
+      return new Response('[]', { status: 201 });
+    };
+    const thread = { id: 'thread-owned', title: 'Minha conversa', messages: [], openai: [], updatedAt: new Date().toISOString() };
+    await security.accessScope.run(verified.result, () => storage.writeChat('project-owned', { threads: { [thread.id]: thread } }));
+    assert.equal(payload?.user_id, USER);
+    assert.deepEqual((await db.query('select id,user_id,project_id from flick_chat_threads')).rows, [{ id: 'thread-owned', user_id: USER, project_id: 'project-owned' }]);
+    await assert.rejects(insert({ ...payload, id: 'missing-owner', user_id: null }), /row-level security/);
+    await assert.rejects(insert({ ...payload, id: 'wrong-project', project_id: 'victim-project' }), /row-level security/);
+  } finally { globalThis.fetch = originalFetch; await db.close(); }
 });

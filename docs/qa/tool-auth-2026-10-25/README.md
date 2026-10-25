@@ -10,6 +10,10 @@ O endereço direto da Biblioteca de prompts usava uma página pública sem `Tool
 - Testes das APIs cobrem 401/403, falha de verificação, propagação do JWT do dono, identidade de voz e autorização dos uploads.
 - Testes PGlite cobrem as permissões reais legadas, chamadas anônimas, edição administrativa, isolamento entre usuários, TRUNCATE e reaplicação do SQL.
 - A migração `secure_lab_tool_access` foi aplicada no Supabase `fzhzpzxsttflgtassyex`. Conferência posterior: anon sem EXECUTE em copy/save, sem SELECT em corpos/view administrativa/tabelas flick; authenticated sem TRUNCATE; quatro tabelas flick com política RESTRICTIVE.
+- Typecheck e build dos dois projetos passaram. A suíte final passou 120 casos, incluindo a execução da API compilada e o salvamento de novas conversas com RLS.
+- Os commits `13746d9` (Steam) e `439f593` (Flick) foram enviados para `main`; o GitHub confirmou sucesso dos dois deploys da Vercel. A entrada externa publicada mostrou login obrigatório em `claquete-phi.vercel.app`.
+- A origem publicada `lab-caramelo.vercel.app`, sem sessão, mostrou o bloqueio da Biblioteca de prompts (`prompt-library-production-signed-out.png`).
+- A conferência de produção encontrou `ERR_MODULE_NOT_FOUND` na API emitida: o import ainda apontava para `toolAccess.ts`. A opção `rewriteRelativeImportExtensions` corrige o caminho para `.js`; `apiEmit.test.ts` reproduz e verifica o carregamento pelo Node sem um loader TypeScript.
 
 O projeto externo Claquete recebeu os 13 arquivos de `security/claquete/manifest.json` após conferência dos hashes originais. A sessão nessa origem é independente: exige entrar com a mesma conta também no Claquete. Projetos, APIs e novos uploads usam autorização do dono. Mídias antigas que já estavam no CDN público não foram removidas nem tornadas privadas por esta migração.
 
