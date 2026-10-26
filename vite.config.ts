@@ -116,6 +116,7 @@ function siteRoutes(): Plugin {
     }
     if (page === "/") req.url = `/index.html${url.search}`;
     else if (/^\/(?:head-de-conteudo|sites-e-experiencias)\/?$/.test(page)) req.url = `/${page.split("/")[1]}/index.html${url.search}`;
+    else if (/^\/projetos\/um-cara-caramelo-conteudo\/?$/.test(page)) req.url = `/projetos/um-cara-caramelo-conteudo/index.html${url.search}`;
     else if (/^\/aula-head(?:\/aula-01)?\/?$/.test(page)) req.url = `/aula-head/index.html${url.search}`;
     else if (TOOL_ROUTE.test(page)) req.url = `/tools/${page.match(TOOL_ROUTE)![1]}/index.html${url.search}`;
     else if (LAB_ROUTE.test(page) || (isUnknownPage(page) && req.headers.accept?.includes("text/html"))) req.url = `/app.html${url.search}`;

@@ -33,3 +33,8 @@ Desktop.ini
 
 # REA references / extracted artifacts
 .rea-reference/
+
+# Raw media references / input frames
+/carrossel*.png
+/assets/
+PROMPT MESTRE*.txt
