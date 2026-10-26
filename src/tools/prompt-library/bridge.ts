@@ -16,5 +16,6 @@ export function buildPromptDocument(source: string, pageUrl: string, userId: str
   const bootstrap = `<base href="${attribute(base)}"><meta name="lab-account" content="${attribute(userId)}"><meta name="lab-page-url" content="${attribute(page.href)}">`
     + (page.searchParams.get("embed") === "1" ? "<script>document.documentElement.dataset.embedded='true'</script>" : "");
   return source.replace("<head>", `<head>${bootstrap}`)
+    .replace('src="./assets/js/prompt-library-controls.js"', 'src="./assets/js/prompt-library-controls.js?v=lab-controls-2"')
     .replace('src="./assets/js/prompt-library.js"', 'src="./assets/js/prompt-library.js?v=lab-auth-1"');
 }
