@@ -289,12 +289,17 @@
         const category = item.category || 'Outros';
         return { ...item, category, tags, search: normalize([item.title, category, item.type, item.author, ...tags].join(' ')) };
       });
-      const categories = [...new Set(state.items.map(item => item.category))]
-        .filter(category => category !== 'Movimentos de Câmera')
+      const allCats = [...new Set(state.items.map(item => item.category))];
+      const topCats = ['Landing Pages', 'Hero Sections', 'Componentes UI'];
+      const endCats = ['Movimentos de Câmera'];
+      const middleCats = allCats
+        .filter(c => !topCats.includes(c) && !endCats.includes(c))
         .sort((a, b) => a.localeCompare(b, 'pt-BR'));
-      if (state.items.some(item => item.category === 'Movimentos de Câmera')) {
-        categories.push('Movimentos de Câmera');
-      }
+      const categories = [
+        ...topCats.filter(c => allCats.includes(c)),
+        ...middleCats,
+        ...endCats.filter(c => allCats.includes(c))
+      ];
       categoryControl.setOptions([{ value: '', label: 'Todas as categorias' }, ...categories.map(category => ({ value: category, label: category }))]);
       updateFavoriteCount();
       render();

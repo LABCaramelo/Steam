@@ -119,7 +119,7 @@ test("prompt catalog places Movimentos de Câmera at the very end of the items l
   assert.equal(firstCamIndex, catalog.items.length - camIndices.length);
 });
 
-test("PromptLibraryControls.compare orders Movimentos de Câmera after other categories", async () => {
+test("PromptLibraryControls.compare orders Web essentials ahead of niches, motion and camera", async () => {
   const fs = await import("node:fs");
   const path = await import("node:path");
   const filePath = path.resolve("public/tools/prompt-library/assets/js/prompt-library-controls.js");
@@ -127,22 +127,29 @@ test("PromptLibraryControls.compare orders Movimentos de Câmera after other cat
   const fn = new Function("module", "exports", "globalThis", code);
   const m = { exports: {} as Record<string, any> };
   fn(m, m.exports, globalThis);
-  const { compare } = m.exports;
+  const { compare, getPriorityTier } = m.exports;
 
-  const camA = { id: "cam-01", title: "Plano Estático", category: "Movimentos de Câmera", created_at: "2026-10-26T14:00:00Z", verified_count: 0 };
-  const camB = { id: "cam-02", title: "Pan Right", category: "Movimentos de Câmera", created_at: "2026-10-26T14:05:00Z", verified_count: 10 };
-  const saas = { id: "saas-01", title: "Dashboard Pro", category: "SaaS", created_at: "2026-09-22T00:00:00Z", verified_count: 0 };
-  const hero = { id: "hero-01", title: "Hero Bold", category: "Hero Sections", created_at: "2026-10-20T00:00:00Z", verified_count: 2 };
+  const landing = { id: "lp-01", title: "Landing Page Alpha", category: "Landing Pages", created_at: "2026-10-20T00:00:00Z", verified_count: 0 };
+  const hero = { id: "hero-01", title: "Hero Bold", category: "Hero Sections", created_at: "2026-10-20T00:00:00Z", verified_count: 0 };
+  const ui = { id: "ui-01", title: "Navbar Minimal", category: "Componentes UI", created_at: "2026-10-20T00:00:00Z", verified_count: 0 };
+  const saas = { id: "saas-01", title: "Dashboard Pro", category: "SaaS", created_at: "2026-10-25T00:00:00Z", verified_count: 0 };
+  const motion = { id: "cui-01", title: "Liquid Shaders", category: "Design & Criativo", type: "motion", created_at: "2026-10-26T00:00:00Z", verified_count: 0 };
+  const camera = { id: "cam-01", title: "Plano Estático", category: "Movimentos de Câmera", created_at: "2026-10-26T14:00:00Z", verified_count: 0 };
 
-  // Across all order modes, camera prompts are placed after non-camera prompts
+  // Tier checks
+  assert.equal(getPriorityTier(landing), 1);
+  assert.equal(getPriorityTier(hero), 1);
+  assert.equal(getPriorityTier(ui), 1);
+  assert.equal(getPriorityTier(saas), 2);
+  assert.equal(getPriorityTier(motion), 3);
+  assert.equal(getPriorityTier(camera), 4);
+
+  // Across modes, Tier 1 (Landing Pages / Heros / UI) beats Tier 2 (SaaS)
   for (const order of ["popular", "recent", "title"]) {
-    assert.ok(compare(saas, camA, order) < 0, `SaaS should come before camera in ${order}`);
-    assert.ok(compare(camA, saas, order) > 0, `Camera should come after SaaS in ${order}`);
-    assert.ok(compare(hero, camB, order) < 0, `Hero should come before camera in ${order}`);
-    assert.ok(compare(camB, hero, order) > 0, `Camera should come after Hero in ${order}`);
+    assert.ok(compare(landing, saas, order) < 0, `Landing Pages should come before SaaS in ${order}`);
+    assert.ok(compare(hero, saas, order) < 0, `Hero Sections should come before SaaS in ${order}`);
+    assert.ok(compare(ui, saas, order) < 0, `Componentes UI should come before SaaS in ${order}`);
+    assert.ok(compare(saas, motion, order) < 0, `SaaS should come before Motion in ${order}`);
+    assert.ok(compare(motion, camera, order) < 0, `Motion should come before Camera in ${order}`);
   }
-
-  // When both are camera movements, normal ordering criteria apply
-  assert.ok(compare(camB, camA, "popular") < 0, "camB with higher verified_count comes first in popular");
-  assert.ok(compare(camB, camA, "title") < 0, "camB (Pan Right) comes before camA (Plano Estático) alphabetically by title");
 });

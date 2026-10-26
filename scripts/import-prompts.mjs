@@ -73,11 +73,21 @@ if (!Array.isArray(allPrompts) || allPrompts.length === 0) {
     console.log("\nNenhum novo prompt pendente. O catálogo local já está 100% sincronizado com o Supabase!");
   } else {
     catalog.items.push(...toAdd);
-    // Ordena mantendo Movimentos de Câmera sempre no final, e desempatando por data de criação descendente
+    function getPriorityTier(item) {
+      if (!item) return 99;
+      const category = item.category || "";
+      const type = item.type || "";
+      const id = item.id || "";
+      if (category === "Movimentos de Câmera" || type === "camera" || id.startsWith("cam-")) return 4;
+      if (type === "motion" || id.startsWith("cui-") || id.startsWith("amix-")) return 3;
+      if (category === "Landing Pages" || category === "Hero Sections" || category === "Componentes UI" || id === "vlt-00-prompt-hero") return 1;
+      return 2;
+    }
+
     catalog.items.sort((a, b) => {
-      const aIsCam = a.category === "Movimentos de Câmera";
-      const bIsCam = b.category === "Movimentos de Câmera";
-      if (aIsCam !== bIsCam) return aIsCam ? 1 : -1;
+      const tierA = getPriorityTier(a);
+      const tierB = getPriorityTier(b);
+      if (tierA !== tierB) return tierA - tierB;
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
     catalog.syncedAt = new Date().toISOString();

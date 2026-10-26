@@ -4,10 +4,20 @@
   else root.PromptLibraryControls = api;
 })(typeof window === 'object' ? window : globalThis, () => {
   const count = value => Number.isFinite(Number(value)) ? Math.max(0, Number(value)) : 0;
+  function getPriorityTier(item) {
+    if (!item) return 99;
+    const category = item.category || '';
+    const type = item.type || '';
+    const id = item.id || '';
+    if (category === 'Movimentos de Câmera' || type === 'camera' || id.startsWith('cam-')) return 4;
+    if (type === 'motion' || id.startsWith('cui-') || id.startsWith('amix-')) return 3;
+    if (category === 'Landing Pages' || category === 'Hero Sections' || category === 'Componentes UI' || id === 'vlt-00-prompt-hero') return 1;
+    return 2;
+  }
   function compare(a, b, order) {
-    const aIsCamera = a && a.category === 'Movimentos de Câmera';
-    const bIsCamera = b && b.category === 'Movimentos de Câmera';
-    if (aIsCamera !== bIsCamera) return aIsCamera ? 1 : -1;
+    const tierA = getPriorityTier(a);
+    const tierB = getPriorityTier(b);
+    if (tierA !== tierB) return tierA - tierB;
     if (order === 'title') return a.title.localeCompare(b.title, 'pt-BR') || a.id.localeCompare(b.id);
     if (order === 'popular') {
       const difference = count(b.verified_count) - count(a.verified_count);
@@ -92,5 +102,5 @@
     setOptions(options);
     return { setValue, setOptions, close };
   }
-  return { compare, createSelect };
+  return { compare, getPriorityTier, createSelect };
 });
