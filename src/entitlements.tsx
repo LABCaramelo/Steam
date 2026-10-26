@@ -3,6 +3,7 @@ import { useAuth } from "./auth";
 import { supabase } from "./supabase";
 import { getToolBySlug } from "./toolCatalog";
 import { clearToolLocalData, publishToolRelease, subscribeToolReleases } from "./toolLifecycle";
+import { assertToolReleaseConfirmed, toolReleaseFailure } from "./toolRelease";
 
 /**
  * Tools in the signed-in person's library (public.user_tools). The store reads it to show
@@ -107,11 +108,12 @@ export function EntitlementsProvider({ children }: { children: ReactNode }) {
     const app = getToolBySlug(slug);
     if (!userId) throw new Error("Entre no LAB para remover a ferramenta.");
     if (!app?.tool) throw new Error("Ferramenta não encontrada.");
-    const { error } = await supabase.rpc("release_tool", { p_slug: slug });
+    const { data, error } = await Promise.resolve(supabase.rpc("release_tool", { p_slug: slug }))
+      .catch((cause: unknown) => { throw toolReleaseFailure(cause); });
     if (error) {
-      if (MISSING.has(error.code)) throw new Error("A remoção de ferramentas ainda não foi configurada no LAB. Tente novamente mais tarde.");
-      throw new Error("Não foi possível confirmar a remoção. Atualize a biblioteca e tente novamente.");
+      throw toolReleaseFailure(error);
     }
+    assertToolReleaseConfirmed(data, slug);
     const notice = { userId, slug, appid: app.appid };
     // The database transaction succeeded before any local data or library state is changed.
     // Move the caller off the removed tool before broadcasting invalidates its route.

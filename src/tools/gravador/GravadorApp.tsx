@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Isotype, ThemeToggle } from "@caramelo/design-system";
 import { toolStorageKey } from "../../toolLifecycle";
-import { useToolUser } from "../shared/kit";
+import { useTheme, useToolUser } from "../shared/kit";
 import { AudioEngine } from "./engine/audio-engine.js";
 import { TransitionsEngine } from "./engine/transitions.js";
 import { CanvasCompositor } from "./engine/canvas-compositor.js";
@@ -55,7 +55,7 @@ export function GravadorApp() {
 
 /** The production entry is mounted behind the LAB ToolGate. */
 export function NoArStudio({ userId }: { userId: string }) {
-  // const theme = useTheme();
+  const theme = useTheme();
   const rootRef = useRef<HTMLDivElement>(null);
   const runtime = useRef<any>(null);
   const [studio, setStudio] = useState(false);
@@ -223,7 +223,7 @@ export function NoArStudio({ userId }: { userId: string }) {
     <header className="noar-header">
       <div className="noar-brand"><span className="noar-mark"><Icon name="broadcast" size={25} /></span><div><h1>NO AR<span>®</span></h1><p>ESTÚDIO CRIATIVO</p></div><span className="noar-beta">BETA</span></div>
       <nav className="noar-nav" aria-label="Áreas do estúdio"><button type="button" className="active" aria-current="page"><Icon name="layers" />Estúdio</button><button type="button" onClick={() => setModal("recordings")}><Icon name="folder" />Gravações{exports.length > 0 && <span className="noar-count">{exports.length}</span>}</button></nav>
-      <div className="noar-header-actions"><span className={`noar-session-state ${streaming || recording ? "active" : ""}`}><i />{streaming ? "AO VIVO" : recording ? paused ? "PAUSADO" : "GRAVANDO" : "FORA DO AR"}</span><button type="button" className="noar-icon-button" onClick={() => setModal("help")} aria-label="Guia do estúdio"><Icon name="help" /></button><ThemeToggle /><span className="noar-by"><Isotype size={22} variant="spectrum" /></span></div>
+      <div className="noar-header-actions"><span className={`noar-session-state ${streaming || recording ? "active" : ""}`}><i />{streaming ? "AO VIVO" : recording ? paused ? "PAUSADO" : "GRAVANDO" : "FORA DO AR"}</span><button type="button" className="noar-icon-button" onClick={() => setModal("help")} aria-label="Guia do estúdio"><Icon name="help" /></button><ThemeToggle theme={theme} /><span className="noar-by"><Isotype size={22} variant="spectrum" /></span></div>
     </header>
 
     <div className="noar-toolbar"><div className="noar-scene-heading"><span className="noar-section-index">01 /</span><strong>{scene}</strong><span className="noar-saved">Salvo neste navegador</span></div><div className="noar-toolbar-actions"><button type="button" className="noar-subtle-button" onClick={() => runtime.current?.settings.open()} disabled={!ready || recording || streaming || connecting}><Icon name="settings" size={15} />Saída e preferências</button><button type="button" className="noar-subtle-button" id="btn-studio" aria-pressed={studio}><Icon name="layers" size={15} />{studio ? "Modo estúdio ativo" : "Modo estúdio"}</button></div></div>

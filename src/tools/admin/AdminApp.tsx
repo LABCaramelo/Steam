@@ -100,6 +100,8 @@ export function AdminApp() {
   const [seedSearch, setSeedSearch] = useState("");
   const [loadingSeeds, setLoadingSeeds] = useState(false);
   const [verifyingPubId, setVerifyingPubId] = useState<string | null>(null);
+  const [deletingPubId, setDeletingPubId] = useState<string | null>(null);
+  const [purgingInactive, setPurgingInactive] = useState(false);
   const [batchScanning, setBatchScanning] = useState(false);
   const [selectedSeedDetail, setSelectedSeedDetail] = useState<AdminSeedDetail | null>(null);
   const [inspectingPrompt, setInspectingPrompt] = useState<AdminSeedPromptItem | null>(null);
@@ -229,6 +231,55 @@ export function AdminApp() {
       toast(err instanceof Error ? err.message : "Erro ao executar lote de varredura.", "error");
     } finally {
       setBatchScanning(false);
+    }
+  };
+
+  const handleDeletePublication = async (pubId: string, domain: string, status: string, promptId?: string) => {
+    const isVerified = status === "verified";
+    const msg = isVerified
+      ? `ATENÇÃO: A publicação "${domain}" está marcada como VERIFICADA.\n\nDeseja realmente removê-la do monitoramento?`
+      : `Deseja realmente remover a publicação do domínio "${domain}" (${status})?`;
+
+    if (!window.confirm(msg)) return;
+
+    setDeletingPubId(pubId);
+    try {
+      await adminRepo.deleteSeedPublication(pubId);
+      toast(`Publicação "${domain}" removida com sucesso!`, "success");
+      await loadSeedData(seedRange);
+      if (promptId && selectedSeedDetail && selectedSeedDetail.prompt.id === promptId) {
+        await openSeedDetail(promptId);
+      }
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Erro ao remover publicação.", "error");
+    } finally {
+      setDeletingPubId(null);
+    }
+  };
+
+  const handlePurgeInactive = async () => {
+    const inactiveCount = seedPublications.filter(
+      (p) => p.status === "offline" || p.status === "not_confirmed"
+    ).length;
+
+    if (inactiveCount === 0) {
+      toast("Nenhuma publicação offline ou não confirmada para limpar.", "info");
+      return;
+    }
+
+    const msg = `Deseja remover todas as ${inactiveCount} publicações com status "offline" ou "não confirmada"?\n\nEssa ação removerá os registros do monitoramento imediatamente.`;
+    if (!window.confirm(msg)) return;
+
+    setPurgingInactive(true);
+    try {
+      const res = await adminRepo.purgeInactiveSeedPublications();
+      const deletedCount = res?.deleted ?? inactiveCount;
+      toast(`${deletedCount} publicação(ões) inativa(s) removida(s) com sucesso!`, "success");
+      await loadSeedData(seedRange);
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Erro ao limpar publicações inativas.", "error");
+    } finally {
+      setPurgingInactive(false);
     }
   };
 
@@ -939,6 +990,39 @@ export function AdminApp() {
                 >
                   {loadingSeeds ? "Atualizando..." : "Atualizar telemetria 🔄"}
                 </button>
+
+                {seedPublications.some((p) => p.status === "offline" || p.status === "not_confirmed") && (
+                  <button
+                    type="button"
+                    className="admin-btn admin-btn--danger admin-btn--sm"
+                    onClick={handlePurgeInactive}
+                    disabled={purgingInactive}
+                    title="Remover todas as publicações offline e não confirmadas"
+                  >
+                    {purgingInactive
+                      ? "Limpando..."
+                      : `🧹 Limpar Inativas (${seedPublications.filter((p) => p.status === "offline" || p.status === "not_confirmed").length})`}
+                  </button>
+                )}
+
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    padding: "4px 10px",
+                    fontSize: "11px",
+                    borderRadius: "6px",
+                    background: "rgba(255, 112, 26, 0.08)",
+                    color: "rgb(var(--cm-fg-muted))",
+                    border: "1px dashed rgba(255, 112, 26, 0.25)",
+                    marginLeft: "auto",
+                  }}
+                  title="Registros offline ou não confirmados sem sinal há mais de 7 dias são removidos automaticamente."
+                >
+                  <span>🛡️</span>
+                  <span>Auto-limpeza ativa: expira inativas &gt; 7 dias</span>
+                </div>
               </div>
 
               {/* Table */}
@@ -951,7 +1035,7 @@ export function AdminApp() {
                       <th style={{ width: "200px" }}>Domínio</th>
                       <th style={{ width: "130px" }}>Primeiro Sinal</th>
                       <th style={{ width: "140px" }}>Último Sinal</th>
-                      <th style={{ width: "220px", textAlign: "right" }}>Ações</th>
+                      <th style={{ width: "250px", textAlign: "right" }}>Ações</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1037,6 +1121,29 @@ export function AdminApp() {
                                   title="Ver detalhes de proveniência do prompt"
                                 >
                                   Detalhes
+                                </button>
+                                <button
+                                  type="button"
+                                  className="admin-btn admin-btn--ghost admin-btn--sm"
+                                  style={{
+                                    color:
+                                      pub.status === "offline" || pub.status === "not_confirmed"
+                                        ? "#ff6b6b"
+                                        : "rgb(var(--cm-fg-muted))",
+                                    borderColor:
+                                      pub.status === "offline" || pub.status === "not_confirmed"
+                                        ? "rgba(231, 76, 60, 0.4)"
+                                        : undefined,
+                                  }}
+                                  onClick={() => handleDeletePublication(pub.id, domain, pub.status)}
+                                  disabled={deletingPubId === pub.id}
+                                  title={
+                                    pub.status === "offline" || pub.status === "not_confirmed"
+                                      ? "Remover publicação inativa"
+                                      : "Remover publicação"
+                                  }
+                                >
+                                  {deletingPubId === pub.id ? "..." : "🗑️"}
                                 </button>
                               </div>
                             </td>
@@ -2427,6 +2534,7 @@ export function AdminApp() {
                       <th>Status</th>
                       <th>Primeiro Sinal</th>
                       <th>Última Verificação</th>
+                      <th style={{ width: "60px", textAlign: "right" }}>Ação</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2453,11 +2561,35 @@ export function AdminApp() {
                         <td style={{ fontSize: "11px", color: "rgb(var(--cm-fg-muted))" }}>
                           {pub.last_verified_at?.slice(0, 10) || "-"}
                         </td>
+                        <td style={{ textAlign: "right" }}>
+                          <button
+                            type="button"
+                            className="admin-btn admin-btn--ghost admin-btn--sm"
+                            style={{
+                              color:
+                                pub.status === "offline" || pub.status === "not_confirmed"
+                                  ? "#ff6b6b"
+                                  : "rgb(var(--cm-fg-muted))",
+                            }}
+                            onClick={() =>
+                              handleDeletePublication(
+                                pub.id,
+                                pub.normalized_domain,
+                                pub.status,
+                                selectedSeedDetail.prompt.id
+                              )
+                            }
+                            disabled={deletingPubId === pub.id}
+                            title="Remover publicação"
+                          >
+                            {deletingPubId === pub.id ? "..." : "🗑️"}
+                          </button>
+                        </td>
                       </tr>
                     ))}
                     {selectedSeedDetail.publications.length === 0 && (
                       <tr>
-                        <td colSpan={4} style={{ textAlign: "center", padding: "20px", color: "rgb(var(--cm-fg-muted))" }}>
+                        <td colSpan={5} style={{ textAlign: "center", padding: "20px", color: "rgb(var(--cm-fg-muted))" }}>
                           Nenhuma publicação confirmada para este prompt até o momento.
                         </td>
                       </tr>

@@ -315,4 +315,52 @@ export const adminRepo = {
     }
     return data;
   },
+
+  async deleteSeedPublication(publicationId: string): Promise<any> {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (!token) throw new Error("Usuário não autenticado.");
+
+    const res = await fetch("/api/admin/seed", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "delete-publication",
+        publication_id: publicationId,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || "Falha ao remover publicação.");
+    }
+    return data;
+  },
+
+  async purgeInactiveSeedPublications(olderThanDays?: number): Promise<{ deleted: number }> {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (!token) throw new Error("Usuário não autenticado.");
+
+    const res = await fetch("/api/admin/seed", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "purge-inactive",
+        older_than_days: typeof olderThanDays === "number" ? olderThanDays : null,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || "Falha ao limpar publicações inativas.");
+    }
+    return data;
+  },
 };

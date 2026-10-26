@@ -55,6 +55,24 @@ export async function runScan({
   force = false,
 }: RunScanOptions = {}) {
   try {
+    // Opportunistic automatic purge of offline and not_confirmed publications older than 7 days
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/rpc/purge_caramelo_inactive_publications`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          p_older_than_days: 7,
+          p_statuses: ["offline", "not_confirmed"],
+        }),
+      });
+    } catch (cleanErr: any) {
+      console.warn("[scanner] auto-purge inactive publications error:", cleanErr?.message);
+    }
+
     // 1. Claim available jobs atomically
     const claimRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/claim_caramelo_scan_jobs`, {
       method: "POST",

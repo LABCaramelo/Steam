@@ -78,7 +78,7 @@ A transmissão envia áudio e vídeo de PROGRAM por WebRTC a um **endpoint WHIP 
 
 Somente a configuração das cenas fica no `localStorage`, separada por conta. Arquivos de mídia e permissões de captura precisam ser adicionados novamente ao reabrir. Downloads ficam no computador; a ferramenta não sincroniza mídia na nuvem. A remoção pela biblioteca limpa a configuração local daquela conta.
 
-Para bancos existentes, aplique `supabase/no-ar.sql` **depois** de `lab-tools.sql` e de `montagem.sql`, quando usado. O mesmo SQL está em `supabase/migrations/20261023013201_no_ar.sql`, gerado com a CLI; escolha um fluxo de instalação. O script renomeia o catálogo e inclui `gravador` na remoção transacional, preservando preço e disponibilidade já configurados. Se a entrada continuar em breve, o administrador deve liberá-la no painel. Nenhum SQL foi aplicado em produção durante a implementação.
+Para bancos existentes, aplique `supabase/no-ar.sql` **depois** de `lab-tools.sql` e de `montagem.sql`, quando usado. O mesmo SQL está em `supabase/migrations/20261023013201_no_ar.sql`, gerado com a CLI; escolha um fluxo de instalação. O script renomeia o catálogo e inclui `gravador` na remoção transacional, preservando preço e disponibilidade já configurados. Se a entrada continuar em breve, o administrador deve liberá-la no painel. A correção foi aplicada ao projeto do LAB em 26/10/2026 como `no_ar_catalog_and_release`, sem executar a remoção dos dados de qualquer membro.
 
 ### Verificação das ferramentas
 

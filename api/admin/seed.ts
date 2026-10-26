@@ -2,6 +2,11 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import { requireLabAdmin, requireUser, ToolAccessError } from "../../server/toolAccess.ts";
 import { runScan } from "../../server/scanner.ts";
 
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://fzhzpzxsttflgtassyex.supabase.co";
+const SUPABASE_SERVICE_ROLE_KEY =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6aHpwenhzdHRmbGd0YXNzeWV4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4OTM1NTY1MiwiZXhwIjoyMTA0OTMxNjUyfQ.oAqUzsOayHlvhf639LoletvA350gklOZbWz8OfYMzhg";
+
 type Req = IncomingMessage & { body?: unknown };
 
 function send(res: ServerResponse, status: number, body: unknown) {
@@ -55,6 +60,48 @@ export default async function handler(req: Req, res: ServerResponse) {
       const limit = Number(body?.limit || 10);
       const scanResult = await runScan({ limit, force: false });
       return send(res, 200, { success: true, scanResult });
+    }
+
+    if (action === "delete-publication") {
+      const publicationId = body?.publication_id;
+      if (!publicationId || typeof publicationId !== "string") {
+        return send(res, 400, { error: "publication_id é obrigatório." });
+      }
+      const delRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_caramelo_publication_admin`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ p_id: publicationId }),
+      });
+      const data = await delRes.json();
+      if (!delRes.ok) {
+        return send(res, 400, { error: data?.message || "Falha ao remover publicação." });
+      }
+      return send(res, 200, { success: true, ...data });
+    }
+
+    if (action === "purge-inactive") {
+      const olderThanDays = typeof body?.older_than_days === "number" ? body.older_than_days : null;
+      const purgeRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/purge_caramelo_inactive_publications`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          p_older_than_days: olderThanDays,
+          p_statuses: ["offline", "not_confirmed"],
+        }),
+      });
+      const data = await purgeRes.json();
+      if (!purgeRes.ok) {
+        return send(res, 400, { error: data?.message || "Falha ao limpar publicações inativas." });
+      }
+      return send(res, 200, { success: true, ...data });
     }
 
     return send(res, 400, { error: "Ação não reconhecida." });
