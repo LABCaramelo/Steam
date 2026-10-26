@@ -1,41 +1,14 @@
 import { workshop } from './workshop-config.js';
 import { createScrollScenes } from './workshop-motion.js';
 
-const currency = value => new Intl.NumberFormat('pt-BR', {
-  style: 'currency', currency: 'BRL', maximumFractionDigits: 2
-}).format(value);
-
 function configureOffer() {
-  const lot = Math.min(workshop.lots.length - 1, Math.max(0, workshop.currentLot));
   document.querySelectorAll('[data-dates]').forEach(node => { node.textContent = workshop.dates; });
-  document.querySelectorAll('[data-price]').forEach(node => { node.textContent = currency(workshop.lots[lot]); });
-  document.querySelectorAll('[data-lot-label], .hero-lot > span').forEach(node => {
-    node.textContent = lot === 0 ? 'PRIMEIRO LOTE' : 'SEGUNDO LOTE';
-  });
-  document.querySelectorAll('.lot-steps > span').forEach((node, index) => {
-    node.textContent = `${index + 1}º lote · ${currency(workshop.lots[index]).replace(',00', '')}`;
-  });
   document.querySelector('[data-format]').textContent = workshop.format || 'A confirmar';
   document.querySelector('[data-hours]').textContent = workshop.dailyHours || 'A confirmar';
   const link = document.querySelector('[data-enrollment]');
-  // Only a supplied HTTP(S) checkout activates the enrollment flow.
-  let checkout = null;
-  try {
-    const url = workshop.checkoutUrl && new URL(workshop.checkoutUrl);
-    if (url && ['https:', 'http:'].includes(url.protocol)) checkout = url.href;
-  } catch { /* Keep the honest contact fallback for invalid configuration. */ }
-  if (checkout) {
-    link.href = checkout;
-    link.querySelector('[data-enrollment-label]').textContent = `Quero participar por ${currency(workshop.lots[lot])}`;
-    document.querySelector('[data-enrollment-note]').textContent = 'Confira as condições da turma na página de inscrição.';
-  } else {
-    const subject = encodeURIComponent('Workshop Sites que se sentem · 13 e 14 de novembro');
-    link.href = `mailto:${workshop.contactEmail}?subject=${subject}`;
-    // Quem não tem um aplicativo de e-mail configurado copia o endereço.
-    document.querySelector('[data-contact-email]').textContent = workshop.contactEmail;
-    document.querySelector('[data-contact-copy]').dataset.value = workshop.contactEmail;
-  }
-  document.querySelectorAll('.lot-steps > span').forEach((node, index) => node.classList.toggle('current', index === lot));
+  link.href = '/?servico=outro&interesse=workshop#contato';
+  link.querySelector('[data-enrollment-label]').textContent = 'Conversar sobre o workshop';
+  document.querySelector('[data-enrollment-note]').textContent = 'Você será encaminhado ao contato do Estúdio para conversar sobre o workshop e consultar os detalhes da turma.';
 }
 
 function initialize() {

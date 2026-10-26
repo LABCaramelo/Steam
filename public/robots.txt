@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /library/
+Disallow: /profile/
+Disallow: /settings/
+
+Sitemap: https://www.umcaracaramelo.com.br/sitemap.xml

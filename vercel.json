@@ -7,6 +7,10 @@
     { "source": "/favicon.ico", "destination": "/favicon.svg", "permanent": false }
   ],
   "rewrites": [
+    { "source": "/head-de-conteudo", "destination": "/head-de-conteudo/index.html" },
+    { "source": "/head-de-conteudo/", "destination": "/head-de-conteudo/index.html" },
+    { "source": "/sites-e-experiencias", "destination": "/sites-e-experiencias/index.html" },
+    { "source": "/sites-e-experiencias/", "destination": "/sites-e-experiencias/index.html" },
     { "source": "/aula-head", "destination": "/aula-head/index.html" },
     { "source": "/aula-head/aula-01", "destination": "/aula-head/index.html" },
     { "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|academy|claquete|comunidade|admin|gravador|montagem)", "destination": "/tools/:slug/index.html" },

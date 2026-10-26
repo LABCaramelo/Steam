@@ -1,0 +1,182 @@
+/* Commercial surfaces extend the existing Caramelo typography, color and controls. */
+:is(.commercial-home,.service-page) [hidden]{display:none!important}
+html[data-caramelo-theme='light'] :is(.commercial-home,.service-page){color-scheme:light}
+:is(.commercial-home,.service-page) .accent{color:rgb(var(--cm-accent-ink))}
+:is(.commercial-home,.service-page) .text-link{display:inline-flex;align-items:center;min-height:44px;max-width:100%;padding:0;border:0;background:transparent;color:rgb(var(--cm-fg));font:600 14px/1.5 var(--body);text-align:left;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;cursor:pointer}
+:is(.commercial-home,.service-page) .text-link:hover{color:rgb(var(--cm-accent-ink))}
+:is(.commercial-home,.service-page) .text-link:focus-visible{outline:2px solid rgb(var(--cm-focus));outline-offset:5px}
+:is(.commercial-home,.service-page) .nav-desktop{gap:clamp(14px,1.7vw,25px)}
+:is(.commercial-home,.service-page) .pill{max-width:100%;white-space:normal;text-align:center}
+
+/* Keep the three visual cuts, with space for the complete positioning statement. */
+.commercial-home .hero-section .section-meta{max-width:100%;margin-bottom:34px}
+.commercial-home .hero-section .section-meta>span{max-width:100%;text-align:left}
+.commercial-home .hero-section .hero-word-first,
+.commercial-home .hero-section .hero-word-second{font-size:clamp(42px,calc(5.8vw - 4px),86px);letter-spacing:-.065em}
+.commercial-home .hero-section .hero-bottom{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;padding-top:32px;align-items:center}
+.commercial-home .hero-section .hero-intro{max-width:510px}
+.commercial-home .hero-section .hero-intro p{font-size:16px;line-height:1.65;color:rgb(var(--cm-fg-2))}
+.commercial-home .hero-section .hero-cta-group .pill{min-height:54px;font-size:13px;padding-inline:22px}
+.commercial-home .hero-signature{max-width:620px;margin-top:22px;color:rgb(var(--cm-fg-muted));font:600 15px/1.5 var(--body);letter-spacing:-.02em}
+.commercial-home .offer-action .text-link{color:currentColor;font-size:13px}
+.commercial-home .offer-action .text-link:hover{text-decoration-thickness:2px}
+.commercial-home .offer-action .offer-microcopy{font-size:13px;line-height:1.65}
+
+/* Case details expand in the page, leaving every preview and control available. */
+:is(.commercial-home,.service-page) .case-kind{display:block;color:rgb(var(--cm-fg-dim));font:500 11px/1.5 var(--body);letter-spacing:.06em;text-transform:uppercase}
+:is(.commercial-home,.service-page) .case-details{min-width:0;margin-top:7px;border-top:1px solid var(--line)}
+:is(.commercial-home,.service-page) .case-details>summary{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:48px;padding:13px 0;list-style:none;color:rgb(var(--cm-fg));font:600 14px/1.5 var(--body);cursor:pointer}
+:is(.commercial-home,.service-page) .case-details>summary::-webkit-details-marker{display:none}
+:is(.commercial-home,.service-page) .case-details>summary::after{content:'+';flex:none;color:rgb(var(--cm-accent-ink));font:400 25px/1 var(--body)}
+:is(.commercial-home,.service-page) .case-details[open]>summary::after{content:'−'}
+:is(.commercial-home,.service-page) .case-facts{display:grid;gap:17px;margin:5px 0 14px;padding:0}
+:is(.commercial-home,.service-page) .case-facts>div{display:grid;gap:5px;min-width:0}
+:is(.commercial-home,.service-page) .case-facts dt{color:rgb(var(--cm-fg));font:700 14px/1.45 var(--body)}
+:is(.commercial-home,.service-page) .case-facts dd{margin:0;color:rgb(var(--cm-fg-muted));font-size:14px;line-height:1.7;overflow-wrap:break-word}
+:is(.commercial-home,.service-page) .case-details .text-link{margin-bottom:8px}
+
+/* A readable sequence, without a pinned stage or hidden steps. */
+:is(.commercial-home,.service-page) .process-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;margin:38px 0 0;padding:0;list-style:none}
+:is(.commercial-home,.service-page) .process-steps>li{min-width:0;padding-top:20px;border-top:1px solid var(--line)}
+:is(.commercial-home,.service-page) .process-number{display:block;color:rgb(var(--cm-accent-ink));font:600 12px/1.4 var(--body);letter-spacing:.09em}
+:is(.commercial-home,.service-page) .process-steps h3{margin:16px 0 12px;font-size:clamp(21px,2vw,28px);font-weight:800;line-height:1.12;letter-spacing:-.045em}
+:is(.commercial-home,.service-page) .process-steps p{color:rgb(var(--cm-fg-muted));font-size:15px;line-height:1.7}
+:is(.commercial-home,.service-page) .scope-note{max-width:78ch;margin-top:30px;color:rgb(var(--cm-fg-muted));font-size:14px;line-height:1.7}
+.commercial-home .process-section .display{max-width:14em;font-size:clamp(38px,5vw,72px)}
+
+/* Native disclosures work with keyboard, touch and scripts unavailable. */
+:is(.commercial-home,.service-page) .faq-layout{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(40px,6vw,80px);align-items:start}
+:is(.commercial-home,.service-page) .faq-layout>.display,
+:is(.commercial-home,.service-page) .faq-layout>div>.display{font-size:clamp(36px,4.5vw,64px);line-height:1.03}
+:is(.commercial-home,.service-page) .faq-list{min-width:0}
+:is(.commercial-home,.service-page) .faq-list summary{min-height:72px;font-size:16px;line-height:1.5}
+:is(.commercial-home,.service-page) .faq-list summary span{color:rgb(var(--cm-accent-ink))}
+:is(.commercial-home,.service-page) .faq-list details p{max-width:none;color:rgb(var(--cm-fg-muted));font-size:15px;line-height:1.75}
+
+/* Contact is an explicit handoff to WhatsApp, with a review step in the same flow. */
+:is(.commercial-home,.service-page) .commercial-contact{background:rgb(var(--cm-surface-2));color:rgb(var(--cm-fg));border-block:1px solid var(--line)}
+:is(.commercial-home,.service-page) .contact-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(40px,6vw,84px);align-items:start}
+:is(.commercial-home,.service-page) .contact-layout>:first-child{min-width:0}
+:is(.commercial-home,.service-page) .contact-heading{max-width:12em;font-size:clamp(36px,4vw,58px);font-weight:900;line-height:1.04;letter-spacing:-.055em;text-transform:uppercase;text-wrap:balance}
+:is(.commercial-home,.service-page) .contact-layout>:first-child>p{max-width:48ch;margin-top:22px;color:rgb(var(--cm-fg-muted));font-size:16px;line-height:1.75}
+:is(.commercial-home,.service-page) .contact-direct{margin-top:22px}
+:is(.commercial-home,.service-page) .contact-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 18px;min-width:0}
+:is(.commercial-home,.service-page) .form-field{display:grid;align-content:start;gap:8px;min-width:0}
+:is(.commercial-home,.service-page) .form-field-full{grid-column:1/-1}
+:is(.commercial-home,.service-page) .form-field label{color:rgb(var(--cm-fg));font:600 13px/1.5 var(--body)}
+:is(.commercial-home,.service-page) .form-field :is(input,select,textarea){display:block;width:100%;min-width:0;min-height:52px;margin:0;padding:13px 14px;border:1px solid rgb(var(--cm-fg-dim) / .85);border-radius:6px;background:rgb(var(--cm-stage));color:rgb(var(--cm-fg));font:400 16px/1.5 var(--body);transition:border-color var(--cm-dur-micro) var(--cm-ease-out)}
+:is(.commercial-home,.service-page) .form-field textarea{min-height:146px;resize:vertical}
+:is(.commercial-home,.service-page) .form-field :is(input,textarea)::placeholder{color:rgb(var(--cm-fg-dim));opacity:1}
+:is(.commercial-home,.service-page) .form-field :is(input,select,textarea):focus-visible{outline:2px solid rgb(var(--cm-focus));outline-offset:3px;border-color:rgb(var(--cm-focus))}
+:is(.commercial-home,.service-page) .form-field [aria-invalid='true']{border-color:rgb(var(--cm-danger))}
+:is(.commercial-home,.service-page) .field-error{display:block;color:rgb(var(--cm-danger));font:500 13px/1.5 var(--body)}
+:is(.commercial-home,.service-page) .field-error:empty{display:none}
+:is(.commercial-home,.service-page) .form-errors{grid-column:1/-1;padding:14px 16px;border-left:3px solid rgb(var(--cm-danger));color:rgb(var(--cm-fg));font-size:14px;line-height:1.6}
+:is(.commercial-home,.service-page) .form-errors ul{margin:8px 0 0;padding-left:20px}
+:is(.commercial-home,.service-page) .contact-submit{grid-column:1/-1;justify-self:start;min-height:56px;font:600 13px/1.4 var(--body)}
+:is(.commercial-home,.service-page) .contact-submit:disabled{cursor:wait;opacity:.55;transform:none;box-shadow:none}
+:is(.commercial-home,.service-page) :is(.form-note,.contact-status){grid-column:1/-1;margin:0;color:rgb(var(--cm-fg-muted));font-size:13px;line-height:1.7}
+:is(.commercial-home,.service-page) .contact-status:empty{display:none}
+:is(.commercial-home,.service-page) .data-notice{grid-column:1/-1;color:rgb(var(--cm-fg-muted));font-size:13px;line-height:1.7}
+:is(.commercial-home,.service-page) .data-notice summary{width:fit-content;min-height:44px;padding-block:10px;color:rgb(var(--cm-fg));font-weight:600;cursor:pointer}
+:is(.commercial-home,.service-page) .data-notice p{margin-top:6px;font-size:13px;line-height:1.7}
+:is(.commercial-home,.service-page) .contact-preview{grid-column:1/-1;display:grid;justify-items:start;gap:16px;min-width:0;max-width:100%;padding:24px;border:1px solid var(--line);border-radius:10px;background:rgb(var(--cm-surface-1));color:rgb(var(--cm-fg))}
+:is(.commercial-home,.service-page) .contact-preview h3{font-size:24px;font-weight:800;line-height:1.15;letter-spacing:-.04em}
+:is(.commercial-home,.service-page) .contact-preview pre{max-width:100%;margin:0;white-space:pre-wrap;overflow-wrap:anywhere;color:rgb(var(--cm-fg-2));font:400 14px/1.7 var(--body)}
+:is(.commercial-home,.service-page) .contact-preview .pill{min-height:52px;font-size:13px}
+
+.commercial-home .project-card-authorial{grid-column:1/-1}
+.commercial-home .project-media-authorial{display:flex;align-items:center;justify-content:center;gap:clamp(20px,4vw,60px);padding:30px;aspect-ratio:3/1;background:rgb(var(--cm-surface-2))}
+.commercial-home .project-media-authorial>img{width:clamp(48px,7vw,90px);height:auto}
+.commercial-home .project-media-authorial>span{font:900 clamp(28px,5vw,66px)/.95 var(--display);letter-spacing:-.06em}
+
+/* Service pages share the public shell without requiring the home hero or offers. */
+.service-page .service-hero{padding-top:calc(var(--header-height) + 54px);padding-bottom:72px}
+.service-page .service-hero .section-meta{margin-bottom:34px;text-align:left}
+.service-page .service-title{max-width:14em;font-size:clamp(44px,6.2vw,92px);font-weight:900;line-height:1.01;letter-spacing:-.065em;text-transform:uppercase;text-wrap:balance}
+.service-page .service-intro{max-width:780px;margin-top:28px;color:rgb(var(--cm-fg-2));font-size:18px;line-height:1.7}
+.service-page .service-intro p+p{margin-top:14px}
+.service-page .service-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin-top:28px}
+.service-page .service-actions .pill{min-height:54px;font-size:13px;line-height:1.4}
+.service-page .service-section{padding-block:84px;border-top:1px solid var(--line)}
+.service-page .service-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(40px,6vw,84px);align-items:start}
+.service-page .service-copy{display:grid;align-content:start;gap:18px;min-width:0}
+.service-page .service-layout h2,.service-page .service-section>.container>h2{max-width:14em;font-size:clamp(30px,3.5vw,50px);font-weight:900;line-height:1.08;letter-spacing:-.05em;text-transform:uppercase}
+.service-page .service-copy p,.service-page .service-columns p,.service-page .service-case p{color:rgb(var(--cm-fg-muted));font-size:16px;line-height:1.75}
+.service-page .service-list{display:grid;gap:12px;margin:0;padding-left:20px;color:rgb(var(--cm-fg-2));font-size:16px;line-height:1.7}
+.service-page .service-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 44px;margin-top:32px}
+.service-page .service-columns>article{min-width:0}
+.service-page .service-columns h3{margin-bottom:13px;font-size:clamp(23px,2.5vw,32px);font-weight:800;line-height:1.15;letter-spacing:-.045em}
+.service-page .service-columns .service-list{margin-top:16px}
+.service-page .service-case{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:36px;align-items:start;min-width:0;margin-top:32px}
+.service-page .service-case img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:8px}
+.service-page .service-case>div{display:grid;align-content:start;justify-items:start;gap:16px;min-width:0}
+.service-page .service-case h3{font-size:clamp(24px,2.5vw,34px);font-weight:800;line-height:1.1;letter-spacing:-.045em}
+.service-page .service-columns .service-case{grid-template-columns:minmax(0,1fr);margin-top:0}
+.service-page .service-contact{padding-block:88px;border-top:1px solid var(--line)}
+.service-page .service-contact h2{max-width:14em;font-size:clamp(36px,4.8vw,68px);font-weight:900;line-height:1.04;letter-spacing:-.055em;text-transform:uppercase}
+.service-page .service-contact p{max-width:760px;margin-top:24px;color:rgb(var(--cm-fg-muted));font-size:16px;line-height:1.75}
+.service-page .service-contact .pill{margin-top:26px;min-height:54px;font-size:13px;line-height:1.4}
+
+@media(max-width:1100px){
+  :is(.commercial-home,.service-page) .header-inner{gap:20px}
+  :is(.commercial-home,.service-page) .nav-desktop a{font-size:11px}
+  :is(.commercial-home,.service-page) .process-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 34px}
+  .commercial-home .hero-section .hero-word-first,.commercial-home .hero-section .hero-word-second{font-size:calc(5.8vw - 2px)}
+}
+@media(max-width:999px){
+  .commercial-home .hero-section .hero-bottom{grid-template-columns:minmax(0,1fr);gap:22px;padding-top:30px}
+  .commercial-home .hero-section .hero-intro{max-width:660px}
+  :is(.commercial-home,.service-page) .faq-layout{grid-template-columns:minmax(0,1fr);gap:32px}
+  :is(.commercial-home,.service-page) .contact-layout{grid-template-columns:minmax(0,1fr);gap:36px}
+  :is(.commercial-home,.service-page) .contact-heading{max-width:17em;font-size:clamp(36px,5.5vw,52px)}
+  :is(.commercial-home,.service-page) .contact-layout>:first-child>p{max-width:62ch}
+  .service-page .service-layout{grid-template-columns:minmax(0,1fr);gap:30px}
+  .service-page .service-hero{padding-top:calc(var(--header-height) + 44px);padding-bottom:60px}
+  .service-page .service-title{font-size:clamp(42px,7vw,68px)}
+  .service-page .service-section,.service-page .service-contact{padding-block:72px}
+}
+@media(max-width:650px){
+  .commercial-home .hero-section .section-meta{margin-bottom:27px;font-size:11px;line-height:1.6;letter-spacing:.06em}
+  .commercial-home .hero-section .hero-word-first,.commercial-home .hero-section .hero-word-second{font-size:calc(9.3vw - 2px);letter-spacing:-.06em}
+  .commercial-home .hero-section .hero-intro p{font-size:15px;line-height:1.7}
+  .commercial-home .hero-section .hero-cta-group .pill{width:100%;min-height:50px;padding:14px 17px;font-size:12px}
+  .commercial-home .hero-signature{margin-top:19px;font-size:14px}
+  :is(.commercial-home,.service-page) .process-steps{grid-template-columns:minmax(0,1fr);gap:25px;margin-top:30px}
+  :is(.commercial-home,.service-page) .process-steps h3{margin:13px 0 10px;font-size:25px}
+  :is(.commercial-home,.service-page) .process-steps p{font-size:15px}
+  :is(.commercial-home,.service-page) .scope-note{font-size:13px;margin-top:25px}
+  .commercial-home .process-section .display{font-size:10vw}
+  :is(.commercial-home,.service-page) .faq-layout>.display,:is(.commercial-home,.service-page) .faq-layout>div>.display{font-size:10vw}
+  :is(.commercial-home,.service-page) .faq-list summary{min-height:70px;font-size:15px;gap:18px}
+  :is(.commercial-home,.service-page) .faq-list details p{font-size:14px;line-height:1.75}
+  :is(.commercial-home,.service-page) .contact-layout{gap:30px}
+  :is(.commercial-home,.service-page) .contact-heading{font-size:10.1vw}
+  :is(.commercial-home,.service-page) .contact-layout>:first-child>p{font-size:15px;margin-top:20px}
+  :is(.commercial-home,.service-page) .contact-form{grid-template-columns:minmax(0,1fr);gap:19px}
+  :is(.commercial-home,.service-page) .contact-submit{width:100%;min-height:54px;padding:15px 18px}
+  :is(.commercial-home,.service-page) .contact-preview{padding:20px}
+  :is(.commercial-home,.service-page) .contact-preview h3{font-size:23px}
+  :is(.commercial-home,.service-page) .contact-preview .pill{width:100%;font-size:12px}
+  :is(.commercial-home,.service-page) .case-facts dd{font-size:14px}
+  .service-page .service-hero{padding-top:calc(var(--header-height) + 32px);padding-bottom:52px}
+  .service-page .service-hero .section-meta{margin-bottom:26px;line-height:1.6;letter-spacing:.06em}
+  .service-page .service-title{font-size:clamp(35px,10vw,58px);line-height:1.04;letter-spacing:-.055em}
+  .service-page .service-intro{margin-top:23px;font-size:16px;line-height:1.75}
+  .service-page .service-actions{align-items:stretch;flex-direction:column;gap:10px;margin-top:25px}
+  .service-page .service-actions .pill{width:100%;min-height:50px;font-size:12px}
+  .service-page .service-section,.service-page .service-contact{padding-block:60px}
+  .service-page .service-layout h2,.service-page .service-section>.container>h2{font-size:9vw}
+  .service-page .service-columns{grid-template-columns:minmax(0,1fr);gap:28px;margin-top:26px}
+  .service-page .service-columns h3{font-size:25px}
+  .service-page .service-copy p,.service-page .service-columns p,.service-page .service-case p{font-size:15px}
+  .service-page .service-list{font-size:15px;gap:10px}
+  .service-page .service-case{grid-template-columns:minmax(0,1fr);gap:23px;margin-top:26px}
+  .service-page .service-case h3{font-size:27px}
+  .service-page .service-contact h2{font-size:10vw}
+  .service-page .service-contact p{font-size:15px;margin-top:20px}
+  .service-page .service-contact .pill{width:100%;min-height:50px;font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  :is(.commercial-home,.service-page) .form-field :is(input,select,textarea){transition:none}
+}
