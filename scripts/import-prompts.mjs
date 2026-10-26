@@ -73,8 +73,13 @@ if (!Array.isArray(allPrompts) || allPrompts.length === 0) {
     console.log("\nNenhum novo prompt pendente. O catálogo local já está 100% sincronizado com o Supabase!");
   } else {
     catalog.items.push(...toAdd);
-    // Ordena por data de criação descendente
-    catalog.items.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    // Ordena mantendo Movimentos de Câmera sempre no final, e desempatando por data de criação descendente
+    catalog.items.sort((a, b) => {
+      const aIsCam = a.category === "Movimentos de Câmera";
+      const bIsCam = b.category === "Movimentos de Câmera";
+      if (aIsCam !== bIsCam) return aIsCam ? 1 : -1;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
     catalog.syncedAt = new Date().toISOString();
 
     fs.writeFileSync(catalogPath, JSON.stringify(catalog));

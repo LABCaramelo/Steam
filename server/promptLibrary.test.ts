@@ -102,3 +102,47 @@ test("anonymous and non-owning callers cannot read catalog or texts and never ca
     assert.ok(nonOwner.calls.every((c) => !c.url.includes("get_caramelo_prompt_copy")));
   }
 });
+
+
+test("prompt catalog places Movimentos de Câmera at the very end of the items list", () => {
+  const camIndices = catalog.items
+    .map((item, idx) => ({ category: item.category, idx }))
+    .filter((entry) => entry.category === "Movimentos de Câmera")
+    .map((entry) => entry.idx);
+
+  assert.ok(camIndices.length > 0, "should have camera movement items");
+  const firstCamIndex = camIndices[0];
+  const lastCamIndex = camIndices[camIndices.length - 1];
+
+  // All camera movements must be contiguous at the end of the catalog
+  assert.equal(lastCamIndex, catalog.items.length - 1);
+  assert.equal(firstCamIndex, catalog.items.length - camIndices.length);
+});
+
+test("PromptLibraryControls.compare orders Movimentos de Câmera after other categories", async () => {
+  const fs = await import("node:fs");
+  const path = await import("node:path");
+  const filePath = path.resolve("public/tools/prompt-library/assets/js/prompt-library-controls.js");
+  const code = fs.readFileSync(filePath, "utf8");
+  const fn = new Function("module", "exports", "globalThis", code);
+  const m = { exports: {} as Record<string, any> };
+  fn(m, m.exports, globalThis);
+  const { compare } = m.exports;
+
+  const camA = { id: "cam-01", title: "Plano Estático", category: "Movimentos de Câmera", created_at: "2026-10-26T14:00:00Z", verified_count: 0 };
+  const camB = { id: "cam-02", title: "Pan Right", category: "Movimentos de Câmera", created_at: "2026-10-26T14:05:00Z", verified_count: 10 };
+  const saas = { id: "saas-01", title: "Dashboard Pro", category: "SaaS", created_at: "2026-09-22T00:00:00Z", verified_count: 0 };
+  const hero = { id: "hero-01", title: "Hero Bold", category: "Hero Sections", created_at: "2026-10-20T00:00:00Z", verified_count: 2 };
+
+  // Across all order modes, camera prompts are placed after non-camera prompts
+  for (const order of ["popular", "recent", "title"]) {
+    assert.ok(compare(saas, camA, order) < 0, `SaaS should come before camera in ${order}`);
+    assert.ok(compare(camA, saas, order) > 0, `Camera should come after SaaS in ${order}`);
+    assert.ok(compare(hero, camB, order) < 0, `Hero should come before camera in ${order}`);
+    assert.ok(compare(camB, hero, order) > 0, `Camera should come after Hero in ${order}`);
+  }
+
+  // When both are camera movements, normal ordering criteria apply
+  assert.ok(compare(camB, camA, "popular") < 0, "camB with higher verified_count comes first in popular");
+  assert.ok(compare(camB, camA, "title") < 0, "camB (Pan Right) comes before camA (Plano Estático) alphabetically by title");
+});

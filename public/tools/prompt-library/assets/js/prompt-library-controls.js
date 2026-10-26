@@ -5,6 +5,9 @@
 })(typeof window === 'object' ? window : globalThis, () => {
   const count = value => Number.isFinite(Number(value)) ? Math.max(0, Number(value)) : 0;
   function compare(a, b, order) {
+    const aIsCamera = a && a.category === 'Movimentos de Câmera';
+    const bIsCamera = b && b.category === 'Movimentos de Câmera';
+    if (aIsCamera !== bIsCamera) return aIsCamera ? 1 : -1;
     if (order === 'title') return a.title.localeCompare(b.title, 'pt-BR') || a.id.localeCompare(b.id);
     if (order === 'popular') {
       const difference = count(b.verified_count) - count(a.verified_count);

@@ -289,7 +289,12 @@
         const category = item.category || 'Outros';
         return { ...item, category, tags, search: normalize([item.title, category, item.type, item.author, ...tags].join(' ')) };
       });
-      const categories = [...new Set(state.items.map(item => item.category))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+      const categories = [...new Set(state.items.map(item => item.category))]
+        .filter(category => category !== 'Movimentos de Câmera')
+        .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+      if (state.items.some(item => item.category === 'Movimentos de Câmera')) {
+        categories.push('Movimentos de Câmera');
+      }
       categoryControl.setOptions([{ value: '', label: 'Todas as categorias' }, ...categories.map(category => ({ value: category, label: category }))]);
       updateFavoriteCount();
       render();
