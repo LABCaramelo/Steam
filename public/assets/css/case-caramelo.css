@@ -1444,3 +1444,110 @@ body.cm-case-viewer-active {
     min-width: 100px;
   }
 }
+
+/* --------------------------------------------------------------------------
+   5. CONTATO DIRETO EXCLUSIVO VIA WHATSAPP (#contato)
+   -------------------------------------------------------------------------- */
+
+.cm-whatsapp-card {
+  background: linear-gradient(145deg, #181822 0%, #15151b 100%);
+  border: 1px solid rgba(255, 244, 232, 0.14);
+  border-radius: 14px;
+  padding: clamp(28px, 4vw, 44px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 244, 232, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.cm-whatsapp-card:hover {
+  border-color: rgba(37, 211, 102, 0.4);
+}
+
+.cm-whatsapp-card::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(37, 211, 102, 0.18) 0%, rgba(255, 112, 26, 0.08) 50%, transparent 70%);
+  pointer-events: none;
+}
+
+.cm-whatsapp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cm-whatsapp-badge {
+  font-family: var(--body, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--orange, #FF701A);
+  background: rgba(255, 112, 26, 0.12);
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 112, 26, 0.25);
+}
+
+.cm-whatsapp-card h3 {
+  font-family: var(--display, sans-serif);
+  font-size: clamp(24px, 2.5vw, 34px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+  color: var(--cream, #FFF4E8);
+  margin: 0;
+}
+
+.cm-whatsapp-card p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgb(var(--cm-fg-muted, 185 180 175));
+  margin: 0;
+}
+
+.cm-whatsapp-number-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: #101014;
+  border: 1px solid rgba(255, 244, 232, 0.12);
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.cm-whatsapp-number-box svg {
+  color: #25D366;
+  flex-shrink: 0;
+}
+
+.cm-whatsapp-number-box strong {
+  font-family: var(--display, sans-serif);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--cream, #FFF4E8);
+}
+
+.cm-whatsapp-card .pill {
+  width: 100%;
+  justify-content: center;
+  min-height: 56px;
+  font-size: 14px;
+}
+
+.cm-whatsapp-note {
+  font-size: 17px;
+  color: var(--cream, #FFF4E8);
+  margin-top: 6px;
+}
