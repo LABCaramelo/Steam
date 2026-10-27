@@ -6,9 +6,11 @@ function configureOffer() {
   document.querySelector('[data-format]').textContent = workshop.format || 'A confirmar';
   document.querySelector('[data-hours]').textContent = workshop.dailyHours || 'A confirmar';
   const link = document.querySelector('[data-enrollment]');
-  link.href = '/?servico=outro&interesse=workshop#contato';
+  link.href = 'https://wa.me/5531985869015?text=Ol%C3%A1%21%20Gostaria%20de%20conversar%20sobre%20o%20workshop%20Cria%C3%A7%C3%A3o%20de%20Sites%20Imersivos.';
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
   link.querySelector('[data-enrollment-label]').textContent = 'Conversar sobre o workshop';
-  document.querySelector('[data-enrollment-note]').textContent = 'Você será encaminhado ao contato do Estúdio para conversar sobre o workshop e consultar os detalhes da turma.';
+  document.querySelector('[data-enrollment-note]').textContent = 'Você será encaminhado diretamente ao WhatsApp do Estúdio para conversar sobre o workshop e consultar os detalhes da turma.';
 }
 
 function initialize() {
