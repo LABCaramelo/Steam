@@ -78,8 +78,7 @@ if (!Array.isArray(allPrompts) || allPrompts.length === 0) {
       const category = item.category || "";
       const type = item.type || "";
       const id = item.id || "";
-      if (category === "Movimentos de Câmera" || type === "camera" || id.startsWith("cam-")) return 5;
-      if (category === "Cofre Pessoal" || id.startsWith("vlt-")) return 4;
+      if (category === "Movimentos de Câmera" || type === "camera" || id.startsWith("cam-")) return 4;
       if (type === "motion" || id.startsWith("cui-") || id.startsWith("amix-")) return 3;
       if (category === "Landing Pages" || category === "Hero Sections" || category === "Componentes UI") return 1;
       return 2;

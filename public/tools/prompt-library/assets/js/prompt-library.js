@@ -291,7 +291,7 @@
       });
       const allCats = [...new Set(state.items.map(item => item.category))];
       const topCats = ['Landing Pages', 'Hero Sections', 'Componentes UI'];
-      const endCats = ['Cofre Pessoal', 'Movimentos de Câmera'];
+      const endCats = ['Movimentos de Câmera'];
       const middleCats = allCats
         .filter(c => !topCats.includes(c) && !endCats.includes(c))
         .sort((a, b) => a.localeCompare(b, 'pt-BR'));

@@ -119,7 +119,7 @@ test("prompt catalog places Movimentos de Câmera at the very end of the items l
   assert.equal(firstCamIndex, catalog.items.length - camIndices.length);
 });
 
-test("PromptLibraryControls.compare orders Web essentials ahead of niches, motion, vault and camera", async () => {
+test("PromptLibraryControls.compare orders Web essentials ahead of niches, motion and camera", async () => {
   const fs = await import("node:fs");
   const path = await import("node:path");
   const filePath = path.resolve("public/tools/prompt-library/assets/js/prompt-library-controls.js");
@@ -134,25 +134,22 @@ test("PromptLibraryControls.compare orders Web essentials ahead of niches, motio
   const ui = { id: "ui-01", title: "Navbar Minimal", category: "Componentes UI", created_at: "2026-10-20T00:00:00Z", verified_count: 0 };
   const saas = { id: "saas-01", title: "Dashboard Pro", category: "SaaS", created_at: "2026-10-25T00:00:00Z", verified_count: 0 };
   const motion = { id: "cui-01", title: "Liquid Shaders", category: "Design & Criativo", type: "motion", created_at: "2026-10-26T00:00:00Z", verified_count: 0 };
-  const vault = { id: "vlt-01", title: "Prompt Criacao Imagem", category: "Cofre Pessoal", created_at: "2026-08-01T00:00:00Z", verified_count: 0 };
   const camera = { id: "cam-01", title: "Plano Estático", category: "Movimentos de Câmera", created_at: "2026-08-02T00:00:00Z", verified_count: 0 };
 
-  // Tier checks (1 to 5)
+  // Tier checks (1 to 4)
   assert.equal(getPriorityTier(landing), 1);
   assert.equal(getPriorityTier(hero), 1);
   assert.equal(getPriorityTier(ui), 1);
   assert.equal(getPriorityTier(saas), 2);
   assert.equal(getPriorityTier(motion), 3);
-  assert.equal(getPriorityTier(vault), 4);
-  assert.equal(getPriorityTier(camera), 5);
+  assert.equal(getPriorityTier(camera), 4);
 
-  // Across modes, Tier 1 > Tier 2 > Tier 3 > Tier 4 > Tier 5
+  // Across modes, Tier 1 > Tier 2 > Tier 3 > Tier 4
   for (const order of ["popular", "recent", "title"]) {
     assert.ok(compare(landing, saas, order) < 0, `Landing Pages should come before SaaS in ${order}`);
     assert.ok(compare(hero, saas, order) < 0, `Hero Sections should come before SaaS in ${order}`);
     assert.ok(compare(ui, saas, order) < 0, `Componentes UI should come before SaaS in ${order}`);
     assert.ok(compare(saas, motion, order) < 0, `SaaS should come before Motion in ${order}`);
-    assert.ok(compare(motion, vault, order) < 0, `Motion should come before Vault in ${order}`);
-    assert.ok(compare(vault, camera, order) < 0, `Vault should come before Camera in ${order}`);
+    assert.ok(compare(motion, camera, order) < 0, `Motion should come before Camera in ${order}`);
   }
 });
