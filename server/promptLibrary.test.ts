@@ -104,22 +104,14 @@ test("anonymous and non-owning callers cannot read catalog or texts and never ca
 });
 
 
-test("prompt catalog places Movimentos de Câmera at the very end of the items list", () => {
-  const camIndices = catalog.items
-    .map((item, idx) => ({ category: item.category, idx }))
-    .filter((entry) => entry.category === "Movimentos de Câmera")
-    .map((entry) => entry.idx);
-
-  assert.ok(camIndices.length > 0, "should have camera movement items");
-  const firstCamIndex = camIndices[0];
-  const lastCamIndex = camIndices[camIndices.length - 1];
-
-  // All camera movements must be contiguous at the end of the catalog
-  assert.equal(lastCamIndex, catalog.items.length - 1);
-  assert.equal(firstCamIndex, catalog.items.length - camIndices.length);
+test("prompt catalog has no Movimentos de Câmera or camera-typed items", () => {
+  const camItems = catalog.items.filter(
+    (item) => item.category === "Movimentos de Câmera" || item.type === "camera" || item.id.startsWith("cam-")
+  );
+  assert.equal(camItems.length, 0, "Movimentos de Câmera must be completely removed");
 });
 
-test("PromptLibraryControls.compare orders Web essentials ahead of niches, motion and camera", async () => {
+test("PromptLibraryControls.compare orders Web essentials ahead of niches and motion", async () => {
   const fs = await import("node:fs");
   const path = await import("node:path");
   const filePath = path.resolve("public/tools/prompt-library/assets/js/prompt-library-controls.js");
@@ -134,22 +126,19 @@ test("PromptLibraryControls.compare orders Web essentials ahead of niches, motio
   const ui = { id: "ui-01", title: "Navbar Minimal", category: "Componentes UI", created_at: "2026-10-20T00:00:00Z", verified_count: 0 };
   const saas = { id: "saas-01", title: "Dashboard Pro", category: "SaaS", created_at: "2026-10-25T00:00:00Z", verified_count: 0 };
   const motion = { id: "cui-01", title: "Liquid Shaders", category: "Design & Criativo", type: "motion", created_at: "2026-10-26T00:00:00Z", verified_count: 0 };
-  const camera = { id: "cam-01", title: "Plano Estático", category: "Movimentos de Câmera", created_at: "2026-08-02T00:00:00Z", verified_count: 0 };
 
-  // Tier checks (1 to 4)
+  // Tier checks (1 to 3)
   assert.equal(getPriorityTier(landing), 1);
   assert.equal(getPriorityTier(hero), 1);
   assert.equal(getPriorityTier(ui), 1);
   assert.equal(getPriorityTier(saas), 2);
   assert.equal(getPriorityTier(motion), 3);
-  assert.equal(getPriorityTier(camera), 4);
 
-  // Across modes, Tier 1 > Tier 2 > Tier 3 > Tier 4
+  // Across modes, Tier 1 > Tier 2 > Tier 3
   for (const order of ["popular", "recent", "title"]) {
     assert.ok(compare(landing, saas, order) < 0, `Landing Pages should come before SaaS in ${order}`);
     assert.ok(compare(hero, saas, order) < 0, `Hero Sections should come before SaaS in ${order}`);
     assert.ok(compare(ui, saas, order) < 0, `Componentes UI should come before SaaS in ${order}`);
     assert.ok(compare(saas, motion, order) < 0, `SaaS should come before Motion in ${order}`);
-    assert.ok(compare(motion, camera, order) < 0, `Motion should come before Camera in ${order}`);
   }
 });

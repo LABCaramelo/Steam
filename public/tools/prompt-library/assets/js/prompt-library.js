@@ -291,14 +291,12 @@
       });
       const allCats = [...new Set(state.items.map(item => item.category))];
       const topCats = ['Landing Pages', 'Hero Sections', 'Componentes UI'];
-      const endCats = ['Movimentos de Câmera'];
       const middleCats = allCats
-        .filter(c => !topCats.includes(c) && !endCats.includes(c))
+        .filter(c => !topCats.includes(c))
         .sort((a, b) => a.localeCompare(b, 'pt-BR'));
       const categories = [
         ...topCats.filter(c => allCats.includes(c)),
-        ...middleCats,
-        ...endCats.filter(c => allCats.includes(c))
+        ...middleCats
       ];
       categoryControl.setOptions([{ value: '', label: 'Todas as categorias' }, ...categories.map(category => ({ value: category, label: category }))]);
       updateFavoriteCount();
