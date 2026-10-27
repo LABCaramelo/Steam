@@ -18,7 +18,8 @@ export function initCinematic() {
     offersStack: '(min-width: 1000px) and (min-height: 650px) and (hover: hover) and (pointer: fine)',
     workDeck: '(min-width: 900px) and (min-height: 520px) and (hover: hover) and (pointer: fine)'
   }, context => {
-    const { wide, fine, reduced, offersStack, workDeck } = context.conditions;
+    const { wide, fine, reduced, offersStack } = context.conditions;
+    const workDeck = context.conditions.workDeck && !document.querySelector('.work-section-compact');
     if (reduced) return;
     const desktop = wide && fine;
     const rise = desktop ? 26 : 18;
@@ -146,7 +147,8 @@ export function initCinematic() {
     // Section titles rise line by line; supporting copy starts legible and only softens in.
     [['offers', '#offers-title'], ['work', '#work-title'], ['archive', '#archive-title'],
       ['contact', '#community-title'], ['maker', '#maker-title'], ['closing', '#closing-title'],
-      ['doors', '#doors-title'], ['faq', '#faq-title']]
+      ['doors', '#doors-title'], ['faq', '#faq-title'], ['process', '#process-title'],
+      ['commercial-contact', '#contact-heading']]
       .forEach(([id, selector]) => typeEntrance(`${id}-type`, select(selector)));
     [['offers-intro', '.offers-intro'], ['work-copy', '.work-intro-copy'], ['archive-copy', '.archive-copy'],
       ['archive-steps', '.archive-steps'], ['contact-close', '.contact-bottom'], ['maker-hello', '.maker-hello'],

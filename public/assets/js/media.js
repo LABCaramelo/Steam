@@ -1,9 +1,10 @@
 export function initVideos() {
   const videos = [...document.querySelectorAll('video')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const motionOff = new URLSearchParams(location.search).get('motion') === 'off';
   const work = document.querySelector('.work-section .work-stage');
   const workToggle = document.getElementById('work-play-toggle');
-  let workPaused = reduced.matches;
+  let workPaused = reduced.matches || motionOff;
   const events = new AbortController();
   const visible = new Map();
   const requested = new Map();
@@ -17,7 +18,7 @@ export function initVideos() {
   }
 
   function update() {
-    const candidates = !enabled || document.hidden ? [] : videos.filter(video => {
+    const candidates = !enabled || document.hidden || motionOff ? [] : videos.filter(video => {
       const card = video.closest('.work-section .project-card');
       if (card) {
         if (workPaused || (work?.dataset.workMode === 'scrub' && card.dataset.workActive !== 'true')) return false;
@@ -50,7 +51,7 @@ export function initVideos() {
     workToggle.setAttribute('aria-label', workPaused ? 'Reproduzir prévias dos projetos' : 'Pausar prévias dos projetos');
   }
   if (workToggle) {
-    workToggle.hidden = false;
+    workToggle.hidden = motionOff;
     updateWorkToggle();
     workToggle.addEventListener('click', () => {
       workPaused = !workPaused;

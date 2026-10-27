@@ -6,6 +6,7 @@ import { initWork } from './work.js';
 import { initMaker } from './maker.js';
 import { initOffers } from './offers.js';
 import { initPointerTrail } from './pointer-trail.js';
+import { initJourney } from './journey.js';
 
 // The editorial state survives motion breakpoint and preference changes.
 const experience = createExperience();
@@ -16,8 +17,9 @@ initVideos();
 initCinematic();
 initWork(() => motion.lenis);
 initMaker(() => motion.lenis);
-initOffers();
+initOffers(() => motion.lenis);
 initPointerTrail();
+initJourney(() => motion.lenis);
 
 const root = document.documentElement;
 const updateVisibility = () => root.classList.toggle('page-hidden', document.hidden);

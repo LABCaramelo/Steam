@@ -114,7 +114,7 @@ export function initMaker(getLenis = () => null) {
   buttons.forEach((button, index) => button.addEventListener('click', () => {
     endTour();
     const trigger = timeline?.scrollTrigger;
-    if (mode === 'scrub' && trigger) {
+    if ((mode === 'scrub' || mode === 'guided') && trigger) {
       const top = trigger.start + (trigger.end - trigger.start) * ((index + .5) / buttons.length);
       const lenis = getLenis();
       if (lenis) lenis.scrollTo(top, { duration: .75 });
@@ -134,7 +134,24 @@ export function initMaker(getLenis = () => null) {
     }, context => {
       const { wide, fine, reduced } = context.conditions;
       // The full biography needs document flow; discipline controls keep working in flow mode.
-      if (!wide || !fine || reduced || section.classList.contains('maker-section-expanded')) return;
+      if (!wide || !fine || reduced) return;
+      if (section.classList.contains('maker-section-expanded')) {
+        mode = 'guided';
+        endTour();
+        // The biography stays in normal flow; scroll conducts the existing artwork.
+        const sync = () => {
+          if (timeline) selectDiscipline(Math.min(6, Math.floor(timeline.progress() * 7)));
+        };
+        timeline = gsap.timeline({ onUpdate: sync, scrollTrigger: {
+          id: 'maker-guided', trigger: section, start: 'top 65%', end: 'bottom 60%',
+          scrub: .35, invalidateOnRefresh: true, onRefresh: sync
+        } });
+        timeline.to({ progress: 0 }, { progress: 1, duration: 1, ease: 'none' });
+        timeline.fromTo(section.querySelector('.maker-direction-fan'), { rotationZ: -14 }, {
+          rotationZ: 14, duration: 1, ease: 'none'
+        }, 0);
+        return () => { timeline = null; mode = 'flow'; };
+      }
       mode = 'scrub';
       section.dataset.makerMode = mode;
       const sheet = section.querySelector('.maker-scroll-shell');
