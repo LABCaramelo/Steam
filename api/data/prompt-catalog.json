@@ -1,68 +1,93 @@
 {
-  "syncedAt": "2026-10-26T15:53:24.035Z",
+  "syncedAt": "2026-10-27T14:29:09.288Z",
   "items": [
     {
-      "id": "ms-vision-reveal",
-      "slug": "vision-reveal",
-      "title": "Vision Reveal",
-      "category": "Hero Sections",
-      "type": "hero",
+      "id": "ms-offline-footer",
+      "slug": "offline-footer",
+      "title": "Offline Footer",
+      "category": "Componentes UI",
+      "type": "footer",
       "tags": [
-        "hero",
-        "Hero"
+        "footer",
+        "Footer",
+        "Componentes UI",
+        "offline footer"
       ],
-      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-vision-reveal.jpg",
-      "preview_url": "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/hero%20sections/newpsotArea.mp4",
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-offline-footer.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-offline-footer.mp4",
       "free": true,
       "has_full_prompt": true,
-      "created_at": "2026-09-24T21:06:29.404947+00:00",
+      "created_at": "2026-10-27T04:53:38.388091+00:00",
       "author": "MotionSites",
-      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-vision-reveal.mp4",
-      "animated_preview_bytes": 775693,
-      "animated_preview_source": "cloudflare-r2",
-      "verified_count": 1
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-offline-footer.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
     },
     {
-      "id": "ms-innovation-landing",
-      "slug": "innovation-landing",
-      "title": "Innovation",
+      "id": "ms-wild-pill-hero",
+      "slug": "wild-pill-hero",
+      "title": "Wild Pill Hero",
       "category": "Landing Pages",
       "type": "hero",
       "tags": [
         "hero",
-        "Landing Page"
+        "Travel",
+        "Landing Pages",
+        "wild pill hero"
       ],
-      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-innovation-landing.jpg",
-      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-innovation-landing.mp4",
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-wild-pill-hero.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-wild-pill-hero.mp4",
       "free": true,
       "has_full_prompt": true,
-      "created_at": "2026-09-22T20:12:01.733083+00:00",
+      "created_at": "2026-10-27T02:56:53.370573+00:00",
       "author": "MotionSites",
-      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-innovation-landing.mp4",
-      "animated_preview_bytes": 652710,
-      "animated_preview_source": "cloudflare-r2",
-      "verified_count": 1
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-wild-pill-hero.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
     },
     {
-      "id": "ms-sentinel-ai-hero",
-      "slug": "sentinel-ai-hero",
-      "title": "Sentinel AI",
-      "category": "Hero Sections",
+      "id": "ms-tana-elephant-sections",
+      "slug": "tana-elephant-sections",
+      "title": "Tana Elephant Sections",
+      "category": "Landing Pages",
       "type": "hero",
       "tags": [
         "hero",
-        "Hero Section"
+        "Travel",
+        "Landing Pages",
+        "tana elephant sections"
       ],
-      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-sentinel-ai-hero.jpg",
-      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-sentinel-ai-hero.mp4",
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-tana-elephant-sections.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-tana-elephant-sections.mp4",
       "free": true,
       "has_full_prompt": true,
-      "created_at": "2026-09-22T20:12:01.733083+00:00",
+      "created_at": "2026-10-26T04:27:58.981798+00:00",
       "author": "MotionSites",
-      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-sentinel-ai-hero.mp4",
-      "animated_preview_bytes": 740267,
-      "animated_preview_source": "cloudflare-r2",
-      "verified_count": 1
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-tana-elephant-sections.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-verra-events-hero",
+      "slug": "verra-events-hero",
+      "title": "Verra Events Hero",
+      "category": "Landing Pages",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Community",
+        "Landing Pages",
+        "verra events hero"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-verra-events-hero.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-verra-events-hero.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-10-26T03:52:59.675923+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-verra-events-hero.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
     },
     {
       "id": "ms-shipcraft-footer",
@@ -1182,6 +1207,27 @@
       "verified_count": 0
     },
     {
+      "id": "ms-vision-reveal",
+      "slug": "vision-reveal",
+      "title": "Vision Reveal",
+      "category": "Hero Sections",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Hero"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-vision-reveal.jpg",
+      "preview_url": "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/hero%20sections/newpsotArea.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-09-24T21:06:29.404947+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-vision-reveal.mp4",
+      "animated_preview_bytes": 775693,
+      "animated_preview_source": "cloudflare-r2",
+      "verified_count": 1
+    },
+    {
       "id": "ms-stillmind",
       "slug": "stillmind",
       "title": "Stillmind",
@@ -2233,6 +2279,48 @@
       "verified_count": 0
     },
     {
+      "id": "ms-innovation-landing",
+      "slug": "innovation-landing",
+      "title": "Innovation",
+      "category": "Landing Pages",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Landing Page"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-innovation-landing.jpg",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-innovation-landing.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-09-22T20:12:01.733083+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-innovation-landing.mp4",
+      "animated_preview_bytes": 652710,
+      "animated_preview_source": "cloudflare-r2",
+      "verified_count": 1
+    },
+    {
+      "id": "ms-sentinel-ai-hero",
+      "slug": "sentinel-ai-hero",
+      "title": "Sentinel AI",
+      "category": "Hero Sections",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Hero Section"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-sentinel-ai-hero.jpg",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-sentinel-ai-hero.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-09-22T20:12:01.733083+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-sentinel-ai-hero.mp4",
+      "animated_preview_bytes": 740267,
+      "animated_preview_source": "cloudflare-r2",
+      "verified_count": 1
+    },
+    {
       "id": "ms-portal-hero",
       "slug": "portal-hero",
       "title": "Portal",
@@ -2776,6 +2864,138 @@
       "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-vize-footer.mp4",
       "animated_preview_bytes": 201091,
       "animated_preview_source": "cloudflare-r2",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-orvante-agency",
+      "slug": "orvante-agency",
+      "title": "Orvante Agency",
+      "category": "Agency & Studio",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Agency",
+        "Agency & Studio",
+        "orvante agency"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-orvante-agency.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-orvante-agency.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-10-27T05:44:55.145352+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-orvante-agency.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-velia",
+      "slug": "velia",
+      "title": "Velia",
+      "category": "Design & Criativo",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Editorial",
+        "Design & Criativo",
+        "velia"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-velia.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-velia.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-10-27T02:24:39.683701+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-velia.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-axon",
+      "slug": "axon",
+      "title": "AXON",
+      "category": "Agency & Studio",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Portfolio",
+        "Agency & Studio",
+        "axon"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-axon.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-axon.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-10-27T02:12:51.768173+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-axon.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-facet-glass-hero",
+      "slug": "facet-glass-hero",
+      "title": "Facet Glass Hero",
+      "category": "Design & Criativo",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "3D",
+        "Design & Criativo",
+        "facet glass hero"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-facet-glass-hero.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-facet-glass-hero.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-10-26T05:21:04.285629+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-facet-glass-hero.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-feathers-atlas",
+      "slug": "feathers-atlas",
+      "title": "Feathers Atlas",
+      "category": "Design & Criativo",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "3D",
+        "Design & Criativo",
+        "feathers atlas"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-feathers-atlas.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-feathers-atlas.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-10-26T04:00:31.136733+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-feathers-atlas.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-peculiar-atelier",
+      "slug": "peculiar-atelier",
+      "title": "Peculiar Atelier",
+      "category": "Design & Criativo",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Interactive",
+        "Design & Criativo",
+        "peculiar atelier"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-peculiar-atelier.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-peculiar-atelier.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-10-26T03:59:31.136733+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-peculiar-atelier.mp4",
+      "animated_preview_source": "catalog",
       "verified_count": 0
     },
     {
@@ -9721,6 +9941,28 @@
       "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-securify-hero.mp4",
       "animated_preview_bytes": 1083168,
       "animated_preview_source": "cloudflare-r2",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-custom-spaces",
+      "slug": "custom-spaces",
+      "title": "Custom Spaces",
+      "category": "Design & Criativo",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Design",
+        "Design & Criativo",
+        "custom spaces"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-custom-spaces.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-custom-spaces.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-07-27T08:11:47.400843+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-custom-spaces.mp4",
+      "animated_preview_source": "catalog",
       "verified_count": 0
     },
     {

@@ -93,7 +93,7 @@ if (!Array.isArray(allPrompts) || allPrompts.length === 0) {
     });
     catalog.syncedAt = new Date().toISOString();
 
-    fs.writeFileSync(catalogPath, JSON.stringify(catalog));
+    fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2) + "\n");
     console.log(`\nImportação concluída com sucesso! Total no catálogo: ${catalog.items.length} prompts (+${toAdd.length} adicionados).`);
   }
 }
