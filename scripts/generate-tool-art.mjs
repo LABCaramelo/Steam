@@ -18,9 +18,34 @@ const tools = [
   { slug: 'academy', name: 'Academy', number: '05', accent: '#FF701A', category: 'FORMAÇÃO / LAB', lines: ['Aprenda.', 'Coloque em ação.'] },
   { slug: 'claquete', name: 'Claquete', number: '06', accent: '#FFD52A', category: 'CINEMA / VÍDEO & IA', lines: ['Do roteiro', 'ao corte final.'] },
   { slug: 'comunidade', name: 'Comunidade', number: '07', accent: '#7657FF', category: 'COMUNICAÇÃO / LAB', lines: ['Voz, canais', 'e conexões.'] },
+  { slug: 'creative-os', name: 'Creative OS', number: '11', accent: '#FF701A', category: 'OPERAÇÕES & ESTRATÉGIA', lines: ['Menos ferramenta.', 'Mais sistema.'] },
 ];
 
 const motif = (slug, color) => {
+  if (slug === 'creative-os') {
+    return `<g transform="translate(10, 15)">
+      <rect x="25" y="30" width="390" height="250" rx="16" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="3"/>
+      <rect x="50" y="55" width="120" height="26" rx="8" fill="${color}" fill-opacity=".2"/>
+      <circle cx="65" cy="68" r="6" fill="${color}"/>
+      <text x="80" y="73" fill="${color}" font-size="12" font-weight="900">WORKSPACE</text>
+      <rect x="50" y="100" width="155" height="70" rx="10" fill="#101014" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="2"/>
+      <rect x="65" y="115" width="70" height="10" rx="5" fill="${color}"/>
+      <rect x="65" y="135" width="120" height="8" rx="4" fill="#FFF4E8" fill-opacity=".5"/>
+      <rect x="65" y="150" width="90" height="8" rx="4" fill="#FFF4E8" fill-opacity=".3"/>
+      <rect x="225" y="100" width="165" height="70" rx="10" fill="#101014" stroke="${color}" stroke-opacity=".4" stroke-width="2"/>
+      <circle cx="245" cy="120" r="8" fill="#25BFFF"/>
+      <text x="262" y="125" fill="#FFF4E8" font-size="12" font-weight="800">APROVAÇÃO</text>
+      <rect x="245" y="140" width="125" height="18" rx="6" fill="${color}"/>
+      <text x="307" y="153" fill="#101014" font-size="11" font-weight="900" text-anchor="middle">APROVADO ✓</text>
+      <rect x="50" y="190" width="340" height="70" rx="10" fill="#101014" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="2"/>
+      <circle cx="75" cy="225" r="14" fill="${color}"/>
+      <path d="M69 225l4 4 8-9" stroke="#101014" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="105" y="215" width="160" height="10" rx="5" fill="#FFF4E8" fill-opacity=".8"/>
+      <rect x="105" y="232" width="100" height="8" rx="4" fill="#FFF4E8" fill-opacity=".4"/>
+      <rect x="290" y="212" width="80" height="26" rx="6" fill="#25BFFF" fill-opacity=".18"/>
+      <text x="330" y="229" fill="#25BFFF" font-size="11" font-weight="800" text-anchor="middle">REVISÃO</text>
+    </g>`;
+  }
   if (slug === 'comunidade') return `<g transform="translate(10, 20)"><rect x="30" y="40" width="380" height="230" rx="16" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="3"/><rect x="60" y="70" width="160" height="24" rx="12" fill="${color}" fill-opacity=".2"/><circle cx="75" cy="82" r="6" fill="${color}"/><text x="92" y="86" fill="${color}" font-size="12" font-weight="800"># lounge-voz</text><g fill="${color}">${[140, 180, 220, 260, 300, 340].map((x, i) => `<rect x="${x}" y="${140 - [20, 45, 70, 35, 55, 15][i]}" width="16" height="${[40, 90, 140, 70, 110, 30][i]}" rx="8"/>`).join('')}</g><circle cx="90" cy="180" r="32" fill="#25BFFF"/><circle cx="90" cy="180" r="14" fill="#101014"/><rect x="50" y="290" width="340" height="60" rx="14" fill="#101014" stroke="${color}" stroke-width="3"/><circle cx="80" cy="320" r="14" fill="${color}"/><rect x="110" y="314" width="180" height="12" rx="6" fill="#FFF4E8" fill-opacity=".7"/></g>`;
   if (slug === 'kanban') return `<g fill="#18181d" stroke="#FFF4E8" stroke-opacity=".2">${[0, 1, 2].map((i) => `<rect x="${i * 148}" y="${i * 12}" width="130" height="320" rx="12"/><rect x="${i * 148 + 14}" y="${i * 12 + 20}" width="64" height="7" rx="3" fill="${color}" stroke="none"/>${[0, 1, 2].slice(0, 3 - i).map((j) => `<rect x="${i * 148 + 12}" y="${i * 12 + 54 + j * 76}" width="106" height="62" rx="7" fill="#FFF4E8" stroke="none"/><path d="M${i * 148 + 24} ${i * 12 + 75 + j * 76}h58m-58 13h38" stroke="#101014" stroke-opacity=".5" stroke-width="4"/>`).join('')}`).join('')}</g>`;
   if (slug === 'prancheta') return `<path d="M30 40H430V350H30Z" fill="#FFF4E8"/><path d="M64 78h332v230H64Z" fill="#101014"/><circle cx="174" cy="195" r="67" fill="${color}"/><path d="m214 260 74-139 74 139Z" fill="#FFF4E8"/><path d="M30 40H430V350H30Z" fill="none" stroke="${color}" stroke-width="4"/>${[[30,40],[430,40],[30,350],[430,350]].map(([x,y]) => `<rect x="${x-7}" y="${y-7}" width="14" height="14" fill="#101014" stroke="${color}" stroke-width="3"/>`).join('')}<path d="m350 285 24 66 11-23 25-8Z" fill="${color}" stroke="#101014" stroke-width="4"/>`;

@@ -82,6 +82,7 @@ export async function clearToolLocalData(notice: ToolReleaseNotice): Promise<voi
       const storage = window[kind];
       for (const key of Object.keys(storage)) if (key.startsWith(prefix)) storage.removeItem(key);
       if (notice.slug === "kanban") storage.removeItem(`lab:kanban:board:${notice.userId}`);
+      if (notice.slug === "creative-os") storage.removeItem(`lab:creative-os:workspace:${notice.userId}`);
     } catch { /* Local restrictions must not undo a successful server-side release. */ }
   }
   if ((notice.slug === "comunidade" || notice.slug === "montagem") && typeof indexedDB !== "undefined") {

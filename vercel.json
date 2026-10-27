@@ -40,7 +40,7 @@
       "destination": "/aula-head/index.html"
     },
     {
-      "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|academy|claquete|comunidade|admin|gravador|montagem)",
+      "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|academy|claquete|comunidade|admin|gravador|montagem|creative-os)",
       "destination": "/tools/:slug/index.html"
     },
     {
