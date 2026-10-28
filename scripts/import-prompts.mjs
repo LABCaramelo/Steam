@@ -75,12 +75,10 @@ if (!Array.isArray(allPrompts) || allPrompts.length === 0) {
     catalog.items.push(...toAdd);
     function getPriorityTier(item) {
       if (!item) return 99;
-      const category = item.category || "";
       const type = item.type || "";
       const id = item.id || "";
-      if (type === "motion" || id.startsWith("cui-") || id.startsWith("amix-")) return 3;
-      if (category === "Landing Pages" || category === "Hero Sections" || category === "Componentes UI") return 1;
-      return 2;
+      if (type === "motion" || id.startsWith("cui-") || id.startsWith("amix-")) return 2;
+      return 1;
     }
 
     catalog.items.sort((a, b) => {

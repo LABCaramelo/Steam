@@ -111,7 +111,7 @@ test("prompt catalog has no Movimentos de Câmera or camera-typed items", () => 
   assert.equal(camItems.length, 0, "Movimentos de Câmera must be completely removed");
 });
 
-test("PromptLibraryControls.compare orders Web essentials ahead of niches and motion", async () => {
+test("PromptLibraryControls.compare orders Web prompts ahead of motion", async () => {
   const fs = await import("node:fs");
   const path = await import("node:path");
   const filePath = path.resolve("public/tools/prompt-library/assets/js/prompt-library-controls.js");
@@ -124,21 +124,29 @@ test("PromptLibraryControls.compare orders Web essentials ahead of niches and mo
   const landing = { id: "lp-01", title: "Landing Page Alpha", category: "Landing Pages", created_at: "2026-10-20T00:00:00Z", verified_count: 0 };
   const hero = { id: "hero-01", title: "Hero Bold", category: "Hero Sections", created_at: "2026-10-20T00:00:00Z", verified_count: 0 };
   const ui = { id: "ui-01", title: "Navbar Minimal", category: "Componentes UI", created_at: "2026-10-20T00:00:00Z", verified_count: 0 };
+  const design = { id: "oda-01", title: "Oda Nobunaga Hero", category: "Design & Criativo", type: "hero", created_at: "2026-10-28T00:00:00Z", verified_count: 0 };
+  const ai = { id: "nova-01", title: "Nova Agent Hero", category: "AI & Tech", type: "hero", created_at: "2026-10-28T00:00:00Z", verified_count: 0 };
   const saas = { id: "saas-01", title: "Dashboard Pro", category: "SaaS", created_at: "2026-10-25T00:00:00Z", verified_count: 0 };
   const motion = { id: "cui-01", title: "Liquid Shaders", category: "Design & Criativo", type: "motion", created_at: "2026-10-26T00:00:00Z", verified_count: 0 };
 
-  // Tier checks (1 to 3)
+  // All web prompts are Tier 1; Motion is Tier 2
   assert.equal(getPriorityTier(landing), 1);
   assert.equal(getPriorityTier(hero), 1);
   assert.equal(getPriorityTier(ui), 1);
-  assert.equal(getPriorityTier(saas), 2);
-  assert.equal(getPriorityTier(motion), 3);
+  assert.equal(getPriorityTier(design), 1);
+  assert.equal(getPriorityTier(ai), 1);
+  assert.equal(getPriorityTier(saas), 1);
+  assert.equal(getPriorityTier(motion), 2);
 
-  // Across modes, Tier 1 > Tier 2 > Tier 3
+  // Across modes, Tier 1 > Tier 2
   for (const order of ["popular", "recent", "title"]) {
-    assert.ok(compare(landing, saas, order) < 0, `Landing Pages should come before SaaS in ${order}`);
-    assert.ok(compare(hero, saas, order) < 0, `Hero Sections should come before SaaS in ${order}`);
-    assert.ok(compare(ui, saas, order) < 0, `Componentes UI should come before SaaS in ${order}`);
+    assert.ok(compare(landing, motion, order) < 0, `Landing Pages should come before Motion in ${order}`);
+    assert.ok(compare(design, motion, order) < 0, `Design & Criativo should come before Motion in ${order}`);
+    assert.ok(compare(ai, motion, order) < 0, `AI & Tech should come before Motion in ${order}`);
     assert.ok(compare(saas, motion, order) < 0, `SaaS should come before Motion in ${order}`);
   }
+
+  // Inside Tier 1, recency order respects creation date
+  assert.ok(compare(design, landing, "recent") < 0, "Newer prompt (Oda) should come before older prompt in recent order");
+  assert.ok(compare(ai, landing, "recent") < 0, "Newer prompt (Nova) should come before older prompt in recent order");
 });
