@@ -112,6 +112,7 @@ export const PRANCHETA_APP = tool(PRANCHETA_APP_ID, "Prancheta", {
 
 export const AUTOMATION_APP = tool(AUTOMATION_APP_ID, "Trama", {
   slug: "automation",
+  available: true,
   stage: "beta",
   launchPath: `/library/app/${AUTOMATION_APP_ID}/open`,
   publicPage: "/tools/automation/index.html",

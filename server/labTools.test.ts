@@ -87,7 +87,7 @@ before(async () => {
 describe("loja e biblioteca", () => {
   test("o catálogo é público e a biblioteca começa vazia", async () => {
     const tools = await as(null, (tx) => rows<{ slug: string; available: boolean }>(tx, "select slug, available from public.lab_tools order by appid"));
-    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" || slug === "prancheta" || slug === "gravador" || slug === "montagem" })));
+    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" || slug === "prancheta" || slug === "gravador" || slug === "montagem" || slug === "automation" })));
     const owned = await as(ALICE, (tx) => rows(tx, "select * from public.user_tools"));
     assert.equal(owned.length, 0);
   });
@@ -102,11 +102,11 @@ describe("loja e biblioteca", () => {
     await db.exec(sql("lab-tools.sql"));
 
     const tools = await as(null, (tx) => rows<{ slug: string; available: boolean }>(tx, "select slug, available from public.lab_tools order by appid"));
-    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" || slug === "prancheta" || slug === "gravador" || slug === "montagem" })));
+    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" || slug === "prancheta" || slug === "gravador" || slug === "montagem" || slug === "automation" })));
     const future = await db.query<{ available: boolean }>("insert into public.lab_tools (slug, appid, name) values ('futura', 99, 'Futura') returning available");
     assert.deepEqual(future.rows, [{ available: false }]);
     await db.exec("delete from public.lab_tools where slug = 'futura'");
-    for (const slug of TOOL_SLUGS.filter((s) => s !== "prompt-library" && s !== "prancheta" && s !== "gravador" && s !== "montagem")) {
+    for (const slug of TOOL_SLUGS.filter((s) => s !== "prompt-library" && s !== "prancheta" && s !== "gravador" && s !== "montagem" && s !== "automation")) {
       assert.match(await rejects(ALICE, "select public.acquire_tool($1)", [slug]), /Em breve/);
     }
     assert.deepEqual(await as(PREVIOUS_OWNER, (tx) => rows(tx, "select * from public.user_tools")), [previous]);

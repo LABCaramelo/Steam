@@ -42,7 +42,7 @@ after(async () => { await db.close(); });
 
 test('Trama preserves catalog availability and protects snapshots with owner RLS and RPC-only writes', async () => {
   const catalog = await db.query<{ name: string; available: boolean }>("select name,available from public.lab_tools where slug='automation'");
-  assert.deepEqual(catalog.rows, [{ name: 'Trama', available: false }]);
+  assert.deepEqual(catalog.rows, [{ name: 'Trama', available: true }]);
   const lease = await acquire(A);
   assert.equal(lease.revision, 0);
   await as(A, tx => tx.query('select public.commit_trama_workspace($1,$2,$3)', [0,lease.lease_token,state]));

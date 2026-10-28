@@ -77,7 +77,7 @@ insert into public.lab_tools (slug, appid, name, available) values
   ('prompt-library', 1, 'Biblioteca de prompts', true),
   ('kanban', 2, 'Kanban', false),
   ('prancheta', 3, 'Prancheta', true),
-  ('automation', 4, 'Automation', false),
+  ('automation', 4, 'Trama', true),
   ('academy', 5, 'Academy', false),
   ('claquete', 6, 'Claquete', false),
   ('comunidade', 7, 'Comunidade', false),

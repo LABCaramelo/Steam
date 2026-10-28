@@ -9,7 +9,7 @@ import { apiStatus, initializeApi } from '@trama/services/api'
 const route = useRoute()
 const { selectedOrgId } = useSession()
 const sidebarWidth = ref('0px')
-const showSidebar = computed(() => route.matched.length > 0 && route.meta.no_sidebar !== true)
+const showSidebar = computed(() => route.matched.length > 0 && route.meta.no_sidebar !== true && route.meta.full_bleed !== true)
 // Como no original (meta.refresh_on_org_change), a página recarrega ao trocar de organização.
 const viewKey = computed(() => (route.meta.refresh_on_org_change ? `${route.name}:${selectedOrgId.value}` : route.name))
 </script>
@@ -19,7 +19,7 @@ const viewKey = computed(() => (route.meta.refresh_on_org_change ? `${route.name
     <v-main>
       <div
         :class="[{ 'retracted-content': showSidebar }, 'h-100 d-flex flex-column']"
-        :style="{ '--sidebar-width': sidebarWidth }"
+        :style="{ '--sidebar-width': showSidebar ? sidebarWidth : '0px' }"
       >
         <div v-if="apiStatus.error" class="trama-file-empty" role="alert"><h1>Seu espaço não carregou.</h1><p>{{ apiStatus.error }}</p><v-btn color="primary" @click="initializeApi">Tentar novamente</v-btn></div>
         <div v-else class="vue-app-view-container flex-grow-1">

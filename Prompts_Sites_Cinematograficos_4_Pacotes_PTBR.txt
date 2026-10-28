@@ -1,0 +1,867 @@
+COLEÇÃO COMPLETA EM PORTUGUÊS — 4 PACOTES DE PROMPTS PARA SITES CINEMATOGRÁFICOS E 3D
+====================================================================================
+Autor dos materiais originais: Zubair Trabzada / AI Workshop (2026)
+Organização e tradução: compilação em português dos quatro PDFs fornecidos.
+
+CONTEÚDO
+1. The One-Prompt Website Pack — Claude Fable 5 + Higgsfield (10 prompts)
+2. The ChatGPT Website Creator Prompt Pack (7 prompts)
+3. The GPT-6 Astra 3D Website Pack (7 prompts)
+4. Build Award-Winning 3D Scroll Websites (7 prompts)
+Total: 31 prompts, com introduções, instruções, personalizações, dicas e orientações técnicas.
+
+NOTA DE USO: nomes de ferramentas, modelos, parâmetros, caminhos de arquivos, instruções técnicas e frases entre aspas que são conteúdo literal do site foram mantidos no idioma/formato original quando isso ajuda a executar os prompts sem ambiguidades. As orientações estão traduzidas para português brasileiro. Valores de créditos, preços e recursos refletem os documentos originais, não são cotações atuais verificadas.
+
+
+###############################################################################
+PACOTE 1 — THE ONE-PROMPT WEBSITE PACK
+10 PROMPTS PARA SITES CINEMATOGRÁFICOS COM CLAUDE FABLE 5 + HIGGSFIELD MCP
+###############################################################################
+
+APRESENTAÇÃO
+Dez prompts para copiar e colar que transformam uma única frase em um site cinematográfico com aparência de premiado: vídeo gerado por IA, animações controladas pelo scroll, execução e verificação. Incluem portfólios, produtos, e-commerce, restaurantes, imóveis e outras aplicações.
+
+COMO USAR
+Pré-requisitos: Claude Code, ou Claude desktop/web, com Higgsfield MCP conectado; créditos Higgsfield para Seedance 2.0. Cada prompt é um briefing completo e funciona com uma única colagem, sem exigir conhecimento de programação.
+
+1. Cole todo o prompt sem editar na primeira execução. Ele traz takes de vídeo, estrutura do site, direção de arte e instruções de lançamento e verificação. Personalize só depois da primeira execução.
+2. Primeiro gere UMA imagem hero; use-a como referência em cada clipe. Isso mantém pessoa, produto ou lugar consistentes. Não elimine esse passo.
+3. Para jornadas em plano contínuo, encadeie vídeos pelo frame final de um clipe e frame inicial do seguinte, usando start_image/end_image quando disponíveis.
+4. Padrão recomendado: modo std, 1080p, cerca de 8 segundos, sem áudio. Reserve 4K para a renderização final especial.
+5. Faça feedback como diretor: “deixe o hero 20% mais lento”; “a seção parece sem vida, acrescente uma interação discreta de cursor”; “troque a fonte, parece genérica”. O agente transforma intenção em código.
+
+-------------------------------------------------------------------------------
+PROMPT 01 — THE PRODUCT REVEAL / REVELAÇÃO DO PRODUTO DE LUXO
+Ideal para relógios, joias, equipamentos de áudio, tênis e outros produtos físicos premium.
+-------------------------------------------------------------------------------
+Crie um site cinematográfico “3D scroll” com padrão de site premiado para AURUM & NOIR, marca suíça fictícia de relógios de luxo que lança o cronógrafo tourbillon “Eclipse”.
+
+VISUAIS — gere com Seedance 2.0 via Higgsfield MCP (modo std, 1080p, 16:9, sem áudio, aproximadamente 8 segundos por clipe). Primeiro crie UMA imagem hero do relógio: caixa de titânio preto escovado, tourbillon dourado visível através do cristal de safira. Use-a como referência em todos os clipes para conservar o produto idêntico:
+1. HERO ORBIT: órbita/turntable de estúdio 360° perfeitamente suave e lenta; relógio flutuando no vazio preto; rim light dramática; poeira dourada sutil no ar.
+2. MACRO FLY-THROUGH: extremo close-up percorrendo o mostrador, índices gravados, gaiola do tourbillon girando e luz ondulando sobre o metal escovado.
+3. EXPLODED ASSEMBLY: relógio montando a si mesmo a partir de peças flutuantes — engrenagens, molas, bezel e pulseira — que convergem para a peça finalizada.
+
+SITE — transforme o vídeo da órbita em sequência de frames sobre canvas cujo scrub é controlado pelo scroll, de modo que rolar a página faça o relógio girar. Use Lenis para smooth scroll e revelações de texto vinculadas à posição de rolagem. Seções: hero cinematográfico com nome da marca surgindo por tracking → história “Crafted in Darkness” → detalhes macro controlados pelo scrub do clipe 2 → visão explodida da engenharia com especificações (42 mm, titânio grau 5, 72 h de reserva, 217 componentes) → “Edition of 88 — $48,000” → CTA para lista de espera privada. Design: fundo quase preto, dourado como destaque, serifada display de alto contraste com sans minimalista. Copy silenciosa, cara e econômica em palavras. Execute em localhost, verifique TODAS as animações de scroll e só então diga que terminou.
+
+PERSONALIZAÇÃO: troque o relógio por headphones, frasco de perfume ou tênis. Mantenha a estrutura órbita + macro + montagem explodida.
+
+-------------------------------------------------------------------------------
+PROMPT 02 — THE JOURNEY / DESCIDA EM ÁGUAS PROFUNDAS
+Ideal para experiências, turismo, expedições, museus e qualquer jornada em que scroll = percurso.
+-------------------------------------------------------------------------------
+Crie um site cinematográfico “3D scroll” premiável para ABYSSAL, empresa fictícia de expedições oceânicas que leva oito civis por ano ao fundo do mar no submersível EREBUS.
+
+VISUAIS — Seedance 2.0 no Higgsfield MCP (std, 1080p, 16:9, sem áudio, 8–10 segundos por clipe). Gere UMA imagem hero do EREBUS: casco preto profundo e elegante, anel luminoso ciano na janela e dois holofotes. Referencie-a em cada clipe. CRÍTICO: gere na ordem e use o FRAME FINAL de cada clipe como imagem INICIAL do próximo, com start_image/end_image, para formar uma descida única sem cortes:
+1. THE SURFACE: aéreo ao amanhecer sobre o oceano; EREBUS mergulha sob as ondas, encerrando totalmente submerso no azul ainda ensolarado.
+2. SUNLIT ZONE: descida através de raios de luz e colunas de bolhas; silhueta de baleia passando; azul se aprofunda.
+3. TWILIGHT ZONE: luz quase desaparece; águas-vivas fantasmagóricas flutuam; holofotes se acendem.
+4. MIDNIGHT ZONE: escuridão completa; organismos bioluminescentes pontilham o casco como estrelas.
+5. THE FLOOR: feixes varrem fontes hidrotermais; EREBUS permanece num frame hero final.
+
+SITE — concatene os cinco clipes e crie uma sequência canvas controlada pelo scroll: rolar para baixo É mergulhar. HUD fixo com medidor 0 m → 3.800 m e nomes das zonas. Seções pinadas por profundidade: hero “How deep will you go?” → um fato marcante por zona → especificações EREBUS → “8 seats. $250,000. Departing March 2027.” → CTA “Join the Manifest”. Fundo gradualmente azul-marinho → preto absoluto; detalhe ciano bioluminescente; sans técnica fina e microdetalhes de HUD. Execute localmente e confira a continuidade do scrub entre os cinco clipes antes de concluir.
+
+PERSONALIZAÇÃO: também funciona para subir uma montanha, lançar foguete, visitar caverna ou percorrer uma fábrica.
+
+-------------------------------------------------------------------------------
+PROMPT 03 — THE PORTFOLIO / PORTFÓLIO PESSOAL ESTRELADO POR VOCÊ
+Ideal para criadores, freelancers, consultores e donos de agência. Anexe antes uma boa foto frontal.
+-------------------------------------------------------------------------------
+Crie um PORTFÓLIO PESSOAL cinematográfico “3D scroll” para [SEU NOME] com padrão de site premiado. Estude a linguagem do Awwwards Site of the Year 2025 associado a Lando Norris: tipografia enorme, sequência cinematográfica guiada por scroll e um elemento 3D central que gira à medida que a página rola. Na minha versão, o elemento central sou EU.
+
+VISUAIS — Seedance 2.0 via Higgsfield MCP (std, 1080p, 16:9, sem áudio, ~8 segundos por clipe). Primeiro envie minha foto anexada ao Higgsfield e use-a como referência de IDENTIDADE em TODAS as gerações para manter meu rosto consistente. Figurino idêntico: [camiseta preta e overshirt escura]. Três clipes:
+1. HERO ORBIT: de braços cruzados, confiante, num estúdio preto, rim light [esmeralda]; câmera executa órbita lenta de 360° ao meu redor.
+2. THE BUILDER: sentado numa mesa escura entre telas holográficas flutuantes com meus trabalhos; push-in cinematográfico lento.
+3. THE CLOSER: caminho em direção à câmera por uma galeria escura ladeada de telas luminosas, parando em pose de protagonista.
+
+SITE — scroll-scrub da órbita em canvas. Meu nome “[SEU NOME]” surge em tipografia display gigantesca letra a letra; subtítulo “[o que faço em uma frase]”. Faixa animada de números em contagem crescente no scroll: [3–5 números verdadeiros: inscritos, clientes, projetos, faturamento]. Seção THREE PILLARS sobre o clipe 2, revelando [três ofertas principais] uma por vez. Seção WORK sobre o clipe 3, com cards de [três melhores projetos], pitch de uma linha cada e movimento no hover. Finale com “[CTA principal]”, dois botões e footer com [redes sociais]. Direção: preto-tinta, acento [esmeralda], tipografia creme, display condensada em negrito, kinetic type, grain sutil, Lenis smooth scroll. Execute localmente e verifique a suavidade da órbita antes de informar que terminou.
+
+PERSONALIZAÇÃO: tudo entre colchetes é preenchível; gere 2–3 versões da órbita e use a de maior fidelidade ao rosto em toda a rotação.
+
+-------------------------------------------------------------------------------
+PROMPT 04 — THE DROP / E-COMMERCE STREETWEAR
+Ideal para moda, merchandising e drops limitados.
+-------------------------------------------------------------------------------
+Crie um site cinematográfico de e-commerce com padrão de premiado para ONYX SUPPLY, marca fictícia de streetwear premium que lança o “Midnight Drop”: hoodie pesado, calça cargo e jaqueta puffer com detalhes cromados.
+
+VISUAIS — Seedance 2.0 no Higgsfield MCP (std, 1080p, sem áudio). Primeiro gere UMA foto lookbook de modelo usando o look completo: roupas preto fosco, zíperes cromados, rooftop com neblina à noite. Use-a em todos os clipes para manter o figurino consistente.
+1. HERO, 16:9: modelo caminha lentamente para a câmera através da neblina, neon da cidade ao fundo, vento mexendo o tecido.
+2. PRODUCT SPINS: três clipes 1:1 separados; cada peça num manequim invisível executa giro limpo de 360° em estúdio cinza-concreto.
+3. FABRIC MACRO, 16:9: extremo close-up percorrendo costura, dentes do zíper e logo em relevo.
+
+SITE — hero com scroll-scrub da caminhada; título gigantesco “ONYX SUPPLY — MIDNIGHT DROP”; countdown ao vivo para o lançamento. Grid com três cards, cada um toca seu spin automaticamente ao hover e mostra nome, preço ($180 / $210 / $340), seletor de tamanho e “Add to Cart”; checkout drawer demonstrativo não funcional é aceitável. Seção macro com manifesto “Built heavy. Cut clean.”; carrinho fixo; faixa marquee com nomes dos produtos; campo de e-mail “Notify me” para tamanhos esgotados. Design cinza-concreto e preto fosco, único acento verde-ácido, tipografia condensada brutalista. Execute no localhost, verifique hover-to-play em todos os cards.
+
+PERSONALIZAÇÃO: para lojas reais, substitua roupas inventadas por fotos dos produtos reais como referência.
+
+-------------------------------------------------------------------------------
+PROMPT 05 — THE RESTAURANT / RESTAURANTE FOGO E CARNE
+Ideal para restaurantes, cafeterias e bares.
+-------------------------------------------------------------------------------
+Crie um site cinematográfico premiável para EMBER & OAK, steakhouse fictícia de fogo a lenha em [CIDADE].
+
+VISUAIS — Seedance 2.0 via Higgsfield MCP (std, 1080p, 16:9, sem áudio, ~8 segundos por clipe):
+1. HERO: macro em slow motion de ribeye selando sobre chama aberta, brasas subindo pela escuridão, iluminação cinematográfica âmbar.
+2. THE ROOM: dolly lento por salão intimista na golden hour, bancos de couro, velas, bartender mexendo coquetel no fundo.
+3. THE CRAFT: overhead das mãos do chef finalizando prato, vapor subindo, mesa de ardósia escura.
+
+SITE — hero full-bleed com scrub do vídeo de fogo; “EMBER & OAK” entra em serif elegante com tracking; abaixo “Wood fire. Nothing else.”. Seções: história sobre clipe 2, texto conciso “Six dishes. One fire.” → cardápio em duas colunas “Fire / Field”, nomes e preços em tipografia refinada → private dining sobre clipe 3 → horários, mapa e CTA “Reserve a Table” com formulário simples de data e quantidade de pessoas. Quase preto, texto creme quente, acento laranja-brasa, overlay de film grain, parallax lento. Copy esparsa, confiante e sensorial. Mobile: menu vira uma coluna elegante. Execute no localhost; confirme scrub e formulário corretamente exibidos.
+
+PERSONALIZAÇÃO: para restaurantes reais, use cardápio e fotos autênticos. O autor apresenta como entrega comercial estimada em US$ 2.000–5.000.
+
+-------------------------------------------------------------------------------
+PROMPT 06 — THE LISTING / COBERTURA DE LUXO
+Ideal para corretores, incorporadoras, aluguéis de temporada e hotéis.
+-------------------------------------------------------------------------------
+Crie um site cinematográfico de imóvel único com padrão de premiado para THE MERIDIAN, cobertura fictícia de US$ 12,5 milhões no 60º andar em [CIDADE].
+
+VISUAIS — Seedance 2.0 via Higgsfield MCP (std, 1080p, 16:9, sem áudio, 8–10 segundos/clipe). Crie UMA imagem hero da torre ao entardecer; arquitetura consistente em todos os takes. Encadeie os clipes 2 a 4 pelo último frame de um e o primeiro do próximo para obter tour contínuo:
+1. THE APPROACH: drone faz curva em torno da torre envidraçada ao entardecer, luzes da cidade acendendo embaixo.
+2. THE ARRIVAL: câmera sai do elevador privativo e percorre sala ampla, janelas piso-teto, mármore italiano, lareira acendendo.
+3. THE FLOW: movimento contínuo pela cozinha do chef e suíte principal rumo às portas iluminadas do terraço.
+4. THE TERRACE: entrada no terraço ao redor do apartamento, à noite, piscina infinita refletindo skyline, nuvens em timelapse.
+
+SITE — scrub da visita para que rolar a página faça o comprador atravessar a residência. Indicador elegante fixo de progresso identifica cada cômodo. Seções: hero “Sixty floors above everything” → faixa de características (4 quartos, 5,5 banheiros, 7.200 ft², elevador privativo) → galeria → comodidades com reveal → preço “$12,500,000” → formulário “Request a Private Showing” com card do corretor. Fundo preto-tinta, champagne-gold, serif fina, bastante whitespace. Verifique continuidade do tour em localhost.
+
+PERSONALIZAÇÃO: para imóveis reais, use fotos do imóvel como start frames.
+
+-------------------------------------------------------------------------------
+PROMPT 07 — THE MACHINE / HIPERCARRO ELÉTRICO
+Ideal para veículos, drones, bicicletas, máquinas e produtos em movimento.
+-------------------------------------------------------------------------------
+Crie um site cinematográfico “3D scroll” premiável para VANTA, hipercarro elétrico fictício de 1.200 hp. Inspiração: linguagem do site Scout Motors, com o veículo percorrendo terreno real conforme o scroll, em vez de girar num estúdio.
+
+VISUAIS — Seedance 2.0 no Higgsfield MCP (std, 1080p, 16:9, sem áudio, ~8 segundos/clipe). Primeiro gere UMA imagem hero do carro: baixo, largo, carroceria obsidiana fosca, faixa frontal de luz fina. Use em todos os clipes e encadeie takes por frames inicial/final para criar percurso contínuo:
+1. REVEAL: poeira baixa em deserto branco ao amanhecer, revelando VANTA parado, faixa luminosa acende.
+2. THE RUN: tracking baixo quando acelera pelas planícies do deserto, areia lançada pelas rodas.
+3. THE CANYON: atravessa cânion vermelho em alta velocidade, câmera faz whip em curva para acompanhar.
+4. NIGHT MODE: escuridão plena, assinatura luminosa frontal e rastro das lanternas recortando dunas sob estrelas.
+
+SITE — scrub da corrida: rolar equivale a dirigir. HUD estilo velocímetro sobe de 0 → 250 mph com o progresso. Seções: “VANTA” em display ultralarga → contadores de performance (0–60 mph em 1,9 s; 1.200 hp; autonomia 520 mi) → detalhes macro → night mode → teaser de configurador, com três pinturas que recolorem uma still hero → CTA “Reserve — $1,000 deposit”. Preto sobre preto, ciano elétrico, display condensada ultralarga, transições sutis de motion blur. Execute em localhost e verifique HUD sincronizado ao scroll.
+
+PERSONALIZAÇÃO: funciona para barcos, e-bikes e drones; mantenha revelação → corrida → ambiente → noite.
+
+-------------------------------------------------------------------------------
+PROMPT 08 — THE PRODUCT LAUNCH / SAAS COM IA
+Ideal para softwares, aplicativos, ferramentas de IA e startups.
+-------------------------------------------------------------------------------
+Crie uma landing page cinematográfica premiável para PULSE, plataforma fictícia de analytics com IA que prevê churn de clientes antes que aconteça.
+
+VISUAIS — Seedance 2.0 via Higgsfield MCP (std, 1080p, 16:9, sem áudio, ~8 segundos/clipe):
+1. HERO: vazio escuro, milhares de partículas de dados luminosas giram e formam interface de dashboard flutuante e limpa com gráfico ascendente que pulsa como batimento cardíaco.
+2. THE SIGNAL: câmera macro desliza por gráficos holográficos e números em fluxo; uma anomalia vermelha acende e é detectada.
+3. THE CALM: dashboard num laptop em escritório claro e minimalista, vapor do café subindo, sensação de controle.
+
+SITE — canvas-scrub da montagem das partículas, dashboard se constrói durante o scroll; headline gigantesca “See churn coming.” e botão “Start free”. Seções: faixa de logos de prova social → três features sobre clipe 2, cada uma com uma linha (“Predict · Explain · Prevent”) → contadores animados (94% de precisão preditiva, 12.000 equipes, US$ 40 milhões de receita preservada) → captura do produto em mockup de navegador com sombra suave → tabela de três planos, plano do meio destacado → FAQ accordion → CTA final sobre clipe 3. Hero quase preto transiciona a corpo branco, acento violeta, sans geométrica, cards glassmorphism. Execute em localhost e valide scrub e toggle de preços.
+
+PERSONALIZAÇÃO: substitua premissa e produto; combine hero gerado com gravação real da ferramenta no terceiro clipe para dar credibilidade. Números do exemplo são fictícios e não devem ser apresentados como fatos reais sem comprovação.
+
+-------------------------------------------------------------------------------
+PROMPT 09 — THE STUDIO / AGÊNCIA CRIATIVA
+Ideal para agências, estúdios de design, produtoras e consultorias.
+-------------------------------------------------------------------------------
+Crie um site cinematográfico premiável para NOIR&CO, estúdio criativo fictício que desenvolve marcas “for companies that refuse to be ignored”.
+
+VISUAIS — Seedance 2.0 no Higgsfield MCP (std, 1080p, 16:9, sem áudio, ~8 segundos/clipe):
+1. HERO: tinta preta floresce e se transforma dentro d'água em slow motion extremo, com flashes ocasionais de dourado.
+2. THE WORK: showreel estilizado, posters enormes e telas de tipografia ousada passam pelas paredes de uma galeria, dolly lateral.
+3. THE PEOPLE: silhuetas de uma pequena equipe trabalhando até tarde, estúdio escuro, bokeh da cidade pela janela.
+
+SITE — hero com scrub da tinta atrás de “NOIR&CO”, tipografia enorme ocupando 80% da viewport, manifesto sendo digitado abaixo. Seções: manifesto cinético que coloca uma palavra por etapa de scroll (“LOUD. PRECISE. UNFORGETTABLE.”) → grid com quatro cases fictícios, vídeos revelados no hover com recortes do clipe 2 → serviços em layout editorial de duas colunas → equipe sobre clipe 3 → footer oversized “Got a brand worth fighting for?” com e-mail e redes. Preto puro e branco-osso; dourado EXATAMENTE três vezes no site todo; display brutalista combinada com serif refinada no corpo. Cursor vira ponto dourado com anel seguidor. Verifique texto cinético e reveals em hover em localhost.
+
+PERSONALIZAÇÃO: substitua os cases fictícios pelos sites reais da sua agência.
+
+-------------------------------------------------------------------------------
+PROMPT 10 — THE GYM / ACADEMIA
+Ideal para academias, treinadores, artes marciais e marcas esportivas.
+-------------------------------------------------------------------------------
+Crie um site cinematográfico premiável para FORGE, academia fictícia de força em [CIDADE] com lema “Earn it.”
+
+VISUAIS — Seedance 2.0 no Higgsfield MCP (std, 1080p, 16:9, sem áudio, ~8 segundos/clipe):
+1. HERO: câmera lenta de atleta batendo mãos cobertas de magnésio numa academia escura, nuvem de pó expandindo-se por um único feixe superior de luz.
+2. THE IRON: tracking macro ao longo de barra carregada; mãos seguram a barra; textura do metal e magnésio bem definida; anilhas se acomodam.
+3. THE GRIND: corredor em sprint em pista externa ao amanhecer, respiração visível, câmera tracking baixa e rápida.
+
+SITE — scrub da nuvem de magnésio com “FORGE” em fonte industrial gigantesca surgindo com força e “Earn it.” embaixo. Seções: filosofia com uma linha por rolagem (“No mirrors. No machines that do the work for you.”) → grid de programas “Strength / Conditioning / Team”, com hovers → coaches com cards que elevam em hover → contadores de resultados (membros, recordes pessoais do mês, anos de funcionamento) → três níveis de preço, intermediário destacado, CTA “First week free” → horários, mapa e inscrição. Carvão, branco-osso, um único vermelho-sangue, display condensada pesada, grain e vignette em todas as imagens. Mobile: programas como cards deslizáveis. Execute localmente e verifique scrub e preços.
+
+PERSONALIZAÇÃO: substitua horários, valores, local e fotos por informações reais do cliente; documento menciona comercialização como entrega de US$ 2.000+.
+
+DICAS FINAIS DO PACOTE 1
+1. Consistência supera qualidade isolada: clipe ligeiramente menos nítido com produto idêntico é melhor do que quatro takes lindos com quatro versões diferentes.
+2. Gere 2–3 versões apenas do hero; ele concentra a maior parte do impacto. Economize créditos nos outros.
+3. Peça “compress the videos for web”; o autor cita reduções próximas de 90% do tamanho em muitos casos.
+4. Para publicar, peça: “Envie este projeto a um repositório GitHub, oriente-me no deploy gratuito pelo Cloudflare Pages e conecte um domínio personalizado”.
+5. O autor destaca oportunidades com restaurantes, imobiliárias e academias: criar amostra, mostrar a cinco empresas e oferecer a construção do site.
+6. A comunidade AI Workshop oferece skills, aulas e playbooks comerciais; YouTube: Zubair Trabzada.
+
+FIM DO PACOTE 1.
+
+
+###############################################################################
+PACOTE 2 — THE CHATGPT WEBSITE CREATOR PROMPT PACK
+7 ESPETÁCULOS DE SCROLL — HIGGSFIELD + CODEX
+###############################################################################
+
+APRESENTAÇÃO
+Sete efeitos diferentes: câmera explodindo em peças; portfólio como galeria percorrível; anel de ouro nascendo do metal derretido; onda de whisky congelada em torno da qual a câmera orbita; orquídea florescendo; relógio afundando até o oceano escuro; piano revelado por uma única luz. Higgsfield gera a filmagem, Codex constrói, e o resultado pode ser publicado numa URL.
+
+O documento apresenta: 7 prompts; 3 clipes de IA por site; orçamento indicativo de ~US$ 5 em créditos por site; 1 URL publicada. São estimativas do autor, não preços atuais verificados.
+
+ANTES DE COMEÇAR — CONFIGURAÇÃO
+ChatGPT com um modelo avançado de raciocínio selecionado (o original menciona a classe GPT-5.6); Codex e funcionalidade de Sites ativados, quando disponíveis, para construir e hospedar. Conector Higgsfield habilitado no ChatGPT. O PDF indica aproximadamente 100 créditos por site, correspondentes a uma imagem âncora e três vídeos de 10 segundos. Preencha os [COLCHETES], cole um prompt completo e execute. Geração de assets pode preceder o aparecimento de código.
+
+SEGREDO TÉCNICO: NÃO É THREE.JS, É UM FILME
+O efeito de “3D scroll” deste pacote é um canvas com image-sequence scrub. Cada clipe de IA é extraído em frames JPEG; o scroll indica o frame que drawImage deve pintar sobre o canvas. Não use um vídeo de fundo como substituto quando a proposta exigir scrub real.
+
+LINHA DE RECUPERAÇÃO — se o resultado for uma página convencional:
+“Não use um template ou vídeo como fundo. Siga literalmente FRAMES e SITE: extraia frames JPEG com ffmpeg e controle-os num canvas com loop drawImage mapeado à posição do scroll. O scrub é o produto.”
+
+LINHA DE RECUPERAÇÃO — se houver limite de hospedagem:
+“Reduza a 100 frames por clipe em 1280 px de largura, mas nunca substitua a sequência de frames por um elemento <video>.”
+
+-------------------------------------------------------------------------------
+PROMPT 01 — OBSCURA / A CÂMERA MÍTICA
+A experiência principal do vídeo: explosão e remontagem de câmera mecânica.
+-------------------------------------------------------------------------------
+Você está construindo um site one-page “scroll cinematic”, com qualidade para competir no nível Awwwards. Trabalhe autonomamente de ponta a ponta: gere assets com Higgsfield e construa/execute com Codex. Não pare num plano; não use placeholders.
+
+PRODUTO — OBSCURA MK I, câmera mecânica fictícia de luxo, corpo de metal preto fosco e latão, dials gravados, elementos ópticos de vidro. Tagline: “Light, remembered.” O instante hero é a câmera EXPLODINDO em aproximadamente 40 peças flutuantes — discos de vidro de lentes, lâminas de íris em leque, prisma, cortina de obturador, engrenagens e parafusos. O prisma decompõe luz branca num flare espectral arco-íris; depois, seguindo o scroll, a câmera se REMONTA.
+
+TÉCNICA — este efeito NÃO usa Three.js nem WebGL. É canvas image-sequence scrub: clipes curtos fatiados em imagens, e a posição de scroll determina qual frame ocupa um canvas de viewport inteira. Fluido, determinístico e amplo em compatibilidade.
+
+ASSETS — conector Higgsfield:
+1. Gere UMA imagem âncora 16:9: “Fotografia ultra premium de câmera mecânica mítica, corpo de metal preto fosco com dials gravados em latão e lente de vidro, flutuando centralmente no vazio preto puro, única luz superior dramática, rim light dourada sutil, fotorrealista, iluminação de anúncio de relógio de luxo, sem texto e sem marca-d'água.” Utilize o melhor modelo atual de imagem disponível.
+2. Use a imagem como referência em TODOS os clipes, para preservar a identidade. Gere três image-to-video, 10 segundos, 1080p, 16:9, com o melhor modelo disponível:
+CLIP A “orbit”: câmera flutua no vazio e gira lentamente 360°, deriva sutil, nada mais se move.
+CLIP B “explode”: câmera desmonta suavemente para fora; lentes de vidro, lâminas, engrenagens, mostradores e parafusos ficam suspensos. Prisma central quebra feixe de luz branca em arco-íris; movimento lento, elegante, velocidade constante; termina totalmente desmontada e mantém a pose.
+CLIP C “macro”: glide macro lento pelo dial de latão gravado, lente de vidro com refrações espectrais delicadas, até a inscrição OBSCURA.
+A montagem reversa não exige outro clipe: scrub de CLIP B ao contrário É a remontagem.
+3. Baixe os três MP4s para o projeto.
+
+FRAMES — extraia com ffmpeg sequências JPEG de 150 frames/clipe, largura 1600 px, qualidade 3, nomes como frames/orbit/frame_0001.jpg. Confirme arquivos no disco antes de codificar.
+
+SITE — HTML/CSS/JS puro, sem frameworks; index.html, styles.css, app.js. Loader preto, barra dourada fina e porcentagem; pré-carregue TODOS os frames antes de liberar o scroll. Lenis via CDN. Cada capítulo é uma seção pinada 100vh, com progresso de rolagem mapeado aos frames com interpolação lerp; desenhe usando drawImage com cover-fit.
+1. HERO: scrub da órbita; “OBSCURA” surge em serif editorial gigantesca, fade e ampliação de espaçamento; microtítulo “THE MK I. LIGHT, REMEMBERED.”.
+2. MANIFESTO: texto poético curto, uma linha por etapa de scroll.
+3. THE EXPLOSION: CLIP B para frente, quatro callouts com linhas douradas finíssimas: “ELEMENT I: 9 glass lenses”; “IRIS: 12 blades”; “PRISM: full spectrum”; “214 parts total.”
+4. REASSEMBLY: CLIP B ao contrário; final “Every part, remembered.”
+5. MACRO: CLIP C sob scroll.
+6. SPECS: grid mínimo de duas colunas, separadores hairline, especificações fictícias.
+7. CTA: “Request the MK I”, campo de e-mail e nota pequena.
+Direção: fundo #050505, texto osso #EDEAE4, latão #B08D57; arco-íris SÓ onde o prisma incide; Cormorant Garamond serifada display enorme e grotesca com espaçamento; muito espaço negativo; sem caixas, cards ou sombras projetadas. Em mobile inferior a 768 px OU prefers-reduced-motion, substitua o scrub por MP4s em loop como fundo. Desempenho com requestAnimationFrame, redesenhe apenas quando o índice do frame mudar, meta 60 fps.
+
+VERIFIQUE — loader chega a 100% e libera, os capítulos efetivamente scrubbam, remontagem ao contrário funciona, callouts aparecem e console não apresenta erros. Corrija problemas e só então forneça URL ao vivo, resumo de assets e créditos gastos.
+
+-------------------------------------------------------------------------------
+PROMPT 02 — THE GALLERY / PORTFÓLIO COMO MUSEU PERCORRÍVEL
+O scroll conduz o visitante por um museu privado à noite.
+-------------------------------------------------------------------------------
+Crie MEU portfólio pessoal one-page em estilo “scroll cinematic” premiável. Trabalhe autonomamente de ponta a ponta com Higgsfield + Codex; nada de planos ou placeholders. Dados: NOME [SEU NOME]; TÍTULO [por exemplo, PRODUCT DESIGNER]; PROJETOS, 3 a 5, cada um com resultado numa linha: [PROJETO 1: RESULTADO], [PROJETO 2: RESULTADO], [PROJETO 3: RESULTADO]; CONTATO [EMAIL].
+
+CONCEITO — o portfólio é um museu privado noturno, enorme salão escuro, piso de pedra preta polida, esculturas de vidro luminosas em pedestais com spotlights ao longo de um corredor que desaparece na escuridão. O scroll não move a página, move o VISITANTE: a câmera desliza para frente, passa pelas obras e termina numa parede monumental gravada com meu nome. Scroll é caminhada.
+
+TÉCNICA — não Three.js: clipes divididos em frames, posição do scroll determina imagem pintada no canvas full viewport.
+
+ASSETS — Higgsfield:
+1. UMA âncora 16:9: “Vasto salão de museu escuro durante a noite, pedra preta polida com reflexos suaves, fileira de pedestais de mármore branco afastando-se na escuridão, cada um com escultura de vidro translúcida brilhante e um único spotlight quente, cinematográfico, fotografia arquitetônica fotorrealista, sem pessoas, sem texto ou marca-d'água.” Melhor modelo disponível.
+2. Três clipes image-to-video de 10 s, 1080p, 16:9, todos usando a âncora:
+A “the approach”: portas altas de bronze abrem ligeiramente, câmera avança no salão escuro, primeiro pedestal emerge.
+B “the walk”: dolly contínuo e suave pelo corredor, passando perto de quatro artefatos luminosos, cada um refletindo luz de forma diferente, ritmo estável e sem cortes.
+C “the name wall”: câmera sobe e faz tilt ascendente para parede monumental de pedra escura; letras enormes gravadas com glow quente ao fundo e poeira suspensa.
+Baixe os MP4s.
+
+FRAMES — ffmpeg; 150 por clipe; 1600 px; JPEG qualidade 3; frames/approach/frame_0001.jpg; confirme existência.
+
+SITE — HTML/CSS/JS puro; Lenis via CDN; preloader percentual; capítulos 100vh pinados com lerp.
+1. HERO: scrub da aproximação, [SEU NOME] em serif enorme sobre as portas, [TÍTULO] em caps espaçadas, orientação de scroll “Enter”.
+2. THE WALK: CLIP B, legenda de cada projeto faz fade in/out ao passar do pedestal, ligada por linha hairline de latão; nome, resultado e ano; sincronize com quatro obras.
+3. THE NAME WALL: scrub do clipe C, nome sobreposto alinhado à gravação, frase “Every piece, placed on purpose.”
+4. SELECTED WORK: índice limpo abaixo do cinema com projeto, resultado, ano, linhas divisórias finas e espaços para imagens que adicionarei depois.
+5. CONTACT: título gigante “Visit the studio.” e [EMAIL] como link dourado quente.
+Direção: preto museu #0B0B0C; brilho #F1E4C8; latão #A98963; serif muito grande e pequenas legendas mono; silêncio visual e espaço; sem cards ou sombras. Mobile e reduced-motion: MP4s em loop no lugar do scrub. requestAnimationFrame, pintar apenas quando frame mudar, meta 60fps.
+
+VERIFICAÇÃO — loader a 100%; caminhada passa pelos pedestais, legendas sincronizadas, parede revelada e zero erros; retorne URL publicada.
+
+-------------------------------------------------------------------------------
+PROMPT 03 — AURELIA / ANEL QUE NASCE DO FOGO
+Transformação controlada pelo scroll para joias e artesanato.
+-------------------------------------------------------------------------------
+Construa site one-page “scroll cinematic” premiável, autonomamente com Higgsfield e Codex, sem apenas planejamento e sem placeholders.
+
+PRODUTO fictício — AURELIA, anel solitário de ouro 24 quilates. Tagline “From fire.” O momento central é CRIAÇÃO: fita de ouro derretido atravessa o vazio escuro, enrola-se formando anel giratório, esfria do branco incandescente ao laranja-brasa e ao ouro polido; diamante desce até encaixar com um flare. O scroll traz o anel à existência.
+
+TÉCNICA — image-sequence scrub em canvas, não Three.js; scroll pinta frames dos vídeos.
+
+ASSETS:
+1. Âncora 16:9: “Fita luminosa de ouro derretido suspensa a meio caminho de um derramamento no vazio preto puro, núcleo branco em brasa que escurece até laranja profundo nas bordas, minifaíscas suspensas, fotografia macro de joia, fotorrealista e dramática, sem texto ou marca-d'água.” Melhor modelo de imagem disponível.
+2. Três vídeos de 10 s, 1080p, 16:9, com a âncora em todos:
+A “the pour”: metal líquido flui lentamente, enrola e dobra, faíscas sobem, fluxo contínuo e hipnótico.
+B “the forming”: ouro se enrola em aro giratório, brilho esfria de branco → laranja → ouro quente polido, tensão superficial alisa a metalização até acabamento espelhado, diamante redondo desce e encaixa com flare brilhante; encerra com o anel girando lentamente.
+C “the macro”: órbita macro extrema do anel concluído, gravação interior AURELIA aparecendo e flashes coloridos dentro do diamante.
+3. Baixe MP4s.
+
+FRAMES — ffmpeg, 150 por clipe, largura 1600 px, JPEG qualidade 3, frames/pour/frame_0001.jpg; confirme arquivos.
+
+SITE — HTML/CSS/JS, Lenis via CDN, preloader como linha fina de brasa preenchendo com porcentagem, seções 100vh pinadas com lerp.
+1. HERO: scrub do ouro vertendo e “AURELIA” em serif editorial enorme, pequeno overline “FROM FIRE.”
+2. THE FORMING: scrub B; callouts hairline de ouro “1,064 DEGREES”, “24 KARAT”, “1.2 CARATS”, “ONE OF ONE”.
+3. THE MACRO: scrub C sobre gravação e fogo do diamante.
+4. THE VOW: três linhas curtas sobre fabricar perfeitamente uma peça, uma por etapa.
+5. SPECS: grid mínimo duas colunas, separadores hairline, dados fictícios.
+6. CTA: “Commission a piece”, e-mail e nota pequena.
+Paleta preto #060504, champagne #EDE3D0, gradiente de calor #FFB25E → #C9742A usado SOMENTE onde há calor; serif grande e caps espaçadas; imenso espaço negativo. Mobile/reduced-motion: MP4s em loop. requestAnimationFrame e redraw apenas ao trocar frame, meta 60 fps.
+
+VERIFIQUE — loader 100%; ouro flui no scroll; anel esfria de branco para dourado e recebe diamante; macro mostra gravação; sem erros; forneça URL.
+
+-------------------------------------------------------------------------------
+PROMPT 04 — STILL / TEMPO CONGELADO EM UMA ONDA DE WHISKY
+Bullet time: a câmera, não o líquido, se move ao fazer scroll.
+-------------------------------------------------------------------------------
+Construa site one-page cinematográfico premiável com Higgsfield + Codex de ponta a ponta; não entregue só plano nem placeholders.
+
+PRODUTO fictício — STILL No. 8, single malt de 18 anos. Tagline “Time, held.” CONCEITO: tempo congelado; onda de whisky âmbar parada no instante em que se quebra ao redor de garrafa imóvel, centenas de gotas no ar. O scroll movimenta a CÂMERA em volta desse instante. Em um capítulo o tempo é liberado por um breve intervalo, a onda avança meio segundo em slow motion extremo e congela novamente.
+
+TÉCNICA — canvas image-sequence scrub, não Three.js. Vídeos fatiados em frames vinculados ao scroll.
+
+ASSETS:
+1. Âncora 16:9: “Garrafa de whisky em pé num vazio preto puro, onda dramática de whisky âmbar congelada em torno dela no meio do impacto, centenas de gotas totalmente paradas, um único feixe quente de cima, publicidade fotorrealista ultra nítida, sem texto ou marca-d'água.” Melhor modelo de imagem.
+2. Três clipes image-to-video de 10 s, 1080p, 16:9, todos com âncora:
+A “the orbit”: líquido perfeitamente congelado, câmera orbita 360° garrafa e splash; reflexos âmbar, só o ponto de vista se altera.
+B “the release”: tempo descongela, onda conclui parte do impacto em extremo slow motion; gotas colidem, florescem e congelam em nova forma escultórica.
+C “the macro”: câmera desliza em close por entre as gotas, cada uma funciona como pequena lente que refrata garrafa, uma gota vibra prestes a cair.
+3. Baixe MP4s.
+
+FRAMES — ffmpeg, 150 quadros/clipe, 1600 px, qualidade JPEG 3, frames/orbit/frame_0001.jpg. Confira arquivos.
+
+SITE — HTML/CSS/JS, Lenis, preloader percentual, capítulos fixados 100vh com suavização lerp:
+1. HERO: órbita em scrub; “STILL” em serif gigante; “No. 8. TIME, HELD.”; legenda “Scroll moves you. Not time.”
+2. THE RELEASE: scrub B; callouts âmbar com linhas hairline: “CASK No. 8, first fill sherry”; “18 YEARS asleep”; “46 PERCENT, non-chill filtered”.
+3. THE MACRO: scrub pelas gotas.
+4. THE CREED: três frases sobre paciência, uma por etapa.
+5. TASTING: grid mínimo com nariz, paladar e finalização, divisores finos.
+6. CTA: “Request an allocation”, campo de e-mail e nota.
+Direção preto #070605, osso #EDE7DA, âmbar #C87A1E brilhando somente no líquido, serif e caps espaçadas, muita área negativa. Mobile/reduced-motion: loop MP4. Otimize requestAnimationFrame, redraw só quando índice mudar, 60 fps.
+
+VERIFIQUE — preloader, órbita em torno do splash imóvel, descongelamento e novo congelamento, macro cruzando gotas e sem erros; forneça URL.
+
+-------------------------------------------------------------------------------
+PROMPT 05 — NOX BOTANICA / ORQUÍDEA QUE FLORESCE
+Ideal para beleza, skincare e marcas botânicas.
+-------------------------------------------------------------------------------
+Construa site one-page “scroll cinematic” premiável; produza assets com Higgsfield, construa e rode com Codex, sem placeholders e sem parar no plano.
+
+PRODUTO fictício — NOX BOTANICA, sérum noturno extraído de uma orquídea negra que floresce uma vez. Tagline “Grown in the dark.” O grande momento é CRESCIMENTO: botão de orquídea negra fechado, iluminado pela lua numa estufa escura, abre pétala por pétala sob scroll, gotículas de orvalho surgem e rolam, até ficar totalmente aberto. Depois uma gota luminosa sobe do coração e cai num frasco de vidro escuro.
+
+TÉCNICA — canvas image-sequence scrub, não Three.js.
+
+ASSETS:
+1. Âncora 16:9: “Um único botão fechado de orquídea negra num caule fino dentro de estufa vitoriana escura à noite, luar frio pelo vidro, orvalho nas pétalas, verdes quase pretos profundos, fotografia macro botânica fotorrealista, sem texto e marca-d'água”. Use melhor modelo de imagem.
+2. Três clipes 10s, 1080p, 16:9, mesma referência:
+A “the bloom”: timelapse flor abrindo pétala por pétala, gotas formando-se e rolando, luar muda levemente, termina totalmente aberta e para.
+B “the essence”: gota luminosa sai do centro, sobe, permanece suspensa e cai lentamente em pequeno frasco escuro de sérum que sobe para dentro do quadro; brilho suave se expande no vidro.
+C “the macro”: extremo macro da textura aveludada da pétala, gota agindo como lente; conta-gotas do frasco soltando uma gota brilhante.
+3. Baixe MP4s.
+
+FRAMES — ffmpeg, 150 por clipe, 1600 px, JPEG qualidade 3, frames/bloom/frame_0001.jpg.
+
+SITE — HTML/CSS/JS, Lenis CDN; loader como linha de caule crescendo com percentual; capítulos 100vh pinados com lerp:
+1. HERO: floração ligada diretamente ao scroll, “NOX” em serif high-fashion com letterspacing amplo, overline “BOTANICA. GROWN IN THE DARK.” Flor abre na exata velocidade da rolagem.
+2. THE ESSENCE: scrub B, callouts prateados hairline “ONE BLOOM a season”, “COLD PRESSED within the hour”, “12 PETALS, one drop”, “30 ML, numbered”.
+3. THE MACRO: scrub C por pétala e vidro.
+4. THE RITUAL: grid minimalista de três passos: night, skin, morning.
+5. CTA: “Join the first harvest”, e-mail e nota.
+Direção verde-preto #0A0F0C, prateado lunar #DDE4DC, violeta de orquídea #8E7BB8 usado apenas no centro da flor, serif elegante com microcaps espaçadas, arejado, silencioso, sem cards. Mobile/reduced-motion: MP4 em loop. requestAnimationFrame, redraw sob mudança de frame, 60 fps.
+
+VERIFIQUE — loader chega a 100%, orquídea abre visivelmente e sustenta a flor aberta, gota atinge o frasco, macro mostra textura aveludada, sem erros; URL final.
+
+-------------------------------------------------------------------------------
+PROMPT 06 — ABYSS MARK II / RELÓGIO AFUNDANDO
+Scroll como medidor de profundidade até 3.000 metros.
+-------------------------------------------------------------------------------
+Construa site one-page cinematográfico com qualidade premiável, usando Higgsfield + Codex autonomamente, sem planos/placeholder.
+
+PRODUTO fictício — ABYSS Mark II, relógio de mergulho em titânio resistente a três mil metros. Tagline “Rated for the dark.” CONCEITO DESCIDA: relógio afunda no oceano conforme o scroll, água muda de turquesa ensolarado a índigo e preto absoluto; raios diminuem, até restar apenas o lume do mostrador. Fundo do site acompanha a profundidade e medidor conta metros em tempo real.
+
+TÉCNICA — canvas image-sequence scrub, não Three.js.
+
+ASSETS:
+1. Âncora 16:9: “Relógio de mergulho em titânio com mostrador azul profundo, marcadores verdes luminosos intensos, afundando em água clara iluminada pelo sol, raios da superfície, bolhinhas subindo, fotografia publicitária subaquática fotorrealista, sem texto ou marca-d'água.” Melhor modelo de imagem.
+2. Três clipes 10s, 1080p, 16:9, âncora comum:
+A “the drop”: em golden hour, relógio cruza superfície visto de baixo, bolhas se expandem, luz gira, começa a afundar.
+B “the descent”: take contínuo da queda, turquesa → índigo → quase preto, raios desaparecem, partículas sobem, lume verde se destaca, termina no preto puro com mostrador e aro visíveis.
+C “the lume”: macro em escuridão total; ponteiros e índices luminosos, bezel avança um clique, pequena nuvem de sedimento.
+3. Baixe MP4s.
+
+FRAMES — ffmpeg, 150/clipe, 1600 px, JPEG 3, frames/drop/frame_0001.jpg. Confirme.
+
+SITE — HTML/CSS/JS, Lenis, preloader %, capítulos 100vh pinados e lerp:
+1. HERO: scrub da entrada na água; “ABYSS” em serif enorme, “MARK II. RATED FOR THE DARK.”
+2. THE DESCENT: scrub B, medidor 0 M → 3,000 M proporcional ao scroll; fundo interpolado sincronizadamente #0E3A5C → #071B30 → #000000; callouts com linhas na cor do lume: “200 M, sunlight ends”; “1,000 M, twilight zone”; “3,000 M, midnight zone”; “STILL TICKING”.
+3. THE LUME: scrub C sobre preto.
+4. SPECS: grid mínimo preto com titanium, sapphire e helium valve, divisores finos.
+5. CTA: “Reserve the Mark II”, e-mail e nota.
+Texto osso #E9EDEA; verde lume #B8FF9E só em medidores, callouts e brilho; serif display + mono no HUD, grande espaço escuro. Mobile/reduced-motion: MP4 em loop e azul profundo estático. requestAnimationFrame; redesenhar sob mudança de índice, 60fps.
+
+VERIFIQUE — loader %, vídeo e background escurecem juntos, medidor chega a 3.000, lume brilha sobre preto, zero erros; dê URL.
+
+-------------------------------------------------------------------------------
+PROMPT 07 — NOIR CONCERT GRAND / PIANO REVELADO PELA LUZ
+Um único feixe constrói a imagem do piano sob o scroll.
+-------------------------------------------------------------------------------
+Construa site one-page “scroll cinematic” premiável com Higgsfield e Codex, do começo ao fim, sem placeholders/planos.
+
+PRODUTO fictício — NOIR Concert Grand, piano de cauda de nove pés com laca preta polida à mão. Tagline “Heard before seen.” CONCEITO: a LUZ É O SCROLL. Página se inicia na escuridão real; um único feixe quente varre o instrumento enquanto usuário rola, revelando curvas, reflexos na laca, partes. Só existe o que a luz toca. No final a tampa sobe e acendem-se as luzes do salão.
+
+TÉCNICA — não Three.js: imagem-sequência no canvas em função do scroll.
+
+ASSETS:
+1. Âncora 16:9: “Piano de cauda de concerto em laca preta polida manualmente num ambiente de escuridão total, único facho de spotlight quente tocando apenas a curva lateral, restante se dissolve no preto, chiaroscuro extremamente contrastado, fotorrealista, sem texto e sem marca-d'água”. Melhor modelo.
+2. Três clipes 10s, 1080p, 16:9, sempre com a âncora:
+A “the sweep”: tudo preto, único facho quente passa lentamente revelando lateral curva, teclas, estante de partitura; reflexos percorrem a laca e a maior parte do frame continua escura.
+B “the opening”: facho se amplia, tampa sobe em slow motion, estrutura dourada interna e cordas refletem luz quente, martelos levantam em onda como respiração.
+C “the strike”: macro extremo com pouca luz; martelo de feltro sobe, atinge corda revestida de cobre, corda vibra borrada, poeira no feixe e tecla de marfim afunda.
+3. Baixe MP4s.
+
+FRAMES — ffmpeg, 150 por clipe, 1600px, JPEG 3, frames/sweep/frame_0001.jpg. Confira.
+
+SITE — HTML/CSS/JS; Lenis; loader como linha fina quente com percentual; capítulos 100vh pinados, scrub e lerp:
+1. HERO: scrub de luz, “NOIR” aparece letra por letra como se o facho revelasse tipografia; overline “CONCERT GRAND. HEARD BEFORE SEEN.”
+2. THE OPENING: scrub B; callouts com linhas hairline tungstênio: “9 FEET of lacquer”; “12,000 PARTS”; “243 STRINGS at 20 tons of tension”; “VOICED for 200 hours”.
+3. THE STRIKE: scrub C do impacto.
+4. THE CREED: três frases curtas sobre silêncio e a primeira nota, reveladas por scroll.
+5. SPECS: grid mínimo duas colunas, divisores finos.
+6. CTA: “Request an audition”, e-mail e nota.
+Preto #060606, tungstênio #E8C28A, texto osso #EDE7DA, nenhuma outra cor, serif gigante + caps espaçadas; página predominantemente escura, tipografia só onde há conteúdo. Mobile/reduced-motion: MP4 em loop. requestAnimationFrame, pintar só ao mudar frame, 60 fps.
+
+VERIFIQUE — loader, luz revelando apenas trechos do piano, tampa legível, martelo impactando em macro, sem erros, URL ao vivo.
+
+REGRAS DO PACOTE 2
+• Mude o objeto, nunca o sistema: um objeto + um momento impossível (explosão, passagem espacial, nascimento em metal derretido, tempo congelado, florescimento, descida ou luz).
+• Reversão é um efeito extra sem renderização adicional: explodir/remontar, abrir/fechar, afundar/emergir.
+• Mantenha hospedagem Sites quando disponível; arquivos locais são alternativa.
+• Autor estima ~100 créditos para uma imagem âncora mais três clipes; custos variam.
+• Se parecer template comum, use as instruções de recuperação. O scrub é o produto.
+
+UPGRADE DIVULGADO NO ORIGINAL
+O pacote apresenta abordagem manual com ChatGPT e menciona uma skill própria na comunidade AI Workshop para gerar assets, frames, código e lançamento em um único comando; cita coleção de 200+ skills e agentes JARVIS, TARS, SPARK. Link: skool.com/aiworkshop.
+
+FIM DO PACOTE 2.
+
+
+###############################################################################
+PACOTE 3 — THE GPT-6 ASTRA 3D WEBSITE PACK
+7 PROMPTS PARA SITES COM 3D REAL — CODEX + HIGGSFIELD + THREE.JS + GSAP
+###############################################################################
+
+APRESENTAÇÃO
+Sete briefings completos para criar sites 3D: portfólio com retrato e portal, jardim de esculturas, apresentação de produtos, mundo narrativo, arquitetura explorável, blog editorial e agência com escultura abstrata. Cada um se adapta a profissão, marca e audiência. O original propõe GPT-6 Astra no Codex para planejar, programar, integrar e verificar; Higgsfield MCP para assets; Three.js e GSAP para ambientes e animações tridimensionais reais.
+
+COMO USAR
+1. Comece num projeto vazio no Codex, selecione o modelo indicado no pacote quando disponível e conecte Higgsfield MCP; cada prompt pede localhost em porta não utilizada.
+2. Substitua [COLCHETES] e anexe fotos de retrato, produto, arquitetura ou referências. Use assets próprios ou licenciados.
+3. Cole apenas um prompt completo; deixe o agente identificar os recursos realmente disponíveis. Acesso e créditos variam.
+4. Teste scroll para frente/trás, rostos, membros, trajetórias, vidro, sombras, poses, botões e celulares.
+
+DISTINÇÃO IMPORTANTE
+Estes exemplos priorizam Three.js 3D REAL quando se precisa de câmera livre, materiais mutáveis, rig articulado, controles orbitais ou refração de objetos espaciais. Sequências cinematográficas de frames são boas para ângulos pré-definidos, mas não substituem liberdade de câmera ou interação real.
+
+-------------------------------------------------------------------------------
+PROMPT 01 — THE PORTRAIT + PORTAL / PORTFÓLIO ALÉM DA MOLDURA
+Ideal para criadores, consultores, especialistas e marcas pessoais.
+-------------------------------------------------------------------------------
+Crie um portfólio cinematográfico para [NOME], um(a) [FUNÇÃO] que ajuda [PÚBLICO] a alcançar [RESULTADO]. Utilize meu retrato anexado, biografia fornecida, [URL DE TRABALHOS] e [URL DE CONTATO]. Confirme afirmações factuais e NÃO invente conquistas. Adapte copy e navegação à profissão.
+
+Abra com hero editorial fullscreen do meu retrato: tipografia serifada enorme atrás do rosto, marfim quente, preto-tinta, toques discretos de oliva e navegação mínima. Inclua seções realmente úteis About, Selected Work, Resources e Contact. Rosto desobstruído, bom contraste de texto, CTA primário evidente desde o primeiro momento.
+
+A jornada característica começa dentro de uma tela inclinada de projeto num canto. Aproxime essa tela até preencher tudo e virar um vazio preto. Um astronauta branco detalhado com visor preto opaco flutua de forma natural, braços e pernas relaxados e assimétricos. A câmera avança em cambalhota por um longo túnel azul-cobalto, entre arcos arquitetônicos brancos e círculos gráficos. Atravesse até a saída oposta, NUNCA inverta no meio. Na saída, salte através de um monitor de vidro para o espaço 3D em primeiro plano. Mostre rachaduras radiais, fragmentos grossos com refração e profundidade. Pouse com os pés primeiro, flexione joelhos, estabilize e levante-se; sombra de contato real. Dois braços intactos, pose final em pé.
+
+O túnel deve ocupar várias telas de scroll, acelerando gradualmente e segurando uma pausa legível no pouso. Coordene numa só timeline: trajetória de câmera, animação dos membros e trajetórias dos cacos. Varie tamanhos e rotações; pedaços à frente cruzam a câmera antes de se acomodarem.
+
+Construa localmente com React, Three.js e GSAP. Use Higgsfield MCP para visuais originais, mas modele astronauta com rig apropriado e geometria 3D real. Inspecione ferramentas suportadas antes de gerar. Scroll reversível e suave. Verifique jornada completa no desktop e mobile, fallback reduced-motion; execute em porta localhost livre e deixe rodando.
+
+PERSONALIZE: função, audiência, transformação, URLs, retrato e amostras reais de trabalho.
+
+-------------------------------------------------------------------------------
+PROMPT 02 — THE SCULPTURE JOURNEY / JARDIM DE ESCULTURAS
+Ideal para comunidades, educadores, serviços e marcas de produtos.
+-------------------------------------------------------------------------------
+Crie site imersivo para [MARCA] sobre [TEMA], ajudando [PÚBLICO] a alcançar [RESULTADO]. A experiência é um jardim único e contínuo de esculturas 3D acima de água rasa reflexiva, percorrido pelo scroll. Um workshop de IA é apenas um possível tema; escolha nomes de capítulos e símbolos compatíveis com o assunto real.
+
+Crie quatro capítulos:
+1. Busto de pedra carvão com detalhes embutidos de bronze representa a ideia central.
+2. Mão esculpida libera pássaro de bronze e representa progresso.
+3. Escultura original expressa colaboração ou domínio.
+4. Escultura fragmentada se monta no convite final.
+Cada capítulo possui silhueta única, título curto e uma frase útil conectada à oferta.
+
+Apoie cada escultura em ilha baixa e irregular de pedra com flores delicadas. Cerque o caminho com pilares marfim canelados, grossos e densamente agrupados: fustes segmentados, topos quebrados inclinados e bases largas em degraus. Respeite proporção e distribuição das referências fornecidas. Névoa pálida, luz solar suave, bronze contido, pequenas ondulações e reflexos convincentes. Deixe a próxima escultura quase escondida até a câmera se aproximar.
+
+O scroll transporta a câmera à frente por caminho fluido, revelando outros ângulos e pausas leves em cada obra. Tudo se passa no MESMO mundo. Ponto de vista na altura humana, evitando colisão com pilares. Faça transição de legendas nas fronteiras sem cobrir a arte. Inclua navegação minimalista, controles diretos de capítulos, recurso inicial relevante para download e botão final [TEXTO CTA] ligado a [URL DESTINO]. Combine recurso e convite à atividade real.
+
+Construa React, Three.js e GSAP localmente. Use Higgsfield MCP para assets originais consistentes, inspecionando ferramentas. Otimize carregamento, inclua mobile e reduced-motion. Valide scroll nas duas direções, downloads e cada CTA. Inicie em localhost livre e deixe aberto.
+
+PERSONALIZAÇÃO: [MARCA], [TEMA], público e convite; exemplos são cursos, comunidades ou consultoria.
+
+-------------------------------------------------------------------------------
+PROMPT 03 — THE PRODUCT REVEAL / SHOWCASE DE E-COMMERCE 3D REAL
+Ideal para produtos premium, marcas diretas ao consumidor e campanhas.
+-------------------------------------------------------------------------------
+Crie apresentação premium de e-commerce para [MARCA] e [PRODUTO]. Fotos e especificações fornecidas são fonte da verdade. Se não houver referências, crie o produto FICTÍCIO de headphones premium chamado FORM.
+
+Abra com produto enorme e belamente iluminado flutuando sobre sombra suave. Fundo marfim, texto carvão, acabamentos de alumínio escovado e UM detalhe laranja queimado. Layout editorial, whitespace generoso, copy objetiva.
+
+Crie sequência pinada guiada pelo scroll: órbita lenta do produto → aproximação macro → peças se separam em exploded view preciso → remontagem suave. Cada estágio dura o suficiente para entendimento. USE GEOMETRIA THREE.JS REAL com materiais correspondentes, reflexos ambientais e sombras de contato. Nunca faça o produto morphar entre frames. Pointer parallax discreto sem deslocar textos.
+
+Cada peça possui trajetória própria, conservando tamanho, orientação e pontos de encaixe em toda a transformação. Labels de recursos ao lado das peças com linhas finas de ligação legíveis. Mobile: simplifique câmera e preserve produto inteiro visível, sem cortar recursos. Durante carregamento, mostre preview leve.
+
+Abaixo da revelação, adicione seletor funcional de cor que ALTERA O PRODUTO, comparativo de funções, galeria, quantidade e cart drawer com totais persistentes. Checkout pode ser simulado com confirmação, salvo se houver integração de pagamento fornecida; não invente reviews ou especificações.
+
+Construa React + GSAP localmente; use Three.js para geometria real; inspecione Higgsfield MCP para imagens consistentes ou assets 3D compatíveis. Otimize assets e teste layout responsivo, teclado, carrinho e reduced-motion. Execute em porta localhost não usada e mantenha rodando.
+
+PERSONALIZAÇÃO: nome de marca/produto; forneça fotos e dados reais quando comercial.
+
+-------------------------------------------------------------------------------
+PROMPT 04 — THE WORLD YOU ENTER / O MUNDO EM QUE VOCÊ ENTRA
+Ideal para narrativas de marca, mundos de ficção, exposições e ensino.
+-------------------------------------------------------------------------------
+Construa site de storytelling interativo chamado [TÍTULO DA HISTÓRIA]. Como exemplo, use “The Last Seed”: narrativa original prioritariamente sem palavras de uma pequena semente devolvendo vida a um mundo abandonado. Pequenas legendas poéticas em HTML selecionável, sem grandes blocos cobrindo cenário.
+
+Comece com paisagem quase preta, castigada pelo vento. O scroll atrai câmera para uma semente luminosa, segue-a para o subsolo por raízes translúcidas e retorna à superfície numa floresta iluminada, com folhas abrindo em torno do visitante. Mude gradativamente paleta obsidiana/âmbar para verde musgo e manhã quente. Materiais táteis, profundidade atmosférica e partículas contidas.
+
+Construa como UM MUNDO Three.js coerente e timeline GSAP de scroll suave. No capítulo intermediário, usuário escolhe CHUVA ou LUZ SOLAR. A decisão ALTERA a animação de crescimento e o final. Os dois ramos devem funcionar, permitir replay e continuar compreensíveis ao voltar o scroll. Adicione índice de capítulos visível e botão reiniciar. Áudio opcional, apenas após habilitação do visitante.
+
+Semente permanece âncora visual em todas as transições. Componha parallax com folhagens próximas, raízes intermediárias e cenários distantes. Pause na bifurcação, explique duas escolhas brevemente e preserve a escolha ao revisitar capítulos. Deixe o final se completar visualmente antes de mostrar replay.
+
+Use Higgsfield MCP para referências originais de ambientes/texturas, inspecione ferramentas e mantenha identidade da semente e do mundo. Desenvolva React, otimize geometria e carregamento, versão legível reduced-motion. Teste os dois finais, scroll mobile e teclado. Rode em porta localhost livre.
+
+PERSONALIZAÇÃO: título, semente/objeto central, transformação e escolhas de acordo com universo narrativo.
+
+-------------------------------------------------------------------------------
+PROMPT 05 — THE SPACE YOU EXPLORE / ARQUITETURA EXPLORÁVEL
+Ideal para arquitetura, interiores e galerias de imóveis conceituais.
+-------------------------------------------------------------------------------
+Construa galeria de visualização arquitetônica para [ESTÚDIO], centrada em [PROJETO]. Sem projeto fornecido, use residência costeira FICTÍCIA “Still House”. Materiais: travertino quente, carvalho claro, linho, vidro e concreto escultórico. Linguagem de revista de arquitetura: off-white, tipografia precisa, linhas finas e margens amplas.
+
+Abra com exterior fullscreen na primeira luz suave da manhã. Ao rolar, guie câmera pela entrada até uma sala de pé-direito duplo e terraço sobre o mar. Profundidade espacial real, escala consistente, transições suaves. Pause em três pontos de vista cuidadosamente compostos com legendas curtas na lateral.
+
+Interiores devem encaixar na implantação exterior, preservando posições de janelas, alturas de pavimento e escala de materiais. Atravesse portas sem atravessar paredes. Equilibre luz solar e iluminação interna suave para acabamentos visíveis. Alternar de tour guiado por scroll para exploração manual deve ser fluido e permitir retorno claro ao tour.
+
+Inclua EXPLORADOR 3D real com arraste para órbita, seletor de pavimento que separa níveis, switch de dia/noite; amostras de materiais clicáveis, galeria com lightbox acessível por teclado, detalhes e contato em [URL CONTATO]. Identifique conceitos como fictícios; não invente prêmios, obras construídas ou depoimentos.
+
+Construa React, Three.js e GSAP. Inspecione Higgsfield MCP e gere imagens arquitetônicas/texturas consistentes a partir de UMA referência de design. A construção deve permanecer idêntica entre vistas. Otimize modelos e lazy/progressive loading, controles touch, galeria reduced-motion. Teste TODOS os seletores e links. Execute em localhost livre.
+
+PERSONALIZAÇÃO: estúdio, imóvel, contato; anexe plantas/referências para fixar arquitetura.
+
+-------------------------------------------------------------------------------
+PROMPT 06 — THE LIVING NOTEBOOK / BLOG PESSOAL COM CADERNO 3D
+Ideal para escritores, designers, pesquisadores e publicações pessoais.
+-------------------------------------------------------------------------------
+Crie blog pessoal para [NOME], chamado [TÍTULO DA PUBLICAÇÃO], sobre [TEMA]. A LEITURA deve ser o centro, com pequeno mundo 3D memorável ao redor. Papel quente, texto azul-tinta, terracota desbotado, títulos serifados elegantes.
+
+Hero com caderno aberto, lápis e pequeno objeto cerâmico sobre mesa bem iluminada suavemente. Scroll levanta delicadamente uma página e aproxima a câmera, antes de a cena se acomodar ao fundo. Curvatura sutil do papel, sombras realistas e movimento moderado. Títulos, navegação e textos devem ser HTML REAL, nunca pintados no canvas 3D.
+
+Abaixo, crie índice de posts editorial com filtros por assunto, busca funcional, datas e tempo de leitura. Faça três artigos originais de AMOSTRA marcados claramente como exemplos, com rota própria, tipografia legível, sumário, barra de progresso de leitura e relacionados. Adicione dark mode e bookmarks salvos localmente. CTA usa [URL NEWSLETTER]; não simule coleta de e-mail sem serviço real.
+
+Largura de leitura confortável, espaçamento generoso entre linhas. Ao abrir artigo, a cena 3D fica quieta, SEM movimento em loop atrás do texto. Filtros e pesquisa combinados; estado sem resultados; preferência de tema preservada. URLs compartilháveis, headings claros, alt de imagem e foco visível por teclado.
+
+Construa React, Three.js e GSAP. Inspecione Higgsfield MCP para texturas de mesa ou arte dos posts. Faça lazy-load do 3D decorativo e garanta leitura utilizável antes dele terminar de carregar. Reduced-motion; teste busca, rotas, bookmarks, mobile e teclado. Rode em porta localhost livre.
+
+PERSONALIZAÇÃO: nome, publicação, assunto e link de newsletter; substitua exemplos por textos reais.
+
+-------------------------------------------------------------------------------
+PROMPT 07 — THE STUDIO WITH GRAVITY / AGÊNCIA CRIATIVA COM FITA 3D
+Ideal para estúdios criativos, motion designers e agências digitais.
+-------------------------------------------------------------------------------
+Crie landing page marcante para [AGÊNCIA], estúdio de estratégia, design e experiências digitais. Fundo ameixa-meia-noite, tipografia creme oversized, chrome polido e ÚNICO acento coral elétrico. Direção visual ousada e deliberada.
+
+Hero com fita escultórica 3D torcendo-se no espaço negativo entre as letras do headline. Conforme scroll: peças se separam, percorrem curvas controladas e remontam-se na marca abstrata da agência. Profundidade real, materiais reflexivos, sombras suaves e coreografia GSAP. Headline legível e navegação estável.
+
+Fita com espessura e curvatura intencionalmente variáveis; highlights revelam volume. Abertura lenta, transição intermediária energética e hold final calmo. Reaproveite acento cromático na navegação de projetos. Interações de pointer sutis; todos efeitos hover também alcançáveis por teclado ou touch.
+
+Transicione a três showcases de projeto espaçosos, com composições diferentes. Cada case abre OVERLAY FUNCIONAL com desafio, processo e resultado. Use projetos enviados; sem projetos, marque todos como CONCEITO e NÃO invente clientes, prêmios ou resultados. Inclua serviços resumidos, introdução curta do estúdio e CTA “Let's talk” vinculado a [URL CONTATO], hovers refinados, controles por teclado.
+
+Construa React + Three.js localmente; inspecione Higgsfield MCP, gere visuais de projetos originais consistentes. Otimize geometria/texturas, carregamento com conteúdo útil imediatamente, mobile e reduced-motion. Verifique transições de scroll, cases, navegação e contato. Execute em localhost livre.
+
+PERSONALIZAÇÃO: agência, URL, três cases reais ou claramente identificados como conceitos.
+
+CINCO DETALHES QUE DEIXAM A ENTREGA FINALIZADA
+1. Fixe a identidade visual primeiro: uma referência por personagem, produto ou edifício; proporções, materiais e luz consistentes.
+2. Dê destino à câmera: abertura, meio, pose final. Túnel deve ter saída; pouso deve terminar em pé.
+3. Dê propósito à animação: pausas legíveis, texto protegido, mobile confortável, reduced-motion respeitado.
+4. Construa ao menos UMA interação funcional: carrinho, seleção de piso, escolha narrativa ou busca; teste com input de verdade.
+5. Cuide de profundidade e carregamento: iluminação, materiais plausíveis, sombras de contato; carregue primeiro o conteúdo útil e depois os assets secundários.
+
+CHECKLIST ANTES DE COMPARTILHAR
+MOTION — scroll para frente/trás, transições entre cenas, pose final.
+FUNCTION — navegação, formulários, escolhas, galerias e CTAs.
+ACCESS — mobile, teclado, reduced-motion e rede lenta.
+
+CONCLUSÃO DO PACOTE 3
+“Build it. Make it yours. Share the result.” Crie, personalize e compartilhe. O autor convida a publicar o resultado na comunidade AI Workshop Skool, com o prompt e uma melhoria própria.
+
+FIM DO PACOTE 3.
+
+
+###############################################################################
+PACOTE 4 — BUILD AWARD-WINNING 3D SCROLL WEBSITES
+7 PROMPTS, TÉCNICA, CUSTOS, POWER-UPS E APRENDIZADOS
+CLAUDE CODE + HIGGSFIELD — EDIÇÃO SETEMBRO 2026
+###############################################################################
+
+APRESENTAÇÃO
+Sete prompts para criar sites cinematográficos controlados pelo scroll e um guia técnico para reproduzi-los. Parte Um: croissant apresentado como smartphone flagship, caixa de som cujo bass drop explode tintas coloridas e foguete lançado pelo scroll. Parte Dois: detalhamento automotivo, serviços de casa com visão X-ray, joalheria com passeio por dentro do diamante e projeto de piscina construído durante a rolagem. O documento discute quais modelos geram cada plano, custos em créditos e técnicas de verificação.
+
+COMO USAR
+Pré-requisitos no material: Claude Code, Higgsfield como servidor MCP com créditos, Google Chrome para testar e gravar. O autor estima cerca de 400 a 1.400 créditos por site, dependendo dos vídeos 4K; são números do documento e podem ter mudado. O Claude pode instalar ffmpeg quando falta. Crie pasta vazia, inicie Claude Code nela, confira ferramentas e cole um prompt.
+
+1. Cole o prompt inteiro e deixe finalizar. Cada briefing contém imagens, filmes, site, design, lançamento e teste. A validação final é parte da confiabilidade.
+2. Gere UMA plate hero primeiro e as demais como EDIÇÕES dessa mesma imagem: produto, enquadramento e iluminação ficam iguais. Não gere stills posteriores do zero.
+3. Verifique o custo ANTES de gastar; peça preflight/orçamento ao Higgsfield para cada render.
+4. Se aparecer sugestão de preset em vez de vídeo, recuse o preset; quando suportado, reenvie com declined_preset_id.
+5. Direcione usando feedback perceptivo: “o título cobre o produto”, “a explosão é rápida demais”, “parece pouco premium”, em vez de microespecificar a solução.
+
+COMO O SCROLL 3D REALMENTE FUNCIONA NESTE PACOTE
+Não é motor 3D. É canvas image-sequence scrub. Um filme é dividido em aproximadamente 200 quadros numerados que são pré-carregados. O scroll seleciona qual quadro pintar. Descer reproduz; subir rebobina. O visual tridimensional vem da própria filmagem.
+
+RECEITA TÉCNICA
+1. Faça plates ANTES dos filmes: imagem hero limpa, momentos visuais de chegada (rachadura, explosão, conclusão) como edições. O documento usa GPT Image 2.5 a 4K.
+2. Dê START e END IMAGE a cada vídeo. O frame final define o destino do movimento e permite loops se início=fim.
+3. Exija “One continuous shot, no cuts” nos prompts de movimento, para não criar cortes estranhos na rolagem reversa.
+4. Corte frames iniciais parados, frequentemente gerados pelos modelos, para espalhar transformação pelo scroll.
+5. Extraia aproximadamente 200 quadros a 1600–1920 px. Para ação rápida, considerar FPS boost.
+6. Sincronize medidores (dB, hertz, camadas, altitude) ao que aparece no filme, não apenas à rolagem bruta.
+7. Execute cada site numa porta própria com launcher, teste também o MEIO de cada capítulo e não só o topo.
+
+COMPARAÇÃO DE MODELOS E CRÉDITOS (VALORES REGISTRADOS PELO AUTOR EM SETEMBRO/2026)
+• Kling 3.0 4K: 60 créditos / clipe de 10s. Workhorse; respeita muito bem end frame, transformação gradual excelente para scrub; costuma manter início parado e precisa de trim.
+• Cinema Studio 3.0 4K: 240 créditos / clipe de 10s. Maior espetáculo; trata end frame como sugestão, inventando câmera mais ousada; bom para surpresas visuais.
+• Seedance 2.0 4K: 220 créditos / 10s. Grande densidade de detalhes; eventos rápidos podem acabar em 1,5 s e ficar parados, menos adequados a scrub longo.
+• Seedance 2.5 1080p: 360 créditos / 30s. Take único contínuo; descreva fisicamente e literalmente, pois metáforas podem ser renderizadas como objetos reais.
+• GPT Image 2.5 4K: 4,25 / 15 créditos para stills qualidade high/max; edições de uma plate preservam alinhamento para sobreposições X-ray.
+• Topaz FPS Boost: 56 créditos, eleva um clipe para 48fps, deixando ações rápidas mais suaves; em 4K pode demorar.
+• Hunyuan3D v3: 19 créditos, converte still em modelo 3D real para rotação por arraste.
+
+O motor de scroll, HUDs, alternância de paleta, lente X-ray, som e formulários são código; modelos geram stills e filmes. Custos dos exemplos originais informados pelo autor: LAMINA ~360 créditos; CYMA ~1.360 incluindo testes; HESPER ~1.300.
+
+
+PARTE UM — TRÊS PROJETOS DO VÍDEO
+================================
+
+-------------------------------------------------------------------------------
+PROMPT 01 — LAMINA / CROISSANT PRO LANÇADO COMO CELULAR FLAGSHIP
+Ideal para padarias, cafés, restaurantes e qualquer produto hero de pequeno negócio.
+-------------------------------------------------------------------------------
+Crie site cinematográfico “3D scroll” com padrão de premiado para LAMINA, padaria artesanal fictícia que lança seu croissant como uma gigante da tecnologia lançaria smartphone premium: “Croissant Pro. Our most layered croissant ever.”
+
+STILLS — Higgsfield MCP, gpt_image_2_5, 4K, qualidade high, 16:9. Primeiro faça UMA plate hero: croissant perfeito feito com manteiga, flutuando num vazio preto puro, ângulo três-quartos, rim light finíssima, flocos dourados, fotografia de produto médio formato, sem texto. TODAS AS OUTRAS PLATES devem ser EDIÇÕES da hero (passe seu job id como imagem de referência):
+(a) Croissant partido ao meio com corte limpo, metades afastadas, miolo alveolado em honeycomb visível, flocos num halo congelado.
+(b) Croissant fatiado em sete seções transversais flutuantes enfileiradas como tomografia CT.
+(c) Versão X-ray na mesma posição e escala.
+(d) Versão térmica thermal-camera na mesma posição e escala.
+(e) Macro extremo no interior dos alvéolos com túnel aberto à frente.
+(f) Croissant cru numa assadeira escura dentro de forno de lastro iluminado.
+(g) Mesmo enquadramento do forno, croissant agora assado e dourado.
+Gere também três outras massas no mesmo estilo visual da hero para a coleção de produtos.
+
+FILMES — kling3_0, modo 4K, duration 10, som off, 16:9. Passe SEMPRE start_image E end_image, para determinar o término da cena.
+1. SPIN: start=end=hero. Prompt: “Uma rotação completa, suave, de 360 graus, centralizada, câmera travada, loop sem emenda.” [Original: “One smooth complete 360-degree rotation, centred, camera locked, seamless loop.”]
+2. CRUNCH: hero→(a). “Em slow motion extremo, quebra-se ao meio; flocos explodem e ficam suspensos no ar.”
+3. LAMINATION: hero→(b). “Separação em fatias que deslizam para longe como tomografia.”
+4. CRUMB: início=(e). “Fly-through contínuo e lento no túnel alveolado.”
+5. BAKE: (f)→(g). “Timelapse: cresce, camadas se levantam, crosta doura.”
+Se ferramenta recomendar preset em vez do trabalho, reenvie recusando com declined_preset_id. Faça trim de frames iniciais de espera de Kling antes de extrair.
+
+SITE — cada filme vira ~200 frames a 1920px. Faça scroll-scrub em capítulos canvas pinados com Lenis.
+SPIN: croissant inicialmente pequeno sob imenso título dourado “Croissant Pro”; sobe e preenche cena; desliza lateralmente para deixar espaço a “81 layers.” e “27 sheets.”
+CRUNCH: medidor de dB chegando a 94, contador de flocos no ar e dica “scroll back up to un-crunch it.”
+LAMINATION: contador 0→81 camadas e faixa de especificações.
+CRUMB: cards glass.
+BAKE: leitura ao vivo do forno com timer, temperatura, aumento de volume e nome da cor.
+Depois, adicione lente de cursor X-ray/thermal por cima das plates (c)/(d), cujo readout analisa pixel sob cursor; viewer drag-to-spin reutilizando os frames de rotação; lineup de quatro produtos com tabela de dados; card de pedido antecipado com steppers de quantidade, janelas de retirada, countdown da próxima fornada e botão reservar que avisa que NADA foi enviado (demonstração).
+Design tipo lançamento flagship: preto puro, título dourado em gradiente, Inter Tight com itálicos Instrument Serif, medidores monoespaçados. Adicione sound toggle desligado por padrão, sintetizando crunch e ruído de forno em Web Audio. Execute em localhost e verifique cada capítulo NO MEIO DO SCROLL antes de concluir.
+
+PERSONALIZAÇÃO: troque croissant por donut, vela ou pacote de café. Preserve a regra de stills derivadas de uma plate e os frames de início/fim. Custo original citado: ~360 créditos.
+
+-------------------------------------------------------------------------------
+PROMPT 02 — CYMA ONE / EXPLOSÃO DE COR PELO GRAVE
+Ideal para áudio, tênis, cosméticos, bebidas e produtos com evento visual marcante.
+-------------------------------------------------------------------------------
+Crie site 3D scroll premiável para CYMA One, caixa de som escultórica fictícia. No bass drop, tinta sobre o cone explode numa fonte arco-íris alta. A explosão deve SAIR DO PRODUTO; o fundo fica preto puro.
+
+STILLS — Higgsfield MCP, gpt_image_2_5, 4K, qualidade max, 16:9.
+PLATE 1: caixa de som larga, baixa, de alumínio preto jateado, woofer voltado para cima na parte inferior central, muito espaço preto acima, rim lights, foto de produto medium-format.
+PLATE 2 (edição 1): mesma caixa, quinze porções de tinta pura sobre cone em oito cores: magenta, cyan, yellow, orange, violet, lime, cobalt, crimson.
+PLATE 3 (edição 2): ápice da pancada grave; tinta salta em filamentos, coroas e milhares de gotas que preenchem parte superior; “um único frame de câmera Phantom high-speed, tinta acrílica real, NÃO CGI, NÃO desenho animado”.
+PLATE 4: exploded view, nove partes empilhadas verticalmente, com pigmento diferente saindo de cada espaço.
+Três acabamentos adicionais: titanium, sand, cobalt.
+
+FILMES — 4K, 10s, sem som, 16:9, sempre start_image e end_image.
+DROP: kling3_0 4K, plate2→plate3; silêncio, então nota profunda faz cone subir e a tinta voar em slow motion extremo como fonte multicolorida contínua, sem cortes.
+FROZEN: kling3_0 4K, start=end=plate3; tempo fica congelado no auge, câmera orbita 360° em volta da tinta suspensa, loop perfeito.
+INSIDE: cinematic_studio_3_0 4K, plate2→plate3, mesmo drop; o modelo inventa um movimento maior e entra na tinta, aproveite trecho depois do pico.
+ANATOMY: kling3_0 4K, plate1→plate4; caixa desmonta camada por camada, cor sai de cada intervalo.
+Opcional: Topaz fps_boost 48 para ações rápidas com scrub mais suave.
+
+SITE — capítulos canvas pinados com Lenis.
+THE DROP: frequency meter salta a 32 Hz; contador de 0→8 cores no ar.
+FROZEN: medidor de graus da órbita, chips “Original, Neon, Sunset, Ocean, Mono” para recolorir TODOS os filmes instantaneamente com CSS filters.
+INSIDE: readout avança 32 Hz→20 kHz.
+ANATOMY: contador de peças, spec card glass, câmera afasta conforme a pilha cresce.
+Live colour sampler: detecta pixels mais saturados do frame atual e usa a cor na interface, passando pelos mesmos filtros matemáticos da paleta para UI e tintas combinarem.
+Adicione HUD spectrum-bar, cursor que pulveriza tinta e gera respingo no clique, um drop 808 com Web Audio no primeiro scroll (som off por padrão), grid de specs com count-up e seção de compra com swatches de acabamentos.
+Direção: quase preto, display larga/expandida, labels mono, textos em gradiente das cores detectadas. Execute em localhost, confira todos os capítulos no meio do scroll.
+
+PERSONALIZAÇÃO: fórmula plate limpa → plate com pigmento → plate no auge da explosão. Pode ser sola de tênis com tinta, liquidificador, tampa de perfume. Teste grandes takes em mais de um modelo; o documento registra ~1.360 créditos incluindo comparação.
+
+-------------------------------------------------------------------------------
+PROMPT 03 — HESPER / UM ÚNICO TAKE DE LANÇAMENTO
+Ideal para lançamentos, inaugurações, drops e eventos com contagem regressiva.
+-------------------------------------------------------------------------------
+Crie site 3D scroll premiável para HESPER, empresa espacial fictícia que só realiza lançamentos ao entardecer. Rolar a página LANÇA O FOGUETE.
+
+STILLS — Higgsfield MCP, gpt_image_2_5, 4K, qualidade high, 16:9. Hero: foguete estilizado em base costeira ao entardecer, corpo branco pérola, detalhes grafite e cobre; NÃO parecer um foguete real específico; neblina baixa, céu quente. Faça still em estúdio para modelagem 3D do foguete, still de satélite se desdobrando e outra de booster pousando.
+
+FILMES:
+1. THE FLIGHT — UM TAKE SEM CORTES: seedance_2_5, mode omni_reference, hero como referência, duration 30, resolution 1080p, bitrate high, som off. “One continuous shot: countdown on the pad, ignition, liftoff, climbing through the cloud deck into a second sunset, the plume glowing in twilight, arriving at the edge of space. No cuts.” Descreva fenômenos FISICAMENTE, não como metáforas visuais. Renderize duas versões, escolha melhor.
+2. THE PAYLOAD — seedance_2_0 4K, 10 s: carenagem abre, satélite dourado desdobra painéis ao amanhecer.
+3. THE RETURN — seedance_2_0 4K, 12 s: booster pousa numa plataforma oceânica ao entardecer.
+4. THE VEHICLE — generate_3d com Hunyuan3D v3 usando still de estúdio. Comprima GLB com quantize e texturas WebP, NÃO meshopt quando viewer não o decodifica.
+
+SITE — loader preenche barra de combustível; gate “Go for launch” habilita som. 01 THE FLIGHT: scrub do filme contínuo de 30s, scroll com countdown T−10 → ignição T−3 → decolagem T+0; telemetria inclui relógio de missão, altitude, velocidade e fase, SINTONIZADA COM O QUE APARECE NO FILME, não apenas porcentagem de scroll. Dê mais rolagem a trechos lentos via curva time-warp. Durante ignição, stage treme conforme velocidade do scroll. Web Audio rumble com brown noise, sub de 36 Hz e crackle, tocando SÓ enquanto vídeo avança, silenciando no vácuo. 02 THE PAYLOAD e 04 THE RETURN controlam os respectivos filmes. 03 THE VEHICLE mostra modelo 3D em model-viewer com drag para rodar e labels ancorados ao casco. 05 BOOK: escolha órbita, ride e massa da carga para calcular preço indicativo; mostre janela do próximo lançamento ao crepúsculo com cálculos reais do pôr do sol para local da base; diálogo reservar informa que nenhuma solicitação foi realmente enviada.
+Design escuro crepuscular, acento cobre, estética editorial contida, telemetria mono. Execute em localhost, confira countdown, sincronização e som.
+
+PERSONALIZAÇÃO: a contagem regressiva pode virar abertura de restaurante, drop de tênis ou primeira aula de academia. Take único evita costuras ao voltar scroll. Custo original citado: ~1.300 créditos.
+
+
+PARTE DOIS — QUATRO PROJETOS PARA NEGÓCIOS REAIS
+================================================
+Cada projeto combina MOMENTO WOW + FUNÇÃO COMERCIAL: orçamentos, agendamentos, personalização e demonstração de resultado.
+
+-------------------------------------------------------------------------------
+PROMPT 04 — UNDO / RESTAURAÇÃO AUTOMOTIVA PELO SCROLL
+Ideal para detailing, funilaria, lavagem a pressão, piscina, telhados e outros serviços antes/depois.
+-------------------------------------------------------------------------------
+Crie um site 3D scroll com padrão premiado para UNDO, estúdio fictício premium de detalhamento automotivo (correção de pintura e revestimento cerâmico). Scroll restaura um carro malcuidado; rolar para trás traz vinte anos de sujeira de volta em dois segundos.
+
+STILLS — Higgsfield MCP, gpt_image_2_5, 4K, high, 16:9. Plate BEFORE: cupê estilo anos 1960, empoeirado, pintura desbotada com swirls, SEM emblemas/placa/pessoas, sob teto de LEDs hexagonais de estúdio escuro, ângulo baixo três-quartos. Plate AFTER: EDIÇÃO da before; MESMO carro, câmera e enquadramento, agora acabamento deep wet-look espelhado, LEDs perfeitamente refletidos e cromados brilhantes. Terceira plate, também edição, macro de água formando gotículas no capô protegido.
+
+FILMES — kling3_0 4K, 10 s, sem áudio, 16:9.
+1. THE RESTORATION: before→after; câmera avança lentamente, linha de restauração viaja do para-choque dianteiro ao traseiro; poeira sai, pintura opaca vira espelho, cromados perdem ferrugem conforme linha passa; take contínuo, FORMA do carro NÃO MUDA.
+2. THE SHOW: start=end=after; arco lento de 180° em volta do carro e de volta, reflexos deslizam, loop sem emenda.
+3. THE PROOF: macro; água derramada sobre pintura protegida forma gotas, corre e escorre em slow motion.
+Movimentos suaves: órbitas grandes elevam risco de o formato do veículo se deformar.
+
+SITE — canvas pinados com Lenis. RESTORATION: medidor de brilho 12→94 GU, contador de anos removidos e dica para rolar para trás. SHOW: slider antes/depois por arraste utilizando as duas plates. PROOF: leitura de repelência chegando a ângulo de contato de 110°. Depois pacotes Enhancement, Correction e Ceramic com escopo/preços; construtor instantâneo de orçamento (tamanho do veículo, condição da pintura, pacote) com estimativa ao vivo; cartão de agendamento com baias disponíveis que explica que NADA foi enviado. Design garagem preta, acento turquesa elétrico único, display larga confiante, readouts mono, motivo de luzes hexagonais discreto. Rode e valide a restauração nos dois sentidos.
+
+PERSONALIZAÇÃO: plate antes/depois também funciona para calçadas com musgo, piscina verde, cozinha desgastada ou deck manchado. A plate depois SEMPRE deriva da plate anterior.
+
+-------------------------------------------------------------------------------
+PROMPT 05 — CLEARLINE / CASA DE RAIO-X
+Ideal para climatização, encanadores, eletricistas, pragas e isolamento — serviços invisíveis.
+-------------------------------------------------------------------------------
+Crie site 3D scroll com padrão premiado para CLEARLINE, empresa fictícia de serviços de casa (aquecimento, refrigeração, hidráulica e elétrica), cuja promessa é “we see what you can't.”
+
+STILLS — Higgsfield MCP, gpt_image_2_5, 4K high, 16:9. HERO: casa familiar moderna de dois andares na blue hour, janelas quentes, vista três-quartos da rua, sem pessoas. EDIÇÕES DA MESMA IMAGEM, exatamente mesma posição/escala:
+X-RAY: paredes translúcidas de vidro azul revelam tubulações de cobre, dutos vermelhos/azuis e fiação amarela brilhante.
+THERMAL: termografia mostra furnace quente, janela fria com vazamento de ar e ponto quente no sótão.
+FAULT: X-ray com uma tubulação vazando iluminada de vermelho.
+
+FILMES — kling3_0 4K, 10 s, sem áudio, 16:9.
+1. ARRIVAL: hero→hero levemente mais próxima; dolly lento contínuo da rua à casa em blue hour, sem cortes.
+2. SEE THROUGH: hero→X-ray; paredes se tornam vidro de cima para baixo, expondo canos, dutos e fiação; câmera fixa.
+3. THE FIX: fault→X-ray saudável; vazamento vermelho desaparece, cano fica cobre saudável; câmera fixa.
+
+SITE — canvas pinados com Lenis. ARRIVAL: headline + pequena leitura ao vivo de sistemas. SEE THROUGH: cada sistema recebe label à medida que aparece. THE FIX: texto de status “Leak detected” → “Sealed, 0.0 L per hour.” Depois componente característico: imagem estática grande da casa com LENTE CIRCULAR no cursor, exibindo X-ray ou thermal; toggle entre os dois, readout que identifica sob a lente cano, duto, fio ou temperatura. Meça alinhamento das plates e corrija offsets. Acrescente serviços, wizard de orçamento de 90 segundos (sistema, sintoma, tamanho da casa, urgência) terminando com faixa de preço e próximo horário; avaliações com estrelas e barra emergencial click-to-call.
+Design azul-marinho de crepúsculo, ouro quente das janelas, único vermelho sinalizador, sans geométrica limpa e readouts mono. Execute no localhost; confira alinhamento da lente com o imóvel.
+
+PERSONALIZAÇÃO: lente pode mostrar interior de motor, colchão, tênis ou dente. Só funciona quando as diferentes imagens são EDIÇÕES alinhadas da mesma plate.
+
+-------------------------------------------------------------------------------
+PROMPT 06 — FACET / VIAGEM AO INTERIOR DO DIAMANTE
+Ideal para joalherias, relojoeiros, cristal e vidro.
+-------------------------------------------------------------------------------
+Crie site 3D scroll premiável para FACET, joalheria independente fictícia conhecida pelo anel de noivado Aurora Solitaire. O visitante voa para DENTRO do diamante, onde luz branca explode em cores arco-íris.
+
+STILLS — Higgsfield MCP, gpt_image_2_5, 4K max, 16:9. HERO: anel solitário em platina com grande diamante redondo brilliant, flutuando no preto, luz pontual forte, flashes espectrais nítidos, foto de luxo. EDIÇÕES: FIRE PLATE, diamante produz explosão de raios espectrais e caustics sobre fundo escuro; MACRO PLATE, visão extrema de dentro do diamante para fora pelas facetas, caleidoscópio de prismas/luz; mais a MESMA peça em ouro amarelo e rosé.
+
+FILMES — 4K, 10 s, sem som, 16:9.
+1. THE TURN: kling3_0, start=end=hero; anel completa 360° sob spotlight fixo, fogo espectral percorre facetas, loop contínuo.
+2. THE FIRE: kling3_0, hero→fire; spotlight intensifica e diamante divide luz em explosão de raios e caustics coloridos, câmera fixa.
+3. INSIDE: cinematic_studio_3_0, hero→macro; câmera atravessa faceta superior e viaja para dentro do diamante numa catedral de prismas e arco-íris. O modelo pode ampliar o movimento, razão para escolhê-lo aqui.
+
+SITE — canvas scroll pinados com Lenis. THE TURN: os quatro Cs aparecem um por vez (cut, colour, clarity, carat), com readouts pequenos. THE FIRE: live colour sampler escolhe a cor de destaque da UI de acordo com o flash que estiver na tela. INSIDE: medidor de retorno de luz e uma linha de copy. Depois RING BUILDER: metal (troca plate), slider de quilates com preço em tempo real, tamanho do anel e texto de gravação desenhado numa preview band. Agendamento privado com slots e aviso de que nada foi enviado; faixa de cuidados/garantia. Design black velvet, platina branca para tipografia, gradiente espectral SÓ onde a luz toca, serif de alto contraste e sans limpa. Valide atualização do preço do configurador.
+
+PERSONALIZAÇÃO: diamante pode virar mecanismo de relógio, decanter de cristal ou vitral. Luz no escuro oferece explosão de cores sofisticada.
+
+-------------------------------------------------------------------------------
+PROMPT 07 — OASIS / QUINTAL QUE SE CONSTRÓI SOZINHO
+Ideal para piscinas, paisagismo, decks, pátios e obras de alto valor.
+-------------------------------------------------------------------------------
+Crie site 3D scroll premiável para OASIS, construtora fictícia de piscinas e paisagismo. O scroll constrói um quintal vazio de terra até formar um oásis iluminado ao anoitecer.
+
+STILLS — Higgsfield MCP, gpt_image_2_5, 4K high, 16:9.
+PLATE 1: quintal suburbano vazio, terra exposta, atrás de casa moderna na golden hour, vista aérea três-quartos.
+PLATE 2: EDIÇÃO da 1, MESMA câmera e casa, quintal finalizado no crepúsculo: piscina turquesa iluminada, spa, deck de pedra, fire pit, oliveiras, cordões de luz, janelas quentes.
+PLATE 3: EDIÇÃO da 2, ângulo baixo à altura dos olhos através da água rumo ao fire pit.
+
+FILMES:
+1. THE BUILD: UM TAKE SEM CORTES, seedance_2_5, mode omni_reference, plates 1 e 2 como referência, duration 30, resolução 1080p, sem áudio. “One continuous slow aerial orbit around the backyard while it builds itself in time-lapse: the ground is marked out, the pool is dug, steel and concrete go in, stone decking is laid, water fills the pool, trees and planting appear, and the sun sets until the pool lights, fire pit and string lights glow. No cuts; the house never changes.”
+2. THE EVENING: kling3_0 4K, 10s, start=plate3; câmera baixa desliza sobre água iluminada em direção ao fire pit, superfície tremeluz, único take contínuo.
+
+SITE — canvas pinados com Lenis. THE BUILD: scrub dos 30 segundos, timeline sincronizada com a obra que passa por Design → Dig → Steel → Concrete → Stone → Fill → Plant → Light, com contador de semanas vinculado a cada etapa. THE EVENING: encerra com “Your backyard, finished.” Depois slider antes/depois (plates 1 e 2), configurador de design (formato da piscina, acabamento, material do deck, extras como spa, fogueira e iluminação), faixa de preço ao vivo e prazo de obra; grid de portfólio; opção de financiamento apresentada como valor mensal; formulário para consulta gratuita de design com date picker que deixa claro que nenhuma solicitação foi enviada.
+Visual: pedra quente e azul-piscina profundo, dourado de entardecer, serif luxuosa relaxada nos títulos, sans limpa. Execute localmente e confira timeline precisamente alinhada à filmagem.
+
+PERSONALIZAÇÃO: também funciona para decks, cozinhas, entradas de garagem e casas inteiras. Use plates antes/depois para que a casa e a câmera continuem iguais durante transformação.
+
+
+CINCO POWER-UPS PARA QUALQUER SITE
+=================================
+
+POWER-UP 1 — THE PALETTE SWITCHER
+“Adicione um seletor de paleta ao capítulo mais colorido: chips Original, Neon, Sunset, Ocean e Mono aplicando filtros CSS a TODOS os canvas controlados por scroll de uma vez. Recolora o acento da interface através da mesma matemática de cores para manter UI e vídeo sincronizados. Verifique que cada chip altera vídeo E interface.”
+
+POWER-UP 2 — THE X-RAY LENS
+“Adicione lente que segue cursor: crie edição da hero plate revelando interior (X-ray, thermal ou cutaway) exatamente na mesma posição e tamanho, sobreponha à hero e revele-a num círculo de borda suave acompanhando pointer. Quando não houver interação, faça deslocamento lento automático. Adicione readout que amostra pixel sob a lente. Meça alinhamento entre plates e corrija offset.”
+
+POWER-UP 3 — SOM SINCRONIZADO AO SCROLL
+“Adicione sound toggle desligado por padrão. Sintetize tudo com Web Audio, sem arquivos de áudio: um impacto no momento principal, textura sonora somente enquanto filme se move, silêncio instantâneo quando scroll para. Inclua ?mute=1 para teste.”
+
+POWER-UP 4 — MODEL BAKE-OFF
+“Gere mesmo hero shot em kling3_0 4K, cinematic_studio_3_0 4K e seedance_2_0 4K, usando start e end frames idênticos. Faça uma contact sheet de cada vídeo, analise qual funciona melhor como scrub e por quê, e utilize o vencedor.”
+
+POWER-UP 5 — READY TO FILM
+“Prepare para gravação: empacote todas as bibliotecas localmente para funcionar offline; crie launcher por duplo clique que inicia servidor em porta própria e abre navegador; impeça dev server de cachear arquivos inexistentes; mantenha loop de animação vivo mesmo se algum frame falhar; disponibilize URL ?solo=chapter:0.5 para fixar um capítulo numa posição escolhida para screenshots.”
+
+SEIS LIÇÕES DO AUTOR
+1. Frame final é volante: start e end determinam precisamente onde o take chega; o end deve derivar visualmente do start.
+2. Toda still nova deve vir de uma plate comum: imagens independentes desviam produto, ângulo e luz; edição mantém alinhamento, permitindo sobrepor X-ray.
+3. Teste o take principal em mais de um modelo. Kling se destacou nos exemplos de drop, órbita e anatomia; Cinema Studio inventou voo para dentro da tinta e possibilitou capítulo novo.
+4. Espalhe transformação pelo scroll: explosão que termina em 1,5 s com longo hold desperdiça controle. Corte frames parados e prefira progressão gradual.
+5. Descreva fisicamente: “pluma que parece água-viva” pode gerar água-viva literal; descreva movimento concreto de matéria e luz.
+6. Instrumentos e funções comerciais fazem o espetáculo virar site. Medidores sincronizados parecem engenharia; pedido, orçamento e reserva justificam investimento do cliente.
+
+DIVULGAÇÃO CONTIDA NO PDF ORIGINAL
+O autor indica comunidade gratuita skool.com/aiworkshop-lite, workshop completo skool.com/aiworkshop e canal YouTube “Zubair Trabzada | AI Workshop”, com skill para automatizar pipeline cinematográfico e playbooks comerciais.
+
+FIM DO PACOTE 4.
+
+
+###############################################################################
+RESUMO DE APLICAÇÃO — VISÃO CONSOLIDADA DOS QUATRO PACOTES
+###############################################################################
+
+Há DUAS arquiteturas diferentes nos materiais, com capacidades distintas:
+
+A. CINEMA PRÉ-RENDERIZADO COM IMAGE-SEQUENCE SCRUB
+Fluxo típico: imagem âncora → edições para imagens de chegada → clipes gerados por IA com start/end → corte dos trechos parados → extração de 150–200 JPEGs por clipe com ffmpeg → preload → canvas desenhado por drawImage → posição do scroll para frame → smoothing lerp/Lenis → validação em desktop/mobile. É apropriado quando o visitante controla a progressão temporal de uma câmera já filmada, como explosão, transformação, ascensão e descida. Não permite arbitrariamente caminhar ao redor do objeto fora dos ângulos gravados.
+
+B. 3D REAL COM THREE.JS + GSAP
+Fluxo típico: referências originais consistentes → modelos/rigs/geometria reais → materiais/reflexos/sombras → cena Three.js → timeline GSAP mapeada ao scroll → controles orbitais, troca de material e interação real → desempenho mobile + reduced-motion → testes. Apropriado quando se necessita mudar livremente a câmera, explorar ambientes, articular personagens e alterar objetos em tempo real.
+
+Podem ser combinados: clipe cinematográfico para uma transição fixa impactante e 3D real nas seções de interação. Em todos os casos, não invente resultados, depoimentos ou dados comerciais para clientes reais; sinalize demonstrações de formulário que não enviam nada. Assets devem conservar identidade visual e respeitar propriedade/licenças. Priorize desempenho, acessibilidade, testes e uma ação realmente útil.
+
+FONTES DESTA COMPILAÇÃO (4 ARQUIVOS ORIGINAIS FORNECIDOS)
+1. Fable5-Higgsfield-Website-Prompt-Pack.pdf — 13 páginas — 10 prompts.
+2. ChatGPT-Website-Creator-Prompt-Pack.pdf — 11 páginas — 7 prompts.
+3. GPT-6-Astra-3D-Website-Prompt-Pack.pdf — 10 páginas — 7 prompts.
+4. Award-Winning-3D-Website-Prompt-Pack.pdf — 15 páginas — 7 prompts.
+
+FIM DA COLEÇÃO — 31 PROMPTS EM PORTUGUÊS.

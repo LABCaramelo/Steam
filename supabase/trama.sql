@@ -168,5 +168,5 @@ $$;
 revoke all on function public.pending_trama_file_cleanup(integer), public.confirm_trama_file_cleanup(text[]) from public, anon, authenticated;
 grant execute on function public.pending_trama_file_cleanup(integer), public.confirm_trama_file_cleanup(text[]) to service_role;
 
-update public.lab_tools set name = 'Trama' where slug = 'automation';
+update public.lab_tools set name = 'Trama', available = true where slug = 'automation';
 notify pgrst, 'reload schema';
