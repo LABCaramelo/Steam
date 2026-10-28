@@ -49,10 +49,6 @@ const viewKey = computed(() => (route.meta.refresh_on_org_change ? `${route.name
               <v-icon :icon="themeName === 'dark' ? 'mdi-white-balance-sunny' : 'mdi-weather-night'" size="18" />
               <span>Tema {{ themeName === 'dark' ? 'claro' : 'escuro' }}</span>
             </button>
-            <a href="/library/home" target="_top" class="trama-topbar__action trama-topbar__action--back" title="Voltar ao LAB">
-              <v-icon icon="mdi-arrow-top-left" size="18" />
-              <span>Voltar ao LAB</span>
-            </a>
           </div>
         </header>
 
