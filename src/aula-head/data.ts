@@ -107,11 +107,11 @@ export interface PromptMetadata {
 
 const promptEnrichments = [
   {
-    whatItDoes: "Entrevista você sobre seu negócio, posicionamento e produto para estruturar a copy persuasiva completa de todas as 6 seções da Landing Page.",
+    whatItDoes: "Conduz uma investigação profunda sobre seu posicionamento e oferta para estruturar a copy persuasiva de 7 seções (incluindo Trabalhos Selecionados / Portfólio) e gerar o prompt autossuficiente para o Google AI Studio.",
     whenToUse: "Na Aula 3, logo após ter o briefing do projeto e antes de construir os blocos visuais da página.",
-    inputs: "Respostas sobre quem você é, para quem vende, qual dor resolve, sua oferta e o próximo passo.",
-    outputs: "Headlines, subheadlines, descrições dos blocos, entregas detalhadas e CTAs formatados para a página.",
-    customizationTip: "Substitua exemplos de 'Head de Conteúdo' pela sua profissão, nicho ou serviço real. Mantenha as perguntas e o tom de entrevista.",
+    inputs: "Respostas sobre quem você é, para quem vende, qual dor resolve, sua oferta, cases reais de portfólio e o próximo passo comercial.",
+    outputs: "Copy completa nas 7 seções estruturadas (Hero, Problema, Solução, Entregas, Trabalhos Selecionados, Processo, CTA) + Prompt de implementação para Google AI Studio.",
+    customizationTip: "Substitua exemplos pela sua profissão, nicho ou serviço real. Nunca invente cases, clientes ou números: a integridade e evidência concreta são mandatórias.",
   },
   {
     whatItDoes: "Combina duas imagens de referência: uma que define a composição/cenário/iluminação (IMAGE 1) e outra que define a identidade facial (IMAGE 2).",
