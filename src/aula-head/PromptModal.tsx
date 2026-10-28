@@ -16,12 +16,12 @@ export function PromptModal({ initialIndex = 0, onClose }: PromptModalProps) {
   const prompt: PromptMetadata = prompts[selected];
 
   return (
-    <Modal title="Os oito prompts profissionais" close={onClose} wide>
+    <Modal title="Prompts oficiais do treinamento" close={onClose} wide>
       <div className="prompt-library-layout">
-        <nav className="prompt-sidebar" aria-label="Navegar pelos 8 prompts">
+        <nav className="prompt-sidebar" aria-label="Navegar pelos prompts">
           <div className="prompt-sidebar-header">
             <span>BIBLIOTECA OFICIAL</span>
-            <small>8 ferramentas em ordem didática</small>
+            <small>4 prompts em ordem didática</small>
           </div>
           {prompts.map((p, i) => (
             <button

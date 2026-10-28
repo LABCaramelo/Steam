@@ -79,16 +79,12 @@ export const sectionTexts = [
   "Vamos começar seu projeto?",
 ];
 
-const promptOrder = [4, 0, 1, 2, 5, 3, 6, 7];
+const promptOrder = [4, 1, 2, 5];
 export const promptNames = [
   "Copy de LP",
-  "Hero Animada",
   "Reconstrução de Imagem",
   "Image to Video",
   "Moodboard → Design System",
-  "System Prompt para Google AI Studio",
-  "Project Report",
-  "Motion Experience",
 ];
 
 export interface PromptMetadata {
@@ -117,13 +113,6 @@ const promptEnrichments = [
     customizationTip: "Substitua exemplos de 'Head de Conteúdo' pela sua profissão, nicho ou serviço real. Mantenha as perguntas e o tom de entrevista.",
   },
   {
-    whatItDoes: "Gera o código frontend completo e responsivo da seção Hero com animações de entrada, tipografia editorial e container de vídeo ou imagem.",
-    whenToUse: "Na Aula 3, após aprovar a copy principal da Hero e ter os primeiros materiais visuais prontos.",
-    inputs: "Copy aprovada (headline, subheadline, CTA), logotipo e imagem ou vídeo em loop.",
-    outputs: "Componente Hero em HTML/React/CSS pronto, estilizado e interativo no Google AI Studio.",
-    customizationTip: "Remova métricas, dados de clientes ou provas sociais de exemplo que não pertençam ao seu negócio. Insira sua mídia e link real de CTA.",
-  },
-  {
     whatItDoes: "Combina duas imagens de referência: uma que define a composição/cenário/iluminação (IMAGE 1) e outra que define a identidade facial (IMAGE 2).",
     whenToUse: "Na Aula 2, para criar o visual principal da sua Hero sem precisar de um ensaio fotográfico presencial.",
     inputs: "Duas imagens: uma referência estética de cena de alta qualidade e uma foto nítida do seu rosto (ou da pessoa autorizada).",
@@ -143,27 +132,6 @@ const promptEnrichments = [
     inputs: "Imagens ou descrições de referências visuais que traduzam o clima e personalidade da marca.",
     outputs: "Tokens CSS e regras visuais padronizadas que podem ser aplicadas instantaneamente à Hero e demais blocos.",
     customizationTip: "Garanta contraste adequado entre textos e fundos. O Design System deve servir à clareza da mensagem, não apenas à estética decorativa.",
-  },
-  {
-    whatItDoes: "Configura a IA como um Desenvolvedor Criativo e Frontend Sênior que respeita regras de preservação (LOCKS), alterando somente o que for solicitado.",
-    whenToUse: "Na Aula 2 e em todas as interações no Google AI Studio (System Instructions / Comportamento do Sistema).",
-    inputs: "Colar nas instruções de sistema (System Prompt) do ambiente de IA antes de começar o desenvolvimento.",
-    outputs: "Respostas com código limpo, arquitetura modular e preservação rigorosa do que já foi aprovado.",
-    customizationTip: "Mantenha esse prompt sempre ativo no Google AI Studio para evitar que a IA delete ou recrie páginas inteiras a cada pequeno ajuste.",
-  },
-  {
-    whatItDoes: "Mapeia a arquitetura, arquivos, dependências, rotas e componentes de uma Landing Page existente em modo estritamente analítico (leitura).",
-    whenToUse: "Na Aula 4, antes de realizar grandes refatorações ou publicar na Vercel.",
-    inputs: "O código-fonte da aplicação ou repositório completo.",
-    outputs: "Um relatório estruturado com mapa de componentes, camadas visuais, assets e pontos de atenção para deploy.",
-    customizationTip: "Exija que a IA permaneça em modo somente leitura durante a inspeção para que nenhum código funcional seja alterado acidentalmente.",
-  },
-  {
-    whatItDoes: "Cria um plano de coreografia de movimento, microinterações, transições e efeitos de scroll sincronizados para elevar a experiência.",
-    whenToUse: "Na Aula 4, como refinamento opcional de experiência após a Landing Page já estar funcional e pronta para deploy.",
-    inputs: "Relatório da página (Project Report) e as diretrizes de experiência e narrativa da marca.",
-    outputs: "Código e plano de animação com suporte a prefers-reduced-motion e performance otimizada.",
-    customizationTip: "Trate o motion como refinamento opcional: sua Landing Page deve funcionar e converter perfeitamente mesmo sem nenhuma animação.",
   },
 ];
 
@@ -307,17 +275,15 @@ export const slides: SlideData[] = [
     heading: "A IA NÃO DEVE RECONSTRUIR TUDO A CADA ALTERAÇÃO.",
     line: "Problema + Alteração desejada + O que deve permanecer igual. Decisões aprovadas são LOCKED.",
     invite: "Experimente a alteração controlada versus descontrolada e instale o System Prompt.",
-    prompt: 5, // Prompt 06 (System Prompt)
+    prompt: -1,
     lesson: 1,
     livePractice: {
       tool: "Google AI Studio (System Instructions)",
       toolUrl: "https://aistudio.google.com/",
-      promptNumber: 6,
-      promptName: "System Prompt para Google AI Studio",
-      materials: ["Prompt 06: Comportamento do Sistema", "Componente criado no AI Studio"],
-      action: "Configurar as System Instructions no AI Studio com o Prompt 06 e solicitar uma pequena modificação pontual usando a instrução de preservação.",
+      materials: ["Instruções de Preservação", "Componente criado no AI Studio"],
+      action: "Configurar as System Instructions no AI Studio e solicitar uma pequena modificação pontual usando a instrução de preservação.",
       checklist: [
-        "Prompt de Sistema colado nas System Instructions do Google AI Studio",
+        "Instruções coladas nas System Instructions do Google AI Studio",
         "Alteração pontual solicitada com especificação do que deve ficar igual",
         "A IA alterou apenas o elemento pedido sem reconstruir o restante",
       ],
@@ -332,13 +298,13 @@ export const slides: SlideData[] = [
     heading: "UMA IMAGEM DEFINE A CENA. OUTRA DEFINE A IDENTIDADE.",
     line: "IMAGE 1 define composição, iluminação e cenário. IMAGE 2 define quem estará nela.",
     invite: "Mova o slider para comparar antes e depois e descubra o que cada referência controla.",
-    prompt: 2, // Prompt 03 (Reconstrução de Imagem)
+    prompt: 1, // Prompt 02 (Reconstrução de Imagem)
     lesson: 1,
     livePractice: {
       tool: "Midjourney / Gemini Imagen 3 / Flux",
-      promptNumber: 3,
+      promptNumber: 2,
       promptName: "Reconstrução de Imagem",
-      materials: ["1 imagem de referência de estilo/cena", "1 foto nítida de identidade facial autorizada", "Prompt 03"],
+      materials: ["1 imagem de referência de estilo/cena", "1 foto nítida de identidade facial autorizada", "Prompt 02"],
       action: "Subir as duas referências na ferramenta de imagem e executar o prompt indicando qual imagem dita a cena e qual dita a identidade.",
       checklist: [
         "Referências selecionadas e enviadas para a IA",
@@ -356,13 +322,13 @@ export const slides: SlideData[] = [
     heading: "MOVIMENTO BOM É MOVIMENTO QUE PERTENCE À CENA.",
     line: "Um loop sutil conecta o final ao começo sem que a repetição seja percebida.",
     invite: "Examine o loop na timeline interativa e compare a imagem estática com a animada.",
-    prompt: 3, // Prompt 04 (Image to Video)
+    prompt: 2, // Prompt 03 (Image to Video)
     lesson: 1,
     livePractice: {
       tool: "Kling AI / Runway Gen-3 / Luma Dream Machine",
-      promptNumber: 4,
+      promptNumber: 3,
       promptName: "Image to Video",
-      materials: ["Imagem personalizada gerada no slide anterior", "Prompt 04"],
+      materials: ["Imagem personalizada gerada no slide anterior", "Prompt 03"],
       action: "Carregar a imagem na ferramenta de vídeo e aplicar o prompt de movimento sutil de 8 segundos em loop.",
       checklist: [
         "Vídeo gerado com movimento ambiental suave (cabelo, luz, respiração)",
@@ -428,15 +394,13 @@ export const slides: SlideData[] = [
     heading: "A HERO É O PRIMEIRO IMPACTO DA PÁGINA.",
     line: "Headline, subheadline, botão de ação, imagem/vídeo e logo trabalhando juntos.",
     invite: "Clique nos elementos da Hero para entender suas funções e teste variações de texto.",
-    prompt: 1, // Prompt 02 (Hero Animada)
+    prompt: -1,
     lesson: 2,
     livePractice: {
       tool: "Google AI Studio",
       toolUrl: "https://aistudio.google.com/",
-      promptNumber: 2,
-      promptName: "Hero Animada",
-      materials: ["Prompt 02 de Hero", "Copy da Hero aprovada", "Imagem ou vídeo em loop da Aula 2"],
-      action: "Executar o Prompt 02 no Google AI Studio substituindo os dados de exemplo pelos do seu projeto real.",
+      materials: ["Copy da Hero aprovada", "Imagem ou vídeo em loop da Aula 2"],
+      action: "Construir a Hero no Google AI Studio substituindo os dados de exemplo pelos do seu projeto real.",
       checklist: [
         "Código da Hero renderizado no AI Studio",
         "Textos, mídia e logo do seu projeto inseridos",
@@ -453,14 +417,14 @@ export const slides: SlideData[] = [
     heading: "MOODBOARD É INSPIRAÇÃO. DESIGN SYSTEM É REGRA.",
     line: "Cores, tipografia, espaçamento e componentes aplicados com consistência à mesma estrutura.",
     invite: "Alterne entre os moodboards e veja a Hero assumir diferentes Design Systems sem mudar a copy.",
-    prompt: 4, // Prompt 05 (Moodboard → Design System)
+    prompt: 3, // Prompt 04 (Moodboard → Design System)
     lesson: 2,
     livePractice: {
       tool: "Google AI Studio / Claude",
       toolUrl: "https://aistudio.google.com/",
-      promptNumber: 5,
+      promptNumber: 4,
       promptName: "Moodboard → Design System",
-      materials: ["Prompt 05 de Design System", "Hero já criada", "Referências visuais e paleta de cores"],
+      materials: ["Prompt 04 de Design System", "Hero já criada", "Referências visuais e paleta de cores"],
       action: "Pedir à IA para extrair e aplicar os tokens de cores, fontes e botões à sua Hero sem modificar a copy aprovada.",
       checklist: [
         "Design System estruturado com cores, tipografia e raios",
@@ -503,18 +467,16 @@ export const slides: SlideData[] = [
     heading: "UMA PÁGINA SÓ ESTÁ PRONTA QUANDO FUNCIONA.",
     line: "A oferta está clara? Funciona no celular? Os botões e formulários respondem?",
     invite: "Alterne entre Desktop, Tablet e Mobile e complete o checklist das 9 verificações essenciais.",
-    prompt: 6, // Prompt 07 (Project Report) e Prompt 08 (Motion Experience)
+    prompt: -1,
     lesson: 3,
     livePractice: {
       tool: "Google AI Studio & DevTools",
-      promptNumber: 7,
-      promptName: "Project Report & Motion Experience",
-      materials: ["Prompt 07 (Project Report)", "Prompt 08 (Motion)", "Landing Page completa"],
-      action: "Executar o Prompt 07 em modo somente leitura para auditar a estrutura do código e testar a visualização em celular.",
+      materials: ["Landing Page completa", "DevTools do navegador"],
+      action: "Executar revisão em modo somente leitura para auditar a estrutura do código e testar a visualização em celular.",
       checklist: [
-        "Relatório de projeto gerado para mapear arquivos e dependências",
         "Checklist dos 9 pontos essenciais verificado",
-        "Motion avançado tratado como opcional sem bloquear a publicação",
+        "Visualização em celular testada e responsiva",
+        "Links e botões com destino real",
       ],
     },
     reviewQuestions: [

@@ -3,14 +3,10 @@ import { prompts, type PromptMetadata } from "./data";
 import "./prompts-page.css";
 
 const promptAccents: Record<number, string> = {
-  1: "#FF701A", // Caramel Orange
-  2: "#25BFFF", // Electric Sky
-  3: "#FF3D8D", // Hot Pink
-  4: "#7657FF", // Electric Violet
-  5: "#FFD52A", // Acid Yellow
-  6: "#25BFFF", // Sky Cyan
-  7: "#FF701A", // Caramel
-  8: "#7657FF", // Violet
+  1: "#FF701A", // Caramel Orange - Copy de LP
+  2: "#25BFFF", // Electric Sky - Reconstrução de Imagem
+  3: "#FF3D8D", // Hot Pink - Image to Video
+  4: "#FFD52A", // Acid Yellow - Moodboard & Design System
 };
 
 export default function PromptsPage() {
@@ -106,7 +102,7 @@ export default function PromptsPage() {
       }
 
       const num = Number(e.key);
-      if (num >= 1 && num <= 8) {
+      if (num >= 1 && num <= 4) {
         e.preventDefault();
         const target = prompts.find((p) => p.number === num);
         if (target) {
@@ -135,11 +131,9 @@ export default function PromptsPage() {
 
       const matchesCat =
         activeCategory === "all" ||
-        (activeCategory === "frontend" && p.category.includes("Frontend")) ||
         (activeCategory === "media" && (p.category.includes("Imagem") || p.category.includes("Vídeo"))) ||
         (activeCategory === "copy" && p.category.includes("Copywriting")) ||
-        (activeCategory === "system" && (p.category.includes("System") || p.category.includes("Documentação"))) ||
-        (activeCategory === "motion" && p.category.includes("Motion"));
+        (activeCategory === "design" && p.category.includes("Design"));
 
       return matchesSearch && matchesCat;
     });
@@ -165,10 +159,10 @@ export default function PromptsPage() {
 
           <div className="prompts-topbar-actions">
             <a
-              href="/8-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
-              download="8-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
+              href="/4-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
+              download="4-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
               className="prompts-download-btn"
-              title="Baixar arquivo de texto completo com todos os 8 prompts"
+              title="Baixar arquivo de texto completo com os 4 prompts"
             >
               <span>Baixar Todos (.txt)</span>
               <span aria-hidden="true">↓</span>
@@ -184,13 +178,13 @@ export default function PromptsPage() {
       <section className="prompts-hero">
         <div className="prompts-hero-badge">
           <span className="prompts-hero-dot" />
-          <span>8 Prompts Mestres · Landing Pages com IA</span>
+          <span>4 Prompts Oficiais · Landing Pages com IA</span>
         </div>
         <h1>COPIAR PROMPTS DO TREINAMENTO</h1>
         <p className="prompts-hero-lead">
-          Acesse cada um dos 8 prompts mestres separadamente. Clique no botão de cópia de qualquer prompt
+          Acesse cada um dos 4 prompts essenciais separadamente. Clique no botão de cópia de qualquer prompt
           para enviá-lo instantaneamente à área de transferência, pronto para colar no Claude, ChatGPT,
-          Midjourney ou Google AI Studio.
+          Midjourney, Flux ou Kling AI.
         </p>
 
         {/* BARRA DE CONTROLE: PESQUISA, ATALHOS E FILTROS */}
@@ -231,12 +225,10 @@ export default function PromptsPage() {
 
           <div className="prompts-filter-row">
             {[
-              { id: "all", label: "Todos", count: 8 },
+              { id: "all", label: "Todos", count: 4 },
               { id: "copy", label: "Copywriting", count: 1 },
-              { id: "frontend", label: "Hero & Frontend", count: 1 },
               { id: "media", label: "Imagens & Vídeo", count: 2 },
-              { id: "system", label: "AI Studio & Sistema", count: 2 },
-              { id: "motion", label: "Motion Experience", count: 1 },
+              { id: "design", label: "Design System", count: 1 },
             ].map((cat) => (
               <button
                 key={cat.id}

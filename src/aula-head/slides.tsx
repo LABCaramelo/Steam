@@ -871,19 +871,12 @@ function Slide06CorrigirIA(p: SlideComponentProps) {
 
       <div className="system-prompt-callout">
         <div className="sp-text">
-          <span className="eyebrow">FERRAMENTA OFICIAL</span>
-          <h4>System Prompt para Google AI Studio</h4>
+          <span className="eyebrow">DIRETRIZ DE PRESERVAÇÃO</span>
+          <h4>Regras de Preservação no AI Studio</h4>
           <p>
-            O Prompt 06 ensina a IA a operar como um Desenvolvedor Criativo que respeita o que já foi aprovado.
+            Oriente a IA a operar respeitando o que já foi aprovado e alterando apenas o elemento solicitado sem reconstruir a tela.
           </p>
         </div>
-        <button
-          type="button"
-          className="button primary"
-          onClick={() => p.openPrompt(5)}
-        >
-          Ver e Copiar Prompt 06 ↗
-        </button>
       </div>
 
       <Hint>
@@ -1002,9 +995,9 @@ function Slide07ImagemReferencia(p: SlideComponentProps) {
             type="button"
             className="button small"
             style={{ marginTop: "10px" }}
-            onClick={() => p.openPrompt(2)}
+            onClick={() => p.openPrompt(1)}
           >
-            Ver Prompt 03: Reconstrução de Imagem ↗
+            Ver Prompt 02: Reconstrução de Imagem ↗
           </button>
         </div>
       </div>
@@ -1138,9 +1131,9 @@ function Slide08ImagemParaVideo(p: SlideComponentProps) {
           <button
             type="button"
             className="button small"
-            onClick={() => p.openPrompt(3)}
+            onClick={() => p.openPrompt(2)}
           >
-            Ver Prompt 04: Image to Video ↗
+            Ver Prompt 03: Image to Video ↗
           </button>
           <span className="small">
             Se a ferramenta de vídeo não estiver disponível ou exigir créditos extras, prossiga com a imagem estática: sua Landing Page continuará excelente!
@@ -1409,15 +1402,6 @@ function Slide11ConstruirHero(p: SlideComponentProps) {
             />
           </label>
         ))}
-
-        <button
-          type="button"
-          className="button primary"
-          style={{ marginTop: "12px" }}
-          onClick={() => p.openPrompt(1)}
-        >
-          Ver Prompt 02: Hero Animada ↗
-        </button>
       </div>
     </div>
   );
@@ -1498,9 +1482,9 @@ function Slide12IdentidadeVisual(p: SlideComponentProps) {
           type="button"
           className="button"
           style={{ marginTop: "12px" }}
-          onClick={() => p.openPrompt(4)}
+          onClick={() => p.openPrompt(3)}
         >
-          Ver Prompt 05: Moodboard → Design System ↗
+          Ver Prompt 04: Moodboard → Design System ↗
         </button>
       </div>
 
@@ -1623,15 +1607,6 @@ function Slide14RevisarLP(p: SlideComponentProps) {
           )}
         </div>
         <small>Visualização responsiva. Teste sua página real em ambos os formatos.</small>
-
-        <div className="review-prompts-row">
-          <button type="button" className="button small" onClick={() => p.openPrompt(6)}>
-            Prompt 07: Project Report ↗
-          </button>
-          <button type="button" className="button small" onClick={() => p.openPrompt(7)}>
-            Prompt 08: Motion Experience ↗
-          </button>
-        </div>
       </div>
 
       <div className="final-checklist">
