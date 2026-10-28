@@ -58,10 +58,18 @@ O trigger de exclusão conserva as chaves na fila privada de limpeza. `node scri
 
 ## Validação e publicação
 
-TypeScript e build Vite aprovados. A suíte da plataforma passou 156 testes, incluindo o webhook real com transporte de teste e banco PGlite: versão publicada, idempotência, formulários já analisados pela Vercel, captura, troca de token, autorização e concorrência. O runtime da Trama possui mais 15 testes. A conferência anterior no Edge com fixture local passou criação de fluxo, execução pelo motor real, versão, envio/download/exclusão de arquivo, temas e viewport móvel. Auth, persistência e arquivos dessa conferência visual são controlados localmente; não representam uma sessão de membro real no Supabase.
+TypeScript e build Vite aprovados. A suíte da plataforma passou 158 testes, incluindo o webhook real com transporte de teste e banco PGlite: versão publicada, idempotência, formulários já analisados pela Vercel, captura, troca de token, autorização e concorrência. O runtime da Trama passou mais 15 testes. A conferência anterior no Edge com fixture local passou criação de fluxo, execução pelo motor real, versão, envio/download/exclusão de arquivo, temas e viewport móvel. Auth, persistência e arquivos dessa conferência visual são controlados localmente; não representam uma sessão de membro real no Supabase.
 
 Capturas e resultados estão em `docs/qa/trama-2026-10-28/`. A inspeção visual orientou correções da lista móvel e do contraste no tema claro. A auditoria MCP automática é complementar: não mede todos os contrastes computados de Vue/Vuetify.
 
 O catálogo está disponível em beta. `TRAMA_ENCRYPTION_KEY` e `CLOUDFLARE_R2_PRIVATE_BUCKET` foram configuradas no ambiente de produção da Vercel, usando a mesma chave do ambiente local e o bucket privado provisionado. As credenciais do Supabase e R2 permanecem exclusivas do servidor.
 
 A auditoria de dependências identificou avisos na cadeia preexistente do pacote local `@caramelo/design-system` (Zod), cuja atualização é independente desta integração. As dependências da Trama foram fixadas no lockfile.
+
+## Identidade e comportamento dos modais
+
+A Trama usa o sistema Lumen do MCP Caramelo em toda a interface: área de trabalho, cartões de módulo, portas, conexões, controles, terminal, telas de fluxos/conexões/histórico e modais. Os tokens semânticos e o tema do LAB também alcançam os overlays do Vuetify. A interface respeita teclado, foco e movimento reduzido.
+
+O Webhook apresenta produção e teste simultaneamente. Testar Webhook inicia uma escuta cancelável de até dois minutos. `/flows/:id/webhook/capture` consulta somente o proprietário, sem lease ou gravação, e retorna apenas chamadas ao link de teste. A entrada pode ser fixada, editada ou limpa. Selecionar uma nova ação exige confirmar em Salvar antes de inserir o nó.
+
+O Retorno apresenta Formato/Código de resposta, abas Body/Headers e editor expandido. O servidor respeita JSON, XML, HTML, texto e multipart, com limite de 2 MB. HTML e XML recebem CSP com sandbox; headers de segurança e identificação da execução permanecem controlados pelo servidor. A conferência visual está em `docs/qa/trama-identity-2026-10-28/`.

@@ -33,7 +33,7 @@ function markVariables() {
   }
 }
 onMounted(async () => {
-  instance = CodeMirror.fromTextArea(textarea.value, { value: stringify(props.modelValue), mode: modeFor(props.language), lineNumbers: true, lineWrapping: true, tabSize: 2, indentUnit: 2, matchBrackets: true, autoCloseBrackets: true, viewportMargin: 20, theme: 'caramelo' })
+  instance = CodeMirror.fromTextArea(textarea.value, { value: stringify(props.modelValue), mode: modeFor(props.language), lineNumbers: true, lineWrapping: true, tabSize: 2, indentUnit: 2, matchBrackets: true, autoCloseBrackets: props.language === 'javascript', viewportMargin: 20, theme: 'caramelo' })
   instance.setValue(stringify(props.modelValue))
   instance.setSize(null, Math.max(140, props.rows * 20 + 24))
   instance.getWrapperElement().setAttribute('role', 'textbox')
@@ -47,7 +47,7 @@ onMounted(async () => {
   instance.refresh()
 })
 watch(() => props.modelValue, value => { if (instance && instance.getValue() !== stringify(value)) { const cursor = instance.getCursor(); instance.setValue(stringify(value)); instance.setCursor(cursor); markVariables() } })
-watch(() => props.language, language => instance?.setOption('mode', modeFor(language)))
+watch(() => props.language, language => { instance?.setOption('mode', modeFor(language));instance?.setOption('autoCloseBrackets',language === 'javascript') })
 watch(() => props.invalid, value => instance?.getWrapperElement().setAttribute('aria-invalid', String(!!value)))
 onBeforeUnmount(() => instance?.toTextArea())
 function insert(text) { if (instance) { instance.replaceSelection(text, 'end'); instance.focus() } }

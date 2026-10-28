@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-28",
+  "environment": "Local browser, real Vue UI/gateway/engine, isolated auth/database fixtures",
+  "checks": [
+    "home-create-workspace",
+    "webhook-separate-links-listen-capture-without-execution",
+    "webhook-edit-clear-and-pin-sample",
+    "webhook-rotate",
+    "return-format-status-headers-expanded-editor-save",
+    "engine-runs-return-with-selected-format",
+    "node-picker-selection-then-confirmation",
+    "light-theme-mobile-and-keyboard"
+  ],
+  "errors": []
+}

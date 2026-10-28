@@ -70,7 +70,9 @@ function nextId(){const numeric=flux.value.steps.map(s=>Number(String(s.id).repl
 function addStep(context){
   const {app,module:moduleDef,appDefinition,sourceId,sourceHandle='out',position}=typeof context==='string'?{app:context}:context
   remember();const source=flux.value.steps.find(s=>String(s.id)===sourceId),positions=layoutGraph(flux.value.steps,flux.value.edges)
-  const step={id:nextId(),app,action:getApp(app).title,config:{},position:position??{x:(positions[sourceId]?.x??-324)+324,y:positions[sourceId]?.y??0}}
+  const existingPositions=Object.values(positions)
+  const fallback={x:Math.max(-324,...existingPositions.map(p=>p.x))+324,y:Math.min(0,...existingPositions.map(p=>p.y))}
+  const step={id:nextId(),app,action:getApp(app).title,config:{},position:position??(source?{x:positions[sourceId].x+324,y:positions[sourceId].y}:fallback)}
   if(moduleDef&&appDefinition) Object.assign(step,{title:appDefinition.name,action:moduleDef.name,description:moduleDef.description??'',module_id:moduleDef.id,parameters_json:clone(moduleDef.parameters_json??[]),definition:clone({base:appDefinition.base,request:moduleDef.request,revision:appDefinition.revision,app_id:appDefinition.id,module_id:moduleDef.id})})
   if(source?.app==='router'){const branch=Number(sourceHandle.replace('branch-',''))||1;step.position.y+=(branch-1)*230-115}
   if(sourceHandle==='body')step.position.y-=115
