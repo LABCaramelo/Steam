@@ -52,13 +52,15 @@ A Loja apresenta as cinco ferramentas em `/store` e suas páginas em `/store/app
 | --- | --- | --- |
 | Kanban | `/tools/kanban/index.html` | Quadros/listas/cartões, arraste e alternativas de teclado, etiquetas, checklists, comentários, agenda, tabela/CSV e métricas. Template Rotina Superprodutiva com 8 listas e 98 cartões. Importa/exporta JSON do LAB e do Trello. |
 | Prancheta | `/tools/prancheta/index.html` | Editor original de `Figma/` com vários arquivos privados em `prancheta_files`. Desenho, páginas, camadas, componentes e exportação PNG/SVG/JSON. Salvamento automático e manual; detecta conflitos entre abas e oferece recuperação/cópia. |
-| Automation | `/tools/automation/index.html` | Port React de `Fiqon/`: canvas, módulos, templates, rascunho assistido por regras, versões, logs, métricas e replay. A execução é simulada: não chama APIs nem executa código, IA ou agendamentos reais. Conexões guardam apenas metadados, sem credenciais. |
+| Trama | `/tools/automation/index.html` | Evolução da Automation com interface e motor de `Fiqon/`: canvas, ramos, HTTP/IA/MCP reais em execução manual, aplicativos próprios, versões, logs e replay. Supabase por conta e arquivos privados no R2. Planejamentos antigos em `?legacy=1`. Webhooks externos, agendamentos e JavaScript ainda indisponíveis. |
 | Academy | `/tools/academy/index.html` | Vitrine, aulas YouTube/Vimeo/vídeo e a apresentação de `/aula-head`, progresso, conclusão, favoritos, anotações privadas e comentários/respostas/curtidas da turma. Administradores criam, ordenam, editam e publicam cursos, módulos e aulas. |
 | Comunidade | `/tools/comunidade/index.html` | Canais de texto, salas de voz em tempo real (WebRTC via LiveKit), compartilhamento de tela, mensagens diretas, status e navegação rápida por Ctrl+K. Identidade visual e tokens canônicos do MCP Caramelo. |
 
 Fontes e entradas ficam em `src/tools/<nome>/` e `tools/<nome>/index.html`. A base comum é `src/tools/shared/`. O Vite compila as quatro páginas separadamente; o LAB as abre no iframe. As 16 artes da Loja estão em `public/tools/<nome>/art/` e podem ser regeneradas com `node scripts/generate-tool-art.mjs`.
 
 ### Configuração do banco antes da publicação
+
+A **Trama** mantém o app 4 e o slug `automation`. A entrada adicional é `/tools/trama/index.html`. A migração `supabase/migrations/20261028120408_trama_workspace_and_private_files.sql` já foi instalada no Supabase do LAB; para outra instalação, aplique-a após os scripts-base. O bucket privado separado é `umcaracaramelo-private`. Antes de publicar o código, configure `TRAMA_ENCRYPTION_KEY` e as variáveis do R2 no servidor. Detalhes, limites e validações em [docs/trama-integration.md](docs/trama-integration.md).
 
 No SQL Editor do projeto Supabase, aplique **`supabase/lab-access.sql` antes de `supabase/lab-tools.sql`**. A Loja avisa quando as tabelas/funções ainda não existem. Isso vale também para adquirir a Biblioteca de prompts. Para editar aulas, cadastre explicitamente a conta em `lab_admins` usando o comando comentado no início de `lab-tools.sql`; metadados do perfil não concedem administração. O `community.sql` da outra sessão depende de `lab_member()` deste script.
 

@@ -2,10 +2,12 @@
 .env
 .env.*
 node_modules/
+.npm-cache/
 dist/
 .rea-reference/
 docs/
 src/tools/_dev/
 **/*.test.ts
 **/*.test.tsx
+**/*.test.mjs
 **/*.log

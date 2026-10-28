@@ -110,29 +110,29 @@ export const PRANCHETA_APP = tool(PRANCHETA_APP_ID, "Prancheta", {
   },
 });
 
-export const AUTOMATION_APP = tool(AUTOMATION_APP_ID, "Automation", {
+export const AUTOMATION_APP = tool(AUTOMATION_APP_ID, "Trama", {
   slug: "automation",
+  stage: "beta",
   launchPath: `/library/app/${AUTOMATION_APP_ID}/open`,
   publicPage: "/tools/automation/index.html",
-  description: "Monte integrações entre apps num canvas visual, teste a execução e acompanhe os resultados.",
+  description: "Conecte dados e aplicativos em fluxos visuais, execute ações e acompanhe cada resultado.",
   assets: art("/tools/automation/art"),
   store: {
-    tagline: "Integrações visuais com execução simulada e dashboard.",
-    eyebrow: "AUTOMAÇÃO / FLUXOS VISUAIS",
-    headline: "Conecte os apps.\nDeixe o fluxo trabalhar.",
+    tagline: "Fluxos visuais com execução manual real, versões e arquivos privados.",
+    eyebrow: "AUTOMAÇÃO / FLUXOS EM AÇÃO / BETA",
+    headline: "Uma ideia.\nVários caminhos.",
     features: [
-      { title: "Editor visual de fluxo", text: "Nós arrastáveis, conexões, gatilhos, filtros, IA, mensagens, planilhas e requisições HTTP." },
-      { title: "Construtor com IA", text: "Descreva a automação em português e receba um rascunho de integração pronto para ajustar." },
-      { title: "Teste e acompanhe", text: "Rode o fluxo, veja cada módulo executar e consulte logs, gráficos e replays no dashboard." },
-      { title: "Versões e templates", text: "Salve versões, restaure quando quiser e comece por templates do LAB." },
+      { title: "Desenhe o caminho", text: "Conecte módulos, crie ramos, configure filtros e organize a lógica no canvas." },
+      { title: "Crie com suas conexões", text: "Configure APIs HTTP e provedores de IA com credenciais protegidas no servidor." },
+      { title: "Execute e acompanhe", text: "Rode manualmente, veja a saída de cada etapa e consulte histórico e replay." },
+      { title: "Continue de onde parou", text: "Salve versões, use templates e guarde arquivos privados na sua conta." },
     ],
-    steps: ["Adquira o Automation e crie sua primeira integração.", "Escolha um template, descreva para a IA ou monte módulo por módulo.", "Rode o teste e acompanhe as execuções no dashboard."],
-    about: [["Formato", "Editor de integrações"], ["Execução", "Simulada no LAB"], ["Exportação", "Arquivo .json"]],
-    dataNote: "Integrações, versões, execuções e conexões ficam no seu banco do Automation no LAB. Chaves de API nunca são gravadas.",
+    steps: ["Adquira a Trama e abra seu espaço privado.", "Comece por um template ou conecte seus próprios módulos.", "Revise a entrada, execute manualmente e acompanhe o resultado."],
+    about: [["Formato", "Editor de integrações"], ["Execução", "Manual · até 30 segundos"], ["Exportação", "JSON"], ["Versão", "Beta"]],
+    dataNote: "Fluxos, versões e histórico ficam no Supabase; arquivos privados, no R2. Ações reais podem gerar custos nos provedores conectados. Agendamentos, webhooks externos e execução de JavaScript ainda não estão disponíveis. Seus planejamentos anteriores continuam acessíveis.",
     category: "Automação",
   },
 });
-
 export const ACADEMY_APP = tool(ACADEMY_APP_ID, "Academy", {
   slug: "academy",
   launchPath: `/library/app/${ACADEMY_APP_ID}/open`,

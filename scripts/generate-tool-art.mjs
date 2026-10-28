@@ -14,7 +14,7 @@ const escapeXml = (str) =>
 const tools = [
   { slug: 'kanban', name: 'Kanban', number: '02', accent: '#FF701A', category: 'ORGANIZAÇÃO / ROTINA', lines: ['Uma semana.', 'Um quadro.'] },
   { slug: 'prancheta', name: 'Prancheta', number: '03', accent: '#25BFFF', category: 'DESIGN / CANVAS', lines: ['Da ideia', 'à tela final.'] },
-  { slug: 'automation', name: 'Automation', number: '04', accent: '#FF3D8D', category: 'FLUXOS / CONEXÕES', lines: ['Conecte.', 'Experimente.'] },
+  { slug: 'automation', name: 'Trama', number: '04', accent: '#FF701A', category: 'FLUXOS / CONEXÕES', lines: ['Conecte as ideias.', 'Execute o próximo passo.'] },
   { slug: 'academy', name: 'Academy', number: '05', accent: '#FF701A', category: 'FORMAÇÃO / LAB', lines: ['Aprenda.', 'Coloque em ação.'] },
   { slug: 'claquete', name: 'Claquete', number: '06', accent: '#FFD52A', category: 'CINEMA / VÍDEO & IA', lines: ['Do roteiro', 'ao corte final.'] },
   { slug: 'comunidade', name: 'Comunidade', number: '07', accent: '#7657FF', category: 'COMUNICAÇÃO / LAB', lines: ['Voz, canais', 'e conexões.'] },
@@ -78,7 +78,8 @@ const svg = (tool, kind) => {
   return `${head}<rect width="${w}" height="${h}" fill="url(#dots)"/><path d="M${w * 0.76} 0H${w}V${h}H${w * 0.95}Z" fill="${tool.accent}" fill-opacity=".1"/><path d="M${x} ${capsule ? 245 : hero ? 392 : 240}H${hero ? 1020 : capsule ? 555 : 435}" stroke="#FFF4E8" stroke-opacity=".18"/><g font-family="Arial,Helvetica,sans-serif"><text x="${x}" y="${capsule ? 70 : hero ? 90 : 55}" fill="${tool.accent}" font-size="${hero ? 18 : 11}" font-weight="700" letter-spacing="3">LAB / ${tool.number}</text><text x="${x - 4}" y="${nameY}" fill="#FFF4E8" font-size="${nameSize}" font-weight="900" letter-spacing="-3">${safeName}<tspan fill="${tool.accent}">.</tspan></text><text x="${x}" y="${nameY + 50}" fill="#FFF4E8" fill-opacity=".6" font-size="${hero ? 19 : 11}" letter-spacing="2">${safeCategory}</text><g transform="translate(${mx} ${my}) scale(${scale})">${motif(tool.slug, tool.accent)}</g><text x="${x}" y="${capsule ? 790 : hero ? 485 : 310}" fill="#FFF4E8" font-size="${capsule ? 31 : hero ? 36 : 22}" font-weight="800" letter-spacing="-.7">${safeLine0}</text><text x="${x}" y="${capsule ? 830 : hero ? 530 : 340}" fill="${tool.accent}" font-size="${capsule ? 31 : hero ? 36 : 22}" font-weight="800" letter-spacing="-.7">${safeLine1}</text><text x="${x}" y="${h - 25}" fill="#FFF4E8" fill-opacity=".38" font-size="${hero ? 11 : 9}" font-weight="700" letter-spacing="2">UM CARA CARAMELO®</text></g></svg>\n`;
 };
 
-for (const tool of tools) {
+const selected = process.argv[2];
+for (const tool of tools.filter((item) => !selected || item.slug === selected)) {
   const dir = path.join(root, tool.slug, 'art');
   fs.mkdirSync(dir, { recursive: true });
   for (const kind of ['hero', 'capsule', 'header', 'icon']) {

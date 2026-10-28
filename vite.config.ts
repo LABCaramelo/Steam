@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+import vue from "@vitejs/plugin-vue";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
@@ -7,6 +8,7 @@ import { labAccess } from "./server/labAccess.ts";
 import { promptLibrary } from "./server/promptLibrary.ts";
 import { livekitHandler } from "./server/livekit.ts";
 import uploadHandler from "./api/upload.ts";
+import { tramaHandler } from "./server/trama.ts";
 import {
   buildSnapshot,
   findSteamPath,
@@ -53,6 +55,10 @@ function steamDataApi(): Plugin {
       void uploadHandler(req, res).catch((err) => json({ error: err instanceof Error ? err.message : "upload_error" }, 500));
       return;
     }
+    if (url.pathname === "/api/trama") {
+      void tramaHandler(req, res);
+      return;
+    }
 
     let m = url.pathname.match(/^\/api\/art\/(\d+)\/([a-zA-Z]+)$/);
     if (m) {
@@ -92,7 +98,7 @@ function steamDataApi(): Plugin {
 /** LAB client routes (src/App.tsx). Everything else under "/" belongs to the public site. */
 const LAB_ROUTE = /^\/(?:library|store|profile|settings|app)(?:\/|$)/;
 /** Tool pages built from tools/<slug>/index.html (src/tools/<slug>). */
-const TOOL_PAGES = ["prompt-library", "kanban", "prancheta", "automation", "academy", "claquete", "comunidade", "admin", "gravador", "montagem", "creative-os"].filter((slug) =>
+const TOOL_PAGES = ["prompt-library", "kanban", "prancheta", "automation", "academy", "claquete", "comunidade", "admin", "gravador", "montagem", "creative-os", "trama"].filter((slug) =>
   fs.existsSync(path.resolve(import.meta.dirname, "src", "tools", slug, "main.tsx")),
 );
 const TOOL_ROUTE = new RegExp(`^/tools/(${TOOL_PAGES.join("|")})/?$`);
@@ -202,7 +208,8 @@ export default defineConfig(({ mode }) => {
   // as Vercel's environment variables do in production. They never enter the bundle (no VITE_ prefix).
   for (const [name, value] of Object.entries(loadEnv(mode, import.meta.dirname, ""))) process.env[name] ??= value;
   return {
-    plugins: [react(), steamDataApi(), siteRoutes(), stampPublicAssets()],
+    plugins: [vue(), react({ exclude: /src\/tools\/trama\/app\// }), steamDataApi(), siteRoutes(), stampPublicAssets()],
+    resolve: { alias: { "@trama": path.resolve(import.meta.dirname, "src/tools/trama/app") } },
     appType: "mpa",
     build: {
       rollupOptions: {

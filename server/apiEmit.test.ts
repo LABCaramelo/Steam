@@ -20,15 +20,16 @@ test("compiled API entry points use emitted JavaScript dependencies and preserve
     fs.mkdirSync(path.join(target, "server"), { recursive: true });
     fs.writeFileSync(path.join(target, "package.json"), JSON.stringify({ type: "module" }));
     const options = { ...converted.options, noEmit: false };
-    for (const name of ["api/prompt-library.ts", "api/livekit.ts", "api/upload.ts", "server/toolAccess.ts"]) {
+    for (const name of ["api/prompt-library.ts", "api/livekit.ts", "api/upload.ts", "api/trama.ts", "server/toolAccess.ts", "server/trama.ts"]) {
       const result = ts.transpileModule(fs.readFileSync(path.join(root, name), "utf8"), { fileName: name, compilerOptions: options });
       if (name.startsWith("api/")) {
-        assert.match(result.outputText, /from ["']\.\.\/server\/toolAccess\.js["']/);
+        assert.match(result.outputText, name === "api/trama.ts" ? /from ["']\.\.\/server\/trama\.js["']/ : /from ["']\.\.\/server\/toolAccess\.js["']/);
         assert.doesNotMatch(result.outputText, /from ["'][^"']+\.tsx?["']/);
       }
       fs.writeFileSync(path.join(target, name.replace(/\.ts$/, ".js")), result.outputText);
     }
     fs.copyFileSync(path.join(root, "api/data/prompt-catalog.json"), path.join(target, "api/data/prompt-catalog.json"));
+    fs.cpSync(path.join(root, "server/trama"), path.join(target, "server/trama"), { recursive: true });
     // Native Node loading has no TS path resolver or original .ts files to conceal a bad specifier.
     const { default: promptLibrary } = await import(pathToFileURL(path.join(target, "api/prompt-library.js")).href);
     let body: unknown;
@@ -41,6 +42,11 @@ test("compiled API entry points use emitted JavaScript dependencies and preserve
     await promptLibrary({ method: "GET", url: "/api/prompt-library", headers: {} }, response);
     assert.equal(response.statusCode, 401);
     assert.equal((body as { code?: string }).code, "AUTH_REQUIRED");
+    assert.equal(headers.get("Cache-Control"), "private, no-store");
+    const { default: trama } = await import(pathToFileURL(path.join(target, "api/trama.js")).href);
+    await trama({ method: "GET", url: "/api/trama", headers: {} }, response);
+    assert.equal(response.statusCode, 401);
+    assert.equal((body as { error?: { code?: string } }).error?.code, "AUTH_REQUIRED");
     assert.equal(headers.get("Cache-Control"), "private, no-store");
   } finally {
     // Only this mkdtemp output can be removed, never the checkout or another temporary directory.

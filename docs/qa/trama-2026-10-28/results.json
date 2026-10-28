@@ -1,0 +1,22 @@
+{
+  "mode": "controlled-local-fixture",
+  "browser": "Edge headless",
+  "checks": [
+    "LAB gate with controlled Auth",
+    "create flow",
+    "manual execution real engine",
+    "save version",
+    "upload/download/delete fixture file",
+    "dark/light/mobile"
+  ],
+  "pageErrors": [],
+  "missingComponents": [],
+  "mobileOverflow": false,
+  "executions": [
+    {
+      "status": "success",
+      "steps": 3
+    }
+  ],
+  "externalAccountsUsed": false
+}
