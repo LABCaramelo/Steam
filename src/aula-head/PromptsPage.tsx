@@ -236,16 +236,6 @@ export default function PromptsPage() {
                   <p>{activePrompt.whatItDoes}</p>
                 </div>
 
-                <div className="inspector-card when-to-use">
-                  <small className="card-label">QUANDO USAR NO PROJETO</small>
-                  <p>{activePrompt.whenToUse}</p>
-                </div>
-
-                <div className="inspector-card inputs">
-                  <small className="card-label">O QUE VOCÊ PRECISA FORNECER</small>
-                  <p>{activePrompt.inputs}</p>
-                </div>
-
                 <div className="inspector-card outputs">
                   <small className="card-label">O QUE VOCÊ VAI RECEBER</small>
                   <p>{activePrompt.outputs}</p>
