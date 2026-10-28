@@ -10,11 +10,8 @@ const promptAccents: Record<number, string> = {
   5: "#FFD52A", // Acid Yellow - Moodboard & Design System
 };
 
-type ViewMode = "split" | "code" | "guide";
-
 export default function PromptsPage() {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  const [viewMode, setViewMode] = useState<ViewMode>("split");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ title: string; desc: string; accent?: string } | null>(null);
 
@@ -30,7 +27,7 @@ export default function PromptsPage() {
     };
   }, []);
 
-  // Prompt ativo atual (direto dos 5 prompts canônicos)
+  // Prompt ativo atual
   const activePrompt: PromptMetadata = useMemo(() => {
     return prompts[selectedIndex] || prompts[0];
   }, [selectedIndex]);
@@ -79,17 +76,6 @@ export default function PromptsPage() {
     }
   }, []);
 
-  // Selecionar todo o texto do prompt
-  const handleSelectAll = () => {
-    if (codePreRef.current) {
-      const range = document.createRange();
-      range.selectNodeContents(codePreRef.current);
-      const sel = window.getSelection();
-      sel?.removeAllRanges();
-      sel?.addRange(range);
-    }
-  };
-
   // Atalhos de teclado silenciosos (1-5 para trocar, C para copiar)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -132,28 +118,6 @@ export default function PromptsPage() {
         setSelectedIndex((prev) => (prev - 1 + prompts.length) % prompts.length);
         return;
       }
-
-      // Tecla V: alternar modos de visualização (split -> code -> guide)
-      if (e.key === "v" || e.key === "V") {
-        e.preventDefault();
-        setViewMode((m) => (m === "split" ? "code" : m === "code" ? "guide" : "split"));
-        return;
-      }
-
-      // Tecla D: baixar o arquivo .txt completo
-      if (e.key === "d" || e.key === "D") {
-        const link = document.createElement("a");
-        link.href = "/5-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt";
-        link.download = "5-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt";
-        link.click();
-        return;
-      }
-
-      // Tecla A: modo aula (slides)
-      if (e.key === "a" || e.key === "A") {
-        location.hash = "#apresentacao";
-        return;
-      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -178,34 +142,11 @@ export default function PromptsPage() {
             <strong>BANCO OFICIAL DE PROMPTS</strong>
           </div>
         </div>
-
-        <div className="prompts-studio-topbar-right">
-          <a
-            href="/5-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
-            download="5-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
-            className="prompts-studio-btn secondary"
-            title="Baixar arquivo TXT com os 5 prompts"
-          >
-            Baixar .txt
-          </a>
-
-          <a
-            href="#apresentacao"
-            className="prompts-studio-btn slides"
-            title="Abrir Apresentação da Aula"
-          >
-            Modo Aula (Slides)
-          </a>
-
-          <a href="/" className="prompts-studio-btn icon-only" title="Voltar ao início">
-            ✕
-          </a>
-        </div>
       </header>
 
       {/* 2. ÁREA DE TRABALHO STUDIO (100dvh - topbar) */}
       <div className="prompts-studio-workspace">
-        {/* COLUNA ESQUERDA: LISTA DIRETA DOS 5 PROMPTS (SEM BUSCA, SEM TAGS) */}
+        {/* COLUNA ESQUERDA: LISTA DOS 5 PROMPTS */}
         <aside className="prompts-studio-sidebar" aria-label="Seleção de Prompts">
           <nav className="prompts-sidebar-list" aria-label="Lista de prompts">
             {prompts.map((p, index) => {
@@ -260,42 +201,13 @@ export default function PromptsPage() {
 
         {/* COLUNA DIREITA: CONSOLE DO PROMPT ATIVO */}
         <main className="prompts-studio-stage">
-          {/* HEADER DO PROMPT ATIVO: APENAS O TÍTULO E OS BOTÕES DE AÇÃO */}
+          {/* HEADER DO PROMPT ATIVO: APENAS O TÍTULO E O BOTÃO DE CÓPIA */}
           <header className="prompts-stage-header">
             <div className="stage-header-title-block">
               <h1 className="stage-main-title">{activePrompt.title}</h1>
             </div>
 
             <div className="stage-header-actions-block">
-              {/* SELETOR DE MODO DE VISUALIZAÇÃO */}
-              <div className="stage-view-switcher" role="group" aria-label="Modo de visualização">
-                <button
-                  type="button"
-                  className={`view-btn ${viewMode === "split" ? "active" : ""}`}
-                  onClick={() => setViewMode("split")}
-                  title="Modo Dividido: Guia + Texto"
-                >
-                  Dividido
-                </button>
-                <button
-                  type="button"
-                  className={`view-btn ${viewMode === "code" ? "active" : ""}`}
-                  onClick={() => setViewMode("code")}
-                  title="Modo Foco no Texto Integral"
-                >
-                  Texto
-                </button>
-                <button
-                  type="button"
-                  className={`view-btn ${viewMode === "guide" ? "active" : ""}`}
-                  onClick={() => setViewMode("guide")}
-                  title="Modo Ficha Técnica e Diretrizes"
-                >
-                  Guia
-                </button>
-              </div>
-
-              {/* BOTÃO DE CÓPIA PROTAGONISTA LIMPO */}
               <button
                 type="button"
                 className={`stage-mega-copy-btn ${isActiveCopied ? "copied" : ""}`}
@@ -311,86 +223,63 @@ export default function PromptsPage() {
           </header>
 
           {/* CORPO DO CONSOLE: FICHA TÉCNICA + VISUALIZADOR DE CÓDIGO */}
-          <div className={`prompts-stage-body-layout mode-${viewMode}`}>
-            {/* PAINEL DO GUIA TÉCNICO (VISÍVEL EM 'SPLIT' E 'GUIDE') */}
-            {(viewMode === "split" || viewMode === "guide") && (
-              <section className="prompts-inspector-pane" aria-label="Ficha Técnica do Prompt">
-                <div className="inspector-inner-scroll">
-                  <div className="inspector-section-title">
-                    <span>FICHA TÉCNICA & ORIENTAÇÃO PEDAGÓGICA</span>
-                  </div>
-
-                  <div className="inspector-card what-it-does">
-                    <small className="card-label">O QUE ESTE PROMPT FAZ</small>
-                    <p>{activePrompt.whatItDoes}</p>
-                  </div>
-
-                  <div className="inspector-card when-to-use">
-                    <small className="card-label">QUANDO USAR NO PROJETO</small>
-                    <p>{activePrompt.whenToUse}</p>
-                  </div>
-
-                  <div className="inspector-card inputs">
-                    <small className="card-label">O QUE VOCÊ PRECISA FORNECER</small>
-                    <p>{activePrompt.inputs}</p>
-                  </div>
-
-                  <div className="inspector-card outputs">
-                    <small className="card-label">O QUE VOCÊ VAI RECEBER</small>
-                    <p>{activePrompt.outputs}</p>
-                  </div>
-
-                  <div className="inspector-tip-callout">
-                    <div className="tip-header">
-                      <span className="tip-badge">💡 DICA OFICIAL DO CARAMELO</span>
-                    </div>
-                    <p>{activePrompt.customizationTip}</p>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {/* PAINEL DO TEXTO INTEGRAL DO PROMPT (VISÍVEL EM 'SPLIT' E 'CODE') */}
-            {(viewMode === "split" || viewMode === "code") && (
-              <section className="prompts-editor-pane" aria-label="Texto Integral do Prompt">
-                {/* TOOLBAR DO EDITOR */}
-                <div className="editor-top-bar">
-                  <div className="editor-file-info">
-                    <span className="file-icon" aria-hidden="true">
-                      📄
-                    </span>
-                    <strong>{activePrompt.filename}</strong>
-                    <span className="line-count-tag">{lineCount.toLocaleString("pt-BR")} linhas</span>
-                  </div>
-
-                  <div className="editor-quick-tools">
-                    <button
-                      type="button"
-                      className="editor-tool-btn"
-                      onClick={handleSelectAll}
-                      title="Selecionar todo o texto"
-                    >
-                      Selecionar Tudo
-                    </button>
-
-                    <button
-                      type="button"
-                      className={`editor-tool-btn copy-btn ${isActiveCopied ? "copied" : ""}`}
-                      onClick={() => handleCopy(activePrompt)}
-                    >
-                      {isActiveCopied ? "✓ Copiado" : "Copiar Texto"}
-                    </button>
-                  </div>
+          <div className="prompts-stage-body-layout">
+            {/* PAINEL DO GUIA TÉCNICO */}
+            <section className="prompts-inspector-pane" aria-label="Ficha Técnica do Prompt">
+              <div className="inspector-inner-scroll">
+                <div className="inspector-section-title">
+                  <span>FICHA TÉCNICA & ORIENTAÇÃO PEDAGÓGICA</span>
                 </div>
 
-                {/* ÁREA DE LEITURA MONOSPACE COM SCROLL INTERNO CONTROLADO */}
-                <div className="editor-code-container">
-                  <pre ref={codePreRef} className="editor-code-text" tabIndex={0}>
-                    {activePrompt.prompt}
-                  </pre>
+                <div className="inspector-card what-it-does">
+                  <small className="card-label">O QUE ESTE PROMPT FAZ</small>
+                  <p>{activePrompt.whatItDoes}</p>
                 </div>
-              </section>
-            )}
+
+                <div className="inspector-card when-to-use">
+                  <small className="card-label">QUANDO USAR NO PROJETO</small>
+                  <p>{activePrompt.whenToUse}</p>
+                </div>
+
+                <div className="inspector-card inputs">
+                  <small className="card-label">O QUE VOCÊ PRECISA FORNECER</small>
+                  <p>{activePrompt.inputs}</p>
+                </div>
+
+                <div className="inspector-card outputs">
+                  <small className="card-label">O QUE VOCÊ VAI RECEBER</small>
+                  <p>{activePrompt.outputs}</p>
+                </div>
+
+                <div className="inspector-tip-callout">
+                  <div className="tip-header">
+                    <span className="tip-badge">💡 DICA OFICIAL DO CARAMELO</span>
+                  </div>
+                  <p>{activePrompt.customizationTip}</p>
+                </div>
+              </div>
+            </section>
+
+            {/* PAINEL DO TEXTO INTEGRAL DO PROMPT */}
+            <section className="prompts-editor-pane" aria-label="Texto Integral do Prompt">
+              {/* TOOLBAR DO EDITOR LIMPA */}
+              <div className="editor-top-bar">
+                <div className="editor-file-info">
+                  <span className="file-icon" aria-hidden="true">
+                    📄
+                  </span>
+                  <strong>{activePrompt.filename}</strong>
+                  <span className="line-count-tag">{lineCount.toLocaleString("pt-BR")} linhas</span>
+                </div>
+              </div>
+
+              {/* ÁREA DE LEITURA MONOSPACE COM SCROLL INTERNO CONTROLADO */}
+              <div className="editor-code-container">
+                <pre ref={codePreRef} className="editor-code-text" tabIndex={0}>
+                  {activePrompt.prompt}
+                </pre>
+              </div>
+            </section>
           </div>
         </main>
       </div>

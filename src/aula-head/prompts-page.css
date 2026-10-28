@@ -62,7 +62,7 @@ body {
 }
 
 /* ==========================================================================
-   2. TOPBAR LIMPA E ELEGANTE (52px)
+   2. TOPBAR LIMPA (52px)
    ========================================================================== */
 .prompts-studio-topbar {
   height: 52px;
@@ -73,7 +73,7 @@ body {
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 0 24px;
   z-index: 40;
 }
@@ -133,63 +133,6 @@ body {
   text-transform: uppercase;
 }
 
-.prompts-studio-topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.prompts-studio-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 6px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  user-select: none;
-}
-
-.prompts-studio-btn.secondary {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-subtle);
-  color: var(--color-cream);
-}
-
-.prompts-studio-btn.secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  border-color: var(--border-prominent);
-}
-
-.prompts-studio-btn.slides {
-  background: rgba(255, 112, 26, 0.14);
-  border: 1px solid rgba(255, 112, 26, 0.35);
-  color: var(--color-caramel);
-}
-
-.prompts-studio-btn.slides:hover {
-  background: rgba(255, 112, 26, 0.24);
-  color: #ffffff;
-  border-color: var(--color-caramel);
-}
-
-.prompts-studio-btn.icon-only {
-  background: transparent;
-  border: none;
-  color: var(--color-cream-subtle);
-  padding: 6px 10px;
-  font-size: 13px;
-}
-
-.prompts-studio-btn.icon-only:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-}
-
 /* ==========================================================================
    3. ÁREA DE TRABALHO STUDIO
    ========================================================================== */
@@ -201,7 +144,7 @@ body {
 }
 
 /* ==========================================================================
-   4. SIDEBAR LATERAL NAVEGADORA DOS 5 PROMPTS (340px)
+   4. SIDEBAR LATERAL DOS 5 PROMPTS (340px)
    ========================================================================== */
 .prompts-studio-sidebar {
   width: 340px;
@@ -407,38 +350,6 @@ body {
   flex-shrink: 0;
 }
 
-/* SELETOR DE VISTA */
-.stage-view-switcher {
-  display: flex;
-  background: var(--color-obsidian-800);
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  padding: 2px;
-  gap: 2px;
-}
-
-.view-btn {
-  background: transparent;
-  border: none;
-  color: var(--color-cream-muted);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.12s ease;
-  user-select: none;
-}
-
-.view-btn:hover {
-  color: #ffffff;
-}
-
-.view-btn.active {
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
-}
-
 /* MEGA BOTÃO DE CÓPIA */
 .stage-mega-copy-btn {
   display: inline-flex;
@@ -478,7 +389,7 @@ body {
 }
 
 /* ==========================================================================
-   6. CORPO DO STAGE (LAYOUT DE CONTEÚDO)
+   6. CORPO DO STAGE (SPLIT VIEW)
    ========================================================================== */
 .prompts-stage-body-layout {
   flex: 1;
@@ -489,22 +400,12 @@ body {
 
 /* PAINEL DO GUIA / FICHA TÉCNICA */
 .prompts-inspector-pane {
+  width: 360px;
+  flex-shrink: 0;
   background: var(--color-obsidian-850);
   border-right: 1px solid var(--border-subtle);
   overflow-y: auto;
   overflow-x: hidden;
-}
-
-.mode-split .prompts-inspector-pane {
-  width: 360px;
-  flex-shrink: 0;
-}
-
-.mode-guide .prompts-inspector-pane {
-  flex: 1;
-  max-width: 900px;
-  margin: 0 auto;
-  border-right: none;
 }
 
 .inspector-inner-scroll {
@@ -612,35 +513,6 @@ body {
 .line-count-tag {
   color: var(--color-cream-subtle);
   font-size: 11px;
-}
-
-.editor-quick-tools {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.editor-tool-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-subtle);
-  color: var(--color-cream-muted);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 5px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.12s ease;
-}
-
-.editor-tool-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-}
-
-.editor-tool-btn.copy-btn.copied {
-  background: var(--color-emerald);
-  border-color: var(--color-emerald);
-  color: #ffffff;
 }
 
 /* CONTAINER MONOSPACE COM SCROLL INTERNO CONTROLADO */
@@ -773,12 +645,12 @@ body {
     min-width: 220px;
   }
 
-  .mode-split .prompts-inspector-pane {
+  .prompts-inspector-pane {
     width: 100%;
     max-height: 220px;
   }
 
-  .prompts-stage-body-layout.mode-split {
+  .prompts-stage-body-layout {
     flex-direction: column;
   }
 }
