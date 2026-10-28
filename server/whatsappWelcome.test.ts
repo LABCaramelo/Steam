@@ -12,10 +12,14 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 test("WELCOME_TEMPLATES contém pelo menos 6 modelos com menção e convite", () => {
   assert.ok(WELCOME_TEMPLATES.length >= 6, "Deve conter pelo menos 6 modelos");
   for (const t of WELCOME_TEMPLATES) {
-    const rendered = t.format("5531985869015");
-    assert.match(rendered, /@5531985869015/, "A mensagem deve mencionar o número do usuário");
-    assert.match(rendered, /descri[çc][ãa]o/i, "A mensagem deve convidar a ler a descrição do grupo");
-    assert.match(rendered, /apresent/i, "A mensagem deve convidar a se apresentar");
+    const renderedFallback = t.format("5531985869015");
+    assert.match(renderedFallback, /@5531985869015/, "Sem nome, a mensagem deve mencionar o número como fallback");
+    assert.match(renderedFallback, /descri[çc][ãa]o/i, "A mensagem deve convidar a ler a descrição do grupo");
+    assert.match(renderedFallback, /apresent/i, "A mensagem deve convidar a se apresentar");
+
+    const renderedWithName = t.format("5531985869015", "Luiz");
+    assert.match(renderedWithName, /\*Luiz\*/, "Com nome, a mensagem deve destacar o nome do usuário");
+    assert.doesNotMatch(renderedWithName, /@5531985869015/, "Com nome, não deve expor o número bruto");
   }
 });
 
@@ -87,15 +91,23 @@ test("parseGroupJoinEvent ignora chats que não são grupos (@g.us)", () => {
   assert.equal(parseGroupJoinEvent(payload), null);
 });
 
-test("sendWelcomeToGroup chama uazapi /send/text com dados corretos e menção", async () => {
+test("sendWelcomeToGroup chama uazapi /send/text com dados corretos e fallback para número se não houver nome", async () => {
   const calls: { url: string; body: Record<string, unknown>; headers: Record<string, string> }[] = [];
   const originalFetch = globalThis.fetch;
   globalThis.fetch = (async (input: string | URL | Request, init: RequestInit = {}) => {
+    const urlStr = String(input);
+    const body = JSON.parse(String(init.body || "{}"));
     calls.push({
-      url: String(input),
-      body: JSON.parse(String(init.body || "{}")),
+      url: urlStr,
+      body,
       headers: init.headers as Record<string, string>,
     });
+    if (urlStr.includes("/group/info")) {
+      return new Response(JSON.stringify({ participant_profiles: [] }), { status: 200 });
+    }
+    if (urlStr.includes("/chat/find")) {
+      return new Response(JSON.stringify({ chats: [] }), { status: 200 });
+    }
     return new Response(JSON.stringify({ status: "success" }), { status: 200 });
   }) as typeof fetch;
 
@@ -116,13 +128,67 @@ test("sendWelcomeToGroup chama uazapi /send/text com dados corretos e menção",
     const result = await sendWelcomeToGroup(config, event, 0);
     assert.equal(result.success, true);
     assert.equal(result.messagesSent, 1);
-    assert.equal(calls.length, 1);
-    assert.equal(calls[0].url, "https://uazapi.test/send/text");
-    assert.equal(calls[0].headers.token, "token-123");
-    assert.equal(calls[0].body.number, "120363000000000000@g.us");
-    assert.equal(calls[0].body.mentions, "5531985869015");
-    assert.match(String(calls[0].body.text), /@5531985869015/);
-    assert.match(String(calls[0].body.text), /descri[çc][ãa]o/i);
+    const sendCall = calls.find((c) => c.url.endsWith("/send/text"));
+    assert.ok(sendCall, "Deve chamar /send/text");
+    assert.equal(sendCall.headers.token, "token-123");
+    assert.equal(sendCall.body.number, "120363000000000000@g.us");
+    assert.equal(sendCall.body.mentions, "5531985869015");
+    assert.match(String(sendCall.body.text), /@5531985869015/);
+    assert.match(String(sendCall.body.text), /descri[çc][ãa]o/i);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("sendWelcomeToGroup usa nome do usuário no texto quando disponível", async () => {
+  const calls: { url: string; body: Record<string, unknown>; headers: Record<string, string> }[] = [];
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = (async (input: string | URL | Request, init: RequestInit = {}) => {
+    const urlStr = String(input);
+    const body = JSON.parse(String(init.body || "{}"));
+    calls.push({
+      url: urlStr,
+      body,
+      headers: init.headers as Record<string, string>,
+    });
+    if (urlStr.includes("/group/info")) {
+      return new Response(
+        JSON.stringify({
+          participant_profiles: [
+            {
+              pn: "553185869015@s.whatsapp.net",
+              name: "Luiz Caramelo",
+            },
+          ],
+        }),
+        { status: 200 }
+      );
+    }
+    return new Response(JSON.stringify({ status: "success" }), { status: 200 });
+  }) as typeof fetch;
+
+  try {
+    const config = {
+      uazapiUrl: "https://uazapi.test",
+      uazapiToken: "token-123",
+      groupJid: "120363000000000000@g.us",
+    };
+
+    const event = {
+      groupJid: "120363000000000000@g.us",
+      action: "add" as const,
+      participants: ["5531985869015"],
+      rawParticipants: ["5531985869015@s.whatsapp.net"],
+    };
+
+    const result = await sendWelcomeToGroup(config, event, 0);
+    assert.equal(result.success, true);
+    assert.equal(result.resolvedNames?.["5531985869015"], "Luiz Caramelo");
+    const sendCall = calls.find((c) => c.url.endsWith("/send/text"));
+    assert.ok(sendCall);
+    assert.equal(sendCall.body.mentions, "5531985869015");
+    assert.match(String(sendCall.body.text), /\*Luiz Caramelo\*/);
+    assert.doesNotMatch(String(sendCall.body.text), /@5531985869015/);
   } finally {
     globalThis.fetch = originalFetch;
   }

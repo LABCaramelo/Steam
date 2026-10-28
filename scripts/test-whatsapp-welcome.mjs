@@ -3,7 +3,7 @@
 //   node scripts/test-whatsapp-welcome.mjs --preview              (visualiza os 6 modelos)
 //   node --env-file=.env scripts/test-whatsapp-welcome.mjs --send 5531985869015   (dispara no grupo de teste)
 
-import { WELCOME_TEMPLATES } from "../server/whatsappWelcome.ts";
+import { WELCOME_TEMPLATES, resolveMemberName } from "../server/whatsappWelcome.ts";
 
 const args = process.argv.slice(2);
 const isPreview = args.includes("--preview") || args.length === 0;
@@ -17,11 +17,15 @@ console.log("==================================================================\
 if (isPreview) {
   console.log(`Foram configurados ${WELCOME_TEMPLATES.length} modelos de mensagem autorais que se revezam:\n`);
   const sampleNumber = "5531985869015";
+  const sampleName = "Luiz";
 
   WELCOME_TEMPLATES.forEach((tpl, idx) => {
     console.log(`------------------------------------------------------------------`);
     console.log(`[MODELO 0${idx + 1}] ${tpl.title} (ID: ${tpl.id})`);
     console.log(`------------------------------------------------------------------`);
+    console.log("👉 COM NOME DO USUÁRIO:");
+    console.log(tpl.format(sampleNumber, sampleName));
+    console.log("\n👉 COM NÚMERO (FALLBACK CASO NÃO TENHA NOME NO PERFIL):");
     console.log(tpl.format(sampleNumber));
     console.log("\n");
   });
@@ -43,10 +47,16 @@ if (targetPhone) {
   const modelIdx = args[sendIndex + 2] ? parseInt(args[sendIndex + 2], 10) : 0;
   const tpl = WELCOME_TEMPLATES[modelIdx] || WELCOME_TEMPLATES[0];
   const cleanNumber = targetPhone.replace(/\D/g, "");
-  const messageText = tpl.format(cleanNumber);
 
-  console.log(`Disparando Modelo [${tpl.id}] para o grupo ${groupJid}...`);
-  console.log(`Mencionando: @${cleanNumber}\n`);
+  console.log(`Buscando perfil do WhatsApp de ${cleanNumber}...`);
+  const config = { uazapiUrl: url, uazapiToken: token, groupJid };
+  const memberName = await resolveMemberName(config, groupJid, cleanNumber);
+  console.log(`Nome identificado: ${memberName ? `"${memberName}"` : "(nenhum, usando número como fallback)"}`);
+
+  const messageText = tpl.format(cleanNumber, memberName || undefined);
+
+  console.log(`\nDisparando Modelo [${tpl.id}] para o grupo ${groupJid}...`);
+  console.log(`Texto enviado:\n${messageText}\n`);
 
   try {
     const res = await fetch(`${url}/send/text`, {

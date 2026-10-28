@@ -14,75 +14,106 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 export interface WelcomeTemplate {
   id: string;
   title: string;
-  format: (phone: string) => string;
+  format: (phone: string, name?: string) => string;
+}
+
+function formatMention(phone: string, name?: string): string {
+  if (name && name.trim()) {
+    return `*${name.trim()}*`;
+  }
+  return `@${phone}`;
 }
 
 export const WELCOME_TEMPLATES: WelcomeTemplate[] = [
   {
     id: "puxa-uma-cadeira",
     title: "Acolhedor & Informal (O clássico Caramelo)",
-    format: (phone: string) =>
-      `Opa, @${phone}! Puxa uma cadeira e chega mais. Seja muito bem-vindo(a) ao *LAB Caramelo*! 🐕✨\n\n` +
-      `Aqui é o nosso espaço de troca sobre conteúdo, direção criativa, design, IA e projetos reais na prática.\n\n` +
-      `Pra começar com o pé direito:\n` +
-      `📌 *Dá um pulo na descrição do grupo:* lá estão as regras da comunidade e o link do nosso acervo de ferramentas.\n` +
-      `💬 *Manda uma mensagem se apresentando:* conta pra gente quem é você, de onde fala e com o que você trabalha ou gosta de criar?\n\n` +
-      `Sinta-se em casa! ☕`,
+    format: (phone: string, name?: string) => {
+      const target = formatMention(phone, name);
+      return (
+        `Opa, ${target}! Puxa uma cadeira e chega mais. Seja muito bem-vindo(a) ao *LAB Caramelo*! 🐕✨\n\n` +
+        `Aqui é o nosso espaço de troca sobre conteúdo, direção criativa, design, IA e projetos reais na prática.\n\n` +
+        `Pra começar com o pé direito:\n` +
+        `📌 *Dá um pulo na descrição do grupo:* lá estão as regras da comunidade e o link do nosso acervo de ferramentas.\n` +
+        `💬 *Manda uma mensagem se apresentando:* conta pra gente quem é você, de onde fala e com o que você trabalha ou gosta de criar?\n\n` +
+        `Sinta-se em casa! ☕`
+      );
+    },
   },
   {
     id: "cerebro-inquieto",
     title: "Repertório & Bastidores",
-    format: (phone: string) =>
-      `Mais um cérebro inquieto na área! Boas-vindas ao LAB, @${phone}! 🚀🎨\n\n` +
-      `A gente acredita que *trabalho bom não deveria parecer comum*. O objetivo do grupo é compartilhar referências de alto nível, ferramentas, testes e bastidores sem filtro.\n\n` +
-      `Dois passos rápidos de chegada:\n` +
-      `1️⃣ *Leia as regras na descrição do grupo* para manter a nossa convivência leve e produtiva.\n` +
-      `2️⃣ *Solta uma mensagem se apresentando aqui no chat:* qual é o seu universo criativo e o que você anda construindo ultimamente?\n\n` +
-      `Bora trocar repertório! ⚡`,
+    format: (phone: string, name?: string) => {
+      const target = formatMention(phone, name);
+      return (
+        `Mais um cérebro inquieto na área! Boas-vindas ao LAB, ${target}! 🚀🎨\n\n` +
+        `A gente acredita que *trabalho bom não deveria parecer comum*. O objetivo do grupo é compartilhar referências de alto nível, ferramentas, testes e bastidores sem filtro.\n\n` +
+        `Dois passos rápidos de chegada:\n` +
+        `1️⃣ *Leia as regras na descrição do grupo* para manter a nossa convivência leve e produtiva.\n` +
+        `2️⃣ *Solta uma mensagem se apresentando aqui no chat:* qual é o seu universo criativo e o que você anda construindo ultimamente?\n\n` +
+        `Bora trocar repertório! ⚡`
+      );
+    },
   },
   {
     id: "bancada-de-testes",
     title: "Laboratório & Bancada de Testes",
-    format: (phone: string) =>
-      `Salve, @${phone}! A bancada de testes tá aberta. Seja muito bem-vindo(a)! 🧪✨\n\n` +
-      `O *LAB* é onde a gente experimenta de tudo: inteligência artificial, código, narrativa visual e estratégias que tiram ideias do papel.\n\n` +
-      `Pra você se enturmar:\n` +
-      `👉 *Confira as regras na descrição do grupo:* é jogo rápido e essencial pra manter o foco da comunidade.\n` +
-      `👉 *Dá um alô e se apresente pra turma:* seu nome, sua área de atuação e qual curiosidade te trouxe até aqui!\n\n` +
-      `Chega junto que a conversa aqui não para! 🔥`,
+    format: (phone: string, name?: string) => {
+      const target = formatMention(phone, name);
+      return (
+        `Salve, ${target}! A bancada de testes tá aberta. Seja muito bem-vindo(a)! 🧪✨\n\n` +
+        `O *LAB* é onde a gente experimenta de tudo: inteligência artificial, código, narrativa visual e estratégias que tiram ideias do papel.\n\n` +
+        `Pra você se enturmar:\n` +
+        `👉 *Confira as regras na descrição do grupo:* é jogo rápido e essencial pra manter o foco da comunidade.\n` +
+        `👉 *Dá um alô e se apresente pra turma:* seu nome, sua área de atuação e qual curiosidade te trouxe até aqui!\n\n` +
+        `Chega junto que a conversa aqui não para! 🔥`
+      );
+    },
   },
   {
     id: "primeiro-a-intencao",
     title: "Filosofia Caramelo (Primeiro a Intenção)",
-    format: (phone: string) =>
-      `Olá, @${phone}! Que massa ter você com a gente no *LAB Caramelo*! 🤝\n\n` +
-      `A nossa regra de ouro é: *primeiro a intenção, depois a ferramenta*. Se você curte criar com propósito, debater ideias e explorar o futuro da comunicação, você tá no lugar certo.\n\n` +
-      `Recadinhos rápidos:\n` +
-      `📖 *Dê uma lida nas regras na descrição do grupo:* lá também tem links úteis da comunidade.\n` +
-      `🎙️ *Apresente-se pra gente:* de onde você é, o que faz no dia a dia e o que anda estudando ou criando?\n\n` +
-      `A casa é sua! 💡`,
+    format: (phone: string, name?: string) => {
+      const target = formatMention(phone, name);
+      return (
+        `Olá, ${target}! Que massa ter você com a gente no *LAB Caramelo*! 🤝\n\n` +
+        `A nossa regra de ouro é: *primeiro a intenção, depois a ferramenta*. Se você curte criar com propósito, debater ideias e explorar o futuro da comunicação, você tá no lugar certo.\n\n` +
+        `Recadinhos rápidos:\n` +
+        `📖 *Dê uma lida nas regras na descrição do grupo:* lá também tem links úteis da comunidade.\n` +
+        `🎙️ *Apresente-se pra gente:* de onde você é, o que faz no dia a dia e o que anda estudando ou criando?\n\n` +
+        `A casa é sua! 💡`
+      );
+    },
   },
   {
     id: "sem-cracha",
     title: "Direto ao Ponto & Sem Crachá",
-    format: (phone: string) =>
-      `Opa, @${phone}, tudo bem? Seja muito bem-vindo(a) ao grupo! 👋🐕\n\n` +
-      `Aqui no LAB ninguém precisa parecer corporativo demais: o foco é trocar ideias de verdade entre criadores, designers, desenvolvedores e cabeças inquietas.\n\n` +
-      `Pra entrar na sintonia:\n` +
-      `⚠️ *Não deixe de ler as regrinhas na descrição do grupo* (respeito e troca genuína em primeiro lugar).\n` +
-      `🙋 *Manda um alô se apresentando:* quem é você, qual seu projeto do momento e que assunto mais faz seus olhos brilharem por aqui?\n\n` +
-      `Bora pra cima! ⚡`,
+    format: (phone: string, name?: string) => {
+      const target = formatMention(phone, name);
+      return (
+        `Opa, ${target}, tudo bem? Seja muito bem-vindo(a) ao grupo! 👋🐕\n\n` +
+        `Aqui no LAB ninguém precisa parecer corporativo demais: o foco é trocar ideias de verdade entre criadores, designers, desenvolvedores e cabeças inquietas.\n\n` +
+        `Pra entrar na sintonia:\n` +
+        `⚠️ *Não deixe de ler as regrinhas na descrição do grupo* (respeito e troca genuína em primeiro lugar).\n` +
+        `🙋 *Manda um alô se apresentando:* quem é você, qual seu projeto do momento e que assunto mais faz seus olhos brilharem por aqui?\n\n` +
+        `Bora pra cima! ⚡`
+      );
+    },
   },
   {
     id: "pasta-de-salvos",
     title: "De Pasta de Salvos a Trabalho Real",
-    format: (phone: string) =>
-      `Boas-vindas ao LAB, @${phone}! 🎉✨\n\n` +
-      `O propósito desta comunidade é simples: transformar pastas de referências salvas em projetos reais, com direção e identidade.\n\n` +
-      `Antes de qualquer coisa:\n` +
-      `🔍 *Passe na descrição do grupo e leia as regras* da comunidade.\n` +
-      `💬 *Mande uma mensagem se apresentando:* seu nome, qual a sua área de criação e que tipo de desafio você mais curte resolver?\n\n` +
-      `Muito bom ter você somando na nossa comunidade! 🚀`,
+    format: (phone: string, name?: string) => {
+      const target = formatMention(phone, name);
+      return (
+        `Boas-vindas ao LAB, ${target}! 🎉✨\n\n` +
+        `O propósito desta comunidade é simples: transformar pastas de referências salvas em projetos reais, com direção e identidade.\n\n` +
+        `Antes de qualquer coisa:\n` +
+        `🔍 *Passe na descrição do grupo e leia as regras* da comunidade.\n` +
+        `💬 *Mande uma mensagem se apresentando:* seu nome, qual a sua área de criação e que tipo de desafio você mais curte resolver?\n\n` +
+        `Muito bom ter você somando na nossa comunidade! 🚀`
+      );
+    },
   },
 ];
 
@@ -101,11 +132,18 @@ export function getNextWelcomeTemplate(forcedIndex?: number): { template: Welcom
   return { template: WELCOME_TEMPLATES[index], index };
 }
 
+export interface GroupJoinParticipant {
+  phone: string;
+  name?: string;
+  raw: string;
+}
+
 export interface GroupJoinEvent {
   groupJid: string;
   action: "add" | "join";
   participants: string[]; // apenas dígitos numéricos para menções (ex: "5531985869015")
   rawParticipants: string[];
+  participantDetails?: GroupJoinParticipant[];
 }
 
 function cleanDigits(value: unknown): string | null {
@@ -123,6 +161,18 @@ function cleanDigits(value: unknown): string | null {
     return raw.length >= 8 ? raw : null;
   }
   return null;
+}
+
+function extractItemName(item: unknown): string | undefined {
+  if (item && typeof item === "object") {
+    const obj = item as Record<string, unknown>;
+    for (const key of ["name", "pushName", "notify", "DisplayName", "wa_name", "wa_contactName"]) {
+      if (typeof obj[key] === "string" && (obj[key] as string).trim()) {
+        return (obj[key] as string).trim();
+      }
+    }
+  }
+  return undefined;
 }
 
 /**
@@ -157,12 +207,24 @@ export function parseGroupJoinEvent(body: unknown): GroupJoinEvent | null {
 
   const participants: string[] = [];
   const rawParticipants: string[] = [];
+  const participantDetails: GroupJoinParticipant[] = [];
+
+  // Verifica se há perfil nos campos de nível superior do webhook
+  const fallbackSingleName =
+    typeof data.pushName === "string"
+      ? data.pushName.trim()
+      : typeof payload.pushName === "string"
+      ? payload.pushName.trim()
+      : undefined;
 
   for (const item of listRaw) {
     const digits = cleanDigits(item);
     if (digits && !participants.includes(digits)) {
       participants.push(digits);
-      rawParticipants.push(String(item));
+      const raw = typeof item === "string" ? item : JSON.stringify(item);
+      rawParticipants.push(raw);
+      const name = extractItemName(item) || (listRaw.length === 1 ? fallbackSingleName : undefined);
+      participantDetails.push({ phone: digits, name, raw });
     }
   }
 
@@ -173,6 +235,7 @@ export function parseGroupJoinEvent(body: unknown): GroupJoinEvent | null {
     action: "add",
     participants,
     rawParticipants,
+    participantDetails,
   };
 }
 
@@ -193,24 +256,117 @@ export function getUazapiConfig(): UazapiConfig {
 }
 
 /**
+ * Busca o nome de perfil do usuário no WhatsApp via UAZAPI.
+ * 1. Se já fornecido pelo webhook, usa de imediato.
+ * 2. Consulta /group/info (participantes e seus perfis com nome).
+ * 3. Consulta /chat/find como fallback de perfil.
+ * 4. Retorna null se não houver nome público configurado.
+ */
+export async function resolveMemberName(
+  config: UazapiConfig,
+  groupJid: string,
+  phone: string,
+  initialName?: string
+): Promise<string | null> {
+  if (initialName && initialName.trim()) {
+    return initialName.trim();
+  }
+
+  if (!config.uazapiUrl || !config.uazapiToken) {
+    return null;
+  }
+
+  const cleanTarget = phone.replace(/\D/g, "");
+
+  // 1. Tenta POST /group/info
+  try {
+    const res = await fetch(`${config.uazapiUrl}/group/info`, {
+      method: "POST",
+      headers: {
+        token: config.uazapiToken,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ groupJid }),
+      signal: AbortSignal.timeout(5_000),
+    });
+
+    if (res.ok) {
+      const data = (await res.json()) as {
+        participant_profiles?: Array<{ pn?: string; jid?: string; name?: string }>;
+      };
+      const profiles = data.participant_profiles || [];
+      for (const p of profiles) {
+        const pNum = (p.pn || p.jid || "").split("@")[0].replace(/\D/g, "");
+        if (pNum && (pNum === cleanTarget || pNum.endsWith(cleanTarget.slice(-8)))) {
+          if (p.name && p.name.trim()) {
+            return p.name.trim();
+          }
+        }
+      }
+    }
+  } catch {
+    // Silencioso para não travar o envio de boas-vindas
+  }
+
+  // 2. Fallback: POST /chat/find
+  try {
+    const res = await fetch(`${config.uazapiUrl}/chat/find`, {
+      method: "POST",
+      headers: {
+        token: config.uazapiToken,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ wa_chatid: `${cleanTarget}@s.whatsapp.net` }),
+      signal: AbortSignal.timeout(5_000),
+    });
+
+    if (res.ok) {
+      const data = (await res.json()) as {
+        chats?: Array<{ wa_name?: string; name?: string; wa_contactName?: string; lead_name?: string }>;
+      };
+      const chat = (data.chats || [])[0];
+      if (chat) {
+        const found = chat.wa_name || chat.name || chat.wa_contactName || chat.lead_name;
+        if (found && found.trim()) {
+          return found.trim();
+        }
+      }
+    }
+  } catch {
+    // Silencioso para não travar o envio de boas-vindas
+  }
+
+  return null;
+}
+
+/**
  * Envia mensagem para o grupo mencionando os novos membros participantes.
  */
 export async function sendWelcomeToGroup(
   config: UazapiConfig,
   event: GroupJoinEvent,
   forcedTemplateIndex?: number
-): Promise<{ success: boolean; messagesSent: number; templateId: string; responseText?: string }> {
+): Promise<{ success: boolean; messagesSent: number; templateId: string; responseText?: string; resolvedNames?: Record<string, string> }> {
   if (!config.uazapiUrl || !config.uazapiToken) {
     throw new Error("UAZAPI_URL e UAZAPI_TOKEN não foram configurados no ambiente.");
   }
 
   let count = 0;
   let lastTemplateId = "";
+  const resolvedNames: Record<string, string> = {};
 
   for (const phone of event.participants) {
+    const detail = event.participantDetails?.find((d) => d.phone === phone);
+    const memberName = await resolveMemberName(config, event.groupJid, phone, detail?.name);
+    if (memberName) {
+      resolvedNames[phone] = memberName;
+    }
+
     const { template } = getNextWelcomeTemplate(forcedTemplateIndex);
     lastTemplateId = template.id;
-    const messageText = template.format(phone);
+    const messageText = template.format(phone, memberName || undefined);
 
     const payload = {
       number: event.groupJid,
@@ -237,7 +393,7 @@ export async function sendWelcomeToGroup(
     count++;
   }
 
-  return { success: true, messagesSent: count, templateId: lastTemplateId };
+  return { success: true, messagesSent: count, templateId: lastTemplateId, resolvedNames };
 }
 
 type Req = Pick<IncomingMessage, "method" | "headers"> & AsyncIterable<unknown> & { body?: unknown };
