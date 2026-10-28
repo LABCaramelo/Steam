@@ -136,11 +136,6 @@ export default function PromptsPage() {
           <a href="/" className="prompts-studio-wordmark" title="Ir para Home">
             UM CARA<span> CARAMELO®</span>
           </a>
-          <span className="prompts-studio-divider" />
-          <div className="prompts-studio-badge">
-            <span className="prompts-studio-dot" />
-            <strong>BANCO OFICIAL DE PROMPTS</strong>
-          </div>
         </div>
       </header>
 
