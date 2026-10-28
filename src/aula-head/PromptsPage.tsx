@@ -14,8 +14,6 @@ type ViewMode = "split" | "code" | "guide";
 
 export default function PromptsPage() {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState<string>("all");
   const [viewMode, setViewMode] = useState<ViewMode>("split");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ title: string; desc: string; accent?: string } | null>(null);
@@ -32,37 +30,10 @@ export default function PromptsPage() {
     };
   }, []);
 
-  // Filtragem dos prompts na lista lateral
-  const filteredPrompts = useMemo(() => {
-    return prompts.filter((p) => {
-      const q = search.toLowerCase().trim();
-      const matchesSearch =
-        !q ||
-        p.title.toLowerCase().includes(q) ||
-        p.name.toLowerCase().includes(q) ||
-        p.tool.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q) ||
-        p.whatItDoes.toLowerCase().includes(q) ||
-        p.filename.toLowerCase().includes(q);
-
-      const matchesCat =
-        activeCategory === "all" ||
-        (activeCategory === "media" && (p.category.includes("Imagem") || p.category.includes("Vídeo"))) ||
-        (activeCategory === "copy" && p.category.includes("Copywriting")) ||
-        (activeCategory === "design" && p.category.includes("Design"));
-
-      return matchesSearch && matchesCat;
-    });
-  }, [search, activeCategory]);
-
-  // Prompt ativo atual
+  // Prompt ativo atual (direto dos 5 prompts canônicos)
   const activePrompt: PromptMetadata = useMemo(() => {
-    if (filteredPrompts.length > 0) {
-      const found = filteredPrompts[selectedIndex] || filteredPrompts[0];
-      return found;
-    }
-    return prompts[0];
-  }, [filteredPrompts, selectedIndex]);
+    return prompts[selectedIndex] || prompts[0];
+  }, [selectedIndex]);
 
   // Função mestre de cópia com alta confiabilidade e fallback
   const handleCopy = useCallback(async (p: PromptMetadata) => {
@@ -96,7 +67,7 @@ export default function PromptsPage() {
       setCopiedId(p.id);
       setToast({
         title: `Prompt 0${p.number} Copiado com Sucesso! ✓`,
-        desc: `${p.name} · ${p.prompt.length.toLocaleString("pt-BR")} caracteres prontos para colar no ${p.tool.split("/")[0].trim()}.`,
+        desc: `${p.name} pronto para colar na sua ferramenta de IA.`,
         accent,
       });
 
@@ -119,10 +90,9 @@ export default function PromptsPage() {
     }
   };
 
-  // Atalhos de teclado no ecossistema sem rolagem
+  // Atalhos de teclado silenciosos (1-5 para trocar, C para copiar)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignorar se o usuário estiver digitando em campo de texto
       if (
         e.defaultPrevented ||
         e.altKey ||
@@ -131,10 +101,6 @@ export default function PromptsPage() {
         (e.target instanceof Element &&
           e.target.closest("input,textarea,select,button,[contenteditable]"))
       ) {
-        if (e.key === "Escape") {
-          setSearch("");
-          (e.target as HTMLElement)?.blur();
-        }
         return;
       }
 
@@ -142,18 +108,7 @@ export default function PromptsPage() {
       const num = Number(e.key);
       if (num >= 1 && num <= 5) {
         e.preventDefault();
-        const targetIndex = filteredPrompts.findIndex((p) => p.number === num);
-        if (targetIndex >= 0) {
-          setSelectedIndex(targetIndex);
-        } else {
-          // Se estiver filtrado, localiza no catálogo global
-          const globalIdx = prompts.findIndex((p) => p.number === num);
-          if (globalIdx >= 0) {
-            setActiveCategory("all");
-            setSearch("");
-            setSelectedIndex(globalIdx);
-          }
-        }
+        setSelectedIndex(num - 1);
         return;
       }
 
@@ -169,12 +124,12 @@ export default function PromptsPage() {
       // Teclas de navegação: Seta Cima/Baixo ou J/K
       if (e.key === "ArrowDown" || e.key === "j") {
         e.preventDefault();
-        setSelectedIndex((prev) => (prev + 1) % Math.max(1, filteredPrompts.length));
+        setSelectedIndex((prev) => (prev + 1) % prompts.length);
         return;
       }
       if (e.key === "ArrowUp" || e.key === "k") {
         e.preventDefault();
-        setSelectedIndex((prev) => (prev - 1 + filteredPrompts.length) % Math.max(1, filteredPrompts.length));
+        setSelectedIndex((prev) => (prev - 1 + prompts.length) % prompts.length);
         return;
       }
 
@@ -199,28 +154,19 @@ export default function PromptsPage() {
         location.hash = "#apresentacao";
         return;
       }
-
-      // Tecla / : focar na busca
-      if (e.key === "/") {
-        e.preventDefault();
-        const searchInput = document.getElementById("prompts-search-sidebar-input");
-        searchInput?.focus();
-        return;
-      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activePrompt, filteredPrompts, handleCopy]);
+  }, [activePrompt, handleCopy]);
 
   const activeAccent = promptAccents[activePrompt.number] || "#FF701A";
   const isActiveCopied = copiedId === activePrompt.id;
-  const wordCount = Math.round(activePrompt.prompt.split(/\s+/).length);
   const lineCount = activePrompt.prompt.split("\n").length;
 
   return (
     <div className="prompts-studio-root" style={{ "--active-accent": activeAccent } as React.CSSProperties}>
-      {/* 1. TOPBAR COMPACTA FIXA (52px) */}
+      {/* 1. TOPBAR LIMPA E DIRETA */}
       <header className="prompts-studio-topbar">
         <div className="prompts-studio-topbar-left">
           <a href="/" className="prompts-studio-wordmark" title="Ir para Home">
@@ -230,13 +176,6 @@ export default function PromptsPage() {
           <div className="prompts-studio-badge">
             <span className="prompts-studio-dot" />
             <strong>BANCO OFICIAL DE PROMPTS</strong>
-            <span className="prompts-studio-tag">5 Ferramentas Mestre</span>
-          </div>
-        </div>
-
-        <div className="prompts-studio-topbar-center">
-          <div className="prompts-viewport-indicator">
-            <span>MODO STUDIO INTEGRADO · 0 ROLAGEM DE PÁGINA</span>
           </div>
         </div>
 
@@ -245,19 +184,17 @@ export default function PromptsPage() {
             href="/5-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
             download="5-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
             className="prompts-studio-btn secondary"
-            title="Baixar arquivo TXT com os 5 prompts completos (Atalho: D)"
+            title="Baixar arquivo TXT com os 5 prompts"
           >
-            <span>Baixar .txt</span>
-            <kbd>D</kbd>
+            Baixar .txt
           </a>
 
           <a
             href="#apresentacao"
             className="prompts-studio-btn slides"
-            title="Abrir Modo Apresentação de Slides (Atalho: A)"
+            title="Abrir Apresentação da Aula"
           >
-            <span>Modo Aula (Slides)</span>
-            <kbd>A</kbd>
+            Modo Aula (Slides)
           </a>
 
           <a href="/" className="prompts-studio-btn icon-only" title="Voltar ao início">
@@ -266,156 +203,66 @@ export default function PromptsPage() {
         </div>
       </header>
 
-      {/* 2. ÁREA DE TRABALHO STUDIO (100dvh - topbar - dock) */}
+      {/* 2. ÁREA DE TRABALHO STUDIO (100dvh - topbar) */}
       <div className="prompts-studio-workspace">
-        {/* COLUNA ESQUERDA: NAVEGADOR & LISTA DOS 5 PROMPTS (340px) */}
+        {/* COLUNA ESQUERDA: LISTA DIRETA DOS 5 PROMPTS (SEM BUSCA, SEM TAGS) */}
         <aside className="prompts-studio-sidebar" aria-label="Seleção de Prompts">
-          {/* BARRA DE FILTRO E BUSCA */}
-          <div className="prompts-sidebar-search-box">
-            <div className="prompts-sidebar-search-input-wrap">
-              <span className="search-icon" aria-hidden="true">
-                🔍
-              </span>
-              <input
-                id="prompts-search-sidebar-input"
-                type="text"
-                placeholder="Filtrar prompts... (/ para focar)"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setSelectedIndex(0);
-                }}
-                className="prompts-sidebar-search-input"
-              />
-              {search && (
-                <button
-                  type="button"
-                  className="clear-search-btn"
-                  onClick={() => setSearch("")}
-                  title="Limpar busca (Esc)"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-
-            {/* ABAS RÁPIDAS DE CATEGORIA */}
-            <div className="prompts-sidebar-categories">
-              {[
-                { id: "all", label: "Todos", count: 5 },
-                { id: "copy", label: "Copy", count: 1 },
-                { id: "media", label: "Mídia", count: 3 },
-                { id: "design", label: "Design", count: 1 },
-              ].map((cat) => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  className={`category-pill ${activeCategory === cat.id ? "active" : ""}`}
-                  onClick={() => {
-                    setActiveCategory(cat.id);
-                    setSelectedIndex(0);
-                  }}
-                >
-                  <span>{cat.label}</span>
-                  <small>{cat.count}</small>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* LISTA COMPACTA DOS PROMPTS */}
           <nav className="prompts-sidebar-list" aria-label="Lista de prompts">
-            {filteredPrompts.length === 0 ? (
-              <div className="prompts-sidebar-empty">
-                <p>Nenhum prompt encontrado.</p>
-                <button
-                  type="button"
-                  className="reset-filters-btn"
-                  onClick={() => {
-                    setSearch("");
-                    setActiveCategory("all");
+            {prompts.map((p, index) => {
+              const isSelected = activePrompt.id === p.id;
+              const accent = promptAccents[p.number] || "#FF701A";
+              const isItemCopied = copiedId === p.id;
+
+              return (
+                <div
+                  key={p.id}
+                  className={`prompts-sidebar-card ${isSelected ? "selected" : ""}`}
+                  style={{ "--card-accent": accent } as React.CSSProperties}
+                  onClick={() => setSelectedIndex(index)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setSelectedIndex(index);
+                    }
                   }}
                 >
-                  Limpar busca
-                </button>
-              </div>
-            ) : (
-              filteredPrompts.map((p, index) => {
-                const isSelected = activePrompt.id === p.id;
-                const accent = promptAccents[p.number] || "#FF701A";
-                const isItemCopied = copiedId === p.id;
+                  <div className="card-left-accent" />
 
-                return (
-                  <div
-                    key={p.id}
-                    className={`prompts-sidebar-card ${isSelected ? "selected" : ""}`}
-                    style={{ "--card-accent": accent } as React.CSSProperties}
-                    onClick={() => setSelectedIndex(index)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        setSelectedIndex(index);
-                      }
-                    }}
-                  >
-                    <div className="card-left-accent" />
-
-                    <div className="card-num-badge">
-                      <span>0{p.number}</span>
-                    </div>
-
-                    <div className="card-main-info">
-                      <div className="card-header-line">
-                        <strong className="card-title">{p.name}</strong>
-                      </div>
-                      <span className="card-tool-text">{p.tool.split("/")[0].trim()}</span>
-                      <span className="card-category-label">{p.category}</span>
-                    </div>
-
-                    <div className="card-actions">
-                      <button
-                        type="button"
-                        className={`card-quick-copy-btn ${isItemCopied ? "copied" : ""}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleCopy(p);
-                        }}
-                        title={`Copiar Prompt 0${p.number}`}
-                        aria-label={`Copiar Prompt 0${p.number}`}
-                      >
-                        {isItemCopied ? "✓" : "📋"}
-                      </button>
-                    </div>
+                  <div className="card-num-badge">
+                    <span>0{p.number}</span>
                   </div>
-                );
-              })
-            )}
-          </nav>
 
-          <div className="prompts-sidebar-footer">
-            <span className="prompts-shortcut-hint">
-              Navegar: <kbd>↑</kbd> <kbd>↓</kbd> · Pular: <kbd>1-5</kbd>
-            </span>
-          </div>
+                  <div className="card-main-info">
+                    <strong className="card-title">{p.name}</strong>
+                    <span className="card-tool-text">{p.tool.split("/")[0].trim()}</span>
+                    <span className="card-category-label">{p.category}</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    className={`card-quick-copy-btn ${isItemCopied ? "copied" : ""}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopy(p);
+                    }}
+                    title={`Copiar Prompt 0${p.number}`}
+                    aria-label={`Copiar Prompt 0${p.number}`}
+                  >
+                    {isItemCopied ? "✓" : "📋"}
+                  </button>
+                </div>
+              );
+            })}
+          </nav>
         </aside>
 
-        {/* COLUNA DIREITA: CONSOLE DO PROMPT ATIVO (FILL RESTANTE) */}
+        {/* COLUNA DIREITA: CONSOLE DO PROMPT ATIVO */}
         <main className="prompts-studio-stage">
-          {/* HEADER DO PROMPT ATIVO: METADADOS + AÇÃO PROTAGONISTA */}
+          {/* HEADER DO PROMPT ATIVO: APENAS O TÍTULO E OS BOTÕES DE AÇÃO */}
           <header className="prompts-stage-header">
             <div className="stage-header-title-block">
-              <div className="stage-badges-row">
-                <span className="stage-num-pill" style={{ background: activeAccent }}>
-                  PROMPT 0{activePrompt.number}
-                </span>
-                <span className="stage-tool-pill">🛠 {activePrompt.tool}</span>
-                <span className="stage-cat-pill">{activePrompt.category}</span>
-                <span className="stage-stats-pill">
-                  {activePrompt.prompt.length.toLocaleString("pt-BR")} caracteres · {wordCount.toLocaleString("pt-BR")} palavras
-                </span>
-              </div>
               <h1 className="stage-main-title">{activePrompt.title}</h1>
             </div>
 
@@ -428,7 +275,7 @@ export default function PromptsPage() {
                   onClick={() => setViewMode("split")}
                   title="Modo Dividido: Guia + Texto"
                 >
-                  ⚡ Dividido
+                  Dividido
                 </button>
                 <button
                   type="button"
@@ -436,7 +283,7 @@ export default function PromptsPage() {
                   onClick={() => setViewMode("code")}
                   title="Modo Foco no Texto Integral"
                 >
-                  📄 Texto
+                  Texto
                 </button>
                 <button
                   type="button"
@@ -444,24 +291,21 @@ export default function PromptsPage() {
                   onClick={() => setViewMode("guide")}
                   title="Modo Ficha Técnica e Diretrizes"
                 >
-                  💡 Guia
+                  Guia
                 </button>
               </div>
 
-              {/* MEGA BOTÃO DE CÓPIA PROTAGONISTA */}
+              {/* BOTÃO DE CÓPIA PROTAGONISTA LIMPO */}
               <button
                 type="button"
                 className={`stage-mega-copy-btn ${isActiveCopied ? "copied" : ""}`}
                 onClick={() => handleCopy(activePrompt)}
-                title="Copiar prompt integral para a área de transferência (Atalho: C)"
+                title={`Copiar Prompt 0${activePrompt.number}`}
               >
                 <span className="mega-copy-icon" aria-hidden="true">
                   {isActiveCopied ? "✓" : "📋"}
                 </span>
-                <div className="mega-copy-text">
-                  <strong>{isActiveCopied ? "COPIADO COM SUCESSO!" : `COPIAR PROMPT 0${activePrompt.number}`}</strong>
-                  <small>{isActiveCopied ? "Pronto para colar na IA" : "Atalho rápido: pressione [C]"}</small>
-                </div>
+                <strong>{isActiveCopied ? "COPIADO COM SUCESSO!" : `COPIAR PROMPT 0${activePrompt.number}`}</strong>
               </button>
             </div>
           </header>
@@ -524,7 +368,7 @@ export default function PromptsPage() {
                       type="button"
                       className="editor-tool-btn"
                       onClick={handleSelectAll}
-                      title="Selecionar todo o texto para copiar trecho específico"
+                      title="Selecionar todo o texto"
                     >
                       Selecionar Tudo
                     </button>
@@ -539,7 +383,7 @@ export default function PromptsPage() {
                   </div>
                 </div>
 
-                {/* ÁREA DE LEITURA MONOSPACE COM SCROLL INTERNO RESTRITO */}
+                {/* ÁREA DE LEITURA MONOSPACE COM SCROLL INTERNO CONTROLADO */}
                 <div className="editor-code-container">
                   <pre ref={codePreRef} className="editor-code-text" tabIndex={0}>
                     {activePrompt.prompt}
@@ -551,38 +395,7 @@ export default function PromptsPage() {
         </main>
       </div>
 
-      {/* 3. DOCK DE STATUS & ATALHOS INFERIOR (32px) */}
-      <footer className="prompts-studio-dock">
-        <div className="dock-left">
-          <span className="dock-lead">ATALHOS DO STUDIO:</span>
-          <span className="dock-pill">
-            <kbd>1-5</kbd> Alternar Prompt
-          </span>
-          <span className="dock-pill">
-            <kbd>C</kbd> Copiar Ativo
-          </span>
-          <span className="dock-pill">
-            <kbd>↑</kbd> <kbd>↓</kbd> Navegar
-          </span>
-          <span className="dock-pill">
-            <kbd>V</kbd> Alternar Visão
-          </span>
-          <span className="dock-pill">
-            <kbd>D</kbd> Baixar .txt
-          </span>
-          <span className="dock-pill">
-            <kbd>A</kbd> Modo Aula
-          </span>
-        </div>
-
-        <div className="dock-right">
-          <span className="dock-active-status">
-            Ativo: <strong>Prompt 0{activePrompt.number} ({activePrompt.name})</strong> · 100% pronto para uso
-          </span>
-        </div>
-      </footer>
-
-      {/* 4. TOAST FLUTUANTE DE FEEDBACK HÁPTICO */}
+      {/* TOAST FLUTUANTE DE FEEDBACK HÁPTICO */}
       {toast && (
         <aside
           className="studio-toast"

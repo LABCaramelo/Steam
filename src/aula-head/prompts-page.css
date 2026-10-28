@@ -1,5 +1,5 @@
 /* ==========================================================================
-   BANCO OFICIAL DE PROMPTS — CREATIVE STUDIO CONSOLE (ZERO-SCROLL)
+   BANCO OFICIAL DE PROMPTS — MINIMALIST ZERO-SCROLL STUDIO CONSOLE
    HEAD ACADEMY × UM CARA CARAMELO — LABORATÓRIO DE INTERAÇÃO
    ========================================================================== */
 
@@ -56,13 +56,13 @@ body {
   flex-direction: column;
   background-color: var(--color-obsidian-900);
   background-image:
-    radial-gradient(ellipse 90% 40% at 50% -10%, rgba(255, 112, 26, 0.09), transparent),
-    radial-gradient(circle at 90% 20%, rgba(37, 191, 255, 0.06), transparent 35%),
-    radial-gradient(circle at 10% 80%, rgba(118, 87, 255, 0.06), transparent 35%);
+    radial-gradient(ellipse 90% 40% at 50% -10%, rgba(255, 112, 26, 0.08), transparent),
+    radial-gradient(circle at 90% 20%, rgba(37, 191, 255, 0.05), transparent 35%),
+    radial-gradient(circle at 10% 80%, rgba(118, 87, 255, 0.05), transparent 35%);
 }
 
 /* ==========================================================================
-   2. TOPBAR COMPACTA (52px)
+   2. TOPBAR LIMPA E ELEGANTE (52px)
    ========================================================================== */
 .prompts-studio-topbar {
   height: 52px;
@@ -74,7 +74,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 24px;
   z-index: 40;
 }
 
@@ -133,31 +133,6 @@ body {
   text-transform: uppercase;
 }
 
-.prompts-studio-tag {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-caramel);
-  background: rgba(255, 112, 26, 0.12);
-  padding: 2px 7px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 112, 26, 0.25);
-}
-
-.prompts-studio-topbar-center {
-  display: flex;
-  align-items: center;
-}
-
-.prompts-viewport-indicator {
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--color-cream-subtle);
-}
-
 .prompts-studio-topbar-right {
   display: flex;
   align-items: center;
@@ -168,9 +143,9 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 6px;
   text-decoration: none;
   cursor: pointer;
@@ -206,8 +181,8 @@ body {
   background: transparent;
   border: none;
   color: var(--color-cream-subtle);
-  padding: 6px 8px;
-  font-size: 12px;
+  padding: 6px 10px;
+  font-size: 13px;
 }
 
 .prompts-studio-btn.icon-only:hover {
@@ -215,18 +190,8 @@ body {
   background: rgba(255, 255, 255, 0.08);
 }
 
-.prompts-studio-btn kbd {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  padding: 1px 4px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 3px;
-  color: var(--color-cream-muted);
-}
-
 /* ==========================================================================
-   3. ÁREA DE TRABALHO STUDIO (SPLIT PRINCIPAL)
+   3. ÁREA DE TRABALHO STUDIO
    ========================================================================== */
 .prompts-studio-workspace {
   flex: 1;
@@ -236,7 +201,7 @@ body {
 }
 
 /* ==========================================================================
-   4. SIDEBAR LATERAL NAVEGADORA (340px)
+   4. SIDEBAR LATERAL NAVEGADORA DOS 5 PROMPTS (340px)
    ========================================================================== */
 .prompts-studio-sidebar {
   width: 340px;
@@ -248,127 +213,14 @@ body {
   overflow: hidden;
 }
 
-.prompts-sidebar-search-box {
-  padding: 12px;
-  border-bottom: 1px solid var(--border-subtle);
-  background: var(--color-obsidian-800);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.prompts-sidebar-search-input-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.prompts-sidebar-search-input-wrap .search-icon {
-  position: absolute;
-  left: 10px;
-  font-size: 12px;
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.prompts-sidebar-search-input {
-  width: 100%;
-  background: var(--color-obsidian-900);
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  padding: 8px 30px 8px 30px;
-  font-size: 12px;
-  color: #ffffff;
-  outline: none;
-  transition: all 0.15s ease;
-  font-family: var(--font-ui);
-}
-
-.prompts-sidebar-search-input:focus {
-  border-color: var(--color-caramel);
-  box-shadow: 0 0 0 2px rgba(255, 112, 26, 0.15);
-}
-
-.clear-search-btn {
-  position: absolute;
-  right: 8px;
-  background: transparent;
-  border: none;
-  color: var(--color-cream-subtle);
-  cursor: pointer;
-  font-size: 11px;
-  padding: 2px 4px;
-}
-
-.clear-search-btn:hover {
-  color: #ffffff;
-}
-
-.prompts-sidebar-categories {
-  display: flex;
-  gap: 5px;
-}
-
-.category-pill {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 4px 6px;
-  border-radius: 5px;
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--color-cream-muted);
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.category-pill small {
-  font-size: 9px;
-  opacity: 0.6;
-}
-
-.category-pill:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--color-cream);
-}
-
-.category-pill.active {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-}
-
-/* LISTA DOS PROMPTS */
 .prompts-sidebar-list {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 10px;
+  padding: 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.prompts-sidebar-empty {
-  padding: 30px 16px;
-  text-align: center;
-  color: var(--color-cream-subtle);
-  font-size: 12px;
-}
-
-.reset-filters-btn {
-  margin-top: 10px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--border-subtle);
-  color: var(--color-cream);
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 11px;
-  cursor: pointer;
+  gap: 10px;
 }
 
 /* CARD INDIVIDUAL NA SIDEBAR */
@@ -377,7 +229,7 @@ body {
   background: var(--color-obsidian-800);
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
-  padding: 12px 12px 12px 14px;
+  padding: 14px 14px 14px 16px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -448,12 +300,12 @@ body {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .card-title {
   font-family: var(--font-editorial);
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
   color: #ffffff;
   white-space: nowrap;
@@ -477,23 +329,20 @@ body {
   color: var(--card-accent);
 }
 
-.card-actions {
-  flex-shrink: 0;
-}
-
 .card-quick-copy-btn {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--border-subtle);
   color: var(--color-cream);
-  font-size: 11px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.15s ease;
+  flex-shrink: 0;
 }
 
 .card-quick-copy-btn:hover {
@@ -507,27 +356,6 @@ body {
   background: var(--color-emerald) !important;
   border-color: var(--color-emerald) !important;
   color: #ffffff !important;
-}
-
-.prompts-sidebar-footer {
-  padding: 8px 12px;
-  border-top: 1px solid var(--border-subtle);
-  background: var(--color-obsidian-900);
-}
-
-.prompts-shortcut-hint {
-  font-size: 10px;
-  color: var(--color-cream-subtle);
-}
-
-.prompts-shortcut-hint kbd {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 1px 3px;
-  border-radius: 3px;
-  color: var(--color-cream-muted);
 }
 
 /* ==========================================================================
@@ -547,7 +375,7 @@ body {
   flex-shrink: 0;
   background: var(--color-obsidian-850);
   border-bottom: 1px solid var(--border-subtle);
-  padding: 14px 24px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -557,56 +385,12 @@ body {
 .stage-header-title-block {
   flex: 1;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.stage-badges-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.stage-num-pill {
-  font-family: var(--font-editorial);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #0b0d13;
-  padding: 2px 8px;
-  border-radius: 4px;
-}
-
-.stage-tool-pill {
-  font-size: 11px;
-  font-weight: 600;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--border-subtle);
-  padding: 2px 8px;
-  border-radius: 4px;
-}
-
-.stage-cat-pill {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-cream-muted);
-}
-
-.stage-stats-pill {
-  font-size: 10px;
-  color: var(--color-cream-subtle);
 }
 
 .stage-main-title {
   margin: 0;
   font-family: var(--font-editorial);
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -639,7 +423,7 @@ body {
   color: var(--color-cream-muted);
   font-size: 11px;
   font-weight: 600;
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.12s ease;
@@ -659,11 +443,11 @@ body {
 .stage-mega-copy-btn {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   background: var(--active-accent);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 8px;
-  padding: 8px 18px;
+  padding: 9px 18px;
   cursor: pointer;
   color: #0b0d13;
   transition: all 0.18s ease;
@@ -683,29 +467,14 @@ body {
 }
 
 .mega-copy-icon {
-  font-size: 16px;
+  font-size: 15px;
 }
 
-.mega-copy-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-}
-
-.mega-copy-text strong {
+.stage-mega-copy-btn strong {
   font-family: var(--font-editorial);
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.02em;
-  line-height: 1.1;
-}
-
-.mega-copy-text small {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  opacity: 0.85;
 }
 
 /* ==========================================================================
@@ -739,7 +508,7 @@ body {
 }
 
 .inspector-inner-scroll {
-  padding: 18px 20px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -777,7 +546,7 @@ body {
 .inspector-card p {
   margin: 0;
   font-size: 12.5px;
-  line-height: 1.45;
+  line-height: 1.48;
   color: var(--color-cream);
 }
 
@@ -818,11 +587,11 @@ body {
 }
 
 .editor-top-bar {
-  height: 38px;
+  height: 40px;
   flex-shrink: 0;
   background: var(--color-obsidian-850);
   border-bottom: 1px solid var(--border-subtle);
-  padding: 0 16px;
+  padding: 0 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -832,7 +601,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .editor-file-info strong {
@@ -842,7 +611,7 @@ body {
 
 .line-count-tag {
   color: var(--color-cream-subtle);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .editor-quick-tools {
@@ -855,9 +624,9 @@ body {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--border-subtle);
   color: var(--color-cream-muted);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.12s ease;
@@ -880,15 +649,15 @@ body {
   min-height: 0;
   overflow-y: auto;
   overflow-x: auto;
-  padding: 20px 24px;
+  padding: 22px 26px;
   background: #08090e;
 }
 
 .editor-code-text {
   margin: 0;
   font-family: var(--font-mono);
-  font-size: 12.5px;
-  line-height: 1.68;
+  font-size: 13px;
+  line-height: 1.7;
   color: #f7f3eb;
   white-space: pre-wrap;
   word-break: break-word;
@@ -897,69 +666,11 @@ body {
 }
 
 /* ==========================================================================
-   7. DOCK DE STATUS INFERIOR (32px)
-   ========================================================================== */
-.prompts-studio-dock {
-  height: 32px;
-  flex-shrink: 0;
-  background: var(--color-obsidian-950);
-  border-top: 1px solid var(--border-subtle);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  font-size: 10px;
-  color: var(--color-cream-subtle);
-  z-index: 30;
-}
-
-.dock-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.dock-lead {
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--active-accent);
-}
-
-.dock-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.dock-pill kbd {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 0 3px;
-  border-radius: 3px;
-  color: var(--color-cream);
-}
-
-.dock-right {
-  display: flex;
-  align-items: center;
-}
-
-.dock-active-status {
-  font-size: 10px;
-}
-
-.dock-active-status strong {
-  color: #ffffff;
-}
-
-/* ==========================================================================
-   8. TOAST DE FEEDBACK HÁPTICO FLUTUANTE
+   7. TOAST DE FEEDBACK FLUTUANTE
    ========================================================================== */
 .studio-toast {
   position: fixed;
-  bottom: 44px;
+  bottom: 24px;
   right: 24px;
   z-index: 100;
   display: flex;
@@ -1017,7 +728,7 @@ body {
 }
 
 /* ==========================================================================
-   9. SCROLLBARS CUSTOMIZADAS (SLEEK & DISCRETAS)
+   8. SCROLLBARS CUSTOMIZADAS
    ========================================================================== */
 *::-webkit-scrollbar {
   width: 6px;
@@ -1038,7 +749,7 @@ body {
 }
 
 /* ==========================================================================
-   10. RESPONSIVIDADE (TABLETS E TELAS MENORES)
+   9. RESPONSIVIDADE
    ========================================================================== */
 @media (max-width: 900px) {
   .prompts-studio-workspace {
@@ -1047,7 +758,7 @@ body {
 
   .prompts-studio-sidebar {
     width: 100%;
-    height: 180px;
+    height: 160px;
     border-right: none;
     border-bottom: 1px solid var(--border-subtle);
   }
@@ -1069,13 +780,5 @@ body {
 
   .prompts-stage-body-layout.mode-split {
     flex-direction: column;
-  }
-
-  .prompts-viewport-indicator {
-    display: none;
-  }
-
-  .dock-left .dock-pill:nth-child(n + 4) {
-    display: none;
   }
 }
