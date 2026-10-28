@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-27T15:12:03.281Z",
+  "syncedAt": "2026-10-28T20:59:55.607Z",
   "items": [
     {
       "id": "ms-offline-footer",
@@ -2864,6 +2864,50 @@
       "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-vize-footer.mp4",
       "animated_preview_bytes": 201091,
       "animated_preview_source": "cloudflare-r2",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-oda-nobunaga-hero",
+      "slug": "oda-nobunaga-hero",
+      "title": "Oda Nobunaga Hero",
+      "category": "Design & Criativo",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "History",
+        "Design & Criativo",
+        "oda nobunaga hero"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-oda-nobunaga-hero.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-oda-nobunaga-hero.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-10-28T00:57:16.716143+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-oda-nobunaga-hero.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-nova-agent-hero",
+      "slug": "nova-agent-hero",
+      "title": "Nova Agent Hero",
+      "category": "AI & Tech",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "AI",
+        "AI & Tech",
+        "nova agent hero"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-nova-agent-hero.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-nova-agent-hero.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-10-28T00:47:06.918147+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-nova-agent-hero.mp4",
+      "animated_preview_source": "catalog",
       "verified_count": 0
     },
     {
