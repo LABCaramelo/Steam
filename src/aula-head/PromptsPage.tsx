@@ -5,8 +5,9 @@ import "./prompts-page.css";
 const promptAccents: Record<number, string> = {
   1: "#FF701A", // Caramel Orange - Copy de LP
   2: "#25BFFF", // Electric Sky - Reconstrução de Imagem
-  3: "#FF3D8D", // Hot Pink - Image to Video
-  4: "#FFD52A", // Acid Yellow - Moodboard & Design System
+  3: "#7657FF", // Electric Violet - Model Sheet 4×4 de Identidade Facial
+  4: "#FF3D8D", // Hot Pink - Image to Video
+  5: "#FFD52A", // Acid Yellow - Moodboard & Design System
 };
 
 export default function PromptsPage() {
@@ -102,7 +103,7 @@ export default function PromptsPage() {
       }
 
       const num = Number(e.key);
-      if (num >= 1 && num <= 4) {
+      if (num >= 1 && num <= 5) {
         e.preventDefault();
         const target = prompts.find((p) => p.number === num);
         if (target) {
@@ -159,10 +160,10 @@ export default function PromptsPage() {
 
           <div className="prompts-topbar-actions">
             <a
-              href="/4-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
-              download="4-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
+              href="/5-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
+              download="5-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
               className="prompts-download-btn"
-              title="Baixar arquivo de texto completo com os 4 prompts"
+              title="Baixar arquivo de texto completo com os 5 prompts"
             >
               <span>Baixar Todos (.txt)</span>
               <span aria-hidden="true">↓</span>
@@ -178,11 +179,11 @@ export default function PromptsPage() {
       <section className="prompts-hero">
         <div className="prompts-hero-badge">
           <span className="prompts-hero-dot" />
-          <span>4 Prompts Oficiais · Landing Pages com IA</span>
+          <span>5 Prompts Oficiais · Landing Pages com IA</span>
         </div>
         <h1>COPIAR PROMPTS DO TREINAMENTO</h1>
         <p className="prompts-hero-lead">
-          Acesse cada um dos 4 prompts essenciais separadamente. Clique no botão de cópia de qualquer prompt
+          Acesse cada um dos 5 prompts essenciais separadamente. Clique no botão de cópia de qualquer prompt
           para enviá-lo instantaneamente à área de transferência, pronto para colar no Claude, ChatGPT,
           Midjourney, Flux ou Kling AI.
         </p>
@@ -225,9 +226,9 @@ export default function PromptsPage() {
 
           <div className="prompts-filter-row">
             {[
-              { id: "all", label: "Todos", count: 4 },
+              { id: "all", label: "Todos", count: 5 },
               { id: "copy", label: "Copywriting", count: 1 },
-              { id: "media", label: "Imagens & Vídeo", count: 2 },
+              { id: "media", label: "Imagens & Vídeo", count: 3 },
               { id: "design", label: "Design System", count: 1 },
             ].map((cat) => (
               <button

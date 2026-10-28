@@ -991,14 +991,22 @@ function Slide07ImagemReferencia(p: SlideComponentProps) {
             <i style={{ left: `${reveal}%` }} />
           </div>
           <Range label="Deslize para comparar antes e depois" value={reveal} change={(n) => p.demo("identity-reveal", n)} />
-          <button
-            type="button"
-            className="button small"
-            style={{ marginTop: "10px" }}
-            onClick={() => p.openPrompt(1)}
-          >
-            Ver Prompt 02: Reconstrução de Imagem ↗
-          </button>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "10px" }}>
+            <button
+              type="button"
+              className="button small"
+              onClick={() => p.openPrompt(1)}
+            >
+              Ver Prompt 02: Reconstrução ↗
+            </button>
+            <button
+              type="button"
+              className="button small"
+              onClick={() => p.openPrompt(2)}
+            >
+              Ver Prompt 03: Model Sheet 4×4 ↗
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1131,9 +1139,9 @@ function Slide08ImagemParaVideo(p: SlideComponentProps) {
           <button
             type="button"
             className="button small"
-            onClick={() => p.openPrompt(2)}
+            onClick={() => p.openPrompt(3)}
           >
-            Ver Prompt 03: Image to Video ↗
+            Ver Prompt 04: Image to Video ↗
           </button>
           <span className="small">
             Se a ferramenta de vídeo não estiver disponível ou exigir créditos extras, prossiga com a imagem estática: sua Landing Page continuará excelente!
@@ -1482,9 +1490,9 @@ function Slide12IdentidadeVisual(p: SlideComponentProps) {
           type="button"
           className="button"
           style={{ marginTop: "12px" }}
-          onClick={() => p.openPrompt(3)}
+          onClick={() => p.openPrompt(4)}
         >
-          Ver Prompt 04: Moodboard → Design System ↗
+          Ver Prompt 05: Moodboard → Design System ↗
         </button>
       </div>
 

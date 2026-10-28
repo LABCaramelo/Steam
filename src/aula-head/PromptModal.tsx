@@ -21,7 +21,7 @@ export function PromptModal({ initialIndex = 0, onClose }: PromptModalProps) {
         <nav className="prompt-sidebar" aria-label="Navegar pelos prompts">
           <div className="prompt-sidebar-header">
             <span>BIBLIOTECA OFICIAL</span>
-            <small>4 prompts em ordem didática</small>
+            <small>5 prompts em ordem didática</small>
           </div>
           {prompts.map((p, i) => (
             <button
@@ -90,12 +90,12 @@ export function PromptModal({ initialIndex = 0, onClose }: PromptModalProps) {
             </button>
             <Copy text={prompt.prompt} label="Copiar prompt integral" />
             <a
-              href="/8-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
-              download="8-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
+              href="/5-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
+              download="5-PROMPTS-OFICIAIS-LANDING-PAGES-IA.txt"
               className="button"
-              title="Baixar arquivo TXT com todos os 8 prompts completos"
+              title="Baixar arquivo TXT com todos os 5 prompts completos"
             >
-              Baixar os 8 (.txt) ↓
+              Baixar os 5 (.txt) ↓
             </a>
           </div>
 

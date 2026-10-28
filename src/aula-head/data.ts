@@ -79,10 +79,11 @@ export const sectionTexts = [
   "Vamos começar seu projeto?",
 ];
 
-const promptOrder = [4, 1, 2, 5];
+const promptOrder = [4, 1, 8, 2, 5];
 export const promptNames = [
   "Copy de LP",
   "Reconstrução de Imagem",
+  "Model Sheet 4×4",
   "Image to Video",
   "Moodboard → Design System",
 ];
@@ -118,6 +119,13 @@ const promptEnrichments = [
     inputs: "Duas imagens: uma referência estética de cena de alta qualidade e uma foto nítida do seu rosto (ou da pessoa autorizada).",
     outputs: "Uma imagem personalizada que preserva o cenário cinematográfico com a sua identidade facial.",
     customizationTip: "Use fotos de rosto bem iluminadas e sem acessórios obstrutivos. Se não for usar sua foto, crie um personagem conceitual para a marca.",
+  },
+  {
+    whatItDoes: "Analisa uma foto de referência e gera um model sheet 4×4 profissional com 16 retratos fotorrealistas em estúdio da mesma pessoa em 16 expressões, rotações de cabeça e ângulos com trava total de identidade.",
+    whenToUse: "Na Aula 2, para mapear e travar a identidade facial em múltiplos ângulos e expressões antes de gerar variações para a LP e redes.",
+    inputs: "IMAGE 1 (Foto de identidade nítida da pessoa como fonte absoluta de verdade) e opcionalmente IMAGE 2 (Referência de grid/estilo do model sheet).",
+    outputs: "Uma prancha de contato quadrada 4×4 com 16 retratos individuais em alta resolução, preservando estrutura óssea, olhar, proporções e traços reais.",
+    customizationTip: "Fidelidade de identidade é prioridade máxima sobre beleza artificial. Preserve assimetrias e marcas naturais, sem filtros plásticos ou embelezamento.",
   },
   {
     whatItDoes: "Orienta a IA geradora de vídeo a animar suavemente a imagem estática em um loop contínuo de 8 segundos (respiração, cabelos, tecido, luz).",
@@ -298,17 +306,17 @@ export const slides: SlideData[] = [
     heading: "UMA IMAGEM DEFINE A CENA. OUTRA DEFINE A IDENTIDADE.",
     line: "IMAGE 1 define composição, iluminação e cenário. IMAGE 2 define quem estará nela.",
     invite: "Mova o slider para comparar antes e depois e descubra o que cada referência controla.",
-    prompt: 1, // Prompt 02 (Reconstrução de Imagem)
+    prompt: 1, // Prompt 02 (Reconstrução de Imagem) e Prompt 03 (Model Sheet 4×4)
     lesson: 1,
     livePractice: {
       tool: "Midjourney / Gemini Imagen 3 / Flux",
       promptNumber: 2,
-      promptName: "Reconstrução de Imagem",
-      materials: ["1 imagem de referência de estilo/cena", "1 foto nítida de identidade facial autorizada", "Prompt 02"],
-      action: "Subir as duas referências na ferramenta de imagem e executar o prompt indicando qual imagem dita a cena e qual dita a identidade.",
+      promptName: "Reconstrução de Imagem & Model Sheet 4×4",
+      materials: ["1 imagem de referência de estilo/cena", "1 foto nítida de identidade facial autorizada", "Prompt 02 (Reconstrução) e Prompt 03 (Model Sheet)"],
+      action: "Subir as referências na ferramenta de imagem e executar o prompt de reconstrução para a Hero ou o model sheet 4×4 para travar 16 ângulos de identidade.",
       checklist: [
         "Referências selecionadas e enviadas para a IA",
-        "Prompt de reconstrução de imagem executado",
+        "Prompt de reconstrução de imagem ou model sheet 4×4 executado",
         "Imagem final gerada com estilo profissional e identidade consistente",
       ],
     },
@@ -322,13 +330,13 @@ export const slides: SlideData[] = [
     heading: "MOVIMENTO BOM É MOVIMENTO QUE PERTENCE À CENA.",
     line: "Um loop sutil conecta o final ao começo sem que a repetição seja percebida.",
     invite: "Examine o loop na timeline interativa e compare a imagem estática com a animada.",
-    prompt: 2, // Prompt 03 (Image to Video)
+    prompt: 3, // Prompt 04 (Image to Video)
     lesson: 1,
     livePractice: {
       tool: "Kling AI / Runway Gen-3 / Luma Dream Machine",
-      promptNumber: 3,
+      promptNumber: 4,
       promptName: "Image to Video",
-      materials: ["Imagem personalizada gerada no slide anterior", "Prompt 03"],
+      materials: ["Imagem personalizada gerada no slide anterior", "Prompt 04"],
       action: "Carregar a imagem na ferramenta de vídeo e aplicar o prompt de movimento sutil de 8 segundos em loop.",
       checklist: [
         "Vídeo gerado com movimento ambiental suave (cabelo, luz, respiração)",
@@ -417,14 +425,14 @@ export const slides: SlideData[] = [
     heading: "MOODBOARD É INSPIRAÇÃO. DESIGN SYSTEM É REGRA.",
     line: "Cores, tipografia, espaçamento e componentes aplicados com consistência à mesma estrutura.",
     invite: "Alterne entre os moodboards e veja a Hero assumir diferentes Design Systems sem mudar a copy.",
-    prompt: 3, // Prompt 04 (Moodboard → Design System)
+    prompt: 4, // Prompt 05 (Moodboard → Design System)
     lesson: 2,
     livePractice: {
       tool: "Google AI Studio / Claude",
       toolUrl: "https://aistudio.google.com/",
-      promptNumber: 4,
+      promptNumber: 5,
       promptName: "Moodboard → Design System",
-      materials: ["Prompt 04 de Design System", "Hero já criada", "Referências visuais e paleta de cores"],
+      materials: ["Prompt 05 de Design System", "Hero já criada", "Referências visuais e paleta de cores"],
       action: "Pedir à IA para extrair e aplicar os tokens de cores, fontes e botões à sua Hero sem modificar a copy aprovada.",
       checklist: [
         "Design System estruturado com cores, tipografia e raios",

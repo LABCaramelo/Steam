@@ -1,17 +1,18 @@
 ================================================================================
-       OS 4 PROMPTS OFICIAIS — LANDING PAGES COM INTELIGÊNCIA ARTIFICIAL        
+       OS 5 PROMPTS OFICIAIS — LANDING PAGES COM INTELIGÊNCIA ARTIFICIAL        
        HEAD ACADEMY × UM CARA CARAMELO — LABORATÓRIO DE INTERAÇÃO               
 ================================================================================
 
 ÍNDICE DOS PROMPTS:
   01. [COPYWRITING & NARRATIVA] Master Prompt: Copywriting Head de Conteúdo (ChatGPT / Claude / Gemini)
   02. [GERAÇÃO DE IMAGENS] Criação de Imagem com Transferência de Identidade (Midjourney v6 / Gemini Imagen 3 / Flux)
-  03. [MOTION & VÍDEO IA] Master Prompt: Animação 8s em Seamless Loop (Kling AI / Runway Gen-3 / Luma Dream Machine)
-  04. [DESIGN SYSTEM & UI] Master Prompt: Moodboard & Design System (Claude / ChatGPT / Figma AI)
+  03. [GERAÇÃO DE IMAGENS] Facial Identity Reconstruction — Photorealistic Model Sheet 4×4 (Midjourney v6 / Gemini Imagen 3 / Flux)
+  04. [MOTION & VÍDEO IA] Master Prompt: Animação 8s em Seamless Loop (Kling AI / Runway Gen-3 / Luma Dream Machine)
+  05. [DESIGN SYSTEM & UI] Master Prompt: Moodboard & Design System (Claude / ChatGPT / Figma AI)
 
 ================================================================================
 
-PROMPT 01 / 04: MASTER PROMPT: COPYWRITING HEAD DE CONTEÚDO
+PROMPT 01 / 05: MASTER PROMPT: COPYWRITING HEAD DE CONTEÚDO
 --------------------------------------------------------------------------------
 ID:          04-master-prompt-copy-head-de-conteudo
 Categoria:   Copywriting & Narrativa
@@ -835,11 +836,11 @@ A PRIMEIRA RESPOSTA ao receber este Master Prompt deve conter SOMENTE:
 
 Espere a resposta antes de continuar.
 
->>> FIM DO PROMPT <<<
+>>> FIM DO PROMPT 01 <<<
 
 ================================================================================
 
-PROMPT 02 / 04: CRIAÇÃO DE IMAGEM COM TRANSFERÊNCIA DE IDENTIDADE
+PROMPT 02 / 05: CRIAÇÃO DE IMAGEM COM TRANSFERÊNCIA DE IDENTIDADE
 --------------------------------------------------------------------------------
 ID:          01-prompt-criacao-de-imagem
 Categoria:   Geração de Imagens
@@ -899,11 +900,364 @@ FINAL EXECUTION RULE:
 
 Use IMAGE 1 as the dominant visual source of truth and IMAGE 2 only for facial identity. If any instruction conflicts, preserve IMAGE 1’s scene, pose, expression, camera, lighting, wardrobe, composition and mood; use IMAGE 2 only to make the main face recognizably the identity reference. Do not output analysis, alternatives or explanation. Generate only the final image.
 
->>> FIM DO PROMPT <<<
+>>> FIM DO PROMPT 02 <<<
 
 ================================================================================
 
-PROMPT 03 / 04: MASTER PROMPT: ANIMAÇÃO 8S EM SEAMLESS LOOP
+PROMPT 03 / 05: FACIAL IDENTITY RECONSTRUCTION — PHOTOREALISTIC MODEL SHEET 4×4
+--------------------------------------------------------------------------------
+ID:          08-facial-identity-model-sheet
+Categoria:   Geração de Imagens
+Ferramenta:  Midjourney v6 / Gemini Imagen 3 / Flux
+Descrição:   Model sheet fotorrealista 4×4 com 16 retratos em alta fidelidade da mesma pessoa em múltiplos ângulos, rotações e expressões, com trava absoluta de identidade facial.
+--------------------------------------------------------------------------------
+
+>>> INÍCIO DO PROMPT <<<
+
+# FACIAL IDENTITY RECONSTRUCTION — PHOTOREALISTIC MODEL SHEET
+
+## OBJECTIVE
+
+Analyze the provided reference photograph and generate a professional, photorealistic **facial identity model sheet featuring the exact same individual across 16 distinct facial expressions, head rotations, and viewing angles**.
+
+The final result must be a single, perfectly organized **4-column × 4-row contact sheet**, containing 16 equally sized square portraits.
+
+The primary objective is **maximum facial identity consistency**, not creative reinterpretation.
+
+Every portrait must look like a different photograph of the exact same real person, taken during the same studio photography session.
+
+**INPUT REFERENCES:**
+
+- **IMAGE 1 — IDENTITY REFERENCE:** The original photograph of the person. This is the absolute source of truth for facial identity, anatomy, proportions, skin characteristics, hair, and distinguishing features.
+- **IMAGE 2 — MODEL SHEET REFERENCE (if provided):** Use exclusively to understand the grid organization, camera variations, facial expressions, framing, and presentation style. Never use it as a source of facial identity.
+
+---
+
+## PHASE 1 — DEEP FACIAL IDENTITY ANALYSIS
+
+Before generating the model sheet, internally analyze IMAGE 1 and construct a detailed, consistent facial identity representation.
+
+Carefully examine:
+
+### 1. Craniofacial structure
+
+- Overall head shape and skull proportions.
+- Facial width-to-height ratio.
+- Forehead height, contour, and curvature.
+- Cheekbone position and prominence.
+- Jawline geometry, width, and angularity.
+- Chin length, width, shape, and projection.
+- Facial asymmetries and individual anatomical irregularities.
+
+### 2. Eyes and eyebrows
+
+- Precise eye shape and dimensions.
+- Interocular distance.
+- Eyelid structure, natural folds, and asymmetries.
+- Eye corners and natural inclination.
+- Iris color.
+- Eyebrow density, curvature, thickness, and positioning.
+- Natural resting expression.
+
+### 3. Nose
+
+- Nose bridge shape and length.
+- Nasal width and projection.
+- Tip geometry and nostril structure.
+- Relationship between nose, lips, and chin.
+- Visible asymmetries.
+
+### 4. Mouth and lips
+
+- Natural lip contours.
+- Upper-to-lower lip proportions.
+- Mouth width.
+- Cupid's bow.
+- Mouth corners.
+- Smile characteristics.
+- Dental appearance, only where sufficiently supported by the reference.
+
+### 5. Skin and facial hair
+
+- Natural skin tone and undertones.
+- Realistic pores and skin texture.
+- Freckles, marks, moles, and other distinguishing features.
+- Facial hair density, direction, and distribution.
+- Mustache and beard boundaries.
+- Natural shadows and fine facial details.
+
+### 6. Hair, ears, and accessories
+
+- Exact hairstyle silhouette.
+- Hairline and forehead relationship.
+- Curl pattern, volume, density, and texture.
+- Hair color and natural variations.
+- Ear shape and positioning.
+- Visible piercings, earrings, or other accessories.
+- Consistent accessory placement across all viewing angles.
+
+### 7. Identity landmarks
+
+Identify the facial characteristics that make this particular individual recognizable.
+
+Preserve these landmarks throughout every portrait, even when the head rotates or the facial expression changes.
+
+**Do not replace distinctive facial features with generic attractive or symmetrical alternatives.**
+
+When a facial region is not visible in the source photograph, reconstruct it conservatively using anatomically plausible continuity. Do not invent highly distinctive details without supporting evidence.
+
+---
+
+## PHASE 2 — IDENTITY LOCK
+
+Establish a single, immutable facial identity for all 16 portraits.
+
+The following must remain consistent:
+
+- Same individual.
+- Same apparent age.
+- Same head and facial proportions.
+- Same bone structure.
+- Same skin complexion.
+- Same eye shape and color.
+- Same nose anatomy.
+- Same lips and mouth structure.
+- Same ears.
+- Same hairline, haircut, and hair texture.
+- Same facial hair pattern.
+- Same recognizable asymmetries.
+- Same piercings and accessories.
+
+Expression changes must affect facial muscles naturally without altering the underlying facial anatomy.
+
+Head rotations must preserve true three-dimensional anatomical consistency.
+
+**IDENTITY PRIORITY RULE:**
+
+Facial identity fidelity is more important than dramatic expressions, visual perfection, symmetry, or aesthetic enhancement.
+
+If an expression risks distorting the person's recognizable identity, reduce its intensity while preserving the requested emotion.
+
+---
+
+## PHASE 3 — MODEL SHEET COMPOSITION
+
+Create one square image containing precisely 16 individual portrait panels.
+
+**GRID SPECIFICATION:**
+
+- Layout: 4 columns × 4 rows.
+- Total: 16 portraits.
+- Overall aspect ratio: 1:1.
+- Target resolution: 4096 × 4096 pixels, or the highest supported resolution.
+- All cells must have identical dimensions.
+- Thin, clean, white dividers between cells.
+- Uniform light neutral-gray studio background.
+- Consistent soft studio lighting.
+- Consistent photographic style.
+- Consistent camera distance and facial scale whenever possible.
+- Head-and-shoulders framing, with emphasis on the face.
+- Same simple dark clothing across all panels.
+- No text, labels, numbers, graphic decorations, or watermarks.
+
+Each panel must depict exactly one face.
+
+The final composition must resemble a professional facial reference sheet used in character development, animation, 3D modeling, facial rigging, and digital human reconstruction.
+
+---
+
+## PHASE 4 — EXACT 16-PANEL EXPRESSION AND ANGLE MATRIX
+
+### ROW 1 — PRIMARY FACIAL EXPRESSIONS
+
+**Panel 01 — Neutral Front View**
+
+Directly facing the camera, head upright, relaxed facial muscles, lips naturally closed, neutral expression, eyes looking forward.
+
+This is the primary identity anchor and must closely match the original person's natural facial appearance.
+
+**Panel 02 — Subtle Smile**
+
+Frontal view, very slight natural smile, relaxed eyes, gently raised mouth corners, lips mostly closed.
+
+**Panel 03 — Genuine Happy Smile**
+
+Frontal view, authentic broad smile, teeth naturally visible, cheeks lifted, subtle eye narrowing.
+
+**Panel 04 — Full Laughter**
+
+Frontal or slightly tilted view, spontaneous laughter, mouth open, teeth visible, cheeks raised, realistic facial compression.
+
+### ROW 2 — HEAD ROTATIONS AND PROFILE STUDIES
+
+**Panel 05 — Three-Quarter Left**
+
+Head rotated approximately 45 degrees to the subject's left, neutral expression, eyes looking slightly sideways, natural perspective.
+
+**Panel 06 — Three-Quarter Right**
+
+Head rotated approximately 45 degrees to the subject's right, subtle confident expression, consistent facial geometry.
+
+**Panel 07 — Left Side Profile**
+
+Head rotated approximately 90 degrees to the subject's left, clear anatomical silhouette of forehead, nose, lips, chin, jaw, ear, and hairstyle.
+
+**Panel 08 — Right Side Profile**
+
+Head rotated approximately 90 degrees to the subject's right, relaxed expression, accurate opposite-side facial anatomy, consistent hairstyle and accessories.
+
+### ROW 3 — EXPRESSIVE EMOTIONS
+
+**Panel 09 — Surprise**
+
+Frontal view, widened eyes, raised eyebrows, slightly open mouth, natural expression of genuine surprise.
+
+**Panel 10 — Thinking**
+
+Three-quarter view, contemplative expression, slightly furrowed brow, eyes looking upward or sideways, one hand lightly touching the chin if needed.
+
+**Panel 11 — Skepticism**
+
+Three-quarter view, one eyebrow slightly raised, subtle brow tension, lips gently pressed, questioning expression.
+
+**Panel 12 — Playful Wink**
+
+Frontal or slightly rotated view, one eye naturally closed, the other looking toward the camera, subtle asymmetric smile.
+
+### ROW 4 — SECONDARY EXPRESSIONS
+
+**Panel 13 — Sadness / Disappointment**
+
+Frontal view, mildly lowered mouth corners, subtle inner eyebrow tension, expressive but realistic sadness.
+
+**Panel 14 — Serious / Determined**
+
+Direct frontal view, focused gaze, gently contracted eyebrows, closed lips, confident and serious facial expression.
+
+**Panel 15 — Confusion**
+
+Three-quarter view, slightly furrowed brow, subtle head inclination, uncertain expression, lips gently parted.
+
+**Panel 16 — Relaxed Side View**
+
+Side profile or three-quarter view, eyes softly closed, relaxed jaw, subtle peaceful smile, head slightly elevated.
+
+---
+
+## PHASE 5 — PHOTOGRAPHIC REALISM
+
+Maintain the appearance of authentic high-quality studio portrait photography.
+
+**VISUAL CHARACTERISTICS:**
+
+- Photorealistic human skin.
+- Visible natural pores.
+- Realistic subsurface scattering.
+- Fine facial hair.
+- Authentic hair strands and curl structure.
+- Physically plausible facial expressions.
+- Natural eye reflections.
+- Accurate facial shadows.
+- Soft diffused studio lighting.
+- Neutral white balance.
+- True-to-reference skin coloration.
+- Realistic photographic depth and perspective.
+- Professional portrait-lens rendering.
+- Clean, consistent visual presentation.
+
+Avoid excessive retouching.
+
+Preserve natural imperfections that contribute to recognizable identity.
+
+The subject must not appear artificially beautified, younger, thinner, more symmetrical, or otherwise idealized.
+
+---
+
+## PHASE 6 — CROSS-PANEL CONSISTENCY
+
+Treat all 16 panels as photographs captured during one continuous portrait session of the same individual.
+
+No changes in hairstyle, apparent age, facial hair, accessories, skin tone, or facial proportions are permitted.
+
+The facial identity established in Panel 01 must be preserved across Panels 02–16.
+
+Use Panel 01 as the anatomical reference for all subsequent panels.
+
+For three-quarter and side-profile views, maintain consistent 3D facial structure rather than independently generating new faces.
+
+Different expressions must demonstrate variations in facial muscle movement, not variations in personal identity.
+
+All panels should share a coherent lighting setup, camera quality, color grading, clothing, and background.
+
+---
+
+## PHASE 7 — STRICT NEGATIVE CONSTRAINTS
+
+Do not generate:
+
+- Different people across panels.
+- Identity drift.
+- Generic or idealized facial features.
+- Facial beautification.
+- Modified bone structure.
+- Inconsistent noses or jawlines.
+- Altered eye shape.
+- Changes in facial age.
+- Unnatural facial symmetry.
+- Inconsistent facial hair.
+- Changing hairstyles.
+- Missing or misplaced piercings.
+- Anatomically inaccurate profiles.
+- Exaggerated cartoon expressions.
+- Artificially smooth skin.
+- Plastic-looking skin.
+- Overprocessed HDR effects.
+- Distorted teeth.
+- Unnatural facial proportions.
+- Extra eyes, ears, or facial features.
+- Different clothing between panels.
+- Different photographic styles.
+- Different background colors.
+- Text or labels.
+- Frames with multiple faces.
+- Unequal grid cells.
+- Cropped chins or severely cropped hair.
+- Blended or overlapping portraits.
+
+---
+
+## PHASE 8 — INTERNAL QUALITY VERIFICATION
+
+Before delivering the final image, evaluate the complete model sheet against these criteria:
+
+1. Are all 16 faces recognizably the same person?
+2. Does the neutral frontal portrait faithfully reproduce the identity reference?
+3. Are facial proportions consistent across all panels?
+4. Do both side profiles plausibly correspond to the frontal face?
+5. Are the hairstyle and facial hair consistent?
+6. Are accessories correctly maintained?
+7. Do expressions appear natural and anatomically plausible?
+8. Is the 4 × 4 grid precisely organized?
+9. Are lighting, clothing, and background consistent?
+10. Is the final result suitable as a professional facial identity reference for further image generation, animation, or 3D reconstruction?
+
+Correct any inconsistencies before finalizing.
+
+## FINAL GENERATION DIRECTIVE
+
+Generate a single ultra-detailed, photorealistic, professional 4 × 4 facial identity model sheet.
+
+The result must depict **ONE INDIVIDUAL, SIXTEEN VIEWS, ONE CONSISTENT FACIAL IDENTITY**.
+
+Use the reference photograph as the absolute authority for identity. Use the provided model sheet example only for visual organization.
+
+**Maximum recognizable facial fidelity. Maximum cross-panel consistency. Zero identity reinterpretation.**
+
+>>> FIM DO PROMPT 03 <<<
+
+================================================================================
+
+PROMPT 04 / 05: MASTER PROMPT: ANIMAÇÃO 8S EM SEAMLESS LOOP
 --------------------------------------------------------------------------------
 ID:          02-prompt-animacao-8s-loop
 Categoria:   Motion & Vídeo IA
@@ -2229,11 +2583,11 @@ Always end the generated prompt with this exact sentence:
 
 "8-second perfectly seamless infinite loop, first and final visual states exactly matched, with continuous motion phase, direction and apparent velocity across the loop boundary; completely static locked-off camera with fixed framing, fixed perspective and zero camera movement; all motion generated exclusively by the subject, environment, light and physical elements within the scene; fluid, organic, restrained and physically coherent cyclical motion with natural inertia and secondary movement, strict visual and identity preservation, no pause, no freeze, no snap, no reset, no visible loop seam, no camera drift, no zoom, no reframing, no morphing, no scene regeneration, no added elements, no text, no logos, no UI."
 
->>> FIM DO PROMPT <<<
+>>> FIM DO PROMPT 04 <<<
 
 ================================================================================
 
-PROMPT 04 / 04: MASTER PROMPT: MOODBOARD & DESIGN SYSTEM
+PROMPT 05 / 05: MASTER PROMPT: MOODBOARD & DESIGN SYSTEM
 --------------------------------------------------------------------------------
 ID:          05-master-prompt-moodboard-design-system
 Categoria:   Design System & UI
@@ -3357,7 +3711,7 @@ Finalize obrigatoriamente o prompt gerado com:
 
 “Treat this design system as the persistent visual source of truth for this project. Preserve existing copy, structure, hierarchy and functionality; change visual identity only. After applying the system to the existing Hero, treat that restyled Hero as the visual and behavioral reference for every future section. All future interface work must inherit these rules by default.”
 
->>> FIM DO PROMPT <<<
+>>> FIM DO PROMPT 05 <<<
 
 ================================================================================
 
