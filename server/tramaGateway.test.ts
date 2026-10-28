@@ -114,7 +114,7 @@ test('configured webhook exposes private URL, requires a published version, acti
   try{
     const f=fixture(),state=(await call(f.handler,'/state')).value(),id=state.fluxes[0].id,org=state.selected_org_id;
     assert.equal(state.capabilities.external_webhooks,true);
-    const link=(await call(f.handler,`/flows/${id}/webhook`)).value();assert.match(link.sync_url,/mode=sync/);assert.match(link.test_url,/mode=test/);assert.equal(link.async_url,null);
+    const link=(await call(f.handler,`/flows/${id}/webhook`)).value();assert.equal(new URL(link.sync_url).origin,'https://www.umcaracaramelo.com.br');assert.match(link.sync_url,/mode=sync/);assert.match(link.test_url,/mode=test/);assert.equal(link.async_url,null);
     const denied=await call(f.handler,'/rpc/toggleFluxStatus',{method:'POST',body:{org_id:org,args:[id,true]}});assert.equal(denied.statusCode,409);assert.equal(denied.value().error.code,'WEBHOOK_VERSION_REQUIRED');
     assert.equal((await call(f.handler,'/rpc/saveFluxVersion',{method:'POST',body:{org_id:org,args:[id]}})).statusCode,200);
     const activated=await call(f.handler,'/rpc/toggleFluxStatus',{method:'POST',body:{org_id:org,args:[id,true]}});assert.equal(activated.statusCode,200);assert.equal(activated.value().result.active,true);assert.equal(f.registered.at(-1)?.active,true);

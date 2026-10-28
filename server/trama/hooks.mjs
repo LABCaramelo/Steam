@@ -8,7 +8,7 @@ export const hashWebhookToken = value => digest(value)
 export function webhookUrls(req,flow) {
   const host=String(req.headers.host??'')
   const local=/^(127\.0\.0\.1|localhost)(:\d+)?$/.test(host)
-  const origin=local?'http://'+host:(process.env.TRAMA_PUBLIC_URL||'https://umcaracaramelo.com.br').replace(/\/$/,'')
+  const origin=local?'http://'+host:(process.env.TRAMA_PUBLIC_URL||'https://www.umcaracaramelo.com.br').replace(/\/$/,'')
   const base=origin+'/api/trama-hook?flow='+encodeURIComponent(flow.id)+'&token='+encodeURIComponent(flow.webhook_token)
   return {sync_url:base+'&mode=sync',test_url:base+'&mode=test',async_url:null,last_input:flow.last_webhook_input,last_received_at:flow.last_webhook_at,active:!!flow.active}
 }
