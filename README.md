@@ -52,7 +52,7 @@ A Loja apresenta as cinco ferramentas em `/store` e suas páginas em `/store/app
 | --- | --- | --- |
 | Kanban | `/tools/kanban/index.html` | Quadros/listas/cartões, arraste e alternativas de teclado, etiquetas, checklists, comentários, agenda, tabela/CSV e métricas. Template Rotina Superprodutiva com 8 listas e 98 cartões. Importa/exporta JSON do LAB e do Trello. |
 | Prancheta | `/tools/prancheta/index.html` | Editor original de `Figma/` com vários arquivos privados em `prancheta_files`. Desenho, páginas, camadas, componentes e exportação PNG/SVG/JSON. Salvamento automático e manual; detecta conflitos entre abas e oferece recuperação/cópia. |
-| Trama | `/tools/automation/index.html` | Evolução da Automation com interface e motor de `Fiqon/`: canvas, ramos, HTTP/IA/MCP reais em execução manual, versões, logs e replay. Supabase por conta e arquivos privados no R2. Webhooks externos, agendamentos e JavaScript ainda indisponíveis. |
+| Trama | `/tools/automation/index.html` | Beta com interface e motor de `Fiqon/`: canvas, ramos, HTTP/IA/MCP reais, execução manual e webhooks síncronos da versão publicada, versões, logs e replay. Supabase por conta e arquivos privados no R2. Agendamentos e JavaScript ainda indisponíveis. |
 | Academy | `/tools/academy/index.html` | Vitrine, aulas YouTube/Vimeo/vídeo e a apresentação de `/aula-head`, progresso, conclusão, favoritos, anotações privadas e comentários/respostas/curtidas da turma. Administradores criam, ordenam, editam e publicam cursos, módulos e aulas. |
 | Comunidade | `/tools/comunidade/index.html` | Canais de texto, salas de voz em tempo real (WebRTC via LiveKit), compartilhamento de tela, mensagens diretas, status e navegação rápida por Ctrl+K. Identidade visual e tokens canônicos do MCP Caramelo. |
 

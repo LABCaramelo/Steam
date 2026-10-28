@@ -9,6 +9,7 @@ import { promptLibrary } from "./server/promptLibrary.ts";
 import { livekitHandler } from "./server/livekit.ts";
 import uploadHandler from "./api/upload.ts";
 import { tramaHandler } from "./server/trama.ts";
+import { tramaWebhook } from "./server/trama-hook.ts";
 import {
   buildSnapshot,
   findSteamPath,
@@ -57,6 +58,10 @@ function steamDataApi(): Plugin {
     }
     if (url.pathname === "/api/trama") {
       void tramaHandler(req, res);
+      return;
+    }
+    if (url.pathname === "/api/trama-hook") {
+      void tramaWebhook(req,res);
       return;
     }
 

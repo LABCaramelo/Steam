@@ -20,10 +20,10 @@ test("compiled API entry points use emitted JavaScript dependencies and preserve
     fs.mkdirSync(path.join(target, "server"), { recursive: true });
     fs.writeFileSync(path.join(target, "package.json"), JSON.stringify({ type: "module" }));
     const options = { ...converted.options, noEmit: false };
-    for (const name of ["api/prompt-library.ts", "api/livekit.ts", "api/upload.ts", "api/trama.ts", "server/toolAccess.ts", "server/trama.ts"]) {
+    for (const name of ["api/prompt-library.ts", "api/livekit.ts", "api/upload.ts", "api/trama.ts", "api/trama-hook.ts", "server/toolAccess.ts", "server/trama.ts", "server/trama-hook.ts"]) {
       const result = ts.transpileModule(fs.readFileSync(path.join(root, name), "utf8"), { fileName: name, compilerOptions: options });
       if (name.startsWith("api/")) {
-        assert.match(result.outputText, name === "api/trama.ts" ? /from ["']\.\.\/server\/trama\.js["']/ : /from ["']\.\.\/server\/toolAccess\.js["']/);
+        assert.match(result.outputText, name === "api/trama.ts" ? /from ["']\.\.\/server\/trama\.js["']/ : name === "api/trama-hook.ts" ? /from ["']\.\.\/server\/trama-hook\.js["']/ : /from ["']\.\.\/server\/toolAccess\.js["']/);
         assert.doesNotMatch(result.outputText, /from ["'][^"']+\.tsx?["']/);
       }
       fs.writeFileSync(path.join(target, name.replace(/\.ts$/, ".js")), result.outputText);
@@ -48,6 +48,9 @@ test("compiled API entry points use emitted JavaScript dependencies and preserve
     assert.equal(response.statusCode, 401);
     assert.equal((body as { error?: { code?: string } }).error?.code, "AUTH_REQUIRED");
     assert.equal(headers.get("Cache-Control"), "private, no-store");
+    const { default: webhook } = await import(pathToFileURL(path.join(target, "api/trama-hook.js")).href);
+    await webhook({method:"POST",url:"/api/trama-hook",headers:{}},response);
+    assert.equal(response.statusCode,404);
   } finally {
     // Only this mkdtemp output can be removed, never the checkout or another temporary directory.
     assert.equal(path.dirname(path.resolve(target)), path.resolve(os.tmpdir()));

@@ -24,6 +24,7 @@ async function call(handler: Handler,path: string,options: {user?:string;method?
 function fixture(runtime: Record<string,unknown>={}) {
   const rows = new Map<string,{state:unknown;revision:number;leaseToken:string}>();
   const commits: unknown[]=[];
+  const registered:{id:string;token:string;active:boolean}[]=[];
   const db={
     async acquireWorkspace(access: {user:{id:string}}) {
       const row=rows.get(access.user.id)??{state:{documents:[],events:{}},revision:0,leaseToken:'lease'};
@@ -35,8 +36,8 @@ function fixture(runtime: Record<string,unknown>={}) {
     },
     async releaseWorkspace() {},
   };
-  const handler=createTramaHandler({persistence:db,authorize:async(req:{headers:{authorization:string}})=>({user:{id:req.headers.authorization,email:'member@lab.test',user_metadata:{name:'Membro'}},token:'verified',supabaseUrl:'https://db.invalid',supabaseKey:'publishable'}),runtime});
-  return {handler,rows,commits};
+  const handler=createTramaHandler({persistence:db,syncWebhook:async(_access:unknown,flow:{id:string;webhook_token:string;active:boolean})=>{registered.push({id:flow.id,token:flow.webhook_token,active:flow.active});return flow.active;},authorize:async(req:{headers:{authorization:string}})=>({user:{id:req.headers.authorization,email:'member@lab.test',user_metadata:{name:'Membro'}},token:'verified',supabaseUrl:'https://db.invalid',supabaseKey:'publishable'}),runtime});
+  return {handler,rows,commits,registered};
 }
 function documents(value:unknown) {return (value as {documents:{collection:string;data:Record<string,unknown>}[]}).documents;}
 
@@ -98,13 +99,28 @@ test('connections keep credentials encrypted and credentials cannot leak through
   }finally{if(previous===undefined)delete process.env.TRAMA_ENCRYPTION_KEY;else process.env.TRAMA_ENCRYPTION_KEY=previous;}
 });
 
-test('worker and local-account operations fail explicitly without simulated success',async()=>{
+test('local accounts and unconfigured webhook activation fail explicitly',async()=>{
   const {handler}=fixture(),state=(await call(handler,'/state')).value();
   for(const name of ['registerAccount','inviteOrgUser','changePassword']){
     const res=await call(handler,'/rpc/'+name,{method:'POST',body:{args:[{}]}});assert.equal(res.statusCode,400);assert.equal(res.value().error.code,'OPERATION_UNAVAILABLE');
   }
   const res=await call(handler,'/rpc/toggleFluxStatus',{method:'POST',body:{args:[state.fluxes[0].id,true]}});
-  assert.equal(res.statusCode,409);assert.equal(res.value().error.code,'WORKER_REQUIRED');
+  assert.equal(res.statusCode,503);assert.equal(res.value().error.code,'WEBHOOK_NOT_CONFIGURED');
+});
+
+test('configured webhook exposes private URL, requires a published version, activates and rotates token',async()=>{
+  const key=process.env.TRAMA_ENCRYPTION_KEY,service=process.env.SUPABASE_SERVICE_ROLE_KEY;
+  process.env.TRAMA_ENCRYPTION_KEY='44'.repeat(32);process.env.SUPABASE_SERVICE_ROLE_KEY='fixture-service-only';
+  try{
+    const f=fixture(),state=(await call(f.handler,'/state')).value(),id=state.fluxes[0].id,org=state.selected_org_id;
+    assert.equal(state.capabilities.external_webhooks,true);
+    const link=(await call(f.handler,`/flows/${id}/webhook`)).value();assert.match(link.sync_url,/mode=sync/);assert.match(link.test_url,/mode=test/);assert.equal(link.async_url,null);
+    const denied=await call(f.handler,'/rpc/toggleFluxStatus',{method:'POST',body:{org_id:org,args:[id,true]}});assert.equal(denied.statusCode,409);assert.equal(denied.value().error.code,'WEBHOOK_VERSION_REQUIRED');
+    assert.equal((await call(f.handler,'/rpc/saveFluxVersion',{method:'POST',body:{org_id:org,args:[id]}})).statusCode,200);
+    const activated=await call(f.handler,'/rpc/toggleFluxStatus',{method:'POST',body:{org_id:org,args:[id,true]}});assert.equal(activated.statusCode,200);assert.equal(activated.value().result.active,true);assert.equal(f.registered.at(-1)?.active,true);
+    assert.equal((await call(f.handler,`/flows/${id}/webhook/rotate`,{method:'POST',body:{}})).statusCode,200);
+    const next=(await call(f.handler,`/flows/${id}/webhook`)).value();assert.notEqual(next.sync_url,link.sync_url);
+  }finally{if(key===undefined)delete process.env.TRAMA_ENCRYPTION_KEY;else process.env.TRAMA_ENCRYPTION_KEY=key;if(service===undefined)delete process.env.SUPABASE_SERVICE_ROLE_KEY;else process.env.SUPABASE_SERVICE_ROLE_KEY=service;}
 });
 
 test('request interrupted after queued checkpoint is shown as interrupted without repeating effects',async()=>{

@@ -119,18 +119,18 @@ export const AUTOMATION_APP = tool(AUTOMATION_APP_ID, "Trama", {
   description: "Conecte dados e aplicativos em fluxos visuais, execute ações e acompanhe cada resultado.",
   assets: art("/tools/automation/art"),
   store: {
-    tagline: "Fluxos visuais com execução manual real, histórico e conexões privadas.",
+    tagline: "Fluxos visuais com webhooks reais, histórico e conexões privadas.",
     eyebrow: "AUTOMAÇÃO / FLUXOS EM AÇÃO / BETA",
     headline: "Uma ideia.\nVários caminhos.",
     features: [
       { title: "Desenhe o caminho", text: "Conecte módulos, crie ramos, configure filtros e organize a lógica no canvas." },
       { title: "Crie com suas conexões", text: "Configure APIs HTTP e provedores de IA com credenciais protegidas no servidor." },
-      { title: "Execute e acompanhe", text: "Rode manualmente, veja a saída de cada etapa e consulte histórico e replay." },
+      { title: "Execute e acompanhe", text: "Receba webhooks ou rode manualmente e consulte a saída de cada etapa, histórico e replay." },
       { title: "Continue de onde parou", text: "Salve versões do fluxo e mantenha tudo sincronizado na sua conta." },
     ],
-    steps: ["Adquira a Trama e abra seu espaço privado.", "Crie seu fluxo visual e conecte seus módulos e regras.", "Revise a entrada, execute manualmente e acompanhe o resultado."],
-    about: [["Formato", "Editor de integrações"], ["Execução", "Manual · até 30 segundos"], ["Exportação", "JSON"], ["Versão", "Beta"]],
-    dataNote: "Fluxos, versões e histórico de execuções ficam protegidos no Supabase. Ações reais podem gerar custos nos provedores conectados. Agendamentos, webhooks externos e execução de JavaScript ainda não estão disponíveis.",
+    steps: ["Adquira a Trama e abra seu espaço privado.", "Crie seu fluxo visual e conecte seus módulos e regras.", "Publique uma versão, ative o webhook e acompanhe as chamadas, ou execute manualmente."],
+    about: [["Formato", "Editor de integrações"], ["Execução", "Manual e webhook · até 30 segundos"], ["Exportação", "JSON"], ["Versão", "Beta"]],
+    dataNote: "Fluxos, versões e histórico de execuções ficam protegidos no Supabase. Webhooks síncronos executam a versão publicada quando o fluxo está ativo. Ações reais podem gerar custos nos provedores conectados. Agendamentos e execução de JavaScript ainda não estão disponíveis.",
     category: "Automação",
   },
 });

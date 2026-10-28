@@ -14,7 +14,7 @@ import CodeInput from './fields/CodeInput.vue'
 
 const props = defineProps({ step: { type: Object, required: true }, index: { type: Number, default: 0 }, allSteps: { type: Array, default: () => [] }, fluxId: { type: String, required: true }, outputs: { type: Object, default: () => ({}) }, lastExecution: { type: Object, default: null }, testInput: { default: undefined }, edges: { type: Array, default: undefined } })
 const emit = defineEmits(['close', 'update', 'delete', 'tested', 'input-update'])
-const dialog = ref(null), draft = ref(createStepDraft(props.step)), activeTab = ref('variables'), search = ref(''), advancedOpen = ref(false), newConnOpen = ref(false), testDataOpen = ref(false), testDataText = ref(''), testDataError = ref(''), localTestInput = ref(props.testInput), errors = ref({}), testing = ref(false), testedRecord = ref(null), testedExecution = ref(null), generalError = ref(''), editingTitle = ref(false), mobilePanel = ref('config'), webhookInfo = ref(null), webhookMode = ref('async'), copying = ref(false)
+const dialog = ref(null), draft = ref(createStepDraft(props.step)), activeTab = ref('variables'), search = ref(''), advancedOpen = ref(false), newConnOpen = ref(false), testDataOpen = ref(false), testDataText = ref(''), testDataError = ref(''), localTestInput = ref(props.testInput), errors = ref({}), testing = ref(false), testedRecord = ref(null), testedExecution = ref(null), generalError = ref(''), editingTitle = ref(false), mobilePanel = ref('config'), webhookInfo = ref(null), webhookMode = ref('sync'), copying = ref(false)
 const fieldRefs = new Map()
 let focusedField = null, previousFocus = null, alive = true
 const clone = value => value === undefined ? undefined : JSON.parse(JSON.stringify(value))
@@ -28,7 +28,7 @@ const visibleFields = computed(() => schema.value.fields.filter(field => !field.
 const hasAdvanced = computed(() => schema.value.fields.some(field => field.advanced))
 const matchingConnections = computed(() => (api.db.connections || []).filter(connection => canonicalApp(connection.app) === app.value || app.value === 'ai_agent' && ['chatgpt', 'openai', 'anthropic', 'claude'].includes(connection.app)))
 const selectedConnection = computed(() => matchingConnections.value.find(connection => connection.id === draft.value.connection_id))
-const webhookUrl = computed(() => webhookMode.value === 'sync' ? webhookInfo.value?.sync_url : webhookInfo.value?.async_url)
+const webhookUrl = computed(() => webhookMode.value === 'test' ? webhookInfo.value?.test_url : webhookInfo.value?.sync_url)
 const originalRecord = computed(() => props.lastExecution?.steps?.findLast(record => String(record.id) === String(props.step.id)) || (props.outputs[props.step.id] !== undefined ? { status: 'success', output: props.outputs[props.step.id] } : null))
 const outputRecord = computed(() => testedRecord.value || originalRecord.value)
 const output = computed(() => outputRecord.value?.output)
@@ -75,6 +75,16 @@ async function loadWebhook() {
 async function copyWebhook() {
   if (!webhookUrl.value) return
   try { await navigator.clipboard.writeText(webhookUrl.value); copying.value = true; setTimeout(() => (copying.value = false), 1200) } catch { toastError({ text: 'Não foi possível copiar o link.' }) }
+}
+async function refreshWebhookInput() {
+  testing.value = true
+  try {
+    await loadWebhook()
+    if (!webhookInfo.value?.last_received_at) { toastInfo({ text: 'Envie uma chamada ao link de captura e atualize a entrada.' }); return }
+    localTestInput.value = clone(webhookInfo.value.last_input)
+    emit('input-update', clone(localTestInput.value))
+    toastSuccess({ text: 'Entrada do webhook carregada.' })
+  } finally { testing.value = false }
 }
 function save() {
   errors.value = validateStepDraft(draft.value)
@@ -140,10 +150,10 @@ onBeforeUnmount(() => { alive = false; document.removeEventListener('keydown', k
           <div v-if="hasConnection" class="node-connection-wrap"><div class="node-connection" :class="{ invalid: errors.connection_id }"><span class="node-connection__icon"><AppIcon :app="selectedConnection?.app || draft.app" :size="20" :rounded="2" /></span><select v-model="draft.connection_id" aria-label="Conexão" @change="delete errors.connection_id"><option :value="undefined" :disabled="requiresConnection">{{ requiresConnection ? 'Selecione uma conexão' : 'Sem autenticação' }}</option><option v-for="connection in matchingConnections" :key="connection.id" :value="connection.id">{{ connection.name }}</option></select><v-icon icon="mdi-chevron-down" size="16" class="node-connection__chevron" /><button class="node-connection__add" aria-label="Adicionar conexão" @click="newConnOpen = true"><v-icon icon="mdi-plus" size="22" /></button></div><p v-if="errors.connection_id" class="node-field-error">{{ errors.connection_id }}</p></div>
           <p class="node-config__description">{{ schema.description }}</p>
           <div class="node-config__fields">
-            <p v-if="['scheduler', 'webhook', 'code'].includes(app)" class="node-error-banner">{{ app === 'code' ? 'O código pode ser guardado no fluxo, mas a execução de JavaScript ainda não está disponível.' : app === 'scheduler' ? 'Agendamentos ainda não estão disponíveis. Use Rodar para executar manualmente.' : 'Webhooks externos ainda não estão disponíveis. Defina uma entrada de teste e use Rodar.' }}</p><template v-if="app === 'webhook' && api.db.capabilities?.external_webhooks">
+            <p v-if="['scheduler', 'code'].includes(app) || app === 'webhook' && !api.db.capabilities?.external_webhooks" class="node-error-banner">{{ app === 'code' ? 'O código pode ser guardado no fluxo, mas a execução de JavaScript ainda não está disponível.' : app === 'scheduler' ? 'Agendamentos ainda não estão disponíveis. Use Rodar para executar manualmente.' : 'O serviço de webhooks ainda não foi configurado. Você pode usar Rodar com uma entrada de teste.' }}</p><template v-if="app === 'webhook' && api.db.capabilities?.external_webhooks">
               <div class="node-field"><label>Link de ativação <span class="node-label-help">ⓘ</span></label><div class="node-webhook-url"><input :value="webhookUrl || 'Carregando link…'" readonly aria-label="Link de ativação do Webhook" /><button :disabled="!webhookUrl" :aria-label="copying ? 'Link copiado' : 'Copiar link do Webhook'" @click="copyWebhook"><v-icon :icon="copying ? 'mdi-check' : 'mdi-content-copy'" size="16" /></button></div></div>
-              <div class="node-webhook-modes"><label><input v-model="webhookMode" type="radio" value="async" />Assíncrono</label><label><input v-model="webhookMode" type="radio" value="sync" />Síncrono</label></div>
-              <button class="node-test-primary" :disabled="testing" @click="test"><v-icon :icon="testing ? 'mdi-loading mdi-spin' : 'mdi-play-outline'" size="16" />{{ testing ? 'Testando…' : 'Testar Webhook' }}</button>
+              <p class="node-config__description">O link executa a versão publicada quando o webhook está ativo. A chamada espera a resposta do fluxo, por até 30 segundos. O modo Capturar entrada recebe dados sem executar ações.</p><div class="node-webhook-modes"><label><input v-model="webhookMode" type="radio" value="sync" />Executar fluxo</label><label><input v-model="webhookMode" type="radio" value="test" />Capturar entrada</label></div>
+              <button class="node-test-primary" :disabled="testing" @click="refreshWebhookInput"><v-icon :icon="testing ? 'mdi-loading mdi-spin' : 'mdi-refresh'" size="16" />{{ testing ? 'Atualizando…' : 'Atualizar entrada recebida' }}</button>
               <div class="node-webhook-recent"><h4>Execuções recentes</h4><div class="node-webhook-recent__head"><span>Origem</span><span>Executado em</span><span>Resultado</span></div><p v-if="!webhookInfo?.last_received_at">Nenhum teste realizado ainda</p><div v-else class="node-webhook-recent__item"><span>Webhook</span><span>{{ new Date(webhookInfo.last_received_at).toLocaleString('pt-BR') }}</span><button @click="editInput">Ver entrada</button></div></div>
             </template>
             <div v-for="field in visibleFields" :key="`${draft.app}-${field.key}`" class="node-field">

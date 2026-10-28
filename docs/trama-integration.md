@@ -44,7 +44,11 @@ Execuções manuais acionam HTTP, conectores, IA e MCP configurados pelo membro.
 
 Um registro `queued` e seu snapshot são persistidos antes dos efeitos de cada job, incluindo testes de nó e tratamentos de erro. O resultado final é confirmado antes de anunciar conclusão ao navegador. Após interrupção, pendências ficam `interrupted`; nenhuma ação é repetida automaticamente. Replay usa o grafo e a entrada da execução original.
 
-Webhooks externos, agendamentos contínuos e JavaScript estão desabilitados nesta integração e identificados na interface. Precisam de infraestrutura de execução própria. A fila não é distribuída; cancelamento entre instâncias não é garantido. O histórico retém até 40 execuções por espaço; o snapshot admite até 8 MB. Verificações de conexão e RPCs de configuração não são jobs de fluxo com replay.
+O beta recebe webhooks externos síncronos em `/api/trama-hook`. Publique uma versão com gatilho Webhook e ative o fluxo. A URL de captura recebe dados mesmo com o fluxo desativado e não executa ações. Cada chamada aceita até 256 KB em JSON, formulário ou texto, com limite de 60 chamadas por minuto por fluxo. O token da URL permite acionar o fluxo: mantenha-o privado e use a troca de token para revogar URLs anteriores.
+
+`Idempotency-Key` evita repetir um evento enquanto sua execução permanece no histórico (até 40 execuções por espaço). Após interrupção, confira o histórico e os efeitos externos antes de reenviar. O tempo máximo de execução é 30 segundos; não há processamento assíncrono. Chamadas concorrentes recebem 429 e `Retry-After`. A fila não é distribuída; cancelamento entre instâncias não é garantido. O snapshot admite até 8 MB. Agendamentos contínuos e JavaScript permanecem indisponíveis. Verificações de conexão e RPCs de configuração não são jobs de fluxo com replay.
+
+A migração `20261028175516_trama_beta_webhooks.sql` adiciona o registro de hashes dos tokens e RPCs de execução restritas à service role. A autorização do proprietário é conferida com `has_tool('automation')` a cada chamada. Perda de acesso, exclusão do fluxo ou troca de token revogam a entrada. A captura e os resultados seguem a persistência no Supabase; o armazenamento privado no R2 permanece separado.
 
 ## R2
 
@@ -54,10 +58,10 @@ O trigger de exclusão conserva as chaves na fila privada de limpeza. `node scri
 
 ## Validação e publicação
 
-TypeScript e build Vite aprovados. A suíte da plataforma passou 145 testes; o runtime da Trama passou mais 15. A conferência no Edge com fixture local passou criação de fluxo, execução pelo motor real, versão, envio/download/exclusão de arquivo, temas e viewport móvel. Auth, persistência e arquivos da conferência visual são controlados localmente; não representam uma sessão de membro real no Supabase.
+TypeScript e build Vite aprovados. A suíte da plataforma passou 156 testes, incluindo o webhook real com transporte de teste e banco PGlite: versão publicada, idempotência, formulários já analisados pela Vercel, captura, troca de token, autorização e concorrência. O runtime da Trama possui mais 15 testes. A conferência anterior no Edge com fixture local passou criação de fluxo, execução pelo motor real, versão, envio/download/exclusão de arquivo, temas e viewport móvel. Auth, persistência e arquivos dessa conferência visual são controlados localmente; não representam uma sessão de membro real no Supabase.
 
 Capturas e resultados estão em `docs/qa/trama-2026-10-28/`. A inspeção visual orientou correções da lista móvel e do contraste no tema claro. A auditoria MCP automática é complementar: não mede todos os contrastes computados de Vue/Vuetify.
 
-Schema e bucket estão preparados. O código não foi publicado em produção; a disponibilidade comercial do catálogo foi preservada. Antes de publicar, configure `TRAMA_ENCRYPTION_KEY` e as variáveis R2 no servidor da hospedagem.
+O catálogo está disponível em beta. `TRAMA_ENCRYPTION_KEY` e `CLOUDFLARE_R2_PRIVATE_BUCKET` foram configuradas no ambiente de produção da Vercel, usando a mesma chave do ambiente local e o bucket privado provisionado. As credenciais do Supabase e R2 permanecem exclusivas do servidor.
 
 A auditoria de dependências identificou avisos na cadeia preexistente do pacote local `@caramelo/design-system` (Zod), cuja atualização é independente desta integração. As dependências da Trama foram fixadas no lockfile.

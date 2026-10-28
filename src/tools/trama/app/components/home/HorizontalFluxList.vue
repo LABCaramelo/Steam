@@ -176,8 +176,8 @@ async function remove(id) {
           <div class="flow-mobile-list">
             <article v-for="flux in fluxes.data" :key="flux.id" class="flow-mobile-card">
               <router-link :to="{ name: 'flux', params: { fluxId: flux.id } }" class="flow-mobile-open"><h3>{{ flux.name }}</h3><span>Abrir fluxo <span aria-hidden="true">↗</span></span></router-link>
-              <p class="flow-mobile-meta"><span>{{ flux.activations || 0 }} operações</span><span>Execução manual</span></p>
-              <div class="flow-mobile-actions">
+              <p class="flow-mobile-meta"><span>{{ flux.activations || 0 }} operações</span><span>{{ flux.active ? 'Webhook ativo' : 'Webhook desativado' }}</span></p>
+              <div class="flow-mobile-actions"><v-btn variant="text" color="primary" :disabled="!flux.active && (!db.capabilities?.external_webhooks || !flux.published_version_id)" @click="toggle(flux, !flux.active)">{{ flux.active ? 'Desativar webhook' : 'Ativar webhook' }}</v-btn>
                 <v-btn variant="text" color="primary" prepend-icon="mdi-content-copy" :aria-label="'Duplicar ' + flux.name" :loading="duplicating.has(flux.id)" @click="duplicate(flux)">Duplicar</v-btn>
                 <v-btn variant="text" color="error" prepend-icon="mdi-delete-outline" :aria-label="'Excluir ' + flux.name" :disabled="flux.first">Excluir<ModalConfirm activator="parent" header-text="Excluir integração" confirm-text="Excluir integração" cancel-text="Cancelar" :loading-confirm="deleting" color="error" icon="mdi-alert-outline" @confirm="remove(flux.id)"><p>Tem certeza que deseja excluir a integração <b>{{ flux.name }}</b>?</p></ModalConfirm></v-btn>
               </div>
@@ -225,7 +225,7 @@ async function remove(id) {
                       class="py-2"
                       color="primary"
                       :model-value="flux.active"
-                      :disabled="true" aria-label="Ativação automática indisponível nesta versão"
+                      :disabled="!flux.active && (!db.capabilities?.external_webhooks || !flux.published_version_id)" :aria-label="'Ativar webhook de ' + flux.name"
                       @update:model-value="(v) => v !== null && toggle(flux, v)"
                     />
                     <v-menu v-if="block.isBlocked" max-height="350" open-on-hover location="top" activator="parent">

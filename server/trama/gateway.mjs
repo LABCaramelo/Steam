@@ -7,10 +7,11 @@ import { executeSingleStep, validateGraph } from './engine/runtime/index.js'
 import { MemoryStore } from './memory-store.mjs'
 import * as persistence from './persistence.mjs'
 import * as files from './files.mjs'
+import { webhookReady, webhookUrls, syncWebhook, newWebhookToken } from './hooks.mjs'
 
 const active = new Map()
 const RPCS = new Set(['fetchFluxes','getFlux','createFlux','updateFlux','toggleFluxStatus','duplicateFlux','deleteFlux','saveFluxVersion','restoreFluxVersion','renameFluxVersion','deleteFluxVersion','fetchConnections','createConnection','fetchUserApps','verifyConnection','reauthorizeConnection','renameConnection','updateConnection','deleteConnection','fetchOrganizations','createOrganization','updateOrganization','deleteOrganization','countOrgFluxes','listOrgMembers','getSubscription','listTemplates','unlockTemplate','downloadTemplate','updateTemplate','deleteTemplate','listApps','saveApp','deleteApp','runAppRpc','replayExecution','buildFluxFromPrompt'])
-const capabilities = () => ({ database: 'supabase', storage: 'r2-private', runtime: 'node', local: false, manual_execution: true, max_execution_ms: 30000, durable_queue: false, scheduler: false, webhooks: false, external_webhooks: false, javascript: false, payments: false, google_oauth: false, credentials_configured: /^[a-f0-9]{64}$/i.test(process.env.TRAMA_ENCRYPTION_KEY ?? '') })
+const capabilities = () => ({ database: 'supabase', storage: 'r2-private', runtime: 'node', local: false, manual_execution: true, max_execution_ms: 30000, durable_queue: false, scheduler: false, webhooks: webhookReady(), external_webhooks: webhookReady(), async_webhooks: false, javascript: false, payments: false, google_oauth: false, credentials_configured: /^[a-f0-9]{64}$/i.test(process.env.TRAMA_ENCRYPTION_KEY ?? '') })
 
 export function json(res, value, status = 200) {
   res.statusCode = status
@@ -56,7 +57,7 @@ function provision(store, user) {
     store.put('flows', initialFlow(id))
   }
 }
-function prune(store) {
+export function prune(store) {
   const executions = store.list('executions').sort((a,b) => b.started_at.localeCompare(a.started_at))
   for (const item of executions.slice(40)) { store.delete('executions', item.id); store.delete('usage', item.id) }
 }
@@ -72,6 +73,7 @@ export function createTramaHandler(dependencies = {}) {
   const authorize = dependencies.authorize ?? (async () => { throw problem('Entre no LAB para continuar.',401,'AUTH_REQUIRED') })
   const db = dependencies.persistence ?? persistence
   const fileRepo = dependencies.files ?? files
+  const registerWebhook = dependencies.syncWebhook ?? syncWebhook
   return async function tramaHandler(req, res) {
     res.setHeader('Cache-Control', 'private, no-store')
     res.setHeader('X-Content-Type-Options', 'nosniff')
@@ -159,7 +161,13 @@ export function createTramaHandler(dependencies = {}) {
       if (rpc && method === 'POST') {
         const name = rpc[1], args = Array.isArray(payload.args) ? payload.args : []
         if (!RPCS.has(name)) throw problem('Esta operação é gerenciada pelo LAB ou ainda não está disponível na Trama.',400,'OPERATION_UNAVAILABLE')
-        if (name === 'toggleFluxStatus') throw problem('Agendamentos e webhooks contínuos precisam de um worker dedicado. Use Executar para testar o fluxo agora.',409,'WORKER_REQUIRED')
+        if (name === 'toggleFluxStatus') {
+          if(args[1]&&!webhookReady())throw problem('O serviço de webhooks ainda não foi configurado.',503,'WEBHOOK_NOT_CONFIGURED')
+          const flow=domain.flow(user,args[0])
+          const version=flow.versions?.find(v=>v.id===flow.published_version_id)
+          const steps=version?.snapshot?.steps??version?.steps??[]
+          if(args[1]&&!steps.some(step=>step.app==='webhook'))throw problem('Salve uma versão com gatilho Webhook. Agendamentos ainda não estão disponíveis.',409,'WEBHOOK_VERSION_REQUIRED')
+        }
         if (name === 'replayExecution') {
           const flow = domain.flow(user,args[0]), old = store.get('executions',args[1])
           if (!old || old.flux_id !== flow.id || old.org_id !== flow.org_id) throw problem('Execução não encontrada.',404)
@@ -182,11 +190,21 @@ export function createTramaHandler(dependencies = {}) {
           if (name==='deleteFlux') for (const record of store.list('executions')) if(record.flux_id===args[0]) store.delete('executions',record.id)
         }
         await commit()
+        if(['toggleFluxStatus','saveFluxVersion','restoreFluxVersion'].includes(name)&&webhookReady())await registerWebhook(access,domain.flow(user,args[0]))
         return await finish({result,state:view(domain,user,payload.org_id)})
       }
       if (flowRoute) {
         const flow=domain.flow(user,decodeURIComponent(flowRoute[1])),operation=flowRoute[2]
-        if (operation.startsWith('webhook')) throw problem('Webhooks externos precisam de um worker dedicado. Use o terminal de testes para fornecer uma entrada.',409,'WORKER_REQUIRED')
+        if(operation==='webhook'&&method==='GET') {
+          if(!webhookReady())throw problem('O serviço de webhooks ainda não foi configurado.',503,'WEBHOOK_NOT_CONFIGURED')
+          await commit();await registerWebhook(access,flow)
+          return await finish(webhookUrls(req,flow))
+        }
+        if(operation==='webhook/rotate'&&method==='POST') {
+          flow.webhook_token=newWebhookToken();store.put('flows',flow)
+          await commit();await registerWebhook(access,flow)
+          return await finish({rotated:true})
+        }
         if (operation==='run' && method==='POST') {result=await run(flow,payload.input??flow.test_input); if(!res.writableEnded)return await finish(result); return}
         const node=operation.match(/^nodes\/([^/]+)\/test$/)
         if(node && method==='POST') {

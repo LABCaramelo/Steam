@@ -21,6 +21,9 @@ export async function databaseRequest(access, path, options = {}) {
   const value = response.status === 204 ? null : await response.json().catch(() => null)
   if (!response.ok) {
     const code = value?.code
+    if (code === 'P0404') throw new TramaPersistenceError('Webhook não encontrado.',404,'WEBHOOK_NOT_FOUND')
+    if (code === 'P0409') throw new TramaPersistenceError('Salve uma versão e ative o fluxo para receber chamadas.',409,'WEBHOOK_INACTIVE')
+    if (code === 'P0429') throw new TramaPersistenceError('Limite de chamadas atingido. Aguarde um minuto.',429,'WEBHOOK_RATE_LIMIT')
     if (response.status === 401 || code === '28000') throw new TramaPersistenceError('Sua sessão expirou. Entre novamente no LAB.', 401, 'INVALID_SESSION')
     if (code === '55P03') throw new TramaPersistenceError('Outra operação está usando seu espaço. Aguarde a conclusão e tente novamente.', 409, 'WORKSPACE_BUSY')
     if (code === '40001') throw new TramaPersistenceError('Seu espaço mudou durante esta operação. Atualize antes de tentar novamente.', 409, 'WORKSPACE_CONFLICT')
