@@ -1,710 +1,1081 @@
 /* ==========================================================================
-   BANCO DE PROMPTS OFICIAIS — UM CARA CARAMELO × HEAD ACADEMY
-   Página dedicada para cópia rápida e separada dos 8 prompts
+   BANCO OFICIAL DE PROMPTS — CREATIVE STUDIO CONSOLE (ZERO-SCROLL)
+   HEAD ACADEMY × UM CARA CARAMELO — LABORATÓRIO DE INTERAÇÃO
    ========================================================================== */
 
 :root {
-  --color-ink-950: #08090c;
-  --color-ink-900: #0b0d13;
-  --color-ink-850: #10121a;
-  --color-ink-800: #161822;
-  --color-ink-700: #1f2230;
+  --color-obsidian-950: #07080c;
+  --color-obsidian-900: #0b0d13;
+  --color-obsidian-850: #0e1017;
+  --color-obsidian-800: #12141c;
+  --color-obsidian-750: #181a24;
+  --color-obsidian-700: #1f2230;
+
   --color-cream: #fff4e8;
   --color-cream-pure: #ffffff;
+  --color-cream-muted: rgba(255, 244, 232, 0.65);
+  --color-cream-subtle: rgba(255, 244, 232, 0.38);
+
   --color-caramel: #ff701a;
   --color-sky: #25bfff;
-  --color-pink: #ff3d8d;
   --color-violet: #7657ff;
+  --color-pink: #ff3d8d;
   --color-yellow: #ffd52a;
-  --color-success: #10b981;
+  --color-emerald: #10b981;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-prominent: rgba(255, 255, 255, 0.16);
+
+  --font-editorial: Montserrat, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-ui: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", Consolas, Menlo, monospace;
 }
 
-.prompts-page-root {
-  min-height: 100vh;
-  min-height: 100dvh;
-  background-color: var(--color-ink-900);
-  background-image: 
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 112, 26, 0.12), transparent),
-    radial-gradient(circle at 85% 30%, rgba(37, 191, 255, 0.08), transparent 40%),
-    radial-gradient(circle at 15% 70%, rgba(118, 87, 255, 0.08), transparent 40%);
+/* 1. ROOT CONTAINER: LOCK 100dvh COM ZERO SCROLL NA JANELA */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden !important;
+  background-color: var(--color-obsidian-900);
   color: var(--color-cream);
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  padding-bottom: 80px;
+  font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* TOPBAR FIXA */
-.prompts-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(11, 13, 19, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 14px 28px;
+.prompts-studio-root {
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
+  width: 100vw;
+  max-width: 100vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-obsidian-900);
+  background-image:
+    radial-gradient(ellipse 90% 40% at 50% -10%, rgba(255, 112, 26, 0.09), transparent),
+    radial-gradient(circle at 90% 20%, rgba(37, 191, 255, 0.06), transparent 35%),
+    radial-gradient(circle at 10% 80%, rgba(118, 87, 255, 0.06), transparent 35%);
 }
 
-.prompts-topbar-inner {
-  max-width: 1440px;
-  margin: 0 auto;
+/* ==========================================================================
+   2. TOPBAR COMPACTA (52px)
+   ========================================================================== */
+.prompts-studio-topbar {
+  height: 52px;
+  flex-shrink: 0;
+  background: rgba(14, 16, 23, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
+  padding: 0 20px;
+  z-index: 40;
 }
 
-.prompts-brand-group {
+.prompts-studio-topbar-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
-.prompts-wordmark {
-  font-family: Montserrat, sans-serif;
-  font-weight: 900;
+.prompts-studio-wordmark {
+  font-family: var(--font-editorial);
   font-size: 13px;
-  line-height: 1.05;
+  font-weight: 900;
   letter-spacing: -0.02em;
   color: var(--color-cream);
   text-decoration: none;
-  display: block;
+  line-height: 1;
 }
 
-.prompts-wordmark span {
+.prompts-studio-wordmark span {
   color: var(--color-caramel);
 }
 
-.prompts-brand-divider {
+.prompts-studio-divider {
   width: 1px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.15);
+  height: 20px;
+  background: var(--border-subtle);
 }
 
-.prompts-badge-title {
-  display: flex;
-  flex-direction: column;
-}
-
-.prompts-badge-title strong {
-  font-family: Montserrat, sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #ffffff;
-}
-
-.prompts-badge-title span {
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.55);
-  text-transform: uppercase;
-}
-
-.prompts-topbar-actions {
+.prompts-studio-badge {
   display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.prompts-download-btn {
-  display: inline-flex;
-  align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: var(--color-cream);
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s ease;
 }
 
-.prompts-download-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.3);
-  color: #ffffff;
-  transform: translateY(-1px);
-}
-
-.prompts-home-link {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
-  text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: color 0.2s;
-}
-
-.prompts-home-link:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-/* HERO DA PÁGINA */
-.prompts-hero {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 48px 28px 24px;
-}
-
-.prompts-hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255, 112, 26, 0.12);
-  border: 1px solid rgba(255, 112, 26, 0.35);
-  color: var(--color-caramel);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-
-.prompts-hero-dot {
-  width: 6px;
-  height: 6px;
+.prompts-studio-dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--color-caramel);
   box-shadow: 0 0 10px var(--color-caramel);
+  animation: studioPulse 2.5s infinite ease-in-out;
 }
 
-.prompts-hero h1 {
-  font-family: Montserrat, sans-serif;
-  font-size: clamp(28px, 3.8vw, 52px);
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+@keyframes studioPulse {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.25); }
+}
+
+.prompts-studio-badge strong {
+  font-family: var(--font-editorial);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
   color: #ffffff;
-  margin: 0 0 14px;
+  text-transform: uppercase;
 }
 
-.prompts-hero-lead {
-  font-size: clamp(14px, 1.2vw, 17px);
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.75);
-  max-width: 780px;
-  margin: 0 0 28px;
+.prompts-studio-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-caramel);
+  background: rgba(255, 112, 26, 0.12);
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 112, 26, 0.25);
 }
 
-/* BARRA DE CONTROLE: PESQUISA, FILTROS E ATALHOS */
-.prompts-controls-bar {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  background: var(--color-ink-850);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  padding: 16px 20px;
-  margin-bottom: 32px;
-}
-
-.prompts-search-row {
+.prompts-studio-topbar-center {
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
 }
 
-.prompts-search-box {
-  flex: 1 1 300px;
+.prompts-viewport-indicator {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-cream-subtle);
+}
+
+.prompts-studio-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.prompts-studio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.prompts-studio-btn.secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-cream);
+}
+
+.prompts-studio-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: var(--border-prominent);
+}
+
+.prompts-studio-btn.slides {
+  background: rgba(255, 112, 26, 0.14);
+  border: 1px solid rgba(255, 112, 26, 0.35);
+  color: var(--color-caramel);
+}
+
+.prompts-studio-btn.slides:hover {
+  background: rgba(255, 112, 26, 0.24);
+  color: #ffffff;
+  border-color: var(--color-caramel);
+}
+
+.prompts-studio-btn.icon-only {
+  background: transparent;
+  border: none;
+  color: var(--color-cream-subtle);
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+.prompts-studio-btn.icon-only:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.prompts-studio-btn kbd {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 1px 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  color: var(--color-cream-muted);
+}
+
+/* ==========================================================================
+   3. ÁREA DE TRABALHO STUDIO (SPLIT PRINCIPAL)
+   ========================================================================== */
+.prompts-studio-workspace {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   4. SIDEBAR LATERAL NAVEGADORA (340px)
+   ========================================================================== */
+.prompts-studio-sidebar {
+  width: 340px;
+  flex-shrink: 0;
+  background: var(--color-obsidian-850);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.prompts-sidebar-search-box {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--color-obsidian-800);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.prompts-sidebar-search-input-wrap {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.prompts-search-icon {
+.prompts-sidebar-search-input-wrap .search-icon {
   position: absolute;
-  left: 14px;
-  color: rgba(255, 255, 255, 0.4);
+  left: 10px;
+  font-size: 12px;
+  opacity: 0.5;
   pointer-events: none;
 }
 
-.prompts-search-input {
+.prompts-sidebar-search-input {
   width: 100%;
-  background: var(--color-ink-900);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--color-obsidian-900);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 8px 30px 8px 30px;
+  font-size: 12px;
   color: #ffffff;
-  padding: 11px 14px 11px 40px;
-  border-radius: 8px;
-  font-size: 13px;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.15s ease;
+  font-family: var(--font-ui);
 }
 
-.prompts-search-input:focus {
+.prompts-sidebar-search-input:focus {
   border-color: var(--color-caramel);
-  box-shadow: 0 0 0 3px rgba(255, 112, 26, 0.15);
+  box-shadow: 0 0 0 2px rgba(255, 112, 26, 0.15);
 }
 
-.prompts-search-input::placeholder {
-  color: rgba(255, 255, 255, 0.35);
+.clear-search-btn {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--color-cream-subtle);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px 4px;
 }
 
-.prompts-quick-jumps {
+.clear-search-btn:hover {
+  color: #ffffff;
+}
+
+.prompts-sidebar-categories {
+  display: flex;
+  gap: 5px;
+}
+
+.category-pill {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 5px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-cream-muted);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.category-pill small {
+  font-size: 9px;
+  opacity: 0.6;
+}
+
+.category-pill:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-cream);
+}
+
+.category-pill.active {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* LISTA DOS PROMPTS */
+.prompts-sidebar-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prompts-sidebar-empty {
+  padding: 30px 16px;
+  text-align: center;
+  color: var(--color-cream-subtle);
+  font-size: 12px;
+}
+
+.reset-filters-btn {
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-cream);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* CARD INDIVIDUAL NA SIDEBAR */
+.prompts-sidebar-card {
+  position: relative;
+  background: var(--color-obsidian-800);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 12px 12px 12px 14px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.prompts-quick-jumps-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.45);
-  text-transform: uppercase;
-  margin-right: 4px;
-}
-
-.prompts-jump-pill {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.85);
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  font-family: Montserrat, sans-serif;
+  gap: 12px;
   cursor: pointer;
   transition: all 0.18s ease;
-  text-decoration: none;
+  user-select: none;
 }
 
-.prompts-jump-pill:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: var(--pill-color, var(--color-caramel));
+.prompts-sidebar-card:hover {
+  background: var(--color-obsidian-750);
+  border-color: var(--border-prominent);
+  transform: translateX(2px);
+}
+
+.prompts-sidebar-card.selected {
+  background: #191c28;
+  border-color: var(--card-accent);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4), inset 0 0 16px rgba(0, 0, 0, 0.3);
+}
+
+.card-left-accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3.5px;
+  background: var(--card-accent);
+  border-radius: 8px 0 0 8px;
+  opacity: 0.3;
+  transition: opacity 0.15s ease;
+}
+
+.prompts-sidebar-card.selected .card-left-accent,
+.prompts-sidebar-card:hover .card-left-accent {
+  opacity: 1;
+}
+
+.card-num-badge {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prompts-sidebar-card.selected .card-num-badge {
+  background: var(--card-accent);
+  border-color: var(--card-accent);
+}
+
+.card-num-badge span {
+  font-family: var(--font-editorial);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-cream);
+}
+
+.prompts-sidebar-card.selected .card-num-badge span {
+  color: #0b0d13;
+}
+
+.card-main-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-title {
+  font-family: var(--font-editorial);
+  font-size: 13px;
+  font-weight: 700;
   color: #ffffff;
-  transform: translateY(-1px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* FILTRO DE CATEGORIAS */
-.prompts-filter-row {
+.card-tool-text {
+  font-size: 11px;
+  color: var(--color-cream-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-category-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--card-accent);
+}
+
+.card-actions {
+  flex-shrink: 0;
+}
+
+.card-quick-copy-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-cream);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.card-quick-copy-btn:hover {
+  background: var(--card-accent);
+  border-color: var(--card-accent);
+  color: #0b0d13;
+  transform: scale(1.08);
+}
+
+.card-quick-copy-btn.copied {
+  background: var(--color-emerald) !important;
+  border-color: var(--color-emerald) !important;
+  color: #ffffff !important;
+}
+
+.prompts-sidebar-footer {
+  padding: 8px 12px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--color-obsidian-900);
+}
+
+.prompts-shortcut-hint {
+  font-size: 10px;
+  color: var(--color-cream-subtle);
+}
+
+.prompts-shortcut-hint kbd {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 1px 3px;
+  border-radius: 3px;
+  color: var(--color-cream-muted);
+}
+
+/* ==========================================================================
+   5. CONSOLE DO PROMPT ATIVO (STAGE)
+   ========================================================================== */
+.prompts-studio-stage {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-obsidian-900);
+}
+
+/* HEADER DO STAGE */
+.prompts-stage-header {
+  flex-shrink: 0;
+  background: var(--color-obsidian-850);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.stage-header-title-block {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stage-badges-row {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding-top: 14px;
 }
 
-.prompts-category-btn {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.65);
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.prompts-category-btn:hover {
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.prompts-category-btn.active {
-  background: var(--color-cream);
-  color: var(--color-ink-950);
-  border-color: var(--color-cream);
-  font-weight: 700;
-}
-
-.prompts-category-count {
+.stage-num-pill {
+  font-family: var(--font-editorial);
   font-size: 10px;
-  opacity: 0.7;
-}
-
-/* GRID PRINCIPAL DOS PROMPTS */
-.prompts-container {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-/* CARD DE PROMPT INDIVIDUAL */
-.prompt-card {
-  background: var(--color-ink-850);
-  border: 1.5px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
-  padding: 24px 28px;
-  position: relative;
-  transition: border-color 0.22s, box-shadow 0.22s, transform 0.22s;
-  overflow: hidden;
-}
-
-.prompt-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: var(--prompt-accent, var(--color-caramel));
-  opacity: 0.8;
-}
-
-.prompt-card:hover {
-  border-color: var(--prompt-accent, rgba(255, 255, 255, 0.25));
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.38), 0 0 20px rgba(255, 112, 26, 0.06);
-}
-
-/* CABEÇALHO DO CARD: TÍTULO + BOTÃO DE CÓPIA GIGANTE */
-.prompt-card-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
-}
-
-.prompt-card-title-group {
-  flex: 1 1 480px;
-}
-
-.prompt-card-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
-  flex-wrap: wrap;
-}
-
-.prompt-card-num-badge {
-  font-family: Montserrat, sans-serif;
-  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.12em;
-  color: var(--prompt-accent, var(--color-caramel));
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-}
-
-.prompt-card-tool-tag {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.85);
+  color: #0b0d13;
   padding: 2px 8px;
   border-radius: 4px;
+}
+
+.stage-tool-pill {
   font-size: 11px;
   font-weight: 600;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
-.prompt-card-chars-tag {
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 11px;
-  font-weight: 500;
+.stage-cat-pill {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-cream-muted);
 }
 
-.prompt-card h2 {
-  font-family: Montserrat, sans-serif;
-  font-size: clamp(18px, 1.8vw, 24px);
+.stage-stats-pill {
+  font-size: 10px;
+  color: var(--color-cream-subtle);
+}
+
+.stage-main-title {
+  margin: 0;
+  font-family: var(--font-editorial);
+  font-size: 20px;
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.02em;
   color: #ffffff;
-  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* O BOTÃO PROTAGONISTA DE CÓPIA */
-.prompt-copy-btn-primary {
+.stage-header-actions-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* SELETOR DE VISTA */
+.stage-view-switcher {
+  display: flex;
+  background: var(--color-obsidian-800);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.view-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-cream-muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.view-btn:hover {
+  color: #ffffff;
+}
+
+.view-btn.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+/* MEGA BOTÃO DE CÓPIA */
+.stage-mega-copy-btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
-  background: var(--prompt-accent, var(--color-caramel));
-  color: #101014;
-  border: none;
-  border-radius: 10px;
-  padding: 13px 24px;
-  font-family: Montserrat, sans-serif;
+  background: var(--active-accent);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  padding: 8px 18px;
+  cursor: pointer;
+  color: #0b0d13;
+  transition: all 0.18s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.stage-mega-copy-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+.stage-mega-copy-btn.copied {
+  background: var(--color-emerald) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4) !important;
+}
+
+.mega-copy-icon {
+  font-size: 16px;
+}
+
+.mega-copy-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.mega-copy-text strong {
+  font-family: var(--font-editorial);
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.02em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  line-height: 1.1;
+}
+
+.mega-copy-text small {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  opacity: 0.85;
+}
+
+/* ==========================================================================
+   6. CORPO DO STAGE (LAYOUT DE CONTEÚDO)
+   ========================================================================== */
+.prompts-stage-body-layout {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+/* PAINEL DO GUIA / FICHA TÉCNICA */
+.prompts-inspector-pane {
+  background: var(--color-obsidian-850);
+  border-right: 1px solid var(--border-subtle);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.mode-split .prompts-inspector-pane {
+  width: 360px;
   flex-shrink: 0;
-  white-space: nowrap;
 }
 
-.prompt-copy-btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  filter: brightness(1.08);
+.mode-guide .prompts-inspector-pane {
+  flex: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  border-right: none;
 }
 
-.prompt-copy-btn-primary:active {
-  transform: translateY(0);
-}
-
-.prompt-copy-btn-primary.copied {
-  background: var(--color-success);
-  color: #ffffff;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
-}
-
-/* GRID DE METADADOS EXPLICATIVOS */
-.prompt-card-metadata-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 14px;
-  background: rgba(11, 13, 19, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
-  padding: 16px 20px;
-  margin-bottom: 18px;
-}
-
-.prompt-meta-item {
+.inspector-inner-scroll {
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 14px;
 }
 
-.prompt-meta-item small {
-  font-size: 10px;
+.inspector-section-title {
+  font-family: var(--font-editorial);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--active-accent);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 8px;
+}
+
+.inspector-card {
+  background: var(--color-obsidian-800);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-label {
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--color-cream-subtle);
 }
 
-.prompt-meta-item p {
-  font-size: 13px;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.85);
+.inspector-card p {
   margin: 0;
-}
-
-/* DICA DE PERSONALIZAÇÃO */
-.prompt-card-tip {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  background: rgba(255, 213, 42, 0.06);
-  border: 1px dashed rgba(255, 213, 42, 0.25);
-  border-radius: 10px;
-  padding: 12px 16px;
-  margin-bottom: 18px;
   font-size: 12.5px;
   line-height: 1.45;
-  color: #fff2a8;
+  color: var(--color-cream);
 }
 
-.prompt-card-tip strong {
-  color: var(--color-yellow);
-  font-weight: 700;
-  white-space: nowrap;
+.inspector-tip-callout {
+  background: rgba(255, 112, 26, 0.08);
+  border: 1px solid rgba(255, 112, 26, 0.3);
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-/* BARRA DE AÇÕES DO CARD (VER TEXTO COMPLETO) */
-.prompt-card-footer {
+.tip-badge {
+  font-family: var(--font-editorial);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-caramel);
+}
+
+.inspector-tip-callout p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-cream);
+}
+
+/* PAINEL DO EDITOR DE TEXTO / CODE VIEWER */
+.prompts-editor-pane {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-obsidian-950);
+}
+
+.editor-top-bar {
+  height: 38px;
+  flex-shrink: 0;
+  background: var(--color-obsidian-850);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding-top: 6px;
 }
 
-.prompt-toggle-preview-btn {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.8);
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  display: inline-flex;
+.editor-file-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.editor-file-info strong {
+  color: #ffffff;
+  font-family: var(--font-mono);
+}
+
+.line-count-tag {
+  color: var(--color-cream-subtle);
+  font-size: 10px;
+}
+
+.editor-quick-tools {
+  display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.prompt-toggle-preview-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.25);
+.editor-tool-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-cream-muted);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.editor-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
 }
 
-.prompt-quick-copy-text-btn {
-  background: transparent;
-  border: none;
-  color: var(--prompt-accent, var(--color-caramel));
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: opacity 0.2s;
+.editor-tool-btn.copy-btn.copied {
+  background: var(--color-emerald);
+  border-color: var(--color-emerald);
+  color: #ffffff;
 }
 
-.prompt-quick-copy-text-btn:hover {
-  opacity: 0.8;
+/* CONTAINER MONOSPACE COM SCROLL INTERNO CONTROLADO */
+.editor-code-container {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: auto;
+  padding: 20px 24px;
+  background: #08090e;
 }
 
-/* ÁREA DE PRÉVIA DO TEXTO INTEGRAL DO PROMPT */
-.prompt-full-preview-box {
-  margin-top: 16px;
-  background: var(--color-ink-950);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  overflow: hidden;
-  animation: fadeIn 0.2s ease-out;
+.editor-code-text {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.68;
+  color: #f7f3eb;
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: text;
+  outline: none;
 }
 
-.prompt-preview-header {
+/* ==========================================================================
+   7. DOCK DE STATUS INFERIOR (32px)
+   ========================================================================== */
+.prompts-studio-dock {
+  height: 32px;
+  flex-shrink: 0;
+  background: var(--color-obsidian-950);
+  border-top: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255, 255, 255, 0.04);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 10px 16px;
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.55);
+  padding: 0 16px;
+  font-size: 10px;
+  color: var(--color-cream-subtle);
+  z-index: 30;
 }
 
-.prompt-preview-text {
-  font-family: "JetBrains Mono", Consolas, "Fira Code", monospace;
-  font-size: 12px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
-  padding: 18px 20px;
-  margin: 0;
-  max-height: 380px;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  word-break: break-word;
-  background: #08090d;
-}
-
-.prompt-preview-text::-webkit-scrollbar {
-  width: 6px;
-}
-.prompt-preview-text::-webkit-scrollbar-track {
-  background: transparent;
-}
-.prompt-preview-text::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
-  border-radius: 4px;
-}
-.prompt-preview-text::-webkit-scrollbar-thumb:hover {
-  background: var(--prompt-accent, var(--color-caramel));
-}
-
-/* FLOATING TOAST NOTIFICATION */
-.prompt-toast {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  z-index: 100;
-  background: #12141e;
-  border: 1.5px solid var(--color-success);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5), 0 0 24px rgba(16, 185, 129, 0.25);
-  border-radius: 12px;
-  padding: 14px 20px;
+.dock-left {
   display: flex;
   align-items: center;
-  gap: 14px;
-  color: #ffffff;
-  animation: slideUp 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
-  max-width: 420px;
+  gap: 12px;
 }
 
-.prompt-toast-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--color-success);
+.dock-lead {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--active-accent);
+}
+
+.dock-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dock-pill kbd {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0 3px;
+  border-radius: 3px;
+  color: var(--color-cream);
+}
+
+.dock-right {
+  display: flex;
+  align-items: center;
+}
+
+.dock-active-status {
+  font-size: 10px;
+}
+
+.dock-active-status strong {
   color: #ffffff;
+}
+
+/* ==========================================================================
+   8. TOAST DE FEEDBACK HÁPTICO FLUTUANTE
+   ========================================================================== */
+.studio-toast {
+  position: fixed;
+  bottom: 44px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #151824;
+  border: 1px solid var(--toast-accent);
+  border-radius: 8px;
+  padding: 12px 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(16, 185, 129, 0.2);
+  animation: toastSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes toastSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.studio-toast-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--toast-accent);
+  color: #0b0d13;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
   font-size: 14px;
-  flex-shrink: 0;
+  font-weight: 900;
 }
 
-.prompt-toast-copy strong {
-  display: block;
-  font-size: 13px;
-  font-family: Montserrat, sans-serif;
+.studio-toast-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.studio-toast-body strong {
+  font-family: var(--font-editorial);
+  font-size: 12px;
   font-weight: 800;
   color: #ffffff;
-  margin-bottom: 2px;
 }
 
-.prompt-toast-copy p {
-  font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.7);
+.studio-toast-body p {
   margin: 0;
+  font-size: 11px;
+  color: var(--color-cream-muted);
 }
 
-/* ANIMAÇÕES */
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+/* ==========================================================================
+   9. SCROLLBARS CUSTOMIZADAS (SLEEK & DISCRETAS)
+   ========================================================================== */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+*::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
 }
 
-/* RESPONSIVO */
-@media (max-width: 768px) {
-  .prompts-topbar {
-    padding: 12px 16px;
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* ==========================================================================
+   10. RESPONSIVIDADE (TABLETS E TELAS MENORES)
+   ========================================================================== */
+@media (max-width: 900px) {
+  .prompts-studio-workspace {
+    flex-direction: column;
   }
-  .prompts-hero {
-    padding: 32px 16px 20px;
-  }
-  .prompts-controls-bar {
-    padding: 14px;
-  }
-  .prompts-container {
-    padding: 0 16px;
-  }
-  .prompt-card {
-    padding: 20px 18px;
-  }
-  .prompt-copy-btn-primary {
+
+  .prompts-studio-sidebar {
     width: 100%;
+    height: 180px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
   }
-  .prompt-toast {
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
+
+  .prompts-sidebar-list {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .prompts-sidebar-card {
+    min-width: 220px;
+  }
+
+  .mode-split .prompts-inspector-pane {
+    width: 100%;
+    max-height: 220px;
+  }
+
+  .prompts-stage-body-layout.mode-split {
+    flex-direction: column;
+  }
+
+  .prompts-viewport-indicator {
+    display: none;
+  }
+
+  .dock-left .dock-pill:nth-child(n + 4) {
+    display: none;
   }
 }
