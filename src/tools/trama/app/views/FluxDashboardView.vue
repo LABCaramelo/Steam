@@ -127,14 +127,26 @@ const rows = computed(() =>
 )
 watch(search, () => (page.value = 1))
 
+function executionState(status) {
+  return {
+    success: { label:'Concluída', color:'success', icon:'mdi-check-circle-outline' },
+    error: { label:'Com erro', color:'error', icon:'mdi-alert-circle-outline' },
+    interrupted: { label:'Interrompida', color:'warning', icon:'mdi-pause-circle-outline' },
+    cancelled: { label:'Cancelada', color:'warning', icon:'mdi-stop-circle-outline' },
+    queued: { label:'Na fila', color:'info', icon:'mdi-clock-outline' },
+    running: { label:'Em execução', color:'info', icon:'mdi-progress-clock' },
+  }[status] || { label:status || 'Sem estado', color:'info', icon:'mdi-information-outline' }
+}
+
 const summary = computed(() => {
   const list = filtered.value
-  const successes = list.filter((e) => e.status !== 'error').length
+  const successes = list.filter((e) => e.status === 'success').length
+  const failures = list.filter((e) => e.status === 'error').length
   const avg = list.length ? Math.round(list.reduce((sum, e) => sum + e.duration_ms, 0) / list.length) : 0
   return [
     { label: 'Execuções', value: list.length, icon: 'mdi-play-circle-outline', color: 'primary' },
     { label: 'Sucessos', value: successes, icon: 'mdi-check-circle-outline', color: 'success' },
-    { label: 'Falhas', value: list.length - successes, icon: 'mdi-alert-circle-outline', color: 'error' },
+    { label: 'Falhas', value: failures, icon: 'mdi-alert-circle-outline', color: 'error' },
     { label: 'Tempo médio', value: `${avg} ms`, icon: 'mdi-timer-outline', color: 'info' },
     { label: 'Total de operações', value: list.reduce((sum, e) => sum + (e.operations ?? 0), 0), icon: 'mdi-counter', color: 'warning' },
   ]
@@ -216,19 +228,20 @@ async function replay() {
 </script>
 
 <template>
-  <div class="dashboard-page pt-12 px-md-15 px-4 pb-10">
-    <div class="d-flex align-center justify-space-between flex-wrap ga-3 mb-6">
+  <div class="dashboard-page">
+    <div class="dashboard-heading">
       <div class="d-flex align-center ga-3">
         <v-btn
           v-if="flux"
-          icon="mdi-chevron-left"
+          icon="mdi-arrow-left"
+          aria-label="Voltar ao fluxo"
           density="comfortable"
           variant="tonal"
           color="primary"
           :to="{ name: 'flux', params: { fluxId: flux.id } }"
         />
         <div>
-          <h2>Uso geral da integração</h2>
+          <p class="dashboard-eyebrow">TRAMA / HISTÓRICO</p><h1>Execuções em detalhe.</h1>
           <p class="text-medium-emphasis">{{ flux?.name ?? 'Selecione uma integração' }}</p>
         </div>
       </div>
@@ -247,14 +260,14 @@ async function replay() {
       <v-progress-circular indeterminate color="primary" />
     </div>
 
-    <v-card v-else-if="!flux" class="pa-10 text-center">
+    <v-card v-else-if="!flux" class="dashboard-empty">
       <v-icon icon="mdi-chart-box-outline" size="48" class="mb-3 opacity-60" />
-      <p>Escolha uma integração no seletor acima para ver o dashboard.</p>
+      <p>Escolha um fluxo no seletor acima para acompanhar suas execuções.</p>
     </v-card>
 
     <template v-else>
       <!-- Filtros -->
-      <v-card class="pa-6 mb-7">
+      <v-card class="dashboard-filters">
         <div class="d-flex align-center justify-space-between flex-wrap ga-3">
           <div class="d-flex ga-3 flex-wrap">
             <v-text-field v-model="filters.startDate" type="datetime-local" label="Data inicial" density="compact" class="date-field" />
@@ -308,30 +321,30 @@ async function replay() {
       <!-- Resumo -->
       <v-row class="mb-2">
         <v-col v-for="item in summary" :key="item.label" cols="6" md="4" lg>
-          <v-card class="pa-4 h-100">
+          <v-card class="summary-card h-100">
             <div class="d-flex align-center ga-2 mb-1 text-medium-emphasis">
               <v-icon :icon="item.icon" :color="item.color" size="20" />
               {{ item.label }}
             </div>
-            <h2>{{ item.value }}</h2>
+            <strong class="summary-value">{{ item.value }}</strong>
           </v-card>
         </v-col>
       </v-row>
 
       <!-- Gráfico -->
-      <v-card class="pa-6 mb-7">
+      <v-card class="dashboard-chart-panel">
         <h3 class="mb-3">Execuções</h3>
         <DashboardChart :days="chartDays" />
       </v-card>
 
       <!-- Logs -->
-      <v-card class="pa-6">
+      <v-card class="dashboard-logs">
         <div class="d-flex align-center justify-space-between flex-wrap ga-3 mb-4">
-          <h3>Logs</h3>
+          <div><p class="dashboard-eyebrow">ETAPA POR ETAPA</p><h3>Registro de execuções</h3></div>
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            placeholder="Pesquise informações de um log"
+            label="Buscar no histórico" placeholder="Informações de uma execução"
             density="compact"
             max-width="420"
             clearable
@@ -346,9 +359,10 @@ async function replay() {
           class="logs-table"
           @click:row="(_, { item }) => openDetails(item)"
         >
+          <template #[`item.name`]="{ item }"><button type="button" class="execution-open" @click.stop="openDetails(item)">{{ item.name }} <v-icon icon="mdi-arrow-top-right" size="15"/></button></template>
           <template #[`item.result`]="{ value }">
-            <v-chip :color="value === 'error' ? 'error' : 'success'" size="small" variant="tonal">
-              {{ value === 'error' ? 'Erro' : 'Sucesso' }}
+            <v-chip :color="executionState(value).color" :prepend-icon="executionState(value).icon" size="small" variant="tonal">
+              {{ executionState(value).label }}
             </v-chip>
           </template>
           <template #no-data>
@@ -370,15 +384,15 @@ async function replay() {
           <v-btn color="primary" variant="tonal" prepend-icon="mdi-replay" :loading="replaying" @click="replay">Executar novamente</v-btn>
         </div>
         <v-alert
-          :type="selected.status === 'error' ? 'error' : 'success'"
+          :type="selected.status === 'success' ? 'success' : selected.status === 'error' ? 'error' : 'warning'"
           variant="tonal"
           class="mb-4"
-          :title="selected.status === 'error' ? 'Sua integração NÃO foi executada!' : 'Sucesso na execução do fluxo!'"
+          :title="executionState(selected.status).label"
         >
           <template v-if="selected.status === 'error'">
             Ocorreu um erro em
-            <b>{{ getApp(selected.steps.at(-1).app).title }}</b>:
-            {{ selected.steps.at(-1).output?.erro }}
+            <b>{{ getApp(selected.steps?.at(-1)?.app).title }}</b>:
+            {{ selected.error?.message ?? selected.steps?.at(-1)?.error?.message ?? 'Consulte os detalhes da etapa abaixo.' }}
           </template>
           <template v-else>
             Tempo de execução do fluxo: <b>{{ selected.duration_ms }} ms</b> · Operações: <b>{{ selected.operations ?? 0 }}</b>
@@ -404,33 +418,8 @@ async function replay() {
 </template>
 
 <style scoped>
-.date-field {
-  min-width: 230px;
-}
-
-.flux-select {
-  min-width: 240px;
-}
-
-.advanced-chevron {
-  transition: transform 0.2s ease;
-}
-
-.advanced-chevron--open {
-  transform: rotate(180deg);
-}
-
-.logs-table :deep(tbody tr) {
-  cursor: pointer;
-}
-
-.json-output {
-  font-family: monospace;
-  font-size: 0.82rem;
-  white-space: pre-wrap;
-  word-break: break-word;
-  padding: 12px;
-  border-radius: 8px;
-  background: rgb(var(--v-theme-background));
-}
+.dashboard-page{max-width:1540px;margin-inline:auto;padding:44px clamp(20px,4vw,64px) 60px}.dashboard-heading{display:flex;align-items:center;justify-content:space-between;gap:28px;margin-bottom:32px}.dashboard-heading>.d-flex{min-width:0}.dashboard-heading h1{font:900 clamp(30px,3.3vw,48px)/1.1 var(--trama-font-display,Montserrat,sans-serif);letter-spacing:-.055em;margin-bottom:9px}.dashboard-heading>div>div>p:last-child{font-size:14px;color:rgb(var(--cm-fg-muted));line-height:1.6}.dashboard-eyebrow{font:600 11px/1.4 var(--trama-font-ui,Inter,sans-serif);letter-spacing:.13em;color:rgb(var(--cm-accent-ink));margin-bottom:12px}.dashboard-filters,.dashboard-chart-panel,.dashboard-logs{padding:26px;margin-bottom:26px;border:1px solid rgb(var(--cm-line));border-radius:16px!important;background:rgb(var(--cm-surface-1))}.dashboard-filters{position:relative}.dashboard-filters::before{content:"";position:absolute;left:26px;top:0;width:52px;height:2px;background:rgb(var(--cm-accent-ink))}.dashboard-filters h4{font-size:15px}.date-field{min-width:230px}.flux-select{min-width:240px;flex:0 1 300px}.advanced-chevron{transition:transform 160ms}.advanced-chevron--open{transform:rotate(180deg)}.summary-card{padding:20px 18px;border-radius:13px!important;background:rgb(var(--cm-surface-1));box-shadow:inset 0 1px rgb(var(--cm-fg)/.035)}.summary-card>.d-flex{font-size:12px;line-height:1.55;margin-bottom:14px!important;color:rgb(var(--cm-fg-muted))}.summary-value{display:block;font:800 clamp(26px,2.5vw,38px)/1.15 var(--trama-font-display,Montserrat,sans-serif);letter-spacing:-.05em;font-variant-numeric:tabular-nums;color:rgb(var(--cm-fg))}.dashboard-page>.v-row{margin-bottom:18px!important}.dashboard-chart-panel h3,.dashboard-logs h3{font-size:21px;font-weight:800}.logs-table{background:transparent;font-size:13px}.logs-table :deep(thead){background:rgb(var(--cm-surface-2))}.logs-table :deep(th){font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:rgb(var(--cm-fg-dim))!important;font-weight:600!important;min-height:45px}.logs-table :deep(td){height:64px!important;border-bottom-color:rgb(var(--cm-line))!important}.logs-table :deep(tbody tr){cursor:pointer}.logs-table :deep(.v-chip){min-height:27px;font-size:11px}.execution-open{display:flex;align-items:center;gap:8px;text-align:left;color:rgb(var(--cm-fg));font-size:13px;font-weight:600;min-height:40px}.execution-open>.v-icon{color:rgb(var(--cm-accent-ink))}.execution-open:hover{color:rgb(var(--cm-accent-ink))}.execution-open:focus-visible{outline:2px solid rgb(var(--cm-focus));outline-offset:3px;border-radius:4px}.json-output{font:12px/1.7 var(--trama-font-code,monospace);white-space:pre-wrap;word-break:break-word;padding:16px;border:1px solid rgb(var(--cm-line));border-radius:10px;background:rgb(var(--cm-stage));color:rgb(var(--cm-fg-2))}.dashboard-empty{display:flex;flex-direction:column;align-items:center;gap:18px;padding:60px 28px;color:rgb(var(--cm-fg-muted));text-align:center}.dashboard-empty>.v-icon{color:rgb(var(--cm-accent-ink));opacity:1!important}.dashboard-empty p{font-size:15px;line-height:1.7;max-width:460px}
+@media(max-width:900px){.dashboard-page{padding:30px 20px 40px}.dashboard-heading{align-items:flex-start;flex-direction:column;gap:20px}.flux-select{width:100%;max-width:100%!important;flex:auto}.dashboard-filters,.dashboard-chart-panel,.dashboard-logs{padding:20px}.dashboard-filters>.d-flex>.d-flex{width:100%}.date-field{min-width:0;flex:1 1 100%}.summary-card{padding:18px 16px}.dashboard-heading h1{font-size:34px}}
+@media(max-width:600px){.dashboard-page{padding:26px 16px 36px}.dashboard-heading>.d-flex{align-items:flex-start!important;gap:12px!important}.dashboard-heading h1{font-size:29px}.dashboard-heading>.d-flex>.v-btn{min-width:44px;min-height:44px}.dashboard-filters,.dashboard-chart-panel,.dashboard-logs{padding:18px 14px}.dashboard-filters .v-btn{min-height:44px;font-size:12px;padding-inline:12px}.summary-card>.d-flex{font-size:12px;align-items:flex-start!important}.summary-value{font-size:27px}.dashboard-chart-panel h3,.dashboard-logs h3{font-size:20px}.dashboard-logs>.d-flex>.v-input{max-width:100%!important;min-width:100%}.dashboard-empty p{font-size:16px}.execution-open{min-height:44px}}
+@media(prefers-reduced-motion:reduce){.advanced-chevron{transition:none}}
 </style>

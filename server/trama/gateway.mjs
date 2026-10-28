@@ -114,6 +114,13 @@ export function createTramaHandler(dependencies = {}) {
         return json(res,{cancelled:running.cancel(cancel[1])})
       }
 
+      const capture = route.match(/^\/flows\/([^/]+)\/webhook\/capture$/)
+      if(capture&&method==='GET'){
+        const loaded=await db.loadWorkspace(access)
+        const domain=new Domain(new MemoryStore(loaded.state),secretBox(undefined,process.env.TRAMA_ENCRYPTION_KEY))
+        const flow=domain.flow(labUser(access),decodeURIComponent(capture[1]))
+        return json(res,{last_input:flow.last_webhook_test_input??null,last_received_at:flow.last_webhook_test_at??null})
+      }
       lease = await db.acquireWorkspace(access)
       const store = new MemoryStore(lease.state)
       const user = labUser(access)

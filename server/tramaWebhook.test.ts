@@ -60,6 +60,7 @@ test('external webhook executes published snapshot, commits before HTTP, returns
   const response=await call(f.handler,{headers:{'idempotency-key':'event-123',authorization:'Bearer private-inbound',cookie:'private-cookie'}});
   assert.equal(response.statusCode,201);assert.deepEqual(response.value(),{received:{name:'Luiz'},ok:true});assert.equal(f.effects,1);assert.equal(f.locked,false);
   const stored=new MemoryStore(f.state).list('executions')[0];assert.equal(stored.origin,'Webhook');assert.equal(stored.version_id,'version-1');assert.equal(stored.status,'success');
+  assert.equal(new MemoryStore(f.state).get('flows',F).last_webhook_test_at,undefined,'production events must not appear in the test listener');
   assert.ok(!JSON.stringify(stored.input).includes(TOKEN));assert.ok(!JSON.stringify(stored.input).includes('private-inbound'));assert.ok(!JSON.stringify(stored.input).includes('private-cookie'));
   const repeated=await call(f.handler,{body:{name:'Outro'},headers:{'idempotency-key':'event-123'}});
   assert.equal(repeated.statusCode,201);assert.equal(repeated.headers['x-execution-id'],response.headers['x-execution-id']);assert.equal(f.effects,1);
@@ -68,6 +69,7 @@ test('capture mode receives payload while inactive and never invokes connectors'
   const f=fixture(),store=new MemoryStore(f.state),flow=store.get('flows',F);flow.active=false;store.put('flows',flow);f.state=store.snapshot();
   const capture=await call(f.handler,{mode:'test',body:{lead:'Exemplo'}});assert.equal(capture.statusCode,200);assert.equal(capture.value().captured,true);assert.equal(f.effects,0);
   assert.deepEqual(new MemoryStore(f.state).get('flows',F).last_webhook_input,{lead:'Exemplo'});assert.equal(new MemoryStore(f.state).list('executions').length,0);
+  assert.deepEqual(new MemoryStore(f.state).get('flows',F).last_webhook_test_input,{lead:'Exemplo'});assert.ok(new MemoryStore(f.state).get('flows',F).last_webhook_test_at);
   assert.equal((await call(f.handler)).statusCode,409);
 });
 test('invalid tokens, malformed or oversized bodies and unsupported content never execute',async()=>{
@@ -89,11 +91,28 @@ test('checkpoint outage before effects aborts; final outage cannot silently repe
   const f=fixture();f.failAt=3;const uncertain=await call(f.handler,{headers:{'idempotency-key':'uncertain'}});assert.equal(uncertain.statusCode,503);assert.equal(uncertain.value().error.code,'EXECUTION_SAVE_FAILED');assert.equal(f.effects,1);
   const repeated=await call(f.handler,{headers:{'idempotency-key':'uncertain'}});assert.equal(repeated.statusCode,422);assert.equal(f.effects,1);
 });
-test('webhook responses cannot set cookies or render active HTML on the LAB origin',async()=>{
+test('HTML return preserves selected format with sandbox and cannot set cookies',async()=>{
   const f=fixture(),store=new MemoryStore(f.state),flow=store.get('flows',F);
-  flow.versions[0].snapshot={steps:[{id:'IN',app:'webhook',config:{}},{id:'out',app:'return',config:{body:'<script>danger()</script>',headers:{'set-cookie':'bad=1','content-type':'text/html'}}}],edges:[{source:'IN',target:'out'}],settings:{}};
+  flow.versions[0].snapshot={steps:[{id:'IN',app:'webhook',config:{}},{id:'out',app:'return',config:{body:'<script>danger()</script>',content_type:'text/html',headers:{'set-cookie':'bad=1','content-type':'text/html'}}}],edges:[{source:'IN',target:'out'}],settings:{}};
   store.put('flows',flow);f.state=store.snapshot();const res=await call(f.handler);
-  assert.equal(res.statusCode,200);assert.match(res.headers['content-type'],/^text\/plain/);assert.equal(res.headers['set-cookie'],undefined);assert.match(res.headers['content-security-policy'],/default-src 'none'/);
+  assert.equal(res.statusCode,200);assert.match(res.headers['content-type'],/^text\/html/);assert.equal(res.headers['set-cookie'],undefined);assert.match(res.headers['content-security-policy'],/default-src 'none'.*sandbox/);
+});
+
+test('Return sends JSON, XML, plain text and multipart with the configured status and custom headers',async()=>{
+  const cases=[
+    {format:'application/json',body:{ok:true},expected:'{"ok":true}'},
+    {format:'application/xml',body:'<result>ok</result>',expected:'<result>ok</result>'},
+    {format:'text/xml',body:'<result>ok</result>',expected:'<result>ok</result>'},
+    {format:'text/plain',body:'recebido',expected:'recebido'},
+    {format:'multipart/form-data',body:{message:'recebido'},expected:'name="message"\r\n\r\nrecebido'},
+  ];
+  for(const item of cases){
+    const f=fixture(),store=new MemoryStore(f.state),flow=store.get('flows',F);
+    flow.versions[0].snapshot={steps:[{id:'IN',app:'webhook',config:{}},{id:'out',app:'return',config:{status:202,content_type:item.format,body:item.body,headers:{'x-result':'trama','x-execution-id':'must-not-override','x-content-type-options':'must-not-override'}}}],edges:[{source:'IN',target:'out'}],settings:{}};
+    store.put('flows',flow);f.state=store.snapshot();const res=await call(f.handler);
+    assert.equal(res.statusCode,202);assert.ok(res.headers['content-type'].startsWith(item.format));assert.ok(Buffer.concat(res.chunks).toString().includes(item.expected));assert.equal(res.headers['x-result'],'trama');assert.notEqual(res.headers['x-execution-id'],'must-not-override');assert.equal(res.headers['x-content-type-options'],'nosniff');
+    if(item.format==='multipart/form-data')assert.match(res.headers['content-type'],/boundary=trama-/);
+  }
 });
 
 let db:PGlite;

@@ -80,26 +80,28 @@ const labelEvery = computed(() => Math.ceil(props.days.length / 10))
       <div><span class="dot dot-avg" /> Tempo médio: {{ days[hovered].avgMs }} ms</div>
     </div>
 
-    <div class="d-flex justify-center ga-6 text-small mt-1">
+    <div class="chart-legend">
       <span><span class="dot dot-success" /> Sucessos</span>
       <span><span class="dot dot-error" /> Erros</span>
       <span><span class="dot dot-avg" /> Tempo médio</span>
     </div>
+    <details class="chart-data"><summary>Ver dados do período</summary><div class="chart-data-scroll"><table><thead><tr><th scope="col">Dia</th><th scope="col">Sucessos</th><th scope="col">Erros</th><th scope="col">Tempo médio</th></tr></thead><tbody><tr v-for="(day,i) in days" :key="i"><th scope="row">{{ day.label }}</th><td>{{ day.successes }}</td><td>{{ day.errors }}</td><td>{{ day.avgMs }} ms</td></tr></tbody></table></div></details>
   </div>
 </template>
 
 <style scoped>
 .dashboard-chart {
   position: relative;
+  font-family:var(--trama-font-ui,Inter,sans-serif);
 }
 
 .grid line {
-  stroke: rgb(var(--v-theme-card-outline));
+  stroke: rgb(var(--cm-line));
   stroke-width: 1;
 }
 
 .axis-label text {
-  fill: rgb(var(--v-theme-muted));
+  fill: rgb(var(--cm-fg-dim));
   font-size: 11px;
 }
 
@@ -108,35 +110,38 @@ const labelEvery = computed(() => Math.ceil(props.days.length / 10))
 }
 
 .hover-zone.active {
-  fill: color-mix(in srgb, rgb(var(--v-theme-primary)), transparent 92%);
+  fill: rgb(var(--cm-accent-ink)/.06);
 }
 
 .bar-success {
-  fill: rgb(var(--v-theme-primary));
+  fill: rgb(var(--cm-accent-ink));
 }
 
 .bar-error {
-  fill: rgb(var(--v-theme-error));
+  fill: rgb(var(--cm-danger));
 }
 
 .avg-line {
   fill: none;
-  stroke: rgb(var(--v-theme-info));
+  stroke: rgb(var(--cm-info));
   stroke-width: 2;
 }
 
 .avg-point {
-  fill: rgb(var(--v-theme-info));
+  fill: rgb(var(--cm-info));
 }
 
 .chart-tooltip {
   position: absolute;
   top: 8px;
   left: 56px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: rgb(var(--v-theme-surface));
-  border: 1px solid rgb(var(--v-theme-card-outline));
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgb(var(--cm-surface-2));
+  border: 1px solid rgb(var(--cm-line-strong));
+  color:rgb(var(--cm-fg));
+  box-shadow:var(--trama-shadow-panel,0 8px 20px #0003);
+  font-size:12px;line-height:1.8;
   pointer-events: none;
 }
 
@@ -149,14 +154,17 @@ const labelEvery = computed(() => Math.ceil(props.days.length / 10))
 }
 
 .dot-success {
-  background: rgb(var(--v-theme-primary));
+  background: rgb(var(--cm-accent-ink));
 }
 
 .dot-error {
-  background: rgb(var(--v-theme-error));
+  background: rgb(var(--cm-danger));
 }
 
 .dot-avg {
-  background: rgb(var(--v-theme-info));
+  background: rgb(var(--cm-info));
 }
+.chart-legend{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;padding-top:12px;font-size:12px;color:rgb(var(--cm-fg-muted))}.chart-legend>span{display:inline-flex;align-items:center;gap:4px}
+.chart-data{border-top:1px solid rgb(var(--cm-line));margin-top:24px;font-size:12px;color:rgb(var(--cm-fg-muted))}.chart-data summary{cursor:pointer;min-height:44px;padding:14px 0;font-weight:600;color:rgb(var(--cm-accent-ink))}.chart-data summary:focus-visible{outline:2px solid rgb(var(--cm-focus));outline-offset:3px}.chart-data-scroll{overflow:auto}.chart-data table{width:100%;border-collapse:collapse;text-align:left;font-variant-numeric:tabular-nums}.chart-data :is(th,td){padding:10px 14px;border-bottom:1px solid rgb(var(--cm-line))}.chart-data thead th{font-size:11px;letter-spacing:.04em;font-weight:600;color:rgb(var(--cm-fg-dim))}.chart-data tbody th{font-weight:500}.chart-data td{font-family:var(--trama-font-code,monospace)}
+@media(max-width:600px){.dashboard-chart>svg{min-height:170px}.chart-legend{gap:12px 18px;font-size:11px}.chart-data{font-size:13px}.chart-data summary{min-height:44px}.chart-data :is(th,td){padding:10px 9px;white-space:nowrap}.chart-tooltip{max-width:calc(100% - 80px);left:40px;font-size:11px}}
 </style>

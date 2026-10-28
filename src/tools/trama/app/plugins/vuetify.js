@@ -20,5 +20,8 @@ export default createVuetify({
     VSelect: { density: 'comfortable', variant: 'outlined', hideDetails: true, rounded: 'lg' },
     VForm: { VTextField: { hideDetails: false }, VTextarea: { hideDetails: false }, VSelect: { hideDetails: false } },
     VBtn: { flat: true, type: 'button' }, VCard: { rounded: 'lg', flat: true }, VDivider: { color: 'card-outline', thickness: 1, opacity: 1 },
+    VDialog: { class: 'trama-overlay', scrim: true, transition: 'fade-transition' },
+    VMenu: { class: 'trama-overlay trama-menu', transition: 'fade-transition' },
+    VTooltip: { class: 'trama-tooltip', openDelay: 300, transition: 'fade-transition' },
   },
 })

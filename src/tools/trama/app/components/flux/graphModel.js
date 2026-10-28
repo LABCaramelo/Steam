@@ -27,7 +27,7 @@ export function layoutGraph(steps = [], edges = [], { preserve = true } = {}) {
   let cursor = 0
   const place = (id, depth, row) => {
     if (levels.has(id)) return
-    levels.set(id, depth); positions[id] = { x: depth * 290, y: row * 230 }
+    levels.set(id, depth); positions[id] = { x: depth * 324, y: row * 230 }
     const children = outgoing.get(id) ?? [], total = children.reduce((sum, child) => sum + (childrenCount.get(child) ?? 1), 0)
     let childCursor = row - (total - 1) / 2
     for (const child of children) { const span = childrenCount.get(child) ?? 1; place(child, depth + 1, childCursor + (span - 1) / 2); childCursor += span }

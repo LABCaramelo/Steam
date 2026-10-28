@@ -1,17 +1,16 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AppsUsedByFlux from '@trama/components/AppsUsedByFlux.vue'
 import HelpTooltip from '@trama/components/HelpTooltip.vue'
 import ModalConfirm from '@trama/components/ModalConfirm.vue'
 import UserConnectionsPanel from './UserConnectionsPanel.vue'
 import { db, deleteFlux, duplicateFlux, fetchFluxes, toggleFluxStatus } from '@trama/services/api'
-import { getBlockState } from '@trama/utils/subscription'
 import { toastError, toastInfo, toastSuccess } from '@trama/composables/useToast'
 import { useSession } from '@trama/composables/useSession'
 
 const PRIORITY_HELP =
-  'A classificação mostra a duração média registrada nas execuções manuais. Não altera a ordem de execução.'
+  'A classificação mostra a duração média registrada nas execuções. Não altera a ordem de execução.'
 const OPERATIONS_HELP =
   'Operações representam o uso da plataforma e são contabilizadas sempre que um aplicativo ou ação é executado. No entanto, alguns componentes não consomem operações, sendo eles Gatilhos (webhook, scheduler ou gatilho de aplicativo), Filtros, Roteadores e ForEach'
 
@@ -48,8 +47,6 @@ const page = ref(1)
 const deleting = ref(false)
 const duplicating = ref(new Set())
 let searchTimer
-
-const block = computed(() => getBlockState(db.subscription, 'integration'))
 
 onMounted(load)
 watch(page, () => load())
@@ -143,212 +140,44 @@ async function remove(id) {
 </script>
 
 <template>
-  <v-card>
+  <section class="flow-library">
     <div class="flow-list-toolbar">
       <div class="flow-list-tabs" role="tablist" aria-label="Integrações e conexões">
-        <button type="button" role="tab" :aria-selected="tab === 'integracoes'" :class="{ active: tab === 'integracoes' }" @click="tab = 'integracoes'"><v-icon icon="mdi-source-branch" size="18"/><span>Integrações</span><span v-if="fluxes.meta?.total" class="flow-tab-count">{{ fluxes.meta.total }}</span></button>
-        <button type="button" role="tab" :aria-selected="tab === 'conexoes'" :class="{ active: tab === 'conexoes' }" @click="tab = 'conexoes'"><v-icon icon="mdi-link-variant" size="18"/><span>Conexões</span></button>
+        <button id="trama-flows-tab" type="button" role="tab" aria-controls="trama-flows-panel" :tabindex="tab === 'integracoes' ? 0 : -1" :aria-selected="tab === 'integracoes'" :class="{ active: tab === 'integracoes' }" @click="tab = 'integracoes'" @keydown.right.prevent="tab='conexoes'; $event.currentTarget.nextElementSibling.focus()"><v-icon icon="mdi-source-branch" size="18"/><span>Integrações</span><span class="flow-tab-count">{{ fluxes.meta?.total || 0 }}</span></button>
+        <button id="trama-connections-tab" type="button" role="tab" aria-controls="trama-connections-panel" :tabindex="tab === 'conexoes' ? 0 : -1" :aria-selected="tab === 'conexoes'" :class="{ active: tab === 'conexoes' }" @click="tab = 'conexoes'" @keydown.left.prevent="tab='integracoes'; $event.currentTarget.previousElementSibling.focus()"><v-icon icon="mdi-link-variant" size="18"/><span>Conexões</span></button>
       </div>
-      <v-text-field
-        v-if="tab === 'integracoes'"
-        v-model="search"
-        prepend-inner-icon="mdi-magnify"
-        placeholder="Buscar integrações"
-        aria-label="Buscar integrações"
-        class="flow-list-search"
-        hide-details
-        density="compact"
-        clearable
-        variant="outlined"
-        rounded="lg"
-        @input="onSearch"
-        @click:clear="load(true)"
-      />
+      <v-text-field v-if="tab === 'integracoes'" v-model="search" prepend-inner-icon="mdi-magnify" label="Buscar integrações" class="flow-list-search" hide-details density="compact" clearable variant="outlined" rounded="lg" @input="onSearch" @click:clear="load(true)" />
     </div>
-
     <v-window v-model="tab">
       <v-window-item value="integracoes">
-        <div v-if="loading">
-          <v-skeleton-loader v-for="n in 6" :key="n" type="avatar, sentences, button@2" />
-        </div>
-
-        <div v-else-if="fluxes.data.length">
-          <div class="flow-mobile-list">
-            <article v-for="flux in fluxes.data" :key="flux.id" class="flow-mobile-card">
-              <router-link :to="{ name: 'flux', params: { fluxId: flux.id } }" class="flow-mobile-open"><h3>{{ flux.name }}</h3><span>Abrir fluxo <span aria-hidden="true">↗</span></span></router-link>
-              <p class="flow-mobile-meta"><span>{{ flux.activations || 0 }} operações</span><span>{{ flux.active ? 'Webhook ativo' : 'Webhook desativado' }}</span></p>
-              <div class="flow-mobile-actions"><v-btn variant="text" color="primary" :disabled="!flux.active && (!db.capabilities?.external_webhooks || !flux.published_version_id)" @click="toggle(flux, !flux.active)">{{ flux.active ? 'Desativar webhook' : 'Ativar webhook' }}</v-btn>
-                <v-btn variant="text" color="primary" prepend-icon="mdi-content-copy" :aria-label="'Duplicar ' + flux.name" :loading="duplicating.has(flux.id)" @click="duplicate(flux)">Duplicar</v-btn>
-                <v-btn variant="text" color="error" prepend-icon="mdi-delete-outline" :aria-label="'Excluir ' + flux.name" :disabled="flux.first">Excluir<ModalConfirm activator="parent" header-text="Excluir integração" confirm-text="Excluir integração" cancel-text="Cancelar" :loading-confirm="deleting" color="error" icon="mdi-alert-outline" @confirm="remove(flux.id)"><p>Tem certeza que deseja excluir a integração <b>{{ flux.name }}</b>?</p></ModalConfirm></v-btn>
-              </div>
-            </article>
-          </div>
-          <div class="bg-background py-1 flow-desktop-list">
-            <v-container fluid>
-              <v-row class="d-flex align-center justify-space-between flux-row">
-                <v-col lg="1" md="1" sm="1" />
-                <v-col lg="3" md="2" sm="2">
-                  <h4 class="cursor-pointer d-flex align-center sort-header" @click="sortBy('name')">
-                    NOME
-                    <v-icon
-                      size="16"
-                      class="ml-1 sort-icon"
-                      :class="{ 'sort-icon--active': orderBy === 'name' }"
-                      :color="orderBy === 'name' ? 'primary' : undefined"
-                      :icon="orderBy === 'name' && reverse ? 'mdi-arrow-down' : 'mdi-arrow-up'"
-                    />
-                  </h4>
-                </v-col>
-                <v-col lg="2" md="2" sm="2" class="d-flex justify-center align-center">
-                  <h4>PRIORIDADE</h4>
-                  <HelpTooltip :text="PRIORITY_HELP" :size="15" class="ml-1" />
-                </v-col>
-                <v-col lg="1" md="2" sm="2" class="d-flex justify-center align-center">
-                  <h4>OPERAÇÕES</h4>
-                  <HelpTooltip :text="OPERATIONS_HELP" :size="15" class="ml-1" />
-                </v-col>
-                <v-col lg="3" md="2" sm="2" class="d-none d-lg-flex justify-center"><h4>APPS</h4></v-col>
-                <v-col lg="1" md="1" sm="1" class="d-flex justify-center"><h4>DUPLICAR</h4></v-col>
-                <v-col lg="1" md="1" sm="1" class="d-flex justify-end"><h4>EXCLUIR</h4></v-col>
-              </v-row>
-            </v-container>
-          </div>
-
-          <div v-for="flux in fluxes.data" :key="flux.id" class="flow-desktop-list">
-            <router-link :to="{ name: 'flux', params: { fluxId: flux.id } }">
-              <v-card v-ripple class="flux-card px-4" variant="flat" rounded="0">
-                <v-row class="d-flex align-center justify-space-between flux-row">
-                  <v-col lg="1" md="1" sm="1" class="d-flex" @click.stop.prevent>
-                    <v-switch
-                      inset
-                      hide-details
-                      class="py-2"
-                      color="primary"
-                      :model-value="flux.active"
-                      :disabled="!flux.active && (!db.capabilities?.external_webhooks || !flux.published_version_id)" :aria-label="'Ativar webhook de ' + flux.name"
-                      @update:model-value="(v) => v !== null && toggle(flux, v)"
-                    />
-                    <v-menu v-if="block.isBlocked" max-height="350" open-on-hover location="top" activator="parent">
-                      <v-card :title="block.title" :text="block.text" max-width="360" />
-                    </v-menu>
-                  </v-col>
-                  <v-col lg="3" md="2" sm="2" class="d-flex align-center text-truncate">
-                    <span class="text-truncate">{{ flux.name }}</span>
-                    <v-icon v-if="flux.premium && !db.subscription" icon="mdi-crown" class="ml-2" color="primary">
-                      <v-tooltip activator="parent" location="top">Integração Premium</v-tooltip>
-                    </v-icon>
-                  </v-col>
-                  <v-col lg="2" md="2" sm="2" class="d-flex justify-center">
-                    <v-chip v-if="priorityOf(flux)" :color="priorityOf(flux).color" variant="tonal" size="small">
-                      {{ priorityOf(flux).text }}
-                    </v-chip>
-                  </v-col>
-                  <v-col lg="1" md="2" sm="2" class="d-flex justify-center">
-                    <span :class="{ 'text-disabled': !flux.activations }">{{ flux.activations || 0 }}</span>
-                  </v-col>
-                  <v-col lg="3" md="2" sm="2" class="d-none d-lg-flex justify-center">
-                    <AppsUsedByFlux :used-apps="flux.apps_used" />
-                  </v-col>
-                  <v-col lg="1" md="1" sm="1" class="d-flex justify-center" @click.stop.prevent>
-                    <v-btn variant="text" icon :aria-label="'Duplicar ' + flux.name" :loading="duplicating.has(flux.id)" @click.stop.prevent="duplicate(flux)">
-                      <v-icon icon="mdi-content-copy" color="primary" />
-                      <v-tooltip activator="parent" location="top">Duplicar {{ flux.name }}</v-tooltip>
-                    </v-btn>
-                  </v-col>
-                  <v-col lg="1" md="1" sm="1" class="d-flex justify-end" @click.stop.prevent>
-                    <v-btn variant="text" icon :aria-label="'Excluir ' + flux.name" :disabled="flux.first">
-                      <v-icon icon="mdi-delete-outline" color="error" />
-                      <v-tooltip activator="parent" location="top">Excluir {{ flux.name }}</v-tooltip>
-                      <ModalConfirm
-                        activator="parent"
-                        header-text="Excluir integração"
-                        confirm-text="Excluir integração"
-                        cancel-text="Cancelar"
-                        :loading-confirm="deleting"
-                        color="error"
-                        icon="mdi-alert-outline"
-                        @confirm="remove(flux.id)"
-                      >
-                        <p>
-                          Tem certeza que deseja excluir a integração <b>{{ flux.name }}</b>?
-                        </p>
-                      </ModalConfirm>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </router-link>
-            <v-divider />
-          </div>
-
-          <div class="d-flex align-center justify-center flex-wrap ga-2 mx-5 my-4">
-            <v-pagination
-              v-model="page"
-              total-visible="10"
-              :length="fluxes.meta?.last_page ?? 1"
-              active-color="primary"
-              density="comfortable"
-            />
-          </div>
-        </div>
-
-        <div v-else class="text-center py-16">
-          <v-icon :icon="search ? 'mdi-magnify-close' : 'mdi-source-branch'" size="48" class="mb-2 opacity-60" />
-          <p class="mb-1">{{ search ? 'Nenhum resultado encontrado' : 'Nenhuma integração ainda' }}</p>
-          <p class="mb-3">
-            {{ search ? `Não encontramos integrações para "${search}".` : 'Crie sua primeira integração pelo botão no topo da página.' }}
-          </p>
-          <v-btn v-if="search" prepend-icon="mdi-close" variant="text" color="primary" @click="clearSearch">Limpar busca</v-btn>
+        <div id="trama-flows-panel" role="tabpanel" aria-labelledby="trama-flows-tab">
+          <div v-if="loading" class="flow-loading" aria-label="Carregando integrações"><v-skeleton-loader v-for="n in 3" :key="n" type="list-item-avatar-two-line" /></div>
+          <template v-else-if="fluxes.data.length">
+            <div class="flow-table-heading"><span>WEBHOOK</span><button class="flow-sort" type="button" @click="sortBy('name')">NOME DO FLUXO <v-icon :icon="orderBy === 'name' && reverse ? 'mdi-arrow-down' : 'mdi-arrow-up'" size="14"/></button><span>APLICATIVOS</span><span class="flow-column-help">PRIORIDADE <HelpTooltip :text="PRIORITY_HELP" :size="15" /></span><span class="flow-column-help">OPERAÇÕES <HelpTooltip :text="OPERATIONS_HELP" :size="15" /></span><span>AÇÕES</span></div>
+            <div class="flow-rows">
+              <article v-for="flux in fluxes.data" :key="flux.id" class="flow-row">
+                <div class="flow-webhook"><v-switch inset hide-details density="compact" color="primary" :model-value="flux.active" :disabled="!flux.active && (!db.capabilities?.external_webhooks || !flux.published_version_id)" :aria-label="'Ativar webhook de ' + flux.name" @update:model-value="(v) => v !== null && toggle(flux, v)" /><span class="flow-mobile-status">{{ flux.active ? 'Webhook ativo' : 'Webhook desativado' }}</span></div>
+                <router-link :to="{ name:'flux', params:{fluxId:flux.id} }" class="flow-open"><span class="flow-title"><v-icon icon="mdi-source-branch" size="22"/><h3>{{ flux.name }}</h3><v-icon v-if="flux.premium && !db.subscription" icon="mdi-crown" size="18" color="primary" aria-label="Integração Premium"/></span><span class="flow-open-description">{{ flux.published_version_id ? 'Versão publicada' : 'Em construção' }} <span aria-hidden="true">·</span> Abrir fluxo <v-icon icon="mdi-arrow-top-right" size="14"/></span></router-link>
+                <div class="flow-apps"><span class="flow-mobile-label">Aplicativos</span><AppsUsedByFlux :used-apps="flux.apps_used" /></div>
+                <div class="flow-priority"><span class="flow-mobile-label">Prioridade</span><v-chip v-if="priorityOf(flux)" :color="priorityOf(flux).color" variant="tonal" size="small">{{ priorityOf(flux).text }}</v-chip><span v-else class="flow-no-data">Sem execução</span></div>
+                <div class="flow-operations"><span class="flow-mobile-label">Operações</span><strong>{{ flux.activations || 0 }}</strong></div>
+                <div class="flow-actions"><v-btn variant="text" icon :aria-label="'Duplicar ' + flux.name" :loading="duplicating.has(flux.id)" @click="duplicate(flux)"><v-icon icon="mdi-content-copy" size="19"/><v-tooltip activator="parent" location="top">Duplicar fluxo</v-tooltip></v-btn><v-btn variant="text" icon :aria-label="'Excluir ' + flux.name" :disabled="flux.first"><v-icon icon="mdi-delete-outline" size="20"/><v-tooltip activator="parent" location="top">Excluir fluxo</v-tooltip><ModalConfirm activator="parent" header-text="Excluir integração" confirm-text="Excluir integração" cancel-text="Cancelar" :loading-confirm="deleting" color="error" icon="mdi-alert-outline" @confirm="remove(flux.id)"><p>Tem certeza que deseja excluir a integração <b>{{ flux.name }}</b>?</p></ModalConfirm></v-btn></div>
+              </article>
+            </div>
+            <div v-if="(fluxes.meta?.last_page || 1) > 1" class="flow-pagination"><v-pagination v-model="page" :total-visible="5" :length="fluxes.meta?.last_page ?? 1" active-color="primary" density="comfortable" /></div>
+          </template>
+          <div v-else class="flow-empty"><span class="flow-empty-icon"><v-icon :icon="search ? 'mdi-magnify-close' : 'mdi-source-branch-plus'" size="30"/></span><h3>{{ search ? 'Nenhum caminho por aqui.' : 'Seu primeiro caminho começa aqui.' }}</h3><p>{{ search ? 'Tente outro nome ou limpe a busca.' : 'Crie um fluxo e conecte as ações da sua ideia.' }}</p><v-btn v-if="search" prepend-icon="mdi-close" variant="outlined" @click="clearSearch">Limpar busca</v-btn></div>
         </div>
       </v-window-item>
-
-      <v-window-item value="conexoes">
-        <div class="pa-5">
-          <UserConnectionsPanel />
-        </div>
-      </v-window-item>
+      <v-window-item value="conexoes"><div id="trama-connections-panel" role="tabpanel" aria-labelledby="trama-connections-tab" class="connections-content"><UserConnectionsPanel/></div></v-window-item>
     </v-window>
-  </v-card>
+  </section>
 </template>
-
 <style scoped>
-.flow-list-toolbar{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px 28px}
-.flow-list-tabs{display:flex;gap:6px;min-width:0}
-.flow-list-tabs>button{display:flex;align-items:center;gap:8px;min-height:42px;padding:9px 12px;border-bottom:2px solid transparent;font-size:13px;font-weight:600;white-space:nowrap}
-.flow-list-tabs>button.active{color:rgb(var(--cm-accent-ink));border-color:rgb(var(--cm-accent-ink))}
-.flow-tab-count{background:rgb(var(--cm-accent-soft));font-size:10px;line-height:19px;min-width:20px;border-radius:20px;padding-inline:5px;text-align:center}
-.flow-list-search{flex:0 1 360px;min-width:180px}
-.flow-mobile-list{display:none}
-@media(max-width:900px){
-  .flow-list-toolbar{flex-direction:column;align-items:stretch;gap:12px;padding:16px 14px}
-  .flow-list-tabs{width:100%;justify-content:space-between;gap:4px}
-  .flow-list-tabs>button{gap:6px;padding:9px 6px;font-size:12px;flex:1;justify-content:center}
-  .flow-list-search{flex:auto;min-width:0;width:100%}
-  .flow-desktop-list{display:none!important}
-  .flow-mobile-list{display:flex;flex-direction:column;padding:0 14px;gap:12px}
-  .flow-mobile-card{padding:16px 14px;border:1px solid rgb(var(--cm-line));border-radius:12px;background:rgb(var(--cm-surface-1))}
-  .flow-mobile-open{display:flex;flex-direction:column;gap:12px;padding-bottom:12px}
-  .flow-mobile-open h3{font-size:16px;line-height:1.4;overflow-wrap:anywhere}
-  .flow-mobile-open>span{font-size:11px;font-weight:650;color:rgb(var(--cm-accent-ink));display:flex;align-items:center;gap:5px}
-  .flow-mobile-meta{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:10px;color:rgb(var(--cm-fg-dim));line-height:1.5;padding-bottom:12px}
-  .flow-mobile-actions{display:flex;flex-wrap:wrap;gap:6px;border-top:1px solid rgb(var(--cm-line));padding-top:9px;justify-content:space-between}
-  .flow-mobile-actions .v-btn{font-size:11px;min-width:0;padding-inline:6px;min-height:38px}
-}
-.flux-row > .v-col {
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-
-.sort-header .sort-icon:not(.sort-icon--active) {
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-
-.sort-header:hover .sort-icon:not(.sort-icon--active) {
-  opacity: 1;
-}
-
-.flux-card:hover {
-  background-color: rgb(var(--v-theme-background));
-}
+.flow-library{border:1px solid rgb(var(--cm-line));border-radius:var(--trama-radius-xl,18px);overflow:hidden;background:rgb(var(--cm-surface-1));box-shadow:inset 0 1px rgb(var(--cm-fg)/.025)}
+.flow-list-toolbar{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:22px 24px;border-bottom:1px solid rgb(var(--cm-line))}.flow-list-tabs{display:flex;align-items:center;gap:6px;padding:4px;background:rgb(var(--cm-stage));border:1px solid rgb(var(--cm-line));border-radius:12px}.flow-list-tabs>button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:9px 14px;border-radius:8px;font:600 13px/1.4 var(--trama-font-ui,Inter,sans-serif);color:rgb(var(--cm-fg-muted));transition:background-color 160ms,color 160ms,box-shadow 160ms,transform 80ms}.flow-list-tabs>button.active{color:rgb(var(--cm-fg));background:rgb(var(--cm-surface-3));box-shadow:inset 0 0 0 1px rgb(var(--cm-line-strong))}.flow-list-tabs>button.active>.v-icon{color:rgb(var(--cm-accent-ink))}.flow-list-tabs>button:hover{color:rgb(var(--cm-fg))}.flow-list-tabs>button:focus-visible,.flow-sort:focus-visible{outline:2px solid rgb(var(--cm-focus));outline-offset:3px}.flow-tab-count{font:600 11px/20px var(--trama-font-code,monospace);min-width:23px;padding-inline:6px;background:rgb(var(--cm-accent-soft));color:rgb(var(--cm-accent-ink));border-radius:5px}.flow-list-search{flex:0 1 340px;min-width:180px}
+.flow-table-heading,.flow-row{display:grid;grid-template-columns:80px minmax(180px,1.55fr) minmax(130px,1fr) minmax(90px,.65fr) minmax(80px,.55fr) 86px;align-items:center;gap:18px;padding:18px 24px}.flow-table-heading{font:500 11px/1.5 var(--trama-font-ui,Inter,sans-serif);letter-spacing:.08em;color:rgb(var(--cm-fg-dim));border-bottom:1px solid rgb(var(--cm-line));min-height:56px;background:rgb(var(--cm-surface-2)/.45)}.flow-sort{display:flex;align-items:center;gap:6px;min-height:28px;text-align:left}.flow-column-help{display:flex;align-items:center;gap:5px}.flow-row{min-height:106px;transition:background-color 160ms,border-color 160ms}.flow-row+.flow-row{border-top:1px solid rgb(var(--cm-line))}.flow-row:hover{background:rgb(var(--cm-surface-2)/.65)}.flow-webhook{display:flex;align-items:center;justify-content:flex-start}.flow-open{display:flex;flex-direction:column;gap:9px;min-width:0;padding:8px 0;border-radius:6px}.flow-title{display:flex;align-items:center;gap:10px;color:rgb(var(--cm-fg))}.flow-title>.v-icon{color:rgb(var(--cm-accent-ink));flex-shrink:0}.flow-title h3{font:700 15px/1.4 var(--trama-font-ui,Inter,sans-serif)!important;letter-spacing:-.02em;overflow-wrap:anywhere}.flow-open-description{display:flex;align-items:center;gap:5px;font-size:11px;line-height:1.5;color:rgb(var(--cm-fg-dim));padding-left:32px}.flow-open:hover .flow-open-description{color:rgb(var(--cm-accent-ink))}.flow-open:focus-visible{outline:2px solid rgb(var(--cm-focus));outline-offset:4px}.flow-apps{min-width:0}.flow-priority{font-size:12px}.flow-no-data{font-size:11px;color:rgb(var(--cm-fg-dim))}.flow-operations strong{font:600 15px var(--trama-font-code,monospace);color:rgb(var(--cm-fg-2));font-variant-numeric:tabular-nums}.flow-actions{display:flex;justify-content:flex-end;gap:4px}.flow-actions .v-btn{width:40px;height:40px;color:rgb(var(--cm-fg-dim));border-radius:9px}.flow-actions .v-btn:hover{background:rgb(var(--cm-surface-3));color:rgb(var(--cm-fg))}.flow-actions .v-btn:last-child:hover{color:rgb(var(--cm-danger));background:rgb(var(--cm-danger-soft))}.flow-mobile-label,.flow-mobile-status{display:none}.flow-pagination{display:flex;justify-content:center;padding:15px;border-top:1px solid rgb(var(--cm-line))}.flow-loading{padding:16px}.flow-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:68px 24px}.flow-empty-icon{display:grid;place-items:center;width:64px;height:64px;border:1px solid rgb(var(--cm-accent-ink)/.25);border-radius:18px;background:rgb(var(--cm-accent-soft));color:rgb(var(--cm-accent-ink));margin-bottom:6px}.flow-empty h3{font-size:23px;letter-spacing:-.04em}.flow-empty p{font-size:14px;line-height:1.65;color:rgb(var(--cm-fg-muted));max-width:390px}.connections-content{padding:24px}
+@media(max-width:1150px){.flow-table-heading,.flow-row{grid-template-columns:62px minmax(150px,1.5fr) minmax(100px,1fr) 95px 75px 86px;gap:10px;padding-inline:18px}.flow-table-heading{font-size:11px}.flow-open-description{padding-left:0}}
+@media(max-width:900px){.flow-list-toolbar{flex-direction:column;align-items:stretch;gap:16px;padding:16px}.flow-list-tabs{align-self:flex-start}.flow-list-search{min-width:0;flex:auto;width:100%}.flow-table-heading{display:none}.flow-rows{display:flex;flex-direction:column;padding:0 16px 16px;gap:14px}.flow-row,.flow-row+.flow-row{display:grid;grid-template-columns:1fr 1fr;gap:17px 12px;padding:20px 18px;border:1px solid rgb(var(--cm-line));border-radius:14px;background:rgb(var(--cm-surface-1))}.flow-open{order:0;grid-column:1/-1;padding:0}.flow-title h3{font-size:18px!important}.flow-title>.v-icon{font-size:23px}.flow-open-description{font-size:12px;padding-left:32px}.flow-webhook{order:1;grid-column:1/-1;border-top:1px solid rgb(var(--cm-line));padding-top:10px;gap:6px}.flow-mobile-status{display:block;font-size:12px;color:rgb(var(--cm-fg-muted))}.flow-mobile-label{display:block;color:rgb(var(--cm-fg-dim));font-size:11px;line-height:1.5;margin-bottom:7px}.flow-apps{order:2;grid-column:1/-1}.flow-priority{order:3}.flow-operations{order:4}.flow-actions{order:5;grid-column:1/-1;padding-top:12px;border-top:1px solid rgb(var(--cm-line))}.flow-actions .v-btn{min-width:44px;min-height:44px}.flow-list-tabs>button{min-height:44px;padding-inline:13px}.flow-tab-count{font-size:12px}.connections-content{padding:16px}.flow-empty{padding:48px 20px}.flow-empty h3{font-size:22px}.flow-empty p{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.flow-row,.flow-list-tabs>button{transition:none}}
 </style>

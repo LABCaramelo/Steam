@@ -30,47 +30,34 @@ async function submit() {
 </script>
 
 <template>
-  <v-btn class="cm-brand-action trama-new-flow" rounded size="large" :disabled="loading" @click="open = true">
+  <v-btn class="trama-new-flow" color="primary" rounded="lg" size="large" :disabled="loading" @click="open = true">
     <v-icon icon="mdi-plus" size="22" />
     <span class="mr-1">Novo fluxo</span>
     <v-tooltip activator="parent" location="top">Criar nova integração</v-tooltip>
   </v-btn>
 
   <AppModal v-model="open" max-width="450px" :prevent-close="loading">
-    <div class="create-flux-icon-container">
-      <div class="create-flux-icon">
-        <v-icon icon="custom:trama-logo" size="90" color="primary" />
-      </div>
-    </div>
-    <h3 class="mb-4 position-relative">Nomeie sua integração!</h3>
+    <span class="create-flux-symbol" aria-hidden="true"><v-icon icon="mdi-source-branch-plus" size="30" /></span>
+    <h3 class="create-flux-heading">Dê um nome ao caminho.</h3>
+    <p class="create-flux-description">Depois, conecte os módulos e transforme a ideia em ação.</p>
     <v-form ref="form" :disabled="loading" class="position-relative" @submit.prevent="submit">
       <div class="mb-2">
-        <v-text-field v-model="name" label="Nome do fluxo" autofocus :rules="[required, lengthBetween(0, 50)]" />
+        <v-text-field v-model="name" label="Nome do fluxo" placeholder="Ex.: Receber novos contatos" autofocus :rules="[required, lengthBetween(0, 50)]" />
       </div>
-      <div class="text-center">
-        <v-btn class="mr-5" color="primary" variant="text" @click="open = false">Cancelar</v-btn>
-        <v-btn color="primary" type="submit" :loading="loading">Começar!</v-btn>
+      <div class="create-flux-actions">
+        <v-btn variant="outlined" :disabled="loading" @click="open = false">Cancelar</v-btn>
+        <v-btn color="primary" type="submit" append-icon="mdi-arrow-right" :loading="loading">Começar!</v-btn>
       </div>
     </v-form>
   </AppModal>
 </template>
 
 <style scoped>
-.create-flux-icon-container {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.create-flux-icon-container .create-flux-icon {
-  position: absolute;
-  right: 0;
-  top: 0;
-  transform: translate(15%, -15%) rotate(35deg);
-  opacity: 0.25;
-}
+.trama-new-flow{height:46px!important;padding-inline:22px!important;font-size:14px;font-weight:700}
+.create-flux-symbol{display:grid;place-items:center;width:56px;height:56px;border-radius:15px;color:rgb(var(--cm-accent-ink));background:rgb(var(--cm-accent-soft));border:1px solid rgb(var(--cm-accent-ink)/.25);margin-bottom:20px}
+.create-flux-heading{font-size:28px;line-height:1.1!important;letter-spacing:-.05em!important;max-width:290px;margin-bottom:12px}
+.create-flux-description{margin-bottom:24px}
+.create-flux-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;padding-top:20px;border-top:1px solid rgb(var(--cm-line))}
+.create-flux-actions .v-btn{min-height:42px}
+@media(max-width:600px){.trama-new-flow{min-height:48px}.create-flux-actions{display:grid;grid-template-columns:1fr 1fr}.create-flux-actions .v-btn{min-height:44px}.create-flux-heading{font-size:27px}}
 </style>

@@ -16,7 +16,7 @@ const viewKey = computed(() => (route.meta.refresh_on_org_change ? `${route.name
 </script>
 
 <template>
-  <v-app>
+  <v-app class="trama-application">
     <v-main>
       <div class="h-100 d-flex flex-column">
         <header v-if="showTopbar" class="trama-topbar">
@@ -28,11 +28,11 @@ const viewKey = computed(() => (route.meta.refresh_on_org_change ? `${route.name
           </div>
 
           <nav class="trama-topbar__nav" aria-label="Navegação da Trama">
-            <router-link :to="{ name: 'home' }" class="trama-topbar__link" :class="{ active: route.name === 'home' }">
+            <router-link :to="{ name: 'home' }" class="trama-topbar__link" :class="{ active: route.name === 'home' }" :aria-current="route.name === 'home' ? 'page' : undefined">
               <v-icon icon="mdi-source-branch" size="18" />
               <span>Seus fluxos</span>
             </router-link>
-            <router-link :to="{ name: 'flux-dashboard' }" class="trama-topbar__link" :class="{ active: route.name === 'flux-dashboard' }">
+            <router-link :to="{ name: 'flux-dashboard' }" class="trama-topbar__link" :class="{ active: route.name === 'flux-dashboard' }" :aria-current="route.name === 'flux-dashboard' ? 'page' : undefined">
               <v-icon icon="mdi-chart-timeline-variant" size="18" />
               <span>Execuções</span>
             </router-link>

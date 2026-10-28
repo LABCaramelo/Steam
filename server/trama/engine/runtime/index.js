@@ -272,9 +272,10 @@ export async function executeGraph({ flux, input = {}, connections = [], getConn
       const status = Number(config.status ?? config.status_code ?? config.code ?? 200)
       if (!Number.isInteger(status) || status < 200 || status > 599) throw new RuntimeError('INVALID_RETURN_STATUS', 'O retorno final deve usar um código HTTP de 200 a 599.')
       response = { status, code: status, headers: parseDictionary(config.headers, 'Headers de retorno'), body: config.body ?? previous?.body ?? previous, content_type: config.content_type ?? config.contentType ?? 'application/json' }
+      if(!['application/json','application/xml','multipart/form-data','text/html','text/xml','text/plain'].includes(String(response.content_type).split(';')[0].trim().toLowerCase()))throw new RuntimeError('INVALID_RETURN_FORMAT','Escolha um formato de retorno disponível.')
       if (options.onResponse) await options.onResponse(clone(response))
       returned = true
-      return { output: { body: response.body, code: status, headers: response.headers }, returned: true }
+      return { output: { body: response.body, code: status, headers: response.headers, content_type: response.content_type }, returned: true }
     }
     if (app === 'set_variables' || app === 'variables') {
       const values = jsonValue(config.values ?? config.variables ?? {}, 'Variáveis')

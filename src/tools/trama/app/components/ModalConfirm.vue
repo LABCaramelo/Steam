@@ -17,6 +17,7 @@ const props = defineProps({
 const emit = defineEmits(['confirm', 'cancel', 'close'])
 const model = defineModel({ type: Boolean, default: false })
 const loading = computed(() => props.loadingConfirm)
+const tone = computed(() => ({ error:'danger', success:'success', warning:'warning', info:'info' }[props.color] || 'accent-ink'))
 const internalLoading = ref(false)
 
 // Fecha automaticamente quando o carregamento externo termina (como no original).
@@ -37,18 +38,18 @@ function confirm() {
 
 <template>
   <AppModal v-model="model" max-width="480px" :activator="activator" :prevent-close="loading || internalLoading" @close="emit('close')">
-    <div class="d-flex align-center mb-2">
-      <v-sheet :color="color" class="rounded-lg px-2 py-1 mr-3">
+    <div class="confirm-heading">
+      <v-sheet class="confirm-icon" :style="{ '--confirm-tone': `var(--cm-${tone})` }">
         <v-icon :icon="icon" />
       </v-sheet>
       <h3 class="font-weight-black">{{ headerText }}</h3>
     </div>
     <div>
-      <div class="mb-4">
+      <div class="confirm-description">
         <slot />
       </div>
-      <div class="d-flex flex-nowrap justify-end">
-        <v-btn variant="text" :color="color" class="mr-3" @click="cancel">{{ cancelText }}</v-btn>
+      <div class="confirm-actions">
+        <v-btn variant="outlined" :disabled="loading" @click="cancel">{{ cancelText }}</v-btn>
         <v-btn :color="color" :loading="loading" :disabled="confirmDisabled" @click="confirm">
           <slot name="confirm-btn">{{ confirmText }}</slot>
         </v-btn>
@@ -56,3 +57,13 @@ function confirm() {
     </div>
   </AppModal>
 </template>
+
+<style scoped>
+.confirm-heading{display:flex;align-items:center;gap:14px;padding-right:4px;margin-bottom:16px}
+.confirm-heading h3{font-size:23px;line-height:1.2}
+.confirm-icon{display:grid;place-items:center;width:44px;height:44px;flex-shrink:0;border-radius:12px;background:rgb(var(--confirm-tone)/.09)!important;color:rgb(var(--confirm-tone))!important;border:1px solid rgb(var(--confirm-tone)/.25)}
+.confirm-description{padding:0 0 24px;color:rgb(var(--cm-fg-muted));font-size:14px;line-height:1.65}
+.confirm-actions{display:flex;gap:10px;justify-content:flex-end;padding-top:20px;border-top:1px solid rgb(var(--cm-line))}
+.confirm-actions .v-btn{min-height:42px;font-weight:650}
+@media(max-width:600px){.confirm-heading h3{font-size:22px}.confirm-description{font-size:16px}.confirm-actions{display:grid;grid-template-columns:1fr 1fr}.confirm-actions .v-btn{min-height:44px;font-size:13px}}
+</style>

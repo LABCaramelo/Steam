@@ -42,10 +42,10 @@ async function finishEditing() {
 
 <template>
   <div class="input-container" :class="{ 'is-editing-mode': editing }">
-    <div class="d-flex align-center cursor-pointer editable-text-content" @click="startEditing">
+    <button type="button" class="d-flex align-center cursor-pointer editable-text-content" :aria-label="'Renomear ' + input" @click="startEditing">
       <span class="mr-2 text-truncate read-only-text" :class="{ 'inside-flux': props.isInsideFlux }">{{ input }}</span>
       <v-icon icon="mdi-pencil" :size="props.size" />
-    </div>
+    </button>
     <div class="editable-input-content">
       <v-form ref="form" class="d-flex" @submit.prevent>
         <div class="d-flex w-100 align-center cursor-pointer">

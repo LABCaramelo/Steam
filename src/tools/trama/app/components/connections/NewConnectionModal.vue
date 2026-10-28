@@ -88,6 +88,8 @@ async function save() {
 
 <template>
   <AppModal v-model="open" width="min(92vw, 550px)" :prevent-close="saving">
+    <section class="connection-form">
+    <p class="connection-eyebrow">TRAMA / CONEXÕES</p>
     <h3 class="mb-1">Adicionar conexão</h3>
     <p class="text-small text-medium-emphasis mb-5">Conecte uma conta para utilizar nos seus fluxos.</p>
     <v-form @submit.prevent="save">
@@ -110,5 +112,10 @@ async function save() {
         <v-btn type="submit" color="primary" :loading="saving">Salvar conexão</v-btn>
       </div>
     </v-form>
+    </section>
   </AppModal>
 </template>
+
+<style scoped>
+.connection-form{font-family:var(--trama-font-ui,Inter,sans-serif);color:rgb(var(--cm-fg))}.connection-eyebrow{font:600 10px/1.5 var(--trama-font-code,monospace);letter-spacing:.12em;color:rgb(var(--cm-accent-ink));margin-bottom:12px}.connection-form>h3{font:800 26px/1.15 var(--trama-font-display,Montserrat,sans-serif);letter-spacing:-.045em}.connection-form>p:not(.connection-eyebrow){font-size:13px;line-height:1.65;color:rgb(var(--cm-fg-muted));margin-top:12px}.connection-form h4{font:700 14px var(--trama-font-ui,Inter,sans-serif);color:rgb(var(--cm-fg))}.connection-form :deep(.v-field){font-size:14px;background:rgb(var(--cm-surface-2));border-radius:8px}.connection-form :deep(.v-label){font-size:13px;color:rgb(var(--cm-fg-muted))}.connection-form :deep(.v-field--focused){box-shadow:0 0 0 3px rgb(var(--cm-focus)/.12)}.connection-form :deep(.v-field--focused .v-field__outline){color:rgb(var(--cm-focus))}.connection-form :deep(.v-btn){min-height:40px;border-radius:8px;font-size:13px}.connection-form :deep(.v-alert){border-radius:8px;font-size:13px;line-height:1.6}@media(max-width:600px){.connection-form>h3{font-size:24px}.connection-form :deep(.v-field__input){font-size:16px}.connection-form :deep(.v-btn){min-height:44px}}
+</style>

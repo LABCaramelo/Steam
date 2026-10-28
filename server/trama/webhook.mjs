@@ -5,6 +5,7 @@ import { secretBox, redact } from './engine/security.js'
 import { MemoryStore } from './memory-store.mjs'
 import { json, prune } from './gateway.mjs'
 import { webhookReady, hashWebhookToken, hookPersistence, webhookBody, webhookEnvelope } from './hooks.mjs'
+import { webhookResponse } from './response.mjs'
 
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 export function createWebhookHandler(dependencies={}){
@@ -13,7 +14,7 @@ export function createWebhookHandler(dependencies={}){
   return async function webhookHandler(req,res){
     res.setHeader('Cache-Control','private, no-store')
     res.setHeader('X-Content-Type-Options','nosniff')
-    res.setHeader('Content-Security-Policy',"default-src 'none'; frame-ancestors 'none'")
+    res.setHeader('Content-Security-Policy',"default-src 'none'; frame-ancestors 'none'; base-uri 'none'; sandbox")
     res.setHeader('Referrer-Policy','no-referrer')
     let lease,jobs,flowId
     const unlock=async()=>{if(lease){const current=lease;lease=null;await db.release(flowId,current)}}
@@ -34,6 +35,7 @@ export function createWebhookHandler(dependencies={}){
       if(mode==='sync'&&!flow.active)throw problem('O fluxo está desativado.',409,'WEBHOOK_INACTIVE')
       const body=await webhookBody(req),envelope=webhookEnvelope(req,url,body)
       flow.last_webhook_input=redact(envelope.BODY);flow.last_webhook_at=new Date().toISOString();store.put('flows',flow)
+      if(mode==='test'){flow.last_webhook_test_input=flow.last_webhook_input;flow.last_webhook_test_at=flow.last_webhook_at;store.put('flows',flow)}
       const commit=async()=>{prune(store);await db.commit(flowId,hash,lease,store.snapshot())}
       jobs=new Jobs(domain,{autoStart:false,concurrency:1,runtime:{maxExecutionMs:30000,...dependencies.runtime},beforeStart:commit})
       jobs.recover()
@@ -53,12 +55,12 @@ export function createWebhookHandler(dependencies={}){
       const status=Number(response.status??response.code??response.statusCode??200)
       res.statusCode=status>=200&&status<=599?status:200
       for(const [key,value]of Object.entries(response.headers??{})){
-        if((/^x-(?!vercel-|forwarded-)/i.test(key)||key.toLowerCase()==='content-language')&&!/[\r\n]/.test(String(value)))res.setHeader(key,String(value))
+        if((/^x-(?!vercel-|forwarded-|execution-id$|content-type-options$)/i.test(key)||key.toLowerCase()==='content-language')&&!/[\r\n]/.test(String(value)))res.setHeader(key,String(value))
       }
       if([204,205,304].includes(res.statusCode))return res.end()
-      const content=response.body??{}
-      res.setHeader('Content-Type',typeof content==='string'?'text/plain; charset=utf-8':'application/json; charset=utf-8')
-      return res.end(typeof content==='string'?content:JSON.stringify(content))
+      const encoded=webhookResponse(response)
+      res.setHeader('Content-Type',encoded.type)
+      return res.end(encoded.body)
     }catch(error){
       let status=Number(error.status)||500
       if(error.code==='WORKSPACE_BUSY'){status=429;res.setHeader('Retry-After','2')}

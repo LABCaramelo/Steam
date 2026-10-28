@@ -26,6 +26,7 @@ function fixture(runtime: Record<string,unknown>={}) {
   const commits: unknown[]=[];
   const registered:{id:string;token:string;active:boolean}[]=[];
   const db={
+    async loadWorkspace(access:{user:{id:string}}){return rows.get(access.user.id)??{state:{documents:[],events:{}},revision:0};},
     async acquireWorkspace(access: {user:{id:string}}) {
       const row=rows.get(access.user.id)??{state:{documents:[],events:{}},revision:0,leaseToken:'lease'};
       return structuredClone(row);
@@ -130,4 +131,14 @@ test('request interrupted after queued checkpoint is shown as interrupted withou
   const state=await call(f.handler,'/state');assert.equal(state.statusCode,200);
   const old=documents(f.rows.get(ALICE)!.state).find(x=>x.collection==='executions')!.data;
   assert.equal(old.status,'interrupted');assert.equal((old.error as {code:string}).code,'PROCESS_INTERRUPTED');
+});
+
+test('capture polling reads only the owner payload without lease or checkpoint',async()=>{
+  const f=fixture(),state=(await call(f.handler,'/state')).value(),id=state.fluxes[0].id;
+  const row=f.rows.get(ALICE)!;const flow=documents(row.state).find(d=>d.collection==='flows'&&d.data.id===id)!.data;
+  flow.last_webhook_test_input={message:'captured'};flow.last_webhook_test_at='2026-10-28T18:00:00.000Z';
+  const commits=f.commits.length;
+  const result=await call(f.handler,`/flows/${id}/webhook/capture`);
+  assert.equal(result.statusCode,200);assert.deepEqual(result.value(),{last_input:{message:'captured'},last_received_at:'2026-10-28T18:00:00.000Z'});assert.equal(f.commits.length,commits);
+  await call(f.handler,'/state',{user:BRUNO});const denied=await call(f.handler,`/flows/${id}/webhook/capture`,{user:BRUNO});assert.equal(denied.statusCode,404);
 });

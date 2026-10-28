@@ -1,52 +1,12 @@
-a {
-  text-decoration: none;
-  color: unset;
-}
-
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #0003;
-  border-radius: 3px;
-}
-
-/* Overrides globais de componentes Vuetify usados pelo original */
-button.v-btn,
-a.v-btn {
-  text-transform: none !important;
-}
-
-.v-btn {
-  letter-spacing: normal !important;
-}
-
-.v-card {
-  outline: 1px solid rgb(var(--v-theme-card-outline));
-}
-
-/* Utilitários do original */
-.line-gap-1 > * { margin-bottom: 4px; }
-.line-gap-2 > * { margin-bottom: 8px; }
-.line-gap-3 > * { margin-bottom: 12px; }
-.line-gap-5 > * { margin-bottom: 20px; }
-
-.text-small {
-  font-size: 0.8rem;
-}
-
-.text-muted {
-  color: rgb(var(--v-theme-muted));
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.p-absolute-center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
+:where(.trama-root) a{text-decoration:none;color:inherit}
+:where(.trama-root,.trama-overlay){scrollbar-width:thin;scrollbar-color:rgb(var(--cm-line-strong)) transparent}
+:where(.trama-root,.trama-overlay) ::-webkit-scrollbar{width:6px;height:6px}
+:where(.trama-root,.trama-overlay) ::-webkit-scrollbar-thumb{background:rgb(var(--cm-line-strong));border:1px solid rgb(var(--cm-surface-1));border-radius:8px}
+.trama-root .line-gap-1>*{margin-bottom:4px}
+.trama-root .line-gap-2>*{margin-bottom:8px}
+.trama-root .line-gap-3>*{margin-bottom:12px}
+.trama-root .line-gap-5>*{margin-bottom:20px}
+.trama-root .text-small{font-size:13px}
+.trama-root .text-muted{color:rgb(var(--cm-fg-muted))}
+.trama-root .cursor-pointer{cursor:pointer}
+.trama-root .p-absolute-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
