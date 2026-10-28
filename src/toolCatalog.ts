@@ -119,18 +119,18 @@ export const AUTOMATION_APP = tool(AUTOMATION_APP_ID, "Trama", {
   description: "Conecte dados e aplicativos em fluxos visuais, execute ações e acompanhe cada resultado.",
   assets: art("/tools/automation/art"),
   store: {
-    tagline: "Fluxos visuais com execução manual real, versões e arquivos privados.",
+    tagline: "Fluxos visuais com execução manual real, histórico e conexões privadas.",
     eyebrow: "AUTOMAÇÃO / FLUXOS EM AÇÃO / BETA",
     headline: "Uma ideia.\nVários caminhos.",
     features: [
       { title: "Desenhe o caminho", text: "Conecte módulos, crie ramos, configure filtros e organize a lógica no canvas." },
       { title: "Crie com suas conexões", text: "Configure APIs HTTP e provedores de IA com credenciais protegidas no servidor." },
       { title: "Execute e acompanhe", text: "Rode manualmente, veja a saída de cada etapa e consulte histórico e replay." },
-      { title: "Continue de onde parou", text: "Salve versões, use templates e guarde arquivos privados na sua conta." },
+      { title: "Continue de onde parou", text: "Salve versões do fluxo e mantenha tudo sincronizado na sua conta." },
     ],
-    steps: ["Adquira a Trama e abra seu espaço privado.", "Comece por um template ou conecte seus próprios módulos.", "Revise a entrada, execute manualmente e acompanhe o resultado."],
+    steps: ["Adquira a Trama e abra seu espaço privado.", "Crie seu fluxo visual e conecte seus módulos e regras.", "Revise a entrada, execute manualmente e acompanhe o resultado."],
     about: [["Formato", "Editor de integrações"], ["Execução", "Manual · até 30 segundos"], ["Exportação", "JSON"], ["Versão", "Beta"]],
-    dataNote: "Fluxos, versões e histórico ficam no Supabase; arquivos privados, no R2. Ações reais podem gerar custos nos provedores conectados. Agendamentos, webhooks externos e execução de JavaScript ainda não estão disponíveis. Seus planejamentos anteriores continuam acessíveis.",
+    dataNote: "Fluxos, versões e histórico de execuções ficam protegidos no Supabase. Ações reais podem gerar custos nos provedores conectados. Agendamentos, webhooks externos e execução de JavaScript ainda não estão disponíveis.",
     category: "Automação",
   },
 });
