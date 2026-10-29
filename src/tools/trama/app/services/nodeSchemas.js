@@ -2,6 +2,10 @@
 const f = (key, label, type = 'text', extra = {}) => ({ key, label, type, ...extra })
 const json = (key, label, extra = {}) => f(key, label, 'json', extra)
 const select = (key, label, options, extra = {}) => f(key, label, 'select', { options, ...extra })
+const agentModelFields = () => [
+  f('model', 'Modelo', 'text', { required: true, placeholder: 'Identificador do modelo', hint: 'Selecione uma conexão e informe um modelo disponível nela.' }),
+  f('temperature', 'Temperatura', 'number', { min: 0, max: 2, step: 0.1, hint: 'Opcional. Valores menores deixam as respostas mais previsíveis.' }),
+]
 const httpFields = (advanced = false) => [
   select('method', 'Método HTTP', ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'], { required: true, default: 'GET', advanced }),
   f('url', 'URL da ação', 'text', { required: true, placeholder: 'https://api.exemplo.com/recurso', advanced }),
@@ -25,7 +29,8 @@ export const NODE_SCHEMAS = {
   return: { title: 'Retorno', description: 'Define a resposta do Webhook síncrono.', fields: [f('status', 'Código de resposta', 'number', { default: 200, min: 200, max: 599, required: true }), select('content_type', 'Formato', ['application/json', 'application/xml', 'multipart/form-data', 'text/html', 'text/xml', 'text/plain'], { default: 'application/json' }), json('headers', 'Headers', { default: {}, rows: 4 }), json('body', 'Body', { default: {}, rows: 16 })] },
   set_variables: { title: 'Definir variáveis', description: 'Cria variáveis para os próximos componentes.', fields: [json('values', 'Variáveis e valores', { default: {}, rows: 18, required: true })] },
   chatgpt: { title: 'ChatGPT', connection: true, description: 'Envia mensagens para o modelo configurado na conexão.', fields: [f('model', 'Modelo', 'text', { required: true, placeholder: 'Identificador do modelo' }), f('system_prompt', 'Instruções do sistema', 'textarea', { rows: 6 }), f('user_prompt', 'Mensagem', 'textarea', { required: true, rows: 9 }), f('temperature', 'Temperatura', 'number', { min: 0, max: 2, step: 0.1 })] },
-  ai_agent: { title: 'Agente IA', connection: true, description: 'Executa um agente com instruções, modelo e mensagem.', fields: [f('model', 'Modelo', 'text', { required: true, placeholder: 'Identificador do modelo' }), f('system_prompt', 'Instruções do sistema', 'textarea', { rows: 9 }), f('user_prompt', 'Mensagem do usuário', 'textarea', { required: true, rows: 6 }), f('session_id', 'ID da sessão', 'text', { hint: 'Identifica uma conversa para a memória configurada.' }), f('max_iterations', 'Máximo de interações com ferramentas', 'number', { default: 8, min: 1, max: 32 }), f('provider', 'Provedor', 'text', { advanced: true, hint: 'Opcional. Usa o provedor da conexão quando vazio.' }), json('tools', 'Ferramentas do agente', { default: [], rows: 18, advanced: true, hint: 'Array de ferramentas HTTP com name, description, parameters (JSON Schema) e request (url, method, headers, query, body), ou ferramentas MCP com type:"mcp" e config. Argumentos ficam em $AI.args. Ferramentas requerem um provedor compatível com OpenAI.' })] },
+  ai_agent: { title: 'Agente IA', connection: true, description: 'Executa um agente com instruções, modelo e mensagem.', fields: [f('model', 'Modelo', 'text', { required: true, placeholder: 'Identificador do modelo' }), f('system_prompt', 'Instruções do sistema', 'textarea', { required: true, rows: 9 }), f('user_prompt', 'Mensagem do usuário', 'textarea', { required: true, rows: 6 }), f('session_id', 'ID da sessão', 'text', { hint: 'Identifica uma conversa para a memória configurada.' }), f('max_iterations', 'Máximo de interações com ferramentas', 'number', { default: 8, min: 1, max: 32 }), f('provider', 'Provedor', 'text', { advanced: true, hint: 'Opcional. Usa o provedor da conexão quando vazio.' }), json('tools', 'Ferramentas do agente', { default: [], rows: 18, advanced: true, hint: 'Array de ferramentas HTTP com name, description, parameters (JSON Schema) e request (url, method, headers, query, body), ou ferramentas MCP com type:"mcp" e config. Referencie cada argumento com $AI.nome. Ferramentas requerem um provedor compatível com OpenAI.' })] },
+  agent_memory: { title: 'Memória de conversa', description: 'Mantém o contexto da conversa entre mensagens com o mesmo ID de sessão.', fields: [select('type', 'Tipo de memória', [{ title: 'Histórico de conversa', value: 'history' }], { required: true, default: 'history' }), f('session_id', 'ID da sessão', 'text', { required: true, default: '{{$IN.SESSION_ID}}', placeholder: '{{$IN.SESSION_ID}}', hint: 'Use o mesmo identificador para continuar a conversa e outro para iniciar uma nova.' })] },
   mcp_client: { title: 'Cliente MCP', connection: true, connectionOptional: true, description: 'Lista ou executa ferramentas de um servidor MCP com transporte Streamable HTTP.', fields: [f('server_url', 'URL do servidor MCP', 'text', { required: true, placeholder: 'https://servidor.exemplo.com/mcp' }), select('operation', 'Operação', [{ title: 'Listar ferramentas', value: 'list' }, { title: 'Executar ferramenta', value: 'call' }], { default: 'list' }), select('tools_mode', 'Ferramentas disponíveis', [{ title: 'Todas', value: 'all' }, { title: 'Selecionadas', value: 'selected' }], { default: 'all' }), json('selected_tools', 'Nomes das ferramentas selecionadas', { default: [], rows: 5, hint: 'Array dos nomes retornados pelo servidor, por exemplo ["buscar_pedido"].' }), f('tool_name', 'Nome da ferramenta', 'text', { required: true }), json('arguments', 'Argumentos', { default: {}, rows: 12 }), f('timeout_ms', 'Timeout em milissegundos', 'number', { default: 30000, min: 100, max: 300000, advanced: true }), f('protocol_version', 'Versão do protocolo', 'text', { advanced: true, hint: 'Opcional. Deixe vazio para negociar a versão com o servidor.' })] },
   whatsapp: { title: 'Uazapi', connection: true, description: 'Envia uma mensagem de texto.', fields: [f('phone', 'Número do contato', 'text', { required: true, placeholder: '{{$IN.BODY.chat.phone}}' }), f('text', 'Texto', 'textarea', { required: true, rows: 2, placeholder: '{{$1.response}}' }), select('read', 'Marcar chat como lido', [{ title: 'Sim', value: true }, { title: 'Não', value: false }], { default: true, custom: true })] },
   database: { title: 'Supabase', connection: true, description: 'Cria um novo registro ou atualiza um existente.', fields: [f('table', 'Tabela', 'text', { required: true }), json('values', 'JSON coluna-valor', { default: {}, rows: 23, required: true }), select('operation', 'Operação', [{ title: 'Criar ou atualizar registro', value: 'upsert' }, { title: 'Criar registro', value: 'insert' }, { title: 'Buscar registros', value: 'select' }, { title: 'Atualizar registros', value: 'update' }, { title: 'Excluir registros', value: 'delete' }], { default: 'upsert', advanced: true }), json('query', 'Filtros da consulta', { default: {}, rows: 5, advanced: true, hint: 'Objeto de parâmetros REST, por exemplo {"id":"eq.123"}. Atualizar e excluir exigem um filtro.' }), f('on_conflict', 'Colunas de conflito', 'text', { advanced: true, hint: 'Nomes das colunas únicas, separados por vírgula.' })] },
@@ -40,8 +45,11 @@ export const NODE_SCHEMAS = {
 }
 
 export function schemaForStep(step) {
-  const schema = NODE_SCHEMAS[canonicalApp(step.app)]
+  const app = canonicalApp(step.app)
+  if (step.agent_role === 'model') return { title: step.title || 'Modelo de IA', connection: true, description: app === 'anthropic' || app === 'claude' ? 'Use uma conexão Anthropic e um modelo disponível nela. Ferramentas do agente ainda não estão disponíveis com este provedor.' : 'Use uma conexão OpenAI ou de uma API compatível e escolha o modelo do agente.', fields: agentModelFields() }
+  const schema = NODE_SCHEMAS[app]
   if (schema) {
+    if (app === 'ai_agent' && step.agent_has_model) return { ...schema, connection: false, description: 'O modelo conectado fornece a conexão e o modelo. Configure as instruções e a mensagem do agente.', fields: schema.fields.filter(field => !['model', 'provider'].includes(field.key)) }
     if (canonicalApp(step.app) === 'return') return { ...schema, fields: schema.fields.map(field => field.key === 'body' && !['application/json', 'multipart/form-data'].includes(step.config?.content_type || 'application/json') ? { ...field, type: 'textarea' } : field) }
     if (canonicalApp(step.app) === 'mcp_client') {
       return { ...schema, fields: schema.fields.filter(field => (step.config?.operation === 'call' || !['tool_name', 'arguments'].includes(field.key)) && (step.config?.tools_mode === 'selected' || field.key !== 'selected_tools')) }
@@ -60,6 +68,16 @@ export function schemaForStep(step) {
 export function createStepDraft(step) {
   const draft = structuredClone(JSON.parse(JSON.stringify(step)))
   draft.config ||= {}
+  if (draft.agent_role === 'model') {
+    draft.config.model ??= draft.config.AI_MODEL
+    draft.config.provider ??= draft.config.AI_PROVIDER
+    draft.connection_id ??= draft.config.connection_id ?? draft.config.CONNECTION
+  }
+  if (canonicalApp(step.app) === 'ai_agent') for (const [key, aliases] of Object.entries({ system_prompt: ['SYSTEM_PROMPT', 'SYSTEM_MESSAGE'], user_prompt: ['HUMAN_MESSAGE'], model: ['AI_MODEL'], provider: ['AI_PROVIDER'], session_id: ['SESSION_ID'] })) for (const alias of aliases) if (draft.config[key] === undefined && draft.config[alias] !== undefined) draft.config[key] = draft.config[alias]
+  if (draft.agent_role === 'tools') {
+    draft.child_description ??= draft.config.child_description ?? ''
+    draft.ai_variables ??= draft.AI_VARIABLES ?? draft.config.ai_variables ?? draft.config.AI_VARIABLES ?? []
+  }
   const app = canonicalApp(step.app)
   const aliases = { code: { code_snippet: 'code' }, requester: { http_method: 'method' }, chatgpt: { prompt: 'user_prompt' }, whatsapp: { message: 'text' }, sheets: { sheet: 'spreadsheet_id', tab: 'range' } }[app] || {}
   for (const [oldKey, newKey] of Object.entries(aliases)) if (draft.config[newKey] === undefined && draft.config[oldKey] !== undefined) draft.config[newKey] = draft.config[oldKey]
@@ -78,6 +96,12 @@ export function createStepDraft(step) {
 
 export function validateStepDraft(draft) {
   const errors = {}
+  if (draft.agent_role === 'tools') {
+    const description = draft.child_description
+    if (typeof description !== 'string' || description.trim().length < 20 || description.length > 300) errors.child_description = 'Descreva a ferramenta com 20 a 300 caracteres.'
+    const variables = draft.ai_variables ?? []
+    if (!Array.isArray(variables) || variables.some(item => !item || typeof item.name !== 'string' || !/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(item.name) || typeof item.description !== 'string' || !item.description.trim()) || new Set(variables.map(item => item.name)).size !== variables.length) errors.ai_variables = 'Use nomes únicos, sem espaços, e preencha a descrição de cada variável.'
+  }
   for (const field of schemaForStep(draft).fields) {
     const value = draft.config[field.key]
     if (field.required && (value === undefined || value === null || typeof value === 'string' && !value.trim())) errors[field.key] = 'Preencha este campo.'
@@ -108,8 +132,9 @@ export function prepareStepDraft(draft) {
     if (field.type === 'number' && value !== '' && value !== undefined && value !== null) result.config[field.key] = Number(value)
   }
   if (canonicalApp(result.app) === 'accumulator' && result.config.window_seconds !== undefined) result.config.window_ms = Number(result.config.window_seconds) * 1000
-  if (!NODE_SCHEMAS[canonicalApp(result.app)] && !(result.module_id && result.definition)) {
+  if (result.agent_role !== 'model' && !NODE_SCHEMAS[canonicalApp(result.app)] && !(result.module_id && result.definition)) {
     result.config.request = Object.fromEntries(['url', 'method', 'headers', 'query', 'body'].filter(key => result.config[key] !== undefined).map(key => [key, result.config[key]]))
   }
+  delete result.agent_has_model
   return result
 }

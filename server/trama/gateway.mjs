@@ -8,6 +8,8 @@ import { MemoryStore } from './memory-store.mjs'
 import * as persistence from './persistence.mjs'
 import * as files from './files.mjs'
 import { webhookReady, webhookUrls, syncWebhook, newWebhookToken } from './hooks.mjs'
+import {agentTestSnapshot} from './agent.mjs'
+import {listConnectorModels} from './engine/connectors/index.js'
 
 const active = new Map()
 const RPCS = new Set(['fetchFluxes','getFlux','createFlux','updateFlux','toggleFluxStatus','duplicateFlux','deleteFlux','saveFluxVersion','restoreFluxVersion','renameFluxVersion','deleteFluxVersion','fetchConnections','createConnection','fetchUserApps','verifyConnection','reauthorizeConnection','renameConnection','updateConnection','deleteConnection','fetchOrganizations','createOrganization','updateOrganization','deleteOrganization','countOrgFluxes','listOrgMembers','getSubscription','listTemplates','unlockTemplate','downloadTemplate','updateTemplate','deleteTemplate','listApps','saveApp','deleteApp','runAppRpc','replayExecution','buildFluxFromPrompt'])
@@ -133,6 +135,13 @@ export function createTramaHandler(dependencies = {}) {
         lease.revision = await db.commitWorkspace(access, { revision: lease.revision, leaseToken: lease.leaseToken, state: store.snapshot() })
       }
       jobs.beforeStart = commit
+      const modelsRoute=route.match(/^\/connections\/([^/]+)\/models$/)
+      if(modelsRoute&&method==='GET'){
+        const selected=domain.connection(user,decodeURIComponent(modelsRoute[1]))
+        const connection=domain.secretConnection(selected.id,selected.org_id)
+        await commit()
+        return await finish({models:await listConnectorModels(connection,dependencies.runtime??{})})
+      }
       const payload = method === 'POST' ? await readBody(req) : {}
       if (route === '/files' && method === 'POST') {
         if (typeof payload.data !== 'string' || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(payload.data)) throw problem('Arquivo base64 inválido.')
@@ -213,15 +222,29 @@ export function createTramaHandler(dependencies = {}) {
           return await finish({rotated:true})
         }
         if (operation==='run' && method==='POST') {result=await run(flow,payload.input??flow.test_input); if(!res.writableEnded)return await finish(result); return}
+        const chat=operation.match(/^agents\/([^/]+)\/chat$/)
+        if(chat&&method==='POST'){
+          if(typeof payload.message!=='string')throw problem('Envie uma mensagem para testar o agente.')
+          const id=decodeURIComponent(chat[1]),saved=flow.steps.find(s=>String(s.id)===id)
+          if(!saved||saved.app!=='ai_agent')throw problem('Agente não encontrado.',404)
+          const step=domain.bindStep(payload.step??saved,flow.org_id)
+          if(String(step.id)!==id||step.app!=='ai_agent')throw problem('Agente não encontrado.',404)
+          const test=agentTestSnapshot(flow,step,{message:payload.message,sessionId:payload.session_id,input:payload.input??flow.test_input})
+          result=await run(flow,test.input,{origin:'Chat de teste do agente',snapshot:test.snapshot})
+          if(res.writableEnded)return
+          const record=result.steps?.findLast(s=>String(s.id)===id)
+          return await finish({...redact(result),response:record?.output?.response??record?.output?.result??'',session_id:payload.session_id})
+        }
         const node=operation.match(/^nodes\/([^/]+)\/test$/)
         if(node && method==='POST') {
           const stepId=decodeURIComponent(node[1]),step=domain.bindStep(payload.step??flow.steps.find(s=>String(s.id)===stepId)??{},flow.org_id)
           if(String(step.id)!==stepId)throw problem('Módulo não encontrado.',404)
           const entryId=stepId==='runtime-input'?'runtime-input-trigger':'runtime-input'
           jobs.options.context=payload.context??{}
+          const test=step.app==='ai_agent'?agentTestSnapshot(flow,step,{input:payload.input??flow.test_input}):null
           result=await run(flow,payload.input??flow.test_input??{}, {
             origin:'Teste de módulo',
-            snapshot:{steps:[{id:entryId,app:'webhook'},step],edges:[{source:entryId,target:stepId}],settings:{...flow.settings,error_handler_flux_id:null}},
+            snapshot:test?.snapshot??{steps:[{id:entryId,app:'webhook'},step],edges:[{source:entryId,target:stepId}],settings:{...flow.settings,error_handler_flux_id:null}},
           })
           if(res.writableEnded)return
           const record=result.steps?.find(s=>String(s.id)===stepId)

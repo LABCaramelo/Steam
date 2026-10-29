@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-29",
+  "environment": "Real Vue UI + gateway/runtime, isolated database/auth/provider fixtures",
+  "checks": [
+    "foreach-entry-exit-scope-and-body",
+    "agent-three-slots-and-showcase-node-material",
+    "connected-model-list-without-agent-prompt",
+    "tool-description-and-ai-variables",
+    "agent-chat-send-session-reuse-and-reset",
+    "showcase-sliding-tabs-in-live-drawer",
+    "whole-flow-two-items-then-one-agent-and-return",
+    "disconnected-model-uses-ordinary-action-config",
+    "model-picker-and-memory-binding-created-through-ui",
+    "second-tool-created-in-free-lane",
+    "add-action-inside-foreach-body",
+    "virtual-loop-pair-never-persisted",
+    "responsive-light-and-keyboard"
+  ],
+  "errors": []
+}

@@ -11,6 +11,7 @@ export const APPS = {
   filter: middleware('Filtro', 'mdi-filter-outline', 'Continua o fluxo se a condição for verdadeira'),
   set_variables: middleware('Definir variáveis', 'mdi-variable', 'Cria e armazena variáveis personalizadas'),
   ai_agent: middleware('Agente IA', 'mdi-robot-happy-outline', 'Cria e utiliza agentes de IA'),
+  agent_memory: middleware('Memória de conversa', 'mdi-database-outline', 'Mantém o contexto das mensagens por sessão'),
   router: middleware('Roteador', 'mdi-arrow-decision-outline', 'Divide o fluxo em múltiplos caminhos'),
   code: middleware('JavaScript', 'mdi-language-javascript', 'Guarda código; execução ainda indisponível'),
   accumulator: middleware('Acumulador', 'mdi-tray-arrow-down', 'Acumula suas mensagens'),

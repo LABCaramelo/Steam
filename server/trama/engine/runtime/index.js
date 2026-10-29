@@ -21,6 +21,8 @@ const toolSlot = edge => ['tools', 'tool', 'bottom-handle-tools'].includes(edgeH
 const edgeHandle = (edge) => String(edge.sourceHandle ?? edge.branch ?? edge.label ?? '').toLowerCase()
 const appName = (step) => String(step.app || step.type || '').toLowerCase()
 const isLoop = (step) => LOOP_APPS.has(appName(step))
+const firstValue = (...values) => values.find(value => value !== undefined && value !== null && value !== '')
+const nodeConfig = node => ({ ...(node?.value && typeof node.value === 'object' && !Array.isArray(node.value) ? node.value : {}), ...(node?.config && typeof node.config === 'object' && !Array.isArray(node.config) ? node.config : {}) })
 
 export function normalizeInput(input = {}, now = new Date().toISOString()) {
   const envelope = input && typeof input === 'object' && !Array.isArray(input) && (own(input, 'BODY') || own(input, 'body') && ['headers', 'query', 'method', 'HEADERS', 'QUERY', 'METHOD'].some((key) => own(input, key)))
@@ -98,7 +100,19 @@ export function validateGraph(flux) {
     const incoming = graph.edges.filter((edge) => edge.target === step.id)
     const loopExit = incoming.some((edge) => isLoop(graph.steps.find((item) => item.id === edge.source) || {}) && DONE_HANDLES.has(edgeHandle(edge)))
     if (incoming.length > 1 && !loopExit) errors.push({ code: 'JOIN_NOT_SUPPORTED', nodeId: step.id, message: 'Convergência entre ramos precisa de uma etapa explícita de agregação; não conecte dois ramos diretamente ao mesmo nó.' })
-    if (isLoop(step) && (outgoing.get(step.id) || []).filter((edge) => BODY_HANDLES.has(edgeHandle(edge))).length > 1) errors.push({ code: 'MULTIPLE_LOOP_BODIES', nodeId: step.id, message: 'O loop aceita uma única entrada de corpo.' })
+    if (isLoop(step)) {
+      const loopEdges = outgoing.get(step.id) || []
+      if (loopEdges.filter((edge) => BODY_HANDLES.has(edgeHandle(edge))).length > 1) errors.push({ code: 'MULTIPLE_LOOP_BODIES', nodeId: step.id, message: 'O loop aceita uma única entrada de corpo.' })
+      if (loopEdges.filter((edge) => !BODY_HANDLES.has(edgeHandle(edge))).length > 1) errors.push({ code: 'MULTIPLE_LOOP_EXITS', nodeId: step.id, message: 'O loop precisa de uma única saída de continuação.' })
+    }
+    if (step.app === 'ai_agent') {
+      const agentEdges = outgoing.get(step.id) || []
+      if (agentEdges.filter(edge => ['model', 'bottom-handle-model'].includes(edgeHandle(edge))).length > 1) errors.push({ code: 'MULTIPLE_AGENT_MODELS', nodeId: step.id, message: 'O agente aceita um único modelo conectado.' })
+      if (agentEdges.filter(edge => ['memory', 'bottom-handle-memory'].includes(edgeHandle(edge))).length > 1) errors.push({ code: 'MULTIPLE_AGENT_MEMORIES', nodeId: step.id, message: 'O agente aceita uma única memória conectada.' })
+      let inlineTools = nodeConfig(step).tools
+      if (typeof inlineTools === 'string') { try { inlineTools = JSON.parse(inlineTools) } catch { inlineTools = null } }
+      if (agentEdges.filter(toolSlot).length + (Array.isArray(inlineTools) ? inlineTools.length : 0) > 64) errors.push({ code: 'AGENT_TOOL_LIMIT', nodeId: step.id, message: 'O agente aceita até 64 definições de ferramentas.' })
+    }
   }
   return { valid: errors.length === 0, errors, warnings, graph }
 }
@@ -224,7 +238,7 @@ export async function executeGraph({ flux, input = {}, connections = [], getConn
   }
   const emit = async (event, eventContext = context) => { if (onEvent) await onEvent({ executionId, ...event, context: safe(eventContext) }) }
   const lookupConnection = async (step) => {
-    const id = step.connection_id ?? step.config?.connection_id ?? step.config?.CONNECTION
+    const config = nodeConfig(step), id = step.connection_id ?? config.connection_id ?? config.CONNECTION
     if (!id) return null
     if (connectionCache.has(id)) return connectionCache.get(id)
     const connection = getConnection ? await getConnection(id) : Array.isArray(connections) ? connections.find((item) => item.id === id) : connections[id]
@@ -350,6 +364,7 @@ export async function executeGraph({ flux, input = {}, connections = [], getConn
   }
 
   async function runAgent(step, raw, ctx, memoryLockAcquired = false) {
+    raw = nodeConfig(step)
     const depth = Number(options.agentDepth ?? 0)
     if (depth >= 4) throw new RuntimeError('AGENT_DEPTH_LIMIT', 'O agente excedeu o limite de quatro níveis de ferramentas.')
     const agentEdges = outgoing.get(step.id) ?? []
@@ -357,16 +372,23 @@ export async function executeGraph({ flux, input = {}, connections = [], getConn
     const modelNode = modelEdge && nodes.get(modelEdge.target)
     const memoryEdge = agentEdges.find(edge => ['memory', 'bottom-handle-memory'].includes(edgeHandle(edge)))
     const memoryNode = memoryEdge && nodes.get(memoryEdge.target)
-    const config = resolveValue({ ...(modelNode?.config ?? {}), ...raw }, ctx)
-    if (!config.model && modelNode?.config?.model) config.model = resolveValue(modelNode.config.model, ctx)
-    const connection = await lookupConnection({ ...step, connection_id: step.connection_id ?? modelNode?.connection_id })
+    const config = resolveValue(raw, ctx), modelRaw = nodeConfig(modelNode), memoryRaw = nodeConfig(memoryNode)
+    // A connected model owns only its provider/model/connection. Agent prompts and limits stay on the agent.
+    const modelConfig = modelNode ? resolveValue({ model: firstValue(modelRaw.model, modelRaw.AI_MODEL), provider: firstValue(modelRaw.provider, modelRaw.AI_PROVIDER), connection_id: firstValue(modelNode.connection_id, modelRaw.connection_id, modelRaw.CONNECTION) }, ctx) : null
+    if (modelNode) { config.model = modelConfig.model; config.provider = modelConfig.provider; delete config.AI_MODEL; delete config.AI_PROVIDER }
+    config.system_prompt = firstValue(config.system_prompt, config.SYSTEM_MESSAGE, config.SYSTEM_PROMPT)
+    config.user_prompt = firstValue(config.user_prompt, config.HUMAN_MESSAGE, config.prompt, config.message)
+    const connectionId = modelNode ? modelConfig.connection_id : firstValue(step.connection_id, config.connection_id, config.CONNECTION)
+    const connection = await lookupConnection({ ...step, connection_id: connectionId, config: { connection_id: connectionId } })
     const providerApp = String(modelNode?.app ?? connection?.app ?? '').toLowerCase()
     const provider = String(config.provider ?? config.AI_PROVIDER ?? credentialsOf(connection).provider ?? (['anthropic', 'claude'].includes(providerApp) ? 'anthropic' : 'openai')).toLowerCase()
     config.provider = provider
     const maximumRounds = Number(config.max_iterations ?? 8)
     if (!Number.isInteger(maximumRounds) || maximumRounds < 1 || maximumRounds > 32) throw new RuntimeError('INVALID_CONFIG', 'O agente aceita de 1 a 32 rodadas de ferramentas.')
-    const memoryConfig = config.memory ?? config.AI_MEMORY ?? (memoryNode ? resolveValue(memoryNode.config?.AI_MEMORY ?? memoryNode.config ?? {}, ctx) : undefined)
-    const sessionId = config.session_id ?? config.SESSION_ID ?? memoryConfig?.session_id
+    const memoryConfig = resolveValue(memoryNode ? memoryRaw.AI_MEMORY ?? memoryRaw.memory ?? memoryRaw : raw.memory ?? raw.AI_MEMORY ?? modelRaw.memory ?? modelRaw.AI_MEMORY, ctx)
+    const sessionId = memoryNode
+      ? firstValue(memoryConfig?.session_id, memoryConfig?.SESSION_ID, resolveValue(memoryRaw.session_id ?? memoryRaw.SESSION_ID, ctx))
+      : firstValue(config.session_id, config.SESSION_ID, memoryConfig?.session_id, memoryConfig?.SESSION_ID)
     if (memoryConfig && !sessionId) throw new RuntimeError('MISSING_CONFIG', 'Configure o ID da sessão para usar memória.')
     if (sessionId && (!options.memory?.load || !options.memory?.save)) throw new RuntimeError('STATE_BACKEND_REQUIRED', 'Memória do agente requer persistência configurada no servidor.')
     if (sessionId && options.agentMemorySessions?.includes(String(sessionId))) throw new RuntimeError('MEMORY_SESSION_REENTRY', 'Um agente aninhado precisa de uma sessão de memória diferente da sessão de seu agente pai.')
@@ -420,11 +442,13 @@ export async function executeGraph({ flux, input = {}, connections = [], getConn
       }
       for (const edge of agentEdges.filter(toolSlot)) {
         const toolNode = nodes.get(edge.target)
-        if (toolNode.app === 'mcp_client') { await registerMcp(toolNode, resolveValue(toolNode.config ?? {}, ctx)); continue }
-        const declared = toolNode.parameters ?? toolNode.input_schema ?? toolNode.config?.input_schema
-        const variables = toolNode.ai_variables ?? toolNode.config?.AI_VARIABLES ?? []
+        if (toolNode.app === 'mcp_client') { await registerMcp(toolNode, resolveValue(nodeConfig(toolNode), ctx)); continue }
+        const toolConfig = nodeConfig(toolNode)
+        const declared = toolNode.parameters ?? toolNode.input_schema ?? toolConfig.input_schema
+        const variables = toolNode.ai_variables ?? toolNode.AI_VARIABLES ?? toolConfig.ai_variables ?? toolConfig.AI_VARIABLES ?? []
+        if (!declared && (!Array.isArray(variables) || variables.some(variable => !variable || typeof variable.name !== 'string' || !variable.name.trim()) || new Set(variables.map(variable => variable.name)).size !== variables.length)) throw new RuntimeError('INVALID_TOOL', 'Variáveis da ferramenta precisam de nomes únicos e não vazios.')
         const parameters = declared ?? { type: 'object', properties: Object.fromEntries(variables.map(v => [v.name, { type: 'string', description: v.description ?? '' }])), additionalProperties: variables.length > 0 ? false : true }
-        register({ name: toolNode.tool_name ?? 'node_' + toolNode.id, description: toolNode.child_description ?? toolNode.description ?? toolNode.action ?? toolNode.app, parameters }, async args => {
+        register({ name: toolNode.tool_name ?? toolConfig.tool_name ?? 'node_' + toolNode.id, description: toolNode.child_description ?? toolConfig.child_description ?? toolNode.description ?? toolNode.action ?? toolNode.app, parameters }, async args => {
           const nextTargets = new Set(agentEdges.filter(edge => !AGENT_SLOTS.has(edgeHandle(edge))).map(edge => edge.target))
           const selected = new Set()
           const select = id => { if (selected.has(id) || nextTargets.has(id)) return; selected.add(id); for (const edge of outgoing.get(id) ?? []) select(edge.target) }
@@ -434,9 +458,9 @@ export async function executeGraph({ flux, input = {}, connections = [], getConn
             flux: { steps: [{ id: entryId, app: 'webhook' }, ...snapshot.steps.filter(node => selected.has(node.id))], edges: [{ source: entryId, target: toolNode.id }, ...snapshot.edges.filter(edge => selected.has(edge.source) && selected.has(edge.target))] },
             input: ctx.IN, getConnection, connections, signal: effectiveSignal, executionId,
             options: { ...options, context: { ...clone(ctx), AI: args }, agentDepth: depth + 1, agentMemorySessions: [...(options.agentMemorySessions ?? []), ...(sessionId ? [String(sessionId)] : [])], onResponse: undefined },
-            onEvent: event => event.type.startsWith('node:') ? emit({ ...event, tool_of: step.id }, event.context) : undefined,
+            onEvent: event => event.type.startsWith('node:') ? emit({ ...event, tool_of: event.tool_of ?? step.id }, event.context) : undefined,
           })
-          logs.push(...childResult.steps.map(record => ({ ...record, tool_of: step.id })))
+          logs.push(...childResult.steps.map(record => ({ ...record, tool_of: record.tool_of ?? step.id })))
           operations += childResult.operations
           if (childResult.status !== 'success') throw new RuntimeError('AGENT_TOOL_ERROR', childResult.error?.message ?? 'Falha no subgrafo da ferramenta.', { error: childResult.error })
           return childResult.response?.body ?? childResult.output

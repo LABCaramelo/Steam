@@ -142,3 +142,45 @@ test('capture polling reads only the owner payload without lease or checkpoint',
   assert.equal(result.statusCode,200);assert.deepEqual(result.value(),{last_input:{message:'captured'},last_received_at:'2026-10-28T18:00:00.000Z'});assert.equal(f.commits.length,commits);
   await call(f.handler,'/state',{user:BRUNO});const denied=await call(f.handler,`/flows/${id}/webhook/capture`,{user:BRUNO});assert.equal(denied.statusCode,404);
 });
+
+test('agent chat preserves attached model, memory and tools while isolating the main continuation',async()=>{
+  const previous=process.env.TRAMA_ENCRYPTION_KEY;process.env.TRAMA_ENCRYPTION_KEY='47'.repeat(32);
+  const requests:{url:string;body:any}[]=[];
+  const f=fixture({fetchImpl:async(url:string,init:RequestInit)=>{
+    const body=init.body?JSON.parse(String(init.body)):null;requests.push({url:String(url),body});
+    if(String(url).endsWith('/models'))return new Response(JSON.stringify({data:[{id:'fixture-chat',display_name:'Modelo de teste'}]}),{headers:{'content-type':'application/json'}});
+    assert.ok(String(url).endsWith('/chat/completions'),'main continuation must not be executed by chat');
+    const question=body.messages.filter((m:any)=>m.role==='user').at(-1).content;
+    return new Response(JSON.stringify({choices:[{message:{role:'assistant',content:'Resposta: '+question}}],usage:{total_tokens:6}}),{headers:{'content-type':'application/json'}});
+  }});
+  try{
+    const state=(await call(f.handler,'/state')).value(),id=state.fluxes[0].id,org=state.selected_org_id;
+    const conn=(await call(f.handler,'/rpc/createConnection',{method:'POST',body:{org_id:org,args:[{name:'Modelo de teste',app:'chatgpt',credentials:{api_key:'fixture-private-key',base_url:'https://agent.fixture.test/v1'}}]}})).value().result;
+    const steps=[{id:'IN',app:'webhook'},{id:'agent',app:'ai_agent',config:{system_prompt:'Instrução preservada',user_prompt:'Rascunho preservado'}},{id:'model',app:'chatgpt',connection_id:conn.id,config:{model:'fixture-chat',provider:'openai'}},{id:'memory',app:'agent_memory',config:{type:'history',session_id:'{{$IN.SESSION_ID}}'}},{id:'tool',app:'set_variables',child_description:'Retorna uma cidade para consulta.',ai_variables:[{name:'city',description:'Cidade'}],config:{values:{city:'{{$AI.city}}'}}},{id:'continuation',app:'requester',config:{url:'https://must-not-run.fixture.test'}}];
+    const edges=[{source:'IN',target:'agent'},{source:'agent',target:'model',sourceHandle:'model'},{source:'agent',target:'memory',sourceHandle:'memory'},{source:'agent',target:'tool',sourceHandle:'tools'},{source:'agent',target:'continuation'}];
+    await call(f.handler,'/rpc/updateFlux',{method:'POST',body:{org_id:org,args:[id,{steps,edges}]}});
+    const models=await call(f.handler,`/connections/${conn.id}/models`);assert.equal(models.statusCode,200);assert.deepEqual(models.value().models,[{value:'fixture-chat',label:'Modelo de teste'}]);assert.ok(!JSON.stringify(models.value()).includes('fixture-private-key'));
+    const first=await call(f.handler,`/flows/${id}/agents/agent/chat`,{method:'POST',body:{message:'Primeira pergunta',session_id:'conversation-a',input:{source:'fixture'}}});
+    assert.equal(first.statusCode,200);assert.equal(first.value().status,'success');assert.equal(first.value().response,'Resposta: Primeira pergunta');assert.equal(first.value().session_id,'conversation-a');
+    const modelCalls=()=>requests.filter(r=>r.url.endsWith('/chat/completions'));
+    assert.equal(modelCalls()[0].body.model,'fixture-chat');assert.equal(modelCalls()[0].body.messages[0].content,'Instrução preservada');assert.equal(modelCalls()[0].body.tools.length,1);
+    const snapshot=documents(f.rows.get(ALICE)!.state).find(d=>d.collection==='executions')!.data.snapshot as {steps:{id:string}[]};
+    assert.deepEqual(new Set(snapshot.steps.filter(s=>!s.id.startsWith('agent-input')).map(s=>s.id)),new Set(['agent','model','memory','tool']));
+    const next=await call(f.handler,`/flows/${id}/agents/agent/chat`,{method:'POST',body:{message:'Segunda pergunta',session_id:'conversation-a'}});assert.equal(next.value().status,'success');assert.equal(modelCalls()[1].body.messages.length,4);
+    await call(f.handler,`/flows/${id}/agents/agent/chat`,{method:'POST',body:{message:'Nova conversa',session_id:'conversation-b'}});assert.equal(modelCalls()[2].body.messages.length,2);
+    const saved=documents(f.rows.get(ALICE)!.state).find(d=>d.collection==='flows'&&d.data.id===id)!.data;
+    assert.equal((saved.steps as any[]).find(s=>s.id==='agent').config.user_prompt,'Rascunho preservado');
+    const legacyAgent=(saved.steps as any[]).find(s=>s.id==='agent'),legacyMemory=(saved.steps as any[]).find(s=>s.id==='memory');
+    legacyAgent.value={messages:[{role:'user',content:'Mensagem antiga que não deve substituir o chat'}]};
+    legacyMemory.value={AI_MEMORY:{type:'history',session_id:'fixed-legacy-session'}};
+    for(const [index,session] of ['legacy-conversation-c','legacy-conversation-d'].entries()){
+      const legacy=await call(f.handler,`/flows/${id}/agents/agent/chat`,{method:'POST',body:{message:'Mensagem digitada '+index,session_id:session}});
+      assert.equal(legacy.value().status,'success');assert.equal(legacy.value().response,'Resposta: Mensagem digitada '+index);assert.equal(modelCalls()[3+index].body.messages.length,2,'new chat sessions override legacy memory aliases');
+    }
+    assert.equal((await call(f.handler,`/flows/${id}/agents/agent/chat`,{user:BRUNO,method:'POST',body:{message:'Proibido',session_id:'x'}})).statusCode,404);
+    assert.equal((await call(f.handler,`/connections/${conn.id}/models`,{user:BRUNO})).statusCode,404);
+    const count=requests.length;
+    assert.equal((await call(f.handler,`/flows/${id}/agents/agent/chat`,{method:'POST',body:{message:'',session_id:'x'}})).statusCode,400);
+    assert.equal((await call(f.handler,`/flows/${id}/agents/agent/chat`,{method:'POST',body:{message:'Pergunta',session_id:''}})).statusCode,400);assert.equal(requests.length,count);
+  }finally{if(previous===undefined)delete process.env.TRAMA_ENCRYPTION_KEY;else process.env.TRAMA_ENCRYPTION_KEY=previous;}
+});

@@ -6,6 +6,8 @@ import ModalConfirm from '@trama/components/ModalConfirm.vue'
 import FluxCanvas from '@trama/components/flux/FluxCanvas.vue'
 import FluxStepConfigDrawer from '@trama/components/flux/FluxStepConfigDrawer.vue'
 import { graphEdges, layoutGraph } from '@trama/components/flux/graphModel'
+import { isForEach } from '@trama/components/flux/loopProjection'
+import { projectAgentGraph, agentSlot, agentAttachment } from '@trama/components/flux/agentProjection'
 import { db, deleteFlux, deleteFluxVersion, duplicateFlux, getFlux, renameFluxVersion, restoreFluxVersion, runFlux, saveFluxVersion, toggleFluxStatus, updateFlux } from '@trama/services/api'
 import { getApp } from '@trama/services/apps'
 import { getBlockState } from '@trama/utils/subscription'
@@ -50,7 +52,7 @@ onBeforeRouteLeave(async()=>{if(pendingSave.value){const saved=await persist();i
 onBeforeUnmount(()=>{disposed=true;clearInterval(clock);clearTimeout(saveTimer);abortRun?.abort();window.removeEventListener('keydown',keyboard);window.removeEventListener('beforeunload',beforeUnload)})
 function beforeUnload(event){if(pendingSave.value||saving.value){event.preventDefault();event.returnValue=''}}
 function keyboard(event){const target=event.target;if(target?.closest?.('input,textarea,[contenteditable="true"],.v-overlay--active'))return;if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='s'){event.preventDefault();publish()}if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='z'){event.preventDefault();event.shiftKey?redo():undo()}if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='y'){event.preventDefault();redo()}}
-function scheduleSave(){dirtyRevision++;pendingSave.value=true;saveError.value='';clearTimeout(saveTimer);saveTimer=setTimeout(persist,700)}
+function scheduleSave(){for(const step of flux.value.steps){const binding=agentAttachment(step.id,flux.value.edges);if(binding){step.agent_role=binding.role;step.agent_parent_id=binding.parentId}else{delete step.agent_role;delete step.agent_parent_id}}dirtyRevision++;pendingSave.value=true;saveError.value='';clearTimeout(saveTimer);saveTimer=setTimeout(persist,700)}
 async function persist(){
   clearTimeout(saveTimer)
   if(!flux.value)return false
@@ -68,17 +70,25 @@ function onMove(id,position,done){const step=flux.value.steps.find(s=>String(s.i
 function updateEdges(edges){remember();flux.value.edges=clone(edges);scheduleSave()}
 function nextId(){const numeric=flux.value.steps.map(s=>Number(String(s.id).replace(/^s[-_]?/,''))).filter(Number.isFinite);return String(Math.max(0,...numeric)+1)}
 function addStep(context){
-  const {app,module:moduleDef,appDefinition,sourceId,sourceHandle='out',position}=typeof context==='string'?{app:context}:context
-  remember();const source=flux.value.steps.find(s=>String(s.id)===sourceId),positions=layoutGraph(flux.value.steps,flux.value.edges)
+  const {app,module:moduleDef,appDefinition,sourceId,sourceHandle='out',position,agentRole,config={}}=typeof context==='string'?{app:context}:context
+  const source=flux.value.steps.find(s=>String(s.id)===sourceId)
+  if(agentRole&&source?.app!=='ai_agent')return
+  if(agentRole&&agentRole!=='tools'){
+    const bound=flux.value.edges.find(edge=>edge.source===sourceId&&agentSlot(edge)===agentRole)
+    if(bound){selectedId.value=bound.target;return}
+  }
+  remember();const projection=projectAgentGraph(flux.value.steps,flux.value.edges),positions=projection.positions
   const existingPositions=Object.values(positions)
   const fallback={x:Math.max(-324,...existingPositions.map(p=>p.x))+324,y:Math.min(0,...existingPositions.map(p=>p.y))}
-  const step={id:nextId(),app,action:getApp(app).title,config:{},position:position??(source?{x:positions[sourceId].x+324,y:positions[sourceId].y}:fallback)}
+  const step={id:nextId(),app,action:getApp(app).title,config:clone(config),position:position??(source?{x:positions[sourceId].x+324,y:positions[sourceId].y}:fallback)}
+  if(agentRole){step.agent_role=agentRole;step.agent_parent_id=sourceId;step.position=position??{x:positions[sourceId].x+({model:-264,memory:0,tools:324}[agentRole]??324),y:positions[sourceId].y+300};if(agentRole==='tools'){step.child_description='';step.ai_variables=[]}}
   if(moduleDef&&appDefinition) Object.assign(step,{title:appDefinition.name,action:moduleDef.name,description:moduleDef.description??'',module_id:moduleDef.id,parameters_json:clone(moduleDef.parameters_json??[]),definition:clone({base:appDefinition.base,request:moduleDef.request,revision:appDefinition.revision,app_id:appDefinition.id,module_id:moduleDef.id})})
   if(source?.app==='router'){const branch=Number(sourceHandle.replace('branch-',''))||1;step.position.y+=(branch-1)*230-115}
-  if(sourceHandle==='body')step.position.y-=115
-  if(sourceHandle==='done')step.position.y+=115
+  if(!position&&sourceHandle==='body')step.position.y+=isForEach(source)?230:-115
+  if(!position&&sourceHandle==='done'){const exit=projection.loopById.get(sourceId)?.exit;if(exit)step.position={x:exit.x+324,y:exit.y};else step.position.y+=115}
   flux.value.steps.push(step)
   if(source)flux.value.edges.push({id:crypto.randomUUID(),source:sourceId,target:step.id,sourceHandle,...(sourceHandle!=='out'?{branch:sourceHandle}:{})})
+  if(agentRole==='tools'&&!position){delete step.position;step.position=projectAgentGraph(flux.value.steps,flux.value.edges).positions[step.id]}
   selectedId.value=step.id;scheduleSave()
 }
 function removeStep(id=selectedId.value){const index=flux.value.steps.findIndex(s=>String(s.id)===id);if(index<0)return;if(getApp(flux.value.steps[index].app).trigger){toastInfo({text:'O gatilho inicia a integração. Configure-o para alterar o recebimento.'});return}remember();flux.value.steps.splice(index,1);flux.value.edges=flux.value.edges.filter(e=>e.source!==id&&e.target!==id);selectedId.value=null;delete testOutputs.value[id];scheduleSave()}
@@ -87,7 +97,7 @@ function disconnectStep(id){remember();flux.value.edges=flux.value.edges.filter(
 function addBranch(id){const step=flux.value.steps.find(s=>String(s.id)===id);if(step?.app!=='router')return;remember();step.config??={};step.config.branches=Math.max(2,Number(step.config.branches)||2)+1;scheduleSave()}
 function updateSelectedStep(draft){if(!selectedStep.value)return;remember();Object.assign(selectedStep.value,clone(draft));scheduleSave()}
 function updateInput(input){remember();flux.value.test_input=clone(input);inputText.value=JSON.stringify(input,null,2);scheduleSave()}
-function organize(){remember();const positions=layoutGraph(flux.value.steps,flux.value.edges,{preserve:false});for(const step of flux.value.steps)step.position=positions[step.id];scheduleSave();nextTick(()=>canvas.value?.fitView())}
+function organize(){remember();const positions=projectAgentGraph(flux.value.steps,flux.value.edges,{preserve:false}).positions;for(const step of flux.value.steps)step.position=positions[step.id];scheduleSave();nextTick(()=>canvas.value?.fitView())}
 async function publish(){if(publishing.value)return;publishing.value=true;try{if(!(await persist()))throw new Error(saveError.value);const saved=await saveFluxVersion(flux.value.id);flux.value.versions=saved.versions;flux.value.published_version_id=saved.published_version_id;toastSuccess({title:'Integração publicada',text:'Esta versão está guardada no histórico do seu fluxo.'})}catch(error){toastError({title:'Não foi possível publicar',text:error.userMessage||error.message})}finally{publishing.value=false}}
 
 function executionEvent(event){
@@ -155,7 +165,7 @@ async function remove(){try{await deleteFlux(flux.value.id);pendingSave.value=fa
         <div v-if="terminalTab==='input'" class="terminal-input"><div class="terminal-code-field"><label for="trama-test-input">JSON de entrada</label><textarea id="trama-test-input" v-model="inputText" aria-label="JSON de entrada de teste" spellcheck="false" /></div><div class="terminal-input-help"><span class="terminal-eyebrow">TESTE O CAMINHO</span><h3>Da entrada ao resultado.</h3><p>Dados usados ao rodar o rascunho. Chamadas externas ao webhook usam a versão publicada.</p><p v-if="inputError" class="text-error" role="alert">{{ inputError }}</p><v-btn color="primary" :loading="running" prepend-icon="mdi-play-outline" @click="run">Rodar com esta entrada</v-btn></div></div>
         <div v-else class="terminal-logs"><p v-if="!lastExecution" class="terminal-empty">Nenhuma execução. Configure uma entrada e rode a integração.</p><template v-else><div class="terminal-log-list"><button v-for="(step,index) in lastExecution.steps" :key="`${step.id}-${index}`" type="button" :class="{selected:selectedLog===index}" :aria-pressed="selectedLog===index" @click="selectedLog=index"><v-icon :icon="step.status==='error'?'mdi-alert-circle-outline':step.status==='running'?'mdi-loading':'mdi-check-circle-outline'" :color="step.status==='error'?'error':'success'" size="17" /><b>{{ step.id }}</b><span>{{ getApp(step.app).title }}</span><small>{{ step.ms??0 }} ms</small></button><p v-if="running&&!lastExecution.steps?.length" class="terminal-empty">Iniciando execução...</p></div><div class="terminal-log-output"><template v-if="lastExecution.steps?.[selectedLog??lastExecution.steps.length-1]"><pre>{{ JSON.stringify(lastExecution.steps[selectedLog??lastExecution.steps.length-1],null,2) }}</pre></template><pre v-else>{{ JSON.stringify(lastExecution.error??lastExecution.output??{},null,2) }}</pre></div></template></div>
       </section>
-      <FluxStepConfigDrawer v-if="selectedStep" :key="selectedStep.id" :step="selectedStep" :index="selectedIndex" :all-steps="flux.steps" :edges="flux.edges" :flux-id="flux.id" :test-input="flux.test_input" :outputs="outputs" :last-execution="lastExecution" @close="selectedId=null" @update="updateSelectedStep" @input-update="updateInput" @delete="removeStep()" @tested="tested" />
+      <FluxStepConfigDrawer v-if="selectedStep" :key="selectedStep.id" :step="selectedStep" :index="selectedIndex" :all-steps="flux.steps" :edges="flux.edges" :flux-id="flux.id" :test-input="flux.test_input" :outputs="outputs" :last-execution="lastExecution" :before-test="persist" @close="selectedId=null" @update="updateSelectedStep" @input-update="updateInput" @delete="removeStep()" @tested="tested" />
       <input ref="importInput" type="file" accept=".fiqon,.json,.trama" hidden @change="importFlux" />
       <ModalConfirm v-model="stateModal" :header-text="flux.active?'Desativar webhook?':'Ativar webhook?'" :confirm-text="flux.active?'INATIVAR':'ATIVAR'" close-on-confirm @confirm="confirmState"><p>{{ flux.active?'Novas chamadas ao webhook serão bloqueadas.':'Chamadas ao link do webhook executarão a versão publicada deste fluxo.' }}</p></ModalConfirm>
       <ModalConfirm v-model="deleteOpen" header-text="Excluir integração?" confirm-text="Excluir integração" close-on-confirm @confirm="remove"><p>A integração <b>{{ flux.name }}</b> e seus gatilhos serão removidos.</p></ModalConfirm>

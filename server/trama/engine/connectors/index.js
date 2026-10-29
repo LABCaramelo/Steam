@@ -141,3 +141,14 @@ export async function verifyConnectorConnection(connection, options = {}) {
 }
 
 export { credentialsOf, tokenOf }
+
+export async function listConnectorModels(connection,options={}){
+  const credentials=credentialsOf(connection),provider=String(credentials.provider??connection.app??'').toLowerCase()
+  const anthropic=provider.includes('anthropic')||provider.includes('claude')
+  const headers={Authorization:'Bearer '+requireValue(tokenOf(credentials),'Chave da conexão de IA'),...(anthropic&&{'anthropic-version':credentials.api_version??'2023-06-01'}),...(anthropic&&credentials.workspace_id&&{'anthropic-workspace-id':credentials.workspace_id})}
+  const root=first(credentials.base_url,credentials.url,anthropic?'https://api.anthropic.com':'https://api.openai.com/v1')
+  const response=await httpRequest({url:urlJoin(root,anthropic?'v1/models':'models'),method:'GET',headers},{...options,maxResponseBytes:1024*1024})
+  const entries=response.body?.data??response.body?.models
+  if(!Array.isArray(entries))throw new RuntimeError('MODELS_RESPONSE_INVALID','O provedor não retornou uma lista de modelos.')
+  return entries.filter(item=>typeof item.id==='string').slice(0,300).map(item=>({value:item.id,label:String(item.display_name??item.id)}))
+}

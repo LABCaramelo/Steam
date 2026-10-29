@@ -1,0 +1,71 @@
+/* Caramelo Lumen showcase adapter. The canonical package supplies the material,
+   five-color layers, glitch keyframes and edge glow; this sheet bridges Vue UI. */
+:is(.trama-root,.trama-overlay,.trama-menu,.trama-tooltip){
+  --trama-showcase-spotlight:radial-gradient(300px circle at calc(var(--mx) - 65px) var(--my),#FF701A1F,transparent 60%),radial-gradient(280px circle at calc(var(--mx) + 65px) var(--my),#25BFFF1F,transparent 60%),radial-gradient(260px circle at var(--mx) calc(var(--my) + 55px),#FF3D8D1A,transparent 60%),radial-gradient(300px circle at var(--mx) var(--my),#7657FF1F,transparent 60%),radial-gradient(240px circle at var(--mx) calc(var(--my) - 55px),#FFD52A14,transparent 60%);
+}
+/* Quiet Ink material from the showcase; semantic tokens retain the light theme. */
+:is(.trama-root,.trama-overlay) :is(.flux-node,.node-dialog,.node-picker,.agent-slot-picker,.node-test-data,.flow-library,.connection-card,.dashboard-chart-panel,.dashboard-logs).cm-surface{
+  background:rgb(var(--cm-surface-1));border-radius:12px!important;
+}
+:is(.trama-root,.trama-overlay) .flux-node.cm-surface.cm-surface--spotlight:where(:not(.selected):not(.status-error):not(.status-success):not(.status-running)),
+:is(.trama-root,.trama-overlay) :is(.node-dialog,.node-picker,.agent-slot-picker,.node-test-data,.flow-library,.connection-card,.dashboard-chart-panel,.dashboard-logs).cm-surface{
+  border-color:rgb(var(--cm-line));
+}
+/* Graph coordinates and handles must stay stable while a surface responds. */
+:is(.trama-root,.trama-overlay) .flux-node.cm-surface--spotlight,
+:is(.trama-root,.trama-overlay) .flux-node.cm-surface--spotlight:is(:hover,:active){transform:none;overflow:visible}
+:is(.trama-root,.trama-overlay) .flux-node.cm-surface.cm-surface--spotlight::before{content:'';position:absolute;inset:0;width:auto;height:auto;border-radius:inherit;background:var(--trama-showcase-spotlight);z-index:-1;pointer-events:none;opacity:0;transition:opacity 240ms var(--cm-ease-out)}
+:is(.trama-root,.trama-overlay) .flux-node.cm-surface--spotlight:is(:hover,:focus-within)::before{opacity:1}
+:is(.trama-root,.trama-overlay) .flux-node.selected.cm-surface--spotlight{border-color:rgb(var(--cm-focus));box-shadow:0 0 0 2px rgb(var(--cm-focus)/.14),var(--cm-elev-2)}
+:is(.trama-root,.trama-overlay) .cm-surface--spotlight::after{pointer-events:none}
+/* Save is the tactile cream pill, matching EdgeGlowButton in the showcase. */
+:is(.trama-root,.trama-overlay) :is(.node-save,.picker-save,.slot-save,.caramelo-action).cm-glow-btn,
+:is(.trama-root,.trama-overlay) .v-btn.bg-primary{
+  min-height:44px;height:44px;border:0!important;border-radius:999px!important;padding-inline:24px;
+  background:linear-gradient(180deg,#FFFAF4,#EFDFCC)!important;color:#101014!important;
+  font:700 13px/1 var(--trama-font-ui,Inter,sans-serif);letter-spacing:.01em;text-transform:none;
+  box-shadow:inset 0 1px 0 #ffffffcc,inset 0 -2px 0 #10101414,0 1px 2px #0006;
+  transition:transform 240ms var(--cm-ease-out),box-shadow 240ms var(--cm-ease-out);
+}
+:is(.trama-root,.trama-overlay) :is(.node-save,.picker-save,.slot-save,.caramelo-action).cm-glow-btn:hover:not(:disabled),
+:is(.trama-root,.trama-overlay) .v-btn.bg-primary:hover{box-shadow:inset 0 1px 0 #ffffffcc,inset 0 -2px 0 #10101414,var(--cm-glow-sm);color:#101014!important}
+:is(.trama-root,.trama-overlay) :is(.node-save,.picker-save,.slot-save,.caramelo-action).cm-glow-btn:active:not(:disabled){transform:scale(.97);transition-duration:80ms}
+/* Run: Ink core, five-color edge and the official soft spectrum liquid fill. */
+:is(.trama-root,.trama-overlay) [data-cm-action="run"].cm-btn,
+:is(.trama-root,.trama-overlay) .caramelo-action.cm-btn--accent{
+  position:relative;isolation:isolate;overflow:hidden;min-height:40px;height:40px;border:1px solid transparent;border-radius:999px;
+  background:#101014;color:#FFF4E8;font-weight:700;box-shadow:var(--cm-highlight),0 1px 2px #0006;
+  transform:translate3d(var(--cm-mag-x,0px),var(--cm-mag-y,0px),0) scale(var(--cm-press,1));
+  transition:transform 320ms var(--cm-ease-out),color 160ms var(--cm-ease-standard),box-shadow 240ms var(--cm-ease-out);
+}
+:is(.trama-root,.trama-overlay) [data-cm-action="run"].cm-btn::before{content:'';position:absolute;inset:-1px;z-index:-1;pointer-events:none;background:var(--cm-spectrum-soft);border-radius:50% 50% 0 0 / 70% 70% 0 0;transform:translateY(102%);transition:transform 480ms var(--cm-ease-out),border-radius 480ms var(--cm-ease-out)}
+:is(.trama-root,.trama-overlay) [data-cm-action="run"].cm-btn::after,
+:is(.trama-root,.trama-overlay) .caramelo-action.cm-btn--accent::after{content:'';position:absolute;inset:-1px;padding:1px;border-radius:inherit;background:var(--cm-spectrum-gradient);pointer-events:none;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+:is(.trama-root,.trama-overlay) [data-cm-action="run"].cm-btn:is(:hover,:focus-visible):not(:disabled):not(.running){color:#101014;background:#101014;border-color:transparent;box-shadow:var(--cm-glow-sm)}
+:is(.trama-root,.trama-overlay) [data-cm-action="run"].cm-btn:is(:hover,:focus-visible):not(:disabled):not(.running)::before{transform:translateY(0);border-radius:0}
+:is(.trama-root,.trama-overlay) [data-cm-action="run"].cm-btn:active:not(:disabled){--cm-press:.97;transform:translate3d(var(--cm-mag-x,0px),var(--cm-mag-y,0px),0) scale(.97);transition-duration:80ms}
+:is(.trama-root,.trama-overlay) [data-cm-action="run"].cm-btn.running{color:rgb(var(--cm-danger));background:rgb(var(--cm-danger-soft));border-color:rgb(var(--cm-danger)/.5);transform:none}
+:is(.trama-root,.trama-overlay) [data-cm-action="run"].cm-btn.running::before,
+:is(.trama-root,.trama-overlay) [data-cm-action="run"].cm-btn.running::after{display:none}
+:is(.trama-root,.trama-overlay) :is(.cm-btn,.cm-glow-btn):focus-visible{outline:2px solid rgb(var(--cm-focus));outline-offset:4px}
+:is(.trama-root,.trama-overlay) .cm-glow-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+:is(.trama-root,.trama-overlay) .cm-glow-btn:disabled::before,
+:is(.trama-root,.trama-overlay) .cm-glow-btn:disabled::after{opacity:0}
+/* Real measurements are written by the adapter, never guessed percentages. */
+:is(.trama-root,.trama-overlay) .trama-showcase-tabs{position:relative;isolation:isolate;gap:3px;padding:4px;border:1px solid rgb(var(--cm-line));border-radius:999px;background:rgb(var(--cm-surface-1));box-shadow:var(--cm-pressed)}
+:is(.trama-root,.trama-overlay) .trama-showcase-tabs>button{position:relative;z-index:1;min-height:36px;border:0;border-radius:999px;background:transparent;box-shadow:none;color:rgb(var(--cm-fg-dim));transition:color 160ms var(--cm-ease-standard)}
+:is(.trama-root,.trama-overlay) .trama-showcase-tabs>button:is(.selected,.active,[aria-selected="true"],[aria-pressed="true"]){background:transparent;border:0;box-shadow:none;color:rgb(var(--cm-fg))}
+:is(.trama-root,.trama-overlay) .trama-showcase-tabs>.trama-tabs-indicator{position:absolute;inset:4px auto 4px 0;width:var(--cm-ind-w,0px);transform:translateX(var(--cm-ind-x,0px));border:0;border-radius:999px;background:rgb(var(--cm-surface-3));box-shadow:var(--cm-elev-1),inset 0 0 0 1px rgb(var(--cm-line));padding:0;min-width:0;min-height:0;height:auto;z-index:0;pointer-events:none;opacity:1;transition:transform 320ms var(--cm-ease-drawer),width 320ms var(--cm-ease-drawer)}
+:is(.trama-root,.trama-overlay) .trama-showcase-tabs:not([data-cm-tabs-ready])>.trama-tabs-indicator{opacity:0;transition:none}
+/* Preserve existing display layouts on labels that receive a chromatic pulse. */
+:is(.trama-root,.trama-overlay) :is(.node-dialog__identity h2,.node-picker h3,.slot-heading h2,.dashboard-heading h1).cm-glitch{display:block}
+@media(pointer:coarse){:is(.trama-root,.trama-overlay) .cm-magnetic{--cm-mag-x:0px!important;--cm-mag-y:0px!important}}
+@media(prefers-reduced-motion:reduce){
+  :is(.trama-root,.trama-overlay) :is(.cm-magnetic,.cm-btn__label){--cm-mag-x:0px!important;--cm-mag-y:0px!important;transform:none!important}
+  :is(.trama-root,.trama-overlay) :is(.cm-btn,.cm-glow-btn,.cm-btn__fill,.trama-tabs-indicator),
+  :is(.trama-root,.trama-overlay) [data-cm-action="run"]::before{transition:none!important}
+  :is(.trama-root,.trama-overlay) .cm-glitch{animation:none!important;text-shadow:none!important;translate:none!important}
+}
+html[data-motion="off"] :is(.trama-root,.trama-overlay) :is(.cm-magnetic,.cm-btn__label){--cm-mag-x:0px!important;--cm-mag-y:0px!important;transform:none!important}
+html[data-motion="off"] :is(.trama-root,.trama-overlay) :is(.cm-btn,.cm-glow-btn,.cm-btn__fill,.trama-tabs-indicator),
+html[data-motion="off"] :is(.trama-root,.trama-overlay) [data-cm-action="run"]::before{transition:none!important}

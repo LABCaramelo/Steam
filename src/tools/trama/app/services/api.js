@@ -221,6 +221,8 @@ export async function testFluxStep(fluxId, stepId, payload = {}) {
   return result.execution ?? result.result ?? result
 }
 export const getWebhookInfo = id => jsonRequest('/flows/' + encodeURIComponent(id) + '/webhook')
+export const listConnectionModels = async id => (await jsonRequest('/connections/' + encodeURIComponent(id) + '/models')).models
+export const chatWithAgent = (fluxId,stepId,payload) => jsonRequest('/flows/' + encodeURIComponent(fluxId) + '/agents/' + encodeURIComponent(stepId) + '/chat',{method:'POST',body:payload})
 export const getWebhookCapture = id => jsonRequest('/flows/' + encodeURIComponent(id) + '/webhook/capture')
 export async function rotateWebhookToken(id) {
   await jsonRequest('/flows/' + encodeURIComponent(id) + '/webhook/rotate', { method: 'POST', body: {} })

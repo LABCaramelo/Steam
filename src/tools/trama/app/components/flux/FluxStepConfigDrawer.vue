@@ -11,11 +11,21 @@ import JsonTree from './JsonTree.vue'
 import VariableTree from './VariableTree.vue'
 import FunctionPicker from './FunctionPicker.vue'
 import CodeInput from './fields/CodeInput.vue'
+import AgentChatPanel from './AgentChatPanel.vue'
+import AgentToolFields from './AgentToolFields.vue'
+import { agentAttachment, agentSlot } from './agentProjection.js'
 
-const props = defineProps({ step: { type: Object, required: true }, index: { type: Number, default: 0 }, allSteps: { type: Array, default: () => [] }, fluxId: { type: String, required: true }, outputs: { type: Object, default: () => ({}) }, lastExecution: { type: Object, default: null }, testInput: { default: undefined }, edges: { type: Array, default: undefined } })
+const props = defineProps({ step: { type: Object, required: true }, index: { type: Number, default: 0 }, allSteps: { type: Array, default: () => [] }, fluxId: { type: String, required: true }, outputs: { type: Object, default: () => ({}) }, lastExecution: { type: Object, default: null }, testInput: { default: undefined }, edges: { type: Array, default: undefined }, beforeTest: { type: Function, default: undefined } })
 const emit = defineEmits(['close', 'update', 'delete', 'tested', 'input-update'])
-const dialog = ref(null), draft = ref(createStepDraft(props.step)), activeTab = ref('variables'), search = ref(''), advancedOpen = ref(false), newConnOpen = ref(false), testDataOpen = ref(false), testDataText = ref(''), testDataError = ref(''), localTestInput = ref(props.testInput), errors = ref({}), testing = ref(false), testedRecord = ref(null), testedExecution = ref(null), generalError = ref(''), editingTitle = ref(false), mobilePanel = ref('config'), webhookInfo = ref(null)
+function enrichedDraft() {
+  const attachment = agentAttachment(props.step.id, props.edges ?? [])
+  const hasModel = props.edges?.some(edge => String(edge.source) === String(props.step.id) && agentSlot(edge) === 'model')
+  return createStepDraft({ ...props.step, ...(props.edges !== undefined ? { agent_role: attachment?.role ?? null, agent_parent_id: attachment?.parentId ?? null } : {}), agent_has_model: props.edges !== undefined ? !!hasModel : props.step.agent_has_model })
+}
+const dialog = ref(null), draft = ref(enrichedDraft()), activeTab = ref('variables'), search = ref(''), advancedOpen = ref(false), newConnOpen = ref(false), testDataOpen = ref(false), testDataText = ref(''), testDataError = ref(''), localTestInput = ref(props.testInput), errors = ref({}), testing = ref(false), testedRecord = ref(null), testedExecution = ref(null), generalError = ref(''), editingTitle = ref(false), mobilePanel = ref('config'), webhookInfo = ref(null)
 const fieldRefs = new Map()
+const modelOptions = ref([]), modelsLoading = ref(false), modelsError = ref(''), agentChat = ref(null)
+let modelsGeneration = 0
 const listening = ref(false), rotating = ref(false), copyingLink = ref(''), pinnedCapture = ref(false), suppressOriginalOutput = ref(false), responseTab = ref('body'), expandedEditor = ref(false), headerRows = ref([]), headersExpression = ref(null)
 let focusedField = null, previousFocus = null, alive = true, captureTimer = null, captureGeneration = 0
 const clone = value => value === undefined ? undefined : JSON.parse(JSON.stringify(value))
@@ -29,6 +39,19 @@ const visibleFields = computed(() => schema.value.fields.filter(field => !field.
 const hasAdvanced = computed(() => schema.value.fields.some(field => field.advanced))
 const matchingConnections = computed(() => (api.db.connections || []).filter(connection => canonicalApp(connection.app) === app.value || app.value === 'ai_agent' && ['chatgpt', 'openai', 'anthropic', 'claude'].includes(connection.app)))
 const selectedConnection = computed(() => matchingConnections.value.find(connection => connection.id === draft.value.connection_id))
+const isAgent = computed(() => app.value === 'ai_agent' && draft.value.agent_role !== 'model')
+const isAgentTool = computed(() => draft.value.agent_role === 'tools')
+const modelListId = computed(() => 'agent-models-' + String(props.step.id))
+async function loadModels() {
+  const generation = ++modelsGeneration, id = draft.value.connection_id
+  modelOptions.value = []; modelsError.value = ''; modelsLoading.value = false
+  if (!id || draft.value.agent_role !== 'model') return
+  modelsLoading.value = true
+  try { const models = await api.listConnectionModels(id); if (alive && generation === modelsGeneration) modelOptions.value = Array.isArray(models) ? models : [] }
+  catch (error) { if (alive && generation === modelsGeneration) modelsError.value = error.userMessage || error.message }
+  finally { if (alive && generation === modelsGeneration) modelsLoading.value = false }
+}
+watch(() => [draft.value.connection_id, draft.value.agent_role], loadModels, { immediate: true })
 const originalRecord = computed(() => props.lastExecution?.steps?.findLast(record => String(record.id) === String(props.step.id)) || (props.outputs[props.step.id] !== undefined ? { status: 'success', output: props.outputs[props.step.id] } : null))
 const outputRecord = computed(() => testedRecord.value || (suppressOriginalOutput.value ? null : originalRecord.value))
 const output = computed(() => outputRecord.value?.output)
@@ -51,6 +74,7 @@ const upstreamIds = computed(() => {
 const variableGroups = computed(() => {
   const input = actualInput.value
   const groups = [{ id: 'IN', displayId: 'IN', app: 'webhook', title: 'Webhook', output: input === undefined ? undefined : input?.BODY !== undefined ? input : { BODY: input } }]
+  if (isAgentTool.value) groups.push({ id: 'AI', displayId: 'IA', app: 'ai_agent', title: 'Variáveis da IA', output: Object.fromEntries((Array.isArray(draft.value.ai_variables) ? draft.value.ai_variables : []).filter(item => item?.name).map(item => [item.name, item.description || 'Valor fornecido pelo agente'])) })
   for (const [index, step] of props.allSteps.entries()) {
     if (String(step.id) === String(props.step.id) || ['webhook', 'scheduler', 'activator'].includes(canonicalApp(step.app))) continue
     if (upstreamIds.value ? !upstreamIds.value.has(String(step.id)) : index >= props.index) continue
@@ -60,7 +84,7 @@ const variableGroups = computed(() => {
   }
   return groups
 })
-watch(() => props.step.id, () => { stopListening(); draft.value = createStepDraft(props.step); errors.value = {}; generalError.value = ''; testedRecord.value = null; testedExecution.value = null; pinnedCapture.value = false; suppressOriginalOutput.value = false; fieldRefs.clear(); focusedField = null; initializeHeaders(); loadWebhook() })
+watch(() => props.step.id, () => { stopListening(); draft.value = enrichedDraft(); errors.value = {}; generalError.value = ''; testedRecord.value = null; testedExecution.value = null; pinnedCapture.value = false; suppressOriginalOutput.value = false; fieldRefs.clear(); focusedField = null; initializeHeaders(); loadWebhook() })
 watch(() => props.testInput, input => { localTestInput.value = clone(input) })
 function fieldValue(field) { const value = draft.value.config[field.key]; return field.type === 'json' && typeof value === 'object' ? JSON.stringify(value, null, 2) : value ?? '' }
 function setField(field, value) { draft.value.config[field.key] = value; delete errors.value[field.key] }
@@ -153,7 +177,24 @@ function save() {
   emit('update', prepareStepDraft(draft.value))
   emit('close')
 }
+function acceptAgentTest(result) {
+  testedExecution.value = result
+  testedRecord.value = result.steps?.findLast(record => String(record.id) === String(props.step.id)) || { status: result.status, output: result.output, error: result.error }
+  emit('tested', result)
+}
+async function prepareChat(message) {
+  const stepId = String(props.step.id)
+  const candidate = { ...draft.value, config: { ...draft.value.config, user_prompt: message } }
+  errors.value = validateStepDraft(candidate)
+  if (requiresConnection.value && !candidate.connection_id) errors.value.connection_id = 'Selecione uma conexão.'
+  if (Object.keys(errors.value).length) { generalError.value = 'Revise os campos destacados antes de conversar com o agente.'; throw new Error(generalError.value) }
+  generalError.value = ''
+  if (props.beforeTest && await props.beforeTest() === false) throw new Error('Não foi possível salvar o fluxo antes do teste. Tente novamente.')
+  if (!alive || stepId !== String(props.step.id)) throw new Error('O módulo foi fechado antes do teste.')
+  return prepareStepDraft(candidate)
+}
 async function test() {
+  if (isAgent.value) { mobilePanel.value = 'output'; nextTick(() => agentChat.value?.focus()); return }
   if (app.value === 'webhook') return listenWebhook()
   if (app.value === 'return') syncHeaders()
   errors.value = validateStepDraft(draft.value)
@@ -162,6 +203,9 @@ async function test() {
   generalError.value = ''
   testing.value = true
   try {
+    const stepId = String(props.step.id)
+    if (props.beforeTest && await props.beforeTest() === false) throw new Error('Não foi possível salvar o fluxo antes do teste. Tente novamente.')
+    if (!alive || stepId !== String(props.step.id)) return
     if (typeof api.testFluxStep !== 'function') throw new Error('O serviço de teste ainda não está disponível. Verifique se o servidor está em execução.')
     const context = Object.fromEntries(variableGroups.value.filter(group => group.output !== undefined).map(group => [group.id, clone(group.output)]))
     const result = await api.testFluxStep(props.fluxId, props.step.id, { step: prepareStepDraft(draft.value), input: actualInput.value ?? {}, context })
@@ -200,9 +244,9 @@ onBeforeUnmount(() => { alive = false;stopListening();document.removeEventListen
       <nav class="node-dialog__mobile-tabs" aria-label="Painéis do módulo"><button v-if="app !== 'webhook'" :aria-pressed="mobilePanel === 'input'" :class="{ selected: mobilePanel === 'input' }" @click="mobilePanel = 'input'">Entrada</button><button :aria-pressed="mobilePanel === 'config'" :class="{ selected: mobilePanel === 'config' }" @click="mobilePanel = 'config'">Configuração</button><button :aria-pressed="mobilePanel === 'output'" :class="{ selected: mobilePanel === 'output' }" @click="mobilePanel = 'output'">Saída</button></nav>
       <aside v-if="app !== 'webhook'" class="node-side-panel node-input" :class="{ 'mobile-visible': mobilePanel === 'input' }">
         <header class="node-panel-title"><span class="node-panel-number">01</span><div><strong>Entrada</strong><small>Dados e variáveis</small></div></header>
-        <div class="node-input-tabs" role="tablist"><button role="tab" :aria-selected="activeTab === 'variables'" :class="{ selected: activeTab === 'variables' }" @click="activeTab = 'variables'"><v-icon icon="mdi-code-tags" size="15" />Variáveis</button><button role="tab" :aria-selected="activeTab === 'functions'" :class="{ selected: activeTab === 'functions' }" @click="activeTab = 'functions'"><v-icon icon="mdi-cog-outline" size="14" />Funções</button></div>
+        <div class="node-input-tabs" role="tablist" aria-label="Dados de entrada"><button :id="`input-tab-variables-${step.id}`" role="tab" :aria-controls="`input-panel-variables-${step.id}`" :tabindex="activeTab === 'variables' ? 0 : -1" :aria-selected="activeTab === 'variables'" :class="{ selected: activeTab === 'variables' }" @click="activeTab = 'variables'"><v-icon icon="mdi-code-tags" size="15" />Variáveis</button><button :id="`input-tab-functions-${step.id}`" role="tab" :aria-controls="`input-panel-functions-${step.id}`" :tabindex="activeTab === 'functions' ? 0 : -1" :aria-selected="activeTab === 'functions'" :class="{ selected: activeTab === 'functions' }" @click="activeTab = 'functions'"><v-icon icon="mdi-cog-outline" size="14" />Funções</button></div>
         <div class="node-input__search"><v-icon icon="mdi-magnify" size="16" /><input v-model="search" :aria-label="activeTab === 'variables' ? 'Buscar variáveis' : 'Buscar funções'" /></div>
-        <div class="node-input__tree"><VariableTree v-if="activeTab === 'variables'" :groups="variableGroups" :search="search" @select="insertVariable" /><FunctionPicker v-else :search="search" @select="insertVariable" /></div>
+        <div :id="`input-panel-${activeTab}-${step.id}`" class="node-input__tree" role="tabpanel" :aria-labelledby="`input-tab-${activeTab}-${step.id}`"><VariableTree v-if="activeTab === 'variables'" :groups="variableGroups" :search="search" @select="insertVariable" /><FunctionPicker v-else :search="search" @select="insertVariable" /></div>
         <button class="node-input__edit-data" @click="editInput"><v-icon icon="mdi-code-json" size="14" />Dados de teste</button>
       </aside>
 
@@ -212,6 +256,7 @@ onBeforeUnmount(() => { alive = false;stopListening();document.removeEventListen
           <div v-if="hasConnection" class="node-connection-wrap"><div class="node-connection" :class="{ invalid: errors.connection_id }"><span class="node-connection__icon"><AppIcon :app="selectedConnection?.app || draft.app" :size="20" :rounded="2" /></span><select v-model="draft.connection_id" aria-label="Conexão" @change="delete errors.connection_id"><option :value="undefined" :disabled="requiresConnection">{{ requiresConnection ? 'Selecione uma conexão' : 'Sem autenticação' }}</option><option v-for="connection in matchingConnections" :key="connection.id" :value="connection.id">{{ connection.name }}</option></select><v-icon icon="mdi-chevron-down" size="16" class="node-connection__chevron" /><button class="node-connection__add" aria-label="Adicionar conexão" @click="newConnOpen = true"><v-icon icon="mdi-plus" size="22" /></button></div><p v-if="errors.connection_id" class="node-field-error">{{ errors.connection_id }}</p></div>
           <p class="node-config__description">{{ schema.description }}</p>
           <div class="node-config__fields">
+            <AgentToolFields v-if="isAgentTool" v-model="draft" :errors="errors" />
             <p v-if="['scheduler', 'code'].includes(app) || app === 'webhook' && !api.db.capabilities?.external_webhooks" class="node-error-banner">{{ app === 'code' ? 'O código pode ser guardado no fluxo, mas a execução de JavaScript ainda não está disponível.' : app === 'scheduler' ? 'Agendamentos ainda não estão disponíveis. Use Rodar para executar manualmente.' : 'O serviço de webhooks ainda não foi configurado. Você pode usar Rodar com uma entrada de teste.' }}</p><template v-if="app === 'webhook' && api.db.capabilities?.external_webhooks">
               <div class="node-field"><div class="webhook-label-row"><label><span class="webhook-environment">Produção</span>Link de ativação</label><button class="webhook-rotate" :disabled="rotating || !webhookInfo" @click="rotateWebhook"><v-icon :icon="rotating ? 'mdi-loading mdi-spin' : 'mdi-refresh'" size="14" />Gerar novo link</button></div><div class="node-webhook-url"><input :value="webhookInfo?.sync_url || 'Carregando link…'" readonly aria-label="Link de ativação do Webhook" /><button :disabled="!webhookInfo?.sync_url" :aria-label="copyingLink === 'sync' ? 'Link de produção copiado' : 'Copiar link de produção'" @click="copyLink('sync')"><v-icon :icon="copyingLink === 'sync' ? 'mdi-check' : 'mdi-content-copy'" size="17" /></button></div><p class="webhook-link-help">Executa a versão publicada quando o fluxo está ativo. A chamada espera a resposta por até 30 segundos.</p></div>
               <div class="node-field"><label><span class="webhook-environment webhook-environment--test">Teste</span>Link de teste</label><div class="node-webhook-url"><input :value="webhookInfo?.test_url || 'Carregando link…'" readonly aria-label="Link de teste do Webhook" /><button :disabled="!webhookInfo?.test_url" :aria-label="copyingLink === 'test' ? 'Link de teste copiado' : 'Copiar link de teste'" @click="copyLink('test')"><v-icon :icon="copyingLink === 'test' ? 'mdi-check' : 'mdi-content-copy'" size="17" /></button></div><p class="webhook-link-help">Captura a entrada e mostra os dados na saída, sem executar o fluxo.</p></div>
@@ -227,7 +272,8 @@ onBeforeUnmount(() => { alive = false;stopListening();document.removeEventListen
             </template>
             <div v-for="field in app === 'return' ? [] : visibleFields" :key="`${draft.app}-${field.key}`" class="node-field">
               <div class="node-field__label-row"><label :for="`node-field-${field.key}`">{{ field.label }}<span v-if="field.required" class="node-required">*</span><span v-if="field.hint || field.required" class="node-label-help" :title="field.hint || 'Campo obrigatório'">ⓘ</span></label><label v-if="field.custom" class="node-custom-toggle">Customizado<input v-model="draft.config[`${field.key}_custom`]" type="checkbox" role="switch" /></label></div>
-              <CodeInput v-if="['json', 'code'].includes(field.type)" :ref="el => registerField(field.key, el)" :model-value="fieldValue(field)" :language="field.type === 'json' ? 'json' : field.language || 'javascript'" :rows="field.rows || 10" :label="field.label" :invalid="!!errors[field.key]" @focus="rememberField(field.key)" @update:model-value="setField(field, $event)" />
+              <div v-if="draft.agent_role === 'model' && field.key === 'model'" class="agent-model-picker"><div><input :id="`node-field-${field.key}`" v-model="draft.config.model" :list="modelListId" class="node-number" :class="{ invalid: errors.model }" aria-label="Modelo" placeholder="Selecione ou informe o modelo" spellcheck="false" @input="delete errors.model" /><button type="button" :disabled="modelsLoading || !draft.connection_id" aria-label="Atualizar modelos da conexão" @click="loadModels"><v-icon :icon="modelsLoading ? 'mdi-loading mdi-spin' : 'mdi-refresh'" size="18" /></button></div><datalist :id="modelListId"><option v-for="model in modelOptions" :key="model.value" :value="model.value">{{ model.label }}</option></datalist><p role="status">{{ modelsLoading ? 'Consultando modelos disponíveis…' : modelsError ? 'Não foi possível listar os modelos. Informe um identificador disponível na conexão.' : modelOptions.length ? 'Escolha um modelo da conexão ou informe outro identificador.' : 'Selecione uma conexão e informe o identificador do modelo.' }}</p></div>
+              <CodeInput v-else-if="['json', 'code'].includes(field.type)" :ref="el => registerField(field.key, el)" :model-value="fieldValue(field)" :language="field.type === 'json' ? 'json' : field.language || 'javascript'" :rows="field.rows || 10" :label="field.label" :invalid="!!errors[field.key]" @focus="rememberField(field.key)" @update:model-value="setField(field, $event)" />
               <select v-else-if="field.type === 'select' && !draft.config[`${field.key}_custom`]" :id="`node-field-${field.key}`" v-model="draft.config[field.key]" class="node-select" :class="{ invalid: errors[field.key] }" :aria-label="field.label" @change="delete errors[field.key]"><option v-for="option in field.options || []" :key="String(typeof option === 'object' ? option.value : option)" :value="typeof option === 'object' ? option.value : option">{{ typeof option === 'object' ? option.title || option.label : option }}</option></select>
               <label v-else-if="field.type === 'boolean'" class="node-boolean"><input :id="`node-field-${field.key}`" v-model="draft.config[field.key]" type="checkbox" role="switch" />{{ draft.config[field.key] ? 'Sim' : 'Não' }}</label>
               <input v-else-if="field.type === 'number'" :id="`node-field-${field.key}`" v-model="draft.config[field.key]" type="number" class="node-number" :class="{ invalid: errors[field.key] }" :min="field.min" :max="field.max" :step="field.step || 1" :aria-label="field.label" @input="delete errors[field.key]" />
@@ -241,13 +287,16 @@ onBeforeUnmount(() => { alive = false;stopListening();document.removeEventListen
         <footer class="node-config__footer"><span class="node-save-hint">Ctrl / ⌘ + S</span><button class="node-save" @click="save"><v-icon icon="mdi-check" size="18" />Salvar módulo</button></footer>
       </section>
 
-      <aside class="node-side-panel node-output" :class="{ 'mobile-visible': mobilePanel === 'output' }"><header class="node-panel-title"><span class="node-panel-number">{{ app === 'webhook' ? '02' : '03' }}</span><div><strong>Saída</strong><small>Resultado do módulo</small></div></header><div class="node-output__body">
-        <div v-if="pinnedCapture && hasOutput" class="node-pinned-label"><v-icon icon="mdi-pin" size="16" />Resposta fixada</div>
+      <aside class="node-side-panel node-output" :class="{ 'mobile-visible': mobilePanel === 'output' }"><header class="node-panel-title"><span class="node-panel-number">{{ app === 'webhook' ? '02' : '03' }}</span><div><strong>{{ isAgent ? 'Conversa' : 'Saída' }}</strong><small>{{ isAgent ? 'Chat de teste' : 'Resultado do módulo' }}</small></div></header><div class="node-output__body">
+        <AgentChatPanel v-if="isAgent" ref="agentChat" :key="String(step.id)" :flux-id="fluxId" :step-id="step.id" :input="actualInput" :prepare="prepareChat" @tested="acceptAgentTest" />
+        <div v-else-if="['model','memory'].includes(draft.agent_role)" class="node-output__empty"><span class="node-empty-app"><AppIcon :app="draft.app" :size="48" :rounded="12" /></span><h3>{{ draft.agent_role === 'model' ? 'Modelo do agente' : 'Memória do agente' }}</h3><p>{{ draft.agent_role === 'model' ? 'Esta conexão e este modelo serão usados pelo agente. Salve a configuração e abra o chat do agente para testar.' : 'As mensagens da mesma sessão compartilham este histórico. Salve a configuração e abra o chat do agente para testar a conversa.' }}</p></div>
+        <template v-else><div v-if="pinnedCapture && hasOutput" class="node-pinned-label"><v-icon icon="mdi-pin" size="16" />Resposta fixada</div>
         <div v-if="hasOutput || outputError || testing" class="node-output__status-row"><span class="node-status" :class="{ 'node-status--error': outputError, 'node-status--loading': testing }"><v-icon :icon="testing ? 'mdi-loading mdi-spin' : outputError ? 'mdi-alert-circle-outline' : 'mdi-check'" size="15" />{{ testing ? 'Executando…' : outputError ? 'Erro' : pinnedCapture ? 'Entrada capturada' : outputStatus }}</span><button class="node-retest" :disabled="testing || listening" @click="test"><v-icon icon="mdi-refresh" size="16" />{{ app === 'webhook' ? 'Nova captura' : 'Testar novamente' }}</button></div>
         <p v-if="outputError" class="node-output__error" role="alert">{{ typeof outputError === 'object' ? outputError.message || JSON.stringify(outputError) : outputError }}</p><JsonTree v-if="hasOutput" :value="outputTree" />
         <div v-if="!hasOutput && !outputError && !testing && !listening" class="node-output__empty"><span class="node-empty-app"><AppIcon :app="draft.app" :size="48" :rounded="12" /></span><h3>{{ title }}</h3><p>{{ schema.description || 'Teste este módulo para visualizar o resultado.' }}</p><button class="node-empty-test" @click="test"><v-icon icon="mdi-play-outline" size="16" />{{ app === 'webhook' ? 'Testar Webhook' : 'Testar' }}</button><button class="node-empty-data" @click="editInput">Utilizar dados de teste</button></div>
         <div v-if="(testing || listening) && !hasOutput" class="node-output__loading"><v-icon :icon="listening ? 'mdi-radar' : 'mdi-loading mdi-spin'" size="32" /><p>{{ listening ? 'Aguardando chamada no link de teste…' : 'Aguardando o resultado da execução…' }}</p><button v-if="listening" class="node-empty-data" @click="stopListening">Cancelar escuta</button></div>
         <div v-if="pinnedCapture && hasOutput" class="node-pinned-actions"><button @click="clearPinnedInput"><v-icon icon="mdi-broom" size="17" />Limpar</button><button @click="editInput"><v-icon icon="mdi-pencil-outline" size="17" />Editar</button></div>
+        </template>
       </div></aside>
     </div>
     <NewConnectionModal v-model="newConnOpen" :initial-app="app" @created="connectionCreated" />
@@ -257,6 +306,7 @@ onBeforeUnmount(() => { alive = false;stopListening();document.removeEventListen
 </template>
 
 <style scoped>
+.agent-model-picker>div{display:flex;gap:8px}.agent-model-picker input{flex:1;width:100%}.agent-model-picker button{width:42px;flex:none;border:1px solid rgb(var(--cm-line-strong));border-radius:8px;display:grid;place-items:center;color:rgb(var(--cm-fg))}.agent-model-picker button:disabled{opacity:.45}.agent-model-picker p{font-size:11px;line-height:1.6;color:rgb(var(--cm-fg-muted));margin-top:8px}
 .node-dialog-backdrop{--node-panel-bg:rgb(var(--cm-surface-1));position:fixed;inset:0;z-index:50;background:rgb(10 10 13/.72);backdrop-filter:blur(5px);font-family:var(--trama-font-ui,Inter,sans-serif);color:rgb(var(--cm-fg));font-size:13px}
 .node-dialog{position:absolute;inset:0;margin:auto;width:min(1440px,calc(100% - 48px));height:min(840px,calc(100dvh - 48px));display:grid;grid-template-columns:minmax(240px,1fr) minmax(400px,1.45fr) minmax(240px,1fr);grid-template-rows:78px minmax(0,1fr);grid-template-areas:'identity identity identity' 'input config output';background:var(--node-panel-bg);border:1px solid rgb(var(--cm-line-strong));border-radius:16px;box-shadow:var(--trama-shadow-float,0 24px 60px -12px #000b);overflow:hidden}
 .node-dialog__identity{grid-area:identity;display:flex;align-items:center;gap:14px;padding:16px 22px;border-bottom:1px solid rgb(var(--cm-line));background:rgb(var(--cm-surface-2));position:relative;min-width:0}
