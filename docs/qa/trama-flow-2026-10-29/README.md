@@ -8,4 +8,6 @@ A referência visual foi o showcase oficial Caramelo, com superfícies Ink, bord
 
 O relatório REA em `docs/research/fiqon-agent-2026-10-28.md` separa os contratos observados nos arquivos distribuídos da Fiqon das escolhas internas da Trama.
 
+Em produção, 12 verificações confirmaram autenticação e persistência, webhooks reais publicados, idempotência, captura e rotação, retorno XML com status/headers, For Each com dois itens e uma continuação, controle de acesso da rota de modelos e a interface de slots/chat. A conta temporária e o workspace foram removidos ao final. Chamadas a provedores de IA foram verificadas por fixtures locais, sem consumir serviços pagos em produção.
+
 Para reproduzir: execute o Vite na porta 5180 e rode `node docs/qa/trama-flow-2026-10-29/run.mjs`, com Playwright instalado ou `PLAYWRIGHT_MODULE` apontando para o módulo do runtime local. O script usa Edge em sua localização padrão no Windows.

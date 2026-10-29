@@ -54,7 +54,7 @@
 /* Real measurements are written by the adapter, never guessed percentages. */
 :is(.trama-root,.trama-overlay) .trama-showcase-tabs{position:relative;isolation:isolate;gap:3px;padding:4px;border:1px solid rgb(var(--cm-line));border-radius:999px;background:rgb(var(--cm-surface-1));box-shadow:var(--cm-pressed)}
 :is(.trama-root,.trama-overlay) .trama-showcase-tabs>button{position:relative;z-index:1;min-height:36px;border:0;border-radius:999px;background:transparent;box-shadow:none;color:rgb(var(--cm-fg-dim));transition:color 160ms var(--cm-ease-standard)}
-:is(.trama-root,.trama-overlay) .trama-showcase-tabs>button:is(.selected,.active,[aria-selected="true"],[aria-pressed="true"]){background:transparent;border:0;box-shadow:none;color:rgb(var(--cm-fg))}
+:is(.trama-root,.trama-overlay) .trama-showcase-tabs>button:is(.selected,.active,[aria-selected="true"],[aria-pressed="true"]){background:transparent!important;border:0!important;box-shadow:none!important;color:rgb(var(--cm-fg))!important}
 :is(.trama-root,.trama-overlay) .trama-showcase-tabs>.trama-tabs-indicator{position:absolute;inset:4px auto 4px 0;width:var(--cm-ind-w,0px);transform:translateX(var(--cm-ind-x,0px));border:0;border-radius:999px;background:rgb(var(--cm-surface-3));box-shadow:var(--cm-elev-1),inset 0 0 0 1px rgb(var(--cm-line));padding:0;min-width:0;min-height:0;height:auto;z-index:0;pointer-events:none;opacity:1;transition:transform 320ms var(--cm-ease-drawer),width 320ms var(--cm-ease-drawer)}
 :is(.trama-root,.trama-overlay) .trama-showcase-tabs:not([data-cm-tabs-ready])>.trama-tabs-indicator{opacity:0;transition:none}
 /* Preserve existing display layouts on labels that receive a chromatic pulse. */
