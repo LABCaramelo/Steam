@@ -12,7 +12,9 @@ import type {
   FinancialEntry,
   Opportunity,
   OpportunityStage,
+  RoutineTask,
   SocialIntegration,
+  Squad,
   Task,
   Workspace,
   WorkspaceMember,
@@ -81,6 +83,23 @@ export interface GabineteRepository {
   getWorkspaces(): Promise<Workspace[]>;
   createWorkspace(data: { name: string; slug: string; service_type: string }): Promise<Workspace>;
   getMembers(workspaceId: string): Promise<WorkspaceMember[]>;
+  createMember(data: Partial<WorkspaceMember> & { workspace_id: string; name: string; email: string }): Promise<WorkspaceMember>;
+  updateMember(id: string, data: Partial<WorkspaceMember>): Promise<void>;
+  deleteMember(id: string): Promise<void>;
+
+  // Rotina
+  getRoutineTasks(workspaceId: string): Promise<RoutineTask[]>;
+  addRoutineTask(data: { workspace_id: string; title: string }): Promise<RoutineTask>;
+  updateRoutineTask(id: string, data: Partial<RoutineTask>): Promise<void>;
+  deleteRoutineTask(id: string): Promise<void>;
+  getRoutineNote(workspaceId: string): Promise<string>;
+  saveRoutineNote(workspaceId: string, note: string): Promise<void>;
+  getRoutineStories(workspaceId: string, month: number, year: number): Promise<number[]>;
+  toggleRoutineStory(workspaceId: string, day: number, month: number, year: number): Promise<number[]>;
+
+  // Squads
+  getSquads(workspaceId: string): Promise<Squad[]>;
+  createSquad(data: { workspace_id: string; name: string; description?: string }): Promise<Squad>;
 
   // Clientes
   getClients(workspaceId: string): Promise<Client[]>;
@@ -188,18 +207,173 @@ export const supabaseGabinete: GabineteRepository = {
   },
 
   async getMembers(workspaceId) {
-    const list = getLocal<WorkspaceMember[]>(`members_${workspaceId}`, [
+    const defaultList: WorkspaceMember[] = [
       {
         id: "mem-1",
         workspace_id: workspaceId,
-        name: "Luiz (eu)",
+        name: "Luiz",
         email: "luiz@caramelo.lab",
         role: "owner",
+        member_type: "adm_master",
+        job_title: "Sem cargo definido",
         status: "active",
         created_at: new Date().toISOString(),
       },
-    ]);
+    ];
+    const list = getLocal<WorkspaceMember[]>(`members_${workspaceId}`, defaultList);
     return list;
+  },
+
+  async createMember(data) {
+    const list = await this.getMembers(data.workspace_id);
+    const newMember: WorkspaceMember = {
+      id: "mem-" + Date.now(),
+      workspace_id: data.workspace_id,
+      name: data.name,
+      email: data.email,
+      role: data.role || "collaborator",
+      member_type: data.member_type || "membro",
+      job_title: data.job_title || "Sem cargo definido",
+      status: "active",
+      restricted_clients: data.restricted_clients || [],
+      squad_id: data.squad_id,
+      squad_name: data.squad_name,
+      created_at: new Date().toISOString(),
+    };
+    list.push(newMember);
+    setLocal(`members_${data.workspace_id}`, list);
+    return newMember;
+  },
+
+  async updateMember(id, data) {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(STORAGE_KEY_PREFIX + "members_")) {
+        const list = JSON.parse(localStorage.getItem(key) || "[]") as WorkspaceMember[];
+        const idx = list.findIndex((m) => m.id === id);
+        if (idx !== -1) {
+          list[idx] = { ...list[idx], ...data };
+          localStorage.setItem(key, JSON.stringify(list));
+          return;
+        }
+      }
+    }
+  },
+
+  async deleteMember(id) {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(STORAGE_KEY_PREFIX + "members_")) {
+        const list = JSON.parse(localStorage.getItem(key) || "[]") as WorkspaceMember[];
+        const filtered = list.filter((m) => m.id !== id);
+        localStorage.setItem(key, JSON.stringify(filtered));
+        return;
+      }
+    }
+  },
+
+  // Rotina Semanal
+  async getRoutineTasks(workspaceId) {
+    return getLocal<RoutineTask[]>(`routine_tasks_${workspaceId}`, []);
+  },
+
+  async addRoutineTask(data) {
+    const list = await this.getRoutineTasks(data.workspace_id);
+    const newTask: RoutineTask = {
+      id: "rt-" + Date.now(),
+      workspace_id: data.workspace_id,
+      title: data.title,
+      days: { seg: false, ter: false, qua: false, qui: false, sex: false, sab: false },
+      created_at: new Date().toISOString(),
+    };
+    list.push(newTask);
+    setLocal(`routine_tasks_${data.workspace_id}`, list);
+    return newTask;
+  },
+
+  async updateRoutineTask(id, data) {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(STORAGE_KEY_PREFIX + "routine_tasks_")) {
+        const list = JSON.parse(localStorage.getItem(key) || "[]") as RoutineTask[];
+        const idx = list.findIndex((t) => t.id === id);
+        if (idx !== -1) {
+          list[idx] = { ...list[idx], ...data };
+          localStorage.setItem(key, JSON.stringify(list));
+          return;
+        }
+      }
+    }
+  },
+
+  async deleteRoutineTask(id) {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(STORAGE_KEY_PREFIX + "routine_tasks_")) {
+        const list = JSON.parse(localStorage.getItem(key) || "[]") as RoutineTask[];
+        const filtered = list.filter((t) => t.id !== id);
+        localStorage.setItem(key, JSON.stringify(filtered));
+        return;
+      }
+    }
+  },
+
+  async getRoutineNote(workspaceId) {
+    return getLocal<string>(`routine_note_${workspaceId}`, "");
+  },
+
+  async saveRoutineNote(workspaceId, note) {
+    setLocal(`routine_note_${workspaceId}`, note);
+  },
+
+  async getRoutineStories(workspaceId, month, year) {
+    const key = `routine_stories_${workspaceId}_${year}_${month}`;
+    // Default highlight day 3 like screenshot if empty
+    return getLocal<number[]>(key, [3]);
+  },
+
+  async toggleRoutineStory(workspaceId, day, month, year) {
+    const key = `routine_stories_${workspaceId}_${year}_${month}`;
+    const list = await this.getRoutineStories(workspaceId, month, year);
+    const exists = list.includes(day);
+    const updated = exists ? list.filter((d) => d !== day) : [...list, day];
+    setLocal(key, updated);
+    return updated;
+  },
+
+  // Squads
+  async getSquads(workspaceId) {
+    const defaultSquads: Squad[] = [
+      {
+        id: "sq-1",
+        workspace_id: workspaceId,
+        name: "Squad Conteúdo & Copy",
+        description: "Planejamento, roteiros de Reels e carrosséis",
+        color: "#ffd52a",
+        members_count: 1,
+        clients_count: 0,
+        leader_name: "Luiz",
+        created_at: new Date().toISOString(),
+      },
+    ];
+    return getLocal<Squad[]>(`squads_${workspaceId}`, defaultSquads);
+  },
+
+  async createSquad(data) {
+    const list = await this.getSquads(data.workspace_id);
+    const newSquad: Squad = {
+      id: "sq-" + Date.now(),
+      workspace_id: data.workspace_id,
+      name: data.name,
+      description: data.description,
+      color: "#25bfff",
+      members_count: 0,
+      clients_count: 0,
+      created_at: new Date().toISOString(),
+    };
+    list.push(newSquad);
+    setLocal(`squads_${data.workspace_id}`, list);
+    return newSquad;
   },
 
   async getClients(workspaceId) {

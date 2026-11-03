@@ -12,6 +12,7 @@ export interface Workspace {
 }
 
 export type MemberRole = "owner" | "admin" | "collaborator" | "editor" | "client";
+export type MemberType = "membro" | "adm_setor" | "adm_master";
 
 export interface WorkspaceMember {
   id: string;
@@ -21,7 +22,49 @@ export interface WorkspaceMember {
   email: string;
   avatar_url?: string;
   role: MemberRole;
-  status: "active" | "pending" | "revoked";
+  member_type?: MemberType;
+  job_title?: string;
+  status: "active" | "pending" | "revoked" | "inactive";
+  restricted_clients?: string[];
+  squad_id?: string;
+  squad_name?: string;
+  anniversary_date?: string;
+  created_at: string;
+}
+
+export interface RoutineTask {
+  id: string;
+  workspace_id: string;
+  title: string;
+  days: {
+    seg: boolean;
+    ter: boolean;
+    qua: boolean;
+    qui: boolean;
+    sex: boolean;
+    sab: boolean;
+  };
+  assignee?: string;
+  created_at: string;
+}
+
+export interface RoutineStoryDay {
+  day: number;
+  month: number;
+  year: number;
+  planned: boolean;
+  topic?: string;
+}
+
+export interface Squad {
+  id: string;
+  workspace_id: string;
+  name: string;
+  description?: string;
+  color?: string;
+  members_count: number;
+  clients_count: number;
+  leader_name?: string;
   created_at: string;
 }
 

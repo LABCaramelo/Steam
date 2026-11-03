@@ -14,6 +14,7 @@ import {
   IconTrash,
   IconTrendingUp,
   IconCreditCard,
+  IconShield,
 } from "./Icons";
 
 interface Props {
@@ -36,6 +37,8 @@ export const GabineteSidebar: React.FC<Props> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [clientsExpanded, setClientsExpanded] = useState(true);
+  const [equipeExpanded, setEquipeExpanded] = useState(true);
+  const [relatoriosExpanded, setRelatoriosExpanded] = useState(false);
 
   const avulsosCount = clients.filter((c) => c.category === "avulsos" && c.status === "active").length;
   const exClientesCount = clients.filter((c) => c.status === "archived").length;
@@ -46,14 +49,33 @@ export const GabineteSidebar: React.FC<Props> = ({
       {/* Perfil do Gabinete */}
       <div className="mc-sidebar__header">
         <div className="mc-sidebar__profile">
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
             <Isotype size={28} variant="caramel" decorative interactive />
             <div>
               <h2 className="mc-sidebar__title">
-                <span>GABINETE</span>
+                <span>{workspace.name ? workspace.name.toUpperCase() : "LUIZ"}</span>
                 <span style={{ fontSize: 13, color: "var(--mc-caramel)", opacity: 0.9 }}>✦</span>
               </h2>
-              <p className="mc-sidebar__subtitle">Gestão de bastidor · {workspace.name || "Luiz"}</p>
+              <p className="mc-sidebar__subtitle">Gestão de conteúdo e criação</p>
+              <div style={{ marginTop: 6 }}>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 5,
+                    padding: "2px 8px",
+                    borderRadius: 9999,
+                    border: "1px solid rgba(255, 112, 26, 0.4)",
+                    background: "rgba(255, 112, 26, 0.1)",
+                    color: "var(--mc-caramel)",
+                    fontSize: 10.5,
+                    fontWeight: 700,
+                  }}
+                >
+                  <IconShield size={11} />
+                  <span>{workspace.agency_level || "Agência Bronze I"}</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -276,15 +298,51 @@ export const GabineteSidebar: React.FC<Props> = ({
         </button>
 
         {/* Relatórios */}
-        <button
-          className={`mc-nav-item ${activeTab === "relatorios" ? "is-active" : ""}`}
-          onClick={() => onSelectTab("relatorios")}
-        >
-          <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon"><IconTrendingUp size={16} /></span>
-            <span>Relatórios</span>
+        <div>
+          <div
+            className={`mc-nav-item ${activeTab.startsWith("relatorios") ? "is-active" : ""}`}
+            onClick={() => onSelectTab("relatorios")}
+          >
+            <div className="mc-nav-item__left">
+              <span className="mc-nav-item__icon"><IconTrendingUp size={16} /></span>
+              <span>Relatórios</span>
+            </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setRelatoriosExpanded(!relatoriosExpanded);
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                color: "inherit",
+                opacity: 0.5,
+                cursor: "pointer",
+                fontSize: 10,
+              }}
+            >
+              {relatoriosExpanded ? "▾" : "▸"}
+            </button>
           </div>
-        </button>
+
+          {relatoriosExpanded && (
+            <div className="mc-sidebar__subgroup">
+              <button
+                className={`mc-subitem ${activeTab === "relatorios" ? "is-active" : ""}`}
+                onClick={() => onSelectTab("relatorios")}
+              >
+                <span>› Central de relatórios</span>
+              </button>
+              <button
+                className={`mc-subitem ${activeTab === "relatorios-briefing" ? "is-active" : ""}`}
+                onClick={() => onSelectTab("relatorios")}
+              >
+                <span>› Perguntas do briefing</span>
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Financeiro */}
         <button
@@ -295,7 +353,61 @@ export const GabineteSidebar: React.FC<Props> = ({
             <span className="mc-nav-item__icon"><IconCreditCard size={16} /></span>
             <span>Financeiro</span>
           </div>
+          <span style={{ fontSize: 10, opacity: 0.5 }}>›</span>
         </button>
+
+        {/* Equipe (com Rotina, Membros, Squads) */}
+        <div style={{ marginTop: 4 }}>
+          <div
+            className={`mc-nav-item ${activeTab.startsWith("equipe") || activeTab === "rotina" ? "is-active" : ""}`}
+            onClick={() => onSelectTab("equipe")}
+          >
+            <div className="mc-nav-item__left">
+              <span className="mc-nav-item__icon"><IconUsers size={16} /></span>
+              <span>Equipe</span>
+            </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setEquipeExpanded(!equipeExpanded);
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                color: "inherit",
+                opacity: 0.5,
+                cursor: "pointer",
+                fontSize: 10,
+              }}
+            >
+              {equipeExpanded ? "▾" : "▸"}
+            </button>
+          </div>
+
+          {equipeExpanded && (
+            <div className="mc-sidebar__subgroup">
+              <button
+                className={`mc-subitem ${activeTab === "rotina" || activeTab === "equipe-rotina" ? "is-active" : ""}`}
+                onClick={() => onSelectTab("rotina")}
+              >
+                <span>› Rotina</span>
+              </button>
+              <button
+                className={`mc-subitem ${activeTab === "equipe" || activeTab === "equipe-membros" ? "is-active" : ""}`}
+                onClick={() => onSelectTab("equipe")}
+              >
+                <span>› Membros</span>
+              </button>
+              <button
+                className={`mc-subitem ${activeTab === "equipe-squads" ? "is-active" : ""}`}
+                onClick={() => onSelectTab("equipe-squads")}
+              >
+                <span>› Squads</span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Rodapé da Sidebar */}

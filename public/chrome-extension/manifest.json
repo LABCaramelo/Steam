@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Gabinete — Salvar Referências",
+  "version": "1.0.0",
+  "description": "Salve referências de posts, vídeos e sites diretamente para a Biblioteca do Gabinete no LAB Caramelo.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Salvar no Gabinete"
+  },
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "icons": {
+    "128": "icon.png"
+  }
+}

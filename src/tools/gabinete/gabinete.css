@@ -1,3 +1,5 @@
+@import "@caramelo/design-system/styles.css";
+
 /* ==============================================================================
    GABINETE — DESIGN SYSTEM CARAMELO V2 (SHOWCASE LUMEN SPEC)
    "Menos ferramenta. Mais sistema."
@@ -492,6 +494,57 @@ button.mc-btn:focus-visible,
 .cm-btn:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px rgb(37 191 255 / 0.5), 0 0 0 4px rgba(0, 0, 0, 0.6);
+}
+
+/* Explicit styling for Hero Card Action Buttons (Pills Canônicas) */
+.mc-hero-card .cm-btn,
+.mc-hero-card button,
+.mc-hero-card__btn {
+  border-radius: 9999px !important;
+  font-family: var(--mc-font-sans, Inter, sans-serif);
+  font-weight: 800 !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 22px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  border: none !important;
+}
+
+.mc-hero-card--acid .cm-btn,
+.mc-hero-card--acid button,
+.mc-hero-card--acid .mc-hero-card__btn {
+  background: #FFF4E8 !important;
+  color: #101014 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28) !important;
+}
+
+.mc-hero-card--acid .cm-btn:hover,
+.mc-hero-card--acid button:hover,
+.mc-hero-card--acid .mc-hero-card__btn:hover {
+  background: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(255, 244, 232, 0.45) !important;
+  transform: translateY(-1px);
+}
+
+.mc-hero-card--dark .cm-btn,
+.mc-hero-card--dark button,
+.mc-hero-card--dark .mc-hero-card__btn {
+  background: #FF701A !important;
+  color: #101014 !important;
+  box-shadow: 0 2px 14px rgba(255, 112, 26, 0.35) !important;
+}
+
+.mc-hero-card--dark .cm-btn:hover,
+.mc-hero-card--dark button:hover,
+.mc-hero-card--dark .mc-hero-card__btn:hover {
+  background: #FF8A3D !important;
+  color: #101014 !important;
+  box-shadow: 0 4px 22px rgba(255, 112, 26, 0.55) !important;
+  transform: translateY(-1px);
 }
 
 /* Botão Accent Laranja Primário */

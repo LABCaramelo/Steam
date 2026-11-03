@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salvar no Gabinete</title>
+  <style>
+    body {
+      width: 340px;
+      margin: 0;
+      padding: 16px;
+      background-color: #101014;
+      color: #fff4e8;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      box-sizing: border-box;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 244, 232, 0.1);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+    .header h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff4e8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge {
+      font-size: 9px;
+      font-weight: 800;
+      background: rgba(200, 212, 78, 0.2);
+      color: #c8d44e;
+      border: 1px solid rgba(200, 212, 78, 0.35);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+    .field {
+      margin-bottom: 10px;
+    }
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255, 244, 232, 0.65);
+      margin-bottom: 4px;
+    }
+    input, select, textarea {
+      width: 100%;
+      background: #181822;
+      border: 1px solid rgba(255, 244, 232, 0.12);
+      border-radius: 6px;
+      padding: 7px 10px;
+      color: #fff4e8;
+      font-size: 12px;
+      box-sizing: border-box;
+      outline: none;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #c8d44e;
+    }
+    .btn {
+      width: 100%;
+      background: #c8d44e;
+      color: #101014;
+      border: none;
+      border-radius: 6px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 6px;
+      letter-spacing: 0.04em;
+    }
+    .btn:hover {
+      background: #d4e05b;
+    }
+    .success {
+      display: none;
+      background: rgba(42, 213, 135, 0.15);
+      border: 1px solid rgba(42, 213, 135, 0.3);
+      color: #2ad587;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      margin-top: 10px;
+      text-align: center;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c8d44e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </svg>
+      Gabinete <span class="badge">EXTENSÃO</span>
+    </h2>
+    <span style="font-size: 10px; color: rgba(255,244,232,0.4)">LAB 2026</span>
+  </div>
+
+  <form id="refForm">
+    <div class="field">
+      <label>Título da Referência</label>
+      <input type="text" id="title" required placeholder="Título do vídeo ou post">
+    </div>
+
+    <div class="field">
+      <label>Link da Página (detectado)</label>
+      <input type="url" id="url" required placeholder="https://...">
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+      <div class="field">
+        <label>Destino</label>
+        <select id="targetType">
+          <option value="geral">Geral (Agência)</option>
+          <option value="cliente">Cliente Específico</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Categoria</label>
+        <select id="category">
+          <option value="copy">Copy & Ganchos</option>
+          <option value="visual">Direção Visual</option>
+          <option value="video">Vídeo & Reels</option>
+          <option value="estrategia">Estratégia</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field" id="clientField" style="display: none;">
+      <label>Nome do Cliente</label>
+      <input type="text" id="clientName" placeholder="Ex: Graao, Soci...">
+    </div>
+
+    <div class="field">
+      <label>Por que chamou atenção? (opcional)</label>
+      <textarea id="notes" rows="2" placeholder="Gancho, iluminação, ritmo de edição..."></textarea>
+    </div>
+
+    <button type="submit" class="btn">SALVAR NA BIBLIOTECA</button>
+  </form>
+
+  <div id="successMsg" class="success">
+    ✓ Referência salva na Biblioteca!
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

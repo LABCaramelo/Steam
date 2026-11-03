@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GabineteSidebar } from "./GabineteSidebar";
+import { GabineteTopbar } from "./GabineteTopbar";
 import { MinhasDemandasView } from "./MinhasDemandasView";
 import { DashboardView } from "./DashboardView";
 import { ClientesView } from "./ClientesView";
@@ -12,6 +13,8 @@ import { FormulariosView } from "./FormulariosView";
 import { RelatoriosView } from "./RelatoriosView";
 import { FinanceiroView } from "./FinanceiroView";
 import { LixeiraView } from "./LixeiraView";
+import { EquipeView } from "./EquipeView";
+import { RotinaView } from "./RotinaView";
 import { ClientPortalView } from "./ClientPortalView";
 import { OnboardingGuide } from "./OnboardingGuide";
 import type { GabineteRepository } from "./repo";
@@ -42,6 +45,7 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
   const [loading, setLoading] = useState(true);
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [activeTab, setActiveTab] = useState<string>("minhas-tarefas");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Dados Centrais
   const [clients, setClients] = useState<Client[]>([]);
@@ -132,17 +136,28 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
   return (
     <div className="mc-shell">
       {/* Sidebar Lateral Clássica */}
-      <GabineteSidebar
-        workspace={workspace}
-        activeTab={activeTab}
-        onSelectTab={(tab) => setActiveTab(tab)}
-        clients={clients}
-        onOpenNewClientModal={() => setActiveTab("clientes")}
-        taskCount={openTasksCount}
-      />
+      {!sidebarCollapsed && (
+        <GabineteSidebar
+          workspace={workspace}
+          activeTab={activeTab}
+          onSelectTab={(tab) => setActiveTab(tab)}
+          clients={clients}
+          onOpenNewClientModal={() => setActiveTab("clientes")}
+          taskCount={openTasksCount}
+        />
+      )}
 
       {/* Conteúdo Central */}
       <main className="mc-main">
+        {/* Topbar Superior Global com Ícones */}
+        <GabineteTopbar
+          sidebarCollapsed={sidebarCollapsed}
+          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          onOpenVideoTutorials={() => setActiveTab("biblioteca")}
+          onOpenQuickNotes={() => setTaskModalOpen(true)}
+          onOpenSettings={() => setActiveTab("equipe")}
+        />
+
         {/* Onboarding & Guia de Funcionalidades */}
         <OnboardingGuide
           activeTab={activeTab}
@@ -254,6 +269,44 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
               entries={financialEntries}
               repo={repo}
               onRefresh={loadAll}
+            />
+          )}
+
+          {activeTab === "rotina" && (
+            <RotinaView workspace={workspace} repo={repo} />
+          )}
+
+          {(activeTab === "equipe" ||
+            activeTab === "configuracoes" ||
+            activeTab === "equipe-membros") && (
+            <EquipeView
+              workspace={workspace}
+              repo={repo}
+              initialSubTab="equipe"
+            />
+          )}
+
+          {activeTab === "equipe-squads" && (
+            <EquipeView
+              workspace={workspace}
+              repo={repo}
+              initialSubTab="squads"
+            />
+          )}
+
+          {activeTab === "equipe-rotina" && (
+            <EquipeView
+              workspace={workspace}
+              repo={repo}
+              initialSubTab="rotina"
+            />
+          )}
+
+          {activeTab === "equipe-relatorio" && (
+            <EquipeView
+              workspace={workspace}
+              repo={repo}
+              initialSubTab="relatorio"
             />
           )}
         </div>
