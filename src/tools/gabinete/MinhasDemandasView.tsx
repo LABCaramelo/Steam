@@ -43,7 +43,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
 
   return (
     <div className="mc-content">
-      {/* Header com Saudação e Versículo */}
+      {/* Header com Saudação */}
       <div className="mc-view-header" style={{ padding: "0 0 16px 0" }}>
         <div>
           <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "var(--mc-text-muted)" }}>
@@ -52,9 +52,6 @@ export const MinhasDemandasView: React.FC<Props> = ({
           <h1 className="mc-view-header__title" style={{ marginTop: 4 }}>
             Olá, Luiz! 🤠
           </h1>
-          <p className="mc-view-header__verse">
-            "Deus é o nosso refúgio e fortaleza, socorro bem presente na angústia." <strong>SALMOS 46:1</strong>
-          </p>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

@@ -29,7 +29,7 @@ export const GabineteSidebar: React.FC<Props> = ({
 
   return (
     <aside className="mc-sidebar" aria-label="Navegação do Gabinete">
-      {/* Perfil & Nível de Agência */}
+      {/* Perfil do Gabinete */}
       <div className="mc-sidebar__header">
         <div className="mc-sidebar__profile">
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -41,10 +41,6 @@ export const GabineteSidebar: React.FC<Props> = ({
               </h2>
               <p className="mc-sidebar__subtitle">Gestão de bastidor · {workspace.name || "Luiz"}</p>
             </div>
-          </div>
-          <div className="mc-sidebar__badge">
-            <span>🛡️</span>
-            <span>{workspace.agency_level || "Agência Bronze I"}</span>
           </div>
         </div>
       </div>

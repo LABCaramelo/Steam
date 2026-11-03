@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import type { Client, FinancialEntry, Workspace } from "./types";
 import type { GabineteRepository } from "./repo";
 
@@ -83,9 +83,9 @@ export const FinanceiroView: React.FC<Props> = ({
 
         <div className="mc-counter-card">
           <span className="mc-counter-card__number mc-counter-card__number--danger">
-            {workspace.agency_level || "Agência Bronze I"}
+            {((totalMRR * 12) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
           </span>
-          <span className="mc-counter-card__label">Nível de Assinatura</span>
+          <span className="mc-counter-card__label">Projeção Anual (ARR)</span>
         </div>
       </div>
 
