@@ -208,7 +208,9 @@ export const CLAQUETE_APP = tool(CLAQUETE_APP_ID, "Claquete", {
 export const ADMIN_APP_ID = 8;
 export const GRAVADOR_APP_ID = 9;
 export const MONTAGEM_APP_ID = 10;
+export const GABINETE_APP_ID = 11;
 export const CREATIVE_OS_APP_ID = 11;
+export const MODO_CRIADOR_APP_ID = 11;
 
 export const MONTAGEM_APP = tool(MONTAGEM_APP_ID, "Montagem", {
   slug: "montagem", available: true, stage: "beta",
@@ -296,45 +298,48 @@ export const ADMIN_APP = tool(ADMIN_APP_ID, "Administração do LAB", {
   },
 });
 
-export const CREATIVE_OS_APP = tool(CREATIVE_OS_APP_ID, "Creative OS", {
-  slug: "creative-os",
+export const GABINETE_APP = tool(GABINETE_APP_ID, "Gabinete", {
+  slug: "gabinete",
   available: true,
   stage: "beta",
-  launchPath: `/library/app/${CREATIVE_OS_APP_ID}/open`,
-  publicPage: "/tools/creative-os/index.html",
-  description: "Sistema operacional para estúdios e Heads de Conteúdo: clientes, contexto de marca, projetos, tarefas, calendário editorial e aprovações com o cliente.",
-  assets: art("/tools/creative-os/art"),
+  launchPath: `/library/app/${GABINETE_APP_ID}/open`,
+  publicPage: "/tools/gabinete/index.html",
+  description: "Centralize demandas, calendário editorial, aprovação de cliente por link, estúdio IA Nativo e inteligência de bastidor.",
+  assets: art("/tools/gabinete/art"),
   store: {
-    tagline: "Do contexto de marca à entrega aprovada.",
-    eyebrow: "OPERAÇÕES / WORKSPACE B2B / VERSÃO BETA",
-    headline: "Menos ferramenta.\nMais sistema.",
+    tagline: "Gestão editorial, equipe, aprovações e inteligência de bastidor.",
+    eyebrow: "OPERAÇÕES / WORKSPACE B2B / GABINETE",
+    headline: "Centralize calendário de posts, aprovação de cliente por link e IA.\nChega de planilha e WhatsApp bagunçado.",
     features: [
-      { title: "CRM & Gestão de Clientes", text: "Clientes, contatos, pipeline de oportunidades e histórico estratégico em um só lugar." },
-      { title: "Ficha Estratégica da Marca", text: "Propósito, oferta, posicionamento, tom de voz, personas, diretrizes e restrições canônicas." },
-      { title: "Projetos, Tarefas & Calendário", text: "Templates de gestão mensal e campanhas, tarefas em lista/kanban e grade editorial de entregas." },
-      { title: "Revisão & Portal do Cliente", text: "Compartilhamento seguro de entregas com histórico de versões, comentários e aprovação imutável." },
+      { title: "Minhas Demandas & Equipe", text: "Visão diária de prazos, checklist de execução, níveis de agência e filtros por colaborador." },
+      { title: "Calendário Editorial Completo", text: "Grade mensal de publicações, agendamentos, formatos (Reels, Carrossel, Stories) e status em tempo real." },
+      { title: "Aprovação por Link Seguro", text: "Compartilhamento com clientes via token sem login para aprovação com 1 clique ou solicitação de ajustes." },
+      { title: "Estúdio Nativo IA & Método HEAD", text: "Geração de carrosséis com 3 ganchos, roteiros de Reels em 5 passos e prompts de arte oficial Caramelo." },
     ],
     steps: [
-      "Adquira o Creative OS e crie seu primeiro estúdio (workspace).",
-      "Cadastre seu primeiro cliente e preencha a ficha estratégica da marca.",
-      "Inicie um projeto por template, planeje o calendário e convide o cliente para aprovar.",
+      "Acesse suas demandas diárias no Gabinete e selecione o cliente.",
+      "Planeje os posts no Calendário Editorial ou gere com o Estúdio Nativo IA.",
+      "Envie o link seguro para o cliente aprovar sem complicação.",
     ],
     about: [
-      ["Formato", "Creative OS / Workspace B2B"],
-      ["Versão", "Beta"],
-      ["Aprovações", "Versões imutáveis e portal do cliente"],
-      ["Design System", "Caramelo MCP V1"],
+      ["Formato", "Gabinete / Workspace de Gestão de Conteúdo"],
+      ["Versão", "Beta Oficial LAB"],
+      ["Aprovações", "Portal seguro por token e decisões imutáveis"],
+      ["Design System", "Caramelo MCP V1 2026"],
     ],
-    dataNote: "Workspaces, clientes, contexto de marca, projetos e aprovações ficam salvos no Supabase com isolamento total por conta.",
+    dataNote: "Workspaces, demandas, clientes, fichas de marca e entregas ficam salvos no Supabase com isolamento total.",
     category: "Operações",
   },
 });
+
+export const MODO_CRIADOR_APP = GABINETE_APP;
+export const CREATIVE_OS_APP = GABINETE_APP;
 
 export const TOOL_CATALOG: readonly LibraryApp[] = [
   PROMPT_LIBRARY_APP,
   ADMIN_APP,
   COMUNIDADE_APP,
-  CREATIVE_OS_APP,
+  GABINETE_APP,
   CLAQUETE_APP,
   GRAVADOR_APP,
   MONTAGEM_APP,
@@ -423,7 +428,8 @@ export function getRegisteredTool(appid: number): LibraryApp | undefined {
 }
 
 export function getToolBySlug(slug: string): LibraryApp | undefined {
-  const base = TOOL_CATALOG.find((app) => app.tool?.slug === slug);
+  const normalized = slug === "creative-os" || slug === "modo-criador" ? "gabinete" : slug;
+  const base = TOOL_CATALOG.find((app) => app.tool?.slug === normalized || app.tool?.slug === slug);
   return base ? applyToolOverrides(base) : undefined;
 }
 

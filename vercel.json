@@ -44,7 +44,7 @@
       "destination": "/aula-head/index.html"
     },
     {
-      "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|trama|academy|claquete|comunidade|admin|gravador|montagem|creative-os)",
+      "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|trama|academy|claquete|comunidade|admin|gravador|montagem|creative-os|modo-criador|gabinete)",
       "destination": "/tools/:slug/index.html"
     },
     {
