@@ -47,6 +47,8 @@ export const GabineteSidebar: React.FC<Props> = ({
 
       {/* Menu Principal com Rolagem */}
       <div className="mc-sidebar__scroll">
+        <div className="mc-sidebar__section-title">01 · ROTINA</div>
+
         {/* Minhas Demandas */}
         <button
           className={`mc-nav-item ${activeTab === "minhas-tarefas" ? "is-active" : ""}`}
@@ -165,6 +167,8 @@ export const GabineteSidebar: React.FC<Props> = ({
           )}
         </div>
 
+        <div className="mc-sidebar__section-title" style={{ marginTop: 10 }}>02 · CRIAÇÃO</div>
+
         {/* Biblioteca */}
         <button
           className={`mc-nav-item ${activeTab === "biblioteca" ? "is-active" : ""}`}
@@ -189,9 +193,9 @@ export const GabineteSidebar: React.FC<Props> = ({
             style={{
               fontSize: 9,
               fontWeight: 800,
-              background: "rgba(200, 212, 78, 0.2)",
-              color: "#c8d44e",
-              border: "1px solid rgba(200, 212, 78, 0.35)",
+              background: "rgba(255, 213, 42, 0.16)",
+              color: "#ffd52a",
+              border: "1px solid rgba(255, 213, 42, 0.35)",
               padding: "1px 5px",
               borderRadius: 4,
             }}
@@ -221,6 +225,8 @@ export const GabineteSidebar: React.FC<Props> = ({
             <span>Redes sociais</span>
           </div>
         </button>
+
+        <div className="mc-sidebar__section-title" style={{ marginTop: 10 }}>03 · GESTÃO</div>
 
         {/* Vendas */}
         <button

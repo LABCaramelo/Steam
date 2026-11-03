@@ -46,9 +46,14 @@ export const MinhasDemandasView: React.FC<Props> = ({
       {/* Header com Saudação */}
       <div className="mc-view-header" style={{ padding: "0 0 16px 0" }}>
         <div>
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "var(--mc-text-muted)" }}>
-            MINHAS DEMANDAS · {workspace.name} ({deliverables.length} peças ativas)
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "var(--mc-text-muted)" }}>
+              MINHAS DEMANDAS · {workspace.name} ({deliverables.length} peças ativas)
+            </span>
+            <span className="cm-type-hand" style={{ fontSize: 16 }}>
+              bastidor em ação ✨
+            </span>
+          </div>
           <h1 className="mc-view-header__title" style={{ marginTop: 4 }}>
             Olá, Luiz! 🤠
           </h1>
@@ -94,7 +99,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
               Cria o planejamento do mês, os roteiros e os cards do seu cliente em poucos minutos.
             </p>
           </div>
-          <button className="mc-hero-card__btn" onClick={() => onNavigate("nativo")}>
+          <button className="mc-hero-card__btn cm-btn--cream" onClick={() => onNavigate("nativo")}>
             Criar o mês →
           </button>
         </div>
@@ -110,7 +115,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
               Cria posts e carrosséis com inteligência artificial, com a identidade visual do seu cliente ou do zero.
             </p>
           </div>
-          <button className="mc-hero-card__btn" onClick={() => onNavigate("nativo")}>
+          <button className="mc-hero-card__btn mc-btn--primary" onClick={() => onNavigate("nativo")}>
             Abrir ↗
           </button>
         </div>
@@ -167,16 +172,11 @@ export const MinhasDemandasView: React.FC<Props> = ({
             </p>
           </div>
 
-          <div style={{ display: "flex", gap: 8 }}>
+          <div className="cm-showcase-tabs">
             {["all", "urgent", "high", "medium"].map((p) => (
               <button
                 key={p}
-                className="mc-btn mc-btn--secondary"
-                style={{
-                  padding: "4px 10px",
-                  fontSize: 11,
-                  background: filterPriority === p ? "rgba(255,255,255,0.12)" : undefined,
-                }}
+                className={`cm-showcase-tab ${filterPriority === p ? "is-active" : ""}`}
                 onClick={() => setFilterPriority(p)}
               >
                 {p === "all" ? "Todas" : p === "urgent" ? "🚨 Urgentes" : p === "high" ? "Alta" : "Média"}
