@@ -6,25 +6,36 @@
    Referência Canônica: showcase-blue-rho.vercel.app + @caramelo/design-system
    ============================================================================== */
 
-:root {
+:root,
+html[data-caramelo-theme],
+body {
+  --cm-stage: 12 14 20 !important;
+  --cm-fg: 255 244 232 !important;
+  --cm-fg-2: 235 224 212 !important;
+  --cm-surface-1: 20 20 28 !important;
+  --cm-surface-2: 24 24 36 !important;
+  --cm-surface-3: 32 32 46 !important;
+  --cm-line: 255 255 255 / 0.08 !important;
+  --cm-line-strong: 255 255 255 / 0.16 !important;
+
   /* Ponte para os Tokens Canônicos Caramelo */
-  --mc-ink: rgb(var(--cm-stage));
-  --mc-ink-surface: rgb(var(--cm-surface-1));
-  --mc-ink-surface-subtle: rgb(var(--cm-surface-2));
-  --mc-ink-surface-card: rgb(var(--cm-surface-3));
-  --mc-ink-border: rgb(var(--cm-line));
-  --mc-ink-border-hover: rgb(var(--cm-line-strong));
-  --mc-ink-border-soft: rgb(var(--cm-line-soft));
+  --mc-ink: #0c0e14 !important;
+  --mc-ink-surface: #14141c !important;
+  --mc-ink-surface-subtle: #181824 !important;
+  --mc-ink-surface-card: #1c202a !important;
+  --mc-ink-border: rgba(255, 255, 255, 0.08) !important;
+  --mc-ink-border-hover: rgba(255, 255, 255, 0.18) !important;
+  --mc-ink-border-soft: rgba(255, 255, 255, 0.05) !important;
 
-  --mc-sidebar-bg: #0c0e14;
-  --mc-sidebar-border: rgba(255, 255, 255, 0.07);
-  --mc-sidebar-active: #181c26;
+  --mc-sidebar-bg: #0c0e14 !important;
+  --mc-sidebar-border: rgba(255, 255, 255, 0.07) !important;
+  --mc-sidebar-active: #181c26 !important;
 
-  --mc-cream: rgb(var(--cm-fg));
-  --mc-cream-muted: rgb(var(--cm-fg-2));
-  --mc-caramel: rgb(var(--cm-accent));
-  --mc-caramel-hover: rgb(var(--cm-accent-bright));
-  --mc-caramel-deep: rgb(var(--cm-accent-ink));
+  --mc-cream: #fff4e8 !important;
+  --mc-cream-muted: rgba(255, 244, 232, 0.6) !important;
+  --mc-caramel: #ff701a !important;
+  --mc-caramel-hover: #ff8533 !important;
+  --mc-caramel-deep: #cc5408 !important;
 
   --mc-sky: #25bfff;
   --mc-pink: #ff3d8d;
@@ -32,13 +43,13 @@
   --mc-acid: #ffd52a;
   --mc-acid-bright: #ffd52a;
   --mc-mint: #3ddc97;
-  --mc-danger: rgb(var(--cm-danger));
-  --mc-warning: rgb(var(--cm-warning));
+  --mc-danger: #ff4444;
+  --mc-warning: #ffaa00;
 
-  --mc-text-title: rgb(var(--cm-fg));
-  --mc-text-body: rgb(var(--cm-fg-2));
-  --mc-text-muted: rgb(var(--cm-fg-muted));
-  --mc-text-dim: rgb(var(--cm-fg-dim));
+  --mc-text-title: #fff4e8 !important;
+  --mc-text-body: rgba(255, 244, 232, 0.75) !important;
+  --mc-text-muted: rgba(255, 244, 232, 0.5) !important;
+  --mc-text-dim: rgba(255, 244, 232, 0.35) !important;
 
   --mc-radius-xs: 4px;
   --mc-radius-sm: 8px;
@@ -57,9 +68,12 @@
   --mc-font-hand: var(--caramelo-font-handwriting);
 }
 
-[data-caramelo-theme="light"] {
-  --mc-sidebar-bg: #141722;
-  --mc-sidebar-border: rgba(255, 255, 255, 0.08);
+html,
+body {
+  background-color: #0c0e14 !important;
+  color: #fff4e8 !important;
+  margin: 0;
+  padding: 0;
 }
 
 /* Base Shell */

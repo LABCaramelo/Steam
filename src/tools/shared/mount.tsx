@@ -4,9 +4,17 @@ import { installSpotlight, installThemeSync, ToastProvider, ToolGate, type ToolI
 import "@caramelo/design-system/styles.css";
 import "./kit.css";
 
+interface MountOptions {
+  forceTheme?: "dark" | "light";
+}
+
 /** Entry point shared by every tool page: theme, spotlight, toasts and the library gate. */
-export function mountTool(tool: ToolInfo, app: ReactNode) {
-  installThemeSync();
+export function mountTool(tool: ToolInfo, app: ReactNode, options?: MountOptions) {
+  if (options?.forceTheme) {
+    document.documentElement.setAttribute("data-caramelo-theme", options.forceTheme);
+  } else {
+    installThemeSync();
+  }
   installSpotlight();
   createRoot(document.getElementById("root")!).render(
     <StrictMode>

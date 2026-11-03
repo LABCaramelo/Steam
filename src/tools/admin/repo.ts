@@ -268,6 +268,35 @@ export const adminRepo = {
     return data as AdminSeedDetail;
   },
 
+  async notifyToolInWhatsApp(
+    tool: { slug: string; name?: string; customNote?: string },
+    preview = false
+  ): Promise<{ success?: boolean; preview?: boolean; message: string; tool?: any }> {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (!token) throw new Error("Usuário não autenticado.");
+
+    const res = await fetch("/api/tool-notification", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        slug: tool.slug,
+        name: tool.name,
+        customNote: tool.customNote,
+        preview,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || "Falha ao enviar aviso para o grupo do WhatsApp.");
+    }
+    return data;
+  },
+
   async triggerVerifyNow(publicationId: string): Promise<any> {
     const { data: sessionData } = await supabase.auth.getSession();
     const token = sessionData.session?.access_token;

@@ -75,7 +75,7 @@ export const BibliotecaView: React.FC<Props> = ({
             background: "#c8d44e",
             color: "#101014",
             border: "none",
-            borderRadius: 8,
+            borderRadius: 9999,
             padding: "10px 18px",
             fontSize: 12.5,
             fontWeight: 800,

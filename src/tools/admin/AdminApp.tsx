@@ -114,6 +114,13 @@ export function AdminApp() {
   // Modais de edição
   const [editingTool, setEditingTool] = useState<AdminToolItem | null>(null);
 
+  // Notificação no WhatsApp do LAB
+  const [notifyModalTool, setNotifyModalTool] = useState<AdminToolItem | null>(null);
+  const [notifyCustomNote, setNotifyCustomNote] = useState("");
+  const [notifyPreviewText, setNotifyPreviewText] = useState("");
+  const [loadingNotifyPreview, setLoadingNotifyPreview] = useState(false);
+  const [sendingNotification, setSendingNotification] = useState(false);
+
   // Banners & Artes de Ferramentas
   const [bannerModalTool, setBannerModalTool] = useState<AdminToolItem | null>(null);
   const [bannerDraft, setBannerDraft] = useState<ToolCustomAssets>({});
@@ -406,6 +413,43 @@ export function AdminApp() {
     }
   };
 
+  // Abertura do modal de aviso no WhatsApp do LAB
+  const openNotifyModal = async (tool: AdminToolItem) => {
+    setNotifyModalTool(tool);
+    setNotifyCustomNote("");
+    setNotifyPreviewText("");
+    setLoadingNotifyPreview(true);
+    try {
+      const res = await adminRepo.notifyToolInWhatsApp({ slug: tool.slug, name: tool.name }, true);
+      setNotifyPreviewText(res.message);
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Erro ao gerar prévia da notificação.", "error");
+    } finally {
+      setLoadingNotifyPreview(false);
+    }
+  };
+
+  const handleSendNotification = async () => {
+    if (!notifyModalTool) return;
+    setSendingNotification(true);
+    try {
+      await adminRepo.notifyToolInWhatsApp(
+        {
+          slug: notifyModalTool.slug,
+          name: notifyModalTool.name,
+          customNote: notifyCustomNote,
+        },
+        false
+      );
+      toast(`🐕 Aviso da ferramenta "${notifyModalTool.name}" enviado com sucesso no grupo do LAB!`, "info");
+      setNotifyModalTool(null);
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Erro ao disparar aviso no WhatsApp.", "error");
+    } finally {
+      setSendingNotification(false);
+    }
+  };
+
   // Alternar disponibilidade de ferramenta (Publicar / Despublicar)
   const handleToggleTool = async (tool: AdminToolItem) => {
     const nextState = !tool.available;
@@ -423,6 +467,11 @@ export function AdminApp() {
       );
       const freshStats = await adminRepo.getStats();
       setStats(freshStats);
+
+      // Ao publicar uma nova ferramenta, abre a notificação para avisar o grupo no WhatsApp
+      if (nextState) {
+        openNotifyModal(tool);
+      }
     } catch (err) {
       setTools((prev) =>
         prev.map((t) => (t.slug === tool.slug ? { ...t, available: tool.available } : t))
@@ -751,6 +800,14 @@ export function AdminApp() {
                       </label>
                     </td>
                     <td style={{ textAlign: "right" }}>
+                      <button
+                        className="admin-btn admin-btn--secondary admin-btn--sm"
+                        style={{ marginRight: 6 }}
+                        onClick={() => openNotifyModal(t)}
+                        title="Avisar lançamento desta ferramenta no grupo do WhatsApp"
+                      >
+                        📢 Avisar
+                      </button>
                       <button
                         className="admin-btn admin-btn--secondary admin-btn--sm"
                         style={{ marginRight: 6 }}
@@ -1867,6 +1924,96 @@ export function AdminApp() {
       )}
 
       
+      {/* =========================================================================
+          MODAL: AVISO NO WHATSAPP (LANÇAMENTO DE FERRAMENTA NO LAB)
+         ========================================================================= */}
+      {notifyModalTool && (
+        <div className="admin-modal-backdrop" onClick={() => !sendingNotification && setNotifyModalTool(null)}>
+          <div className="admin-modal" style={{ maxWidth: 580 }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
+              <div>
+                <span className="admin-header__eyebrow" style={{ fontSize: 10, color: "var(--cm-brand, #FF701A)" }}>
+                  WHATSAPP DO LAB · AVISO OFICIAL
+                </span>
+                <h2 className="admin-modal__title" style={{ margin: "4px 0" }}>
+                  Avisar no Grupo: {notifyModalTool.name}
+                </h2>
+                <p className="admin-modal__desc" style={{ margin: 0, fontSize: 12 }}>
+                  Dispare uma mensagem oficial no grupo do WhatsApp anunciando a nova ferramenta liberada na plataforma.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="admin-btn admin-btn--ghost admin-btn--sm"
+                onClick={() => setNotifyModalTool(null)}
+                disabled={sendingNotification}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div className="admin-form-group">
+                <label style={{ fontSize: 12, fontWeight: 600 }}>
+                  Recado adicional do Luiz (opcional):
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex: Subimos 15 novos modelos e templates exclusivos!"
+                  value={notifyCustomNote}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setNotifyCustomNote(val);
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", marginBottom: 6, fontSize: 12, fontWeight: 600 }}>
+                  Prévia da mensagem que será postada:
+                </label>
+                <div
+                  style={{
+                    background: "rgb(var(--cm-surface-2))",
+                    border: "1px solid rgb(var(--cm-line-soft))",
+                    borderRadius: 8,
+                    padding: "12px 14px",
+                    fontFamily: "monospace",
+                    fontSize: 12,
+                    lineHeight: 1.5,
+                    whiteSpace: "pre-wrap",
+                    maxHeight: 220,
+                    overflowY: "auto",
+                    color: "rgb(var(--cm-fg))",
+                  }}
+                >
+                  {loadingNotifyPreview ? "Carregando prévia com voz Caramelo..." : notifyPreviewText || "Carregando texto..."}
+                </div>
+              </div>
+            </div>
+
+            <div className="admin-modal__actions" style={{ marginTop: 20 }}>
+              <button
+                type="button"
+                className="admin-btn admin-btn--ghost"
+                onClick={() => setNotifyModalTool(null)}
+                disabled={sendingNotification}
+              >
+                Agora não
+              </button>
+              <button
+                type="button"
+                className="admin-btn admin-btn--primary"
+                onClick={handleSendNotification}
+                disabled={sendingNotification || loadingNotifyPreview}
+              >
+                {sendingNotification ? "Disparando..." : "📢 Disparar Aviso no Grupo Oficial"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* =========================================================================
           MODAL: BANNERS & ARTES DA FERRAMENTA
          ========================================================================= */}
