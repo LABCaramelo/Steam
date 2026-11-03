@@ -82,7 +82,7 @@ export async function clearToolLocalData(notice: ToolReleaseNotice): Promise<voi
       const storage = window[kind];
       for (const key of Object.keys(storage)) if (key.startsWith(prefix)) storage.removeItem(key);
       if (notice.slug === "kanban") storage.removeItem(`lab:kanban:board:${notice.userId}`);
-      if (notice.slug === "creative-os" || notice.slug === "modo-criador" || notice.slug === "gabinete") {
+      if (notice.slug === "creative-os" || notice.slug === "gabinete") {
         storage.removeItem(`lab:creative-os:workspace:${notice.userId}`);
         storage.removeItem(`lab:gabinete:workspace:${notice.userId}`);
       }

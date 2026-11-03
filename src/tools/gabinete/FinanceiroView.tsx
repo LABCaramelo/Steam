@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import type { Client, FinancialEntry, Workspace } from "./types";
-import type { ModoCriadorRepository } from "./repo";
+import type { GabineteRepository } from "./repo";
 
 interface Props {
   workspace: Workspace;
   clients: Client[];
   entries: FinancialEntry[];
-  repo: ModoCriadorRepository;
+  repo: GabineteRepository;
   onRefresh: () => void;
 }
 

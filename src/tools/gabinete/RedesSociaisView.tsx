@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import type { SocialIntegration, Workspace } from "./types";
-import type { ModoCriadorRepository } from "./repo";
+import type { GabineteRepository } from "./repo";
 
 interface Props {
   workspace: Workspace;
-  repo: ModoCriadorRepository;
+  repo: GabineteRepository;
 }
 
 export const RedesSociaisView: React.FC<Props> = ({ workspace, repo }) => {

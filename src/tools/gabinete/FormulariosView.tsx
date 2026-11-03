@@ -1,11 +1,11 @@
-import React from "react";
+﻿import React from "react";
 import type { Client, Workspace } from "./types";
-import type { ModoCriadorRepository } from "./repo";
+import type { GabineteRepository } from "./repo";
 
 interface Props {
   workspace: Workspace;
   clients: Client[];
-  repo: ModoCriadorRepository;
+  repo: GabineteRepository;
 }
 
 export const FormulariosView: React.FC<Props> = ({ workspace, clients, repo: _repo }) => {

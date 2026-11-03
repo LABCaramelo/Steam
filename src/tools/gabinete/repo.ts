@@ -22,7 +22,7 @@ const STORAGE_KEY_PREFIX = "gabinete_";
 
 function getLocal<T>(key: string, fallback: T): T {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY_PREFIX + key) ?? localStorage.getItem("modo_criador_" + key);
+    const raw = localStorage.getItem(STORAGE_KEY_PREFIX + key);
     return raw ? JSON.parse(raw) : fallback;
   } catch {
     return fallback;
@@ -37,9 +37,7 @@ function setLocal<T>(key: string, value: T): void {
   }
 }
 
-export type GabineteRepository = ModoCriadorRepository;
-
-export interface ModoCriadorRepository {
+export interface GabineteRepository {
   // Workspaces & Membros
   getWorkspaces(): Promise<Workspace[]>;
   createWorkspace(data: { name: string; slug: string; service_type: string }): Promise<Workspace>;
@@ -103,7 +101,7 @@ export interface ModoCriadorRepository {
 }
 
 // Repositório unificado com Supabase + LocalStorage Fallback Resiliente
-export const supabaseModoCriador: ModoCriadorRepository = {
+export const supabaseGabinete: GabineteRepository = {
   async getWorkspaces() {
     try {
       const { data, error } = await supabase.from("creative_os_workspaces").select("*").order("created_at", { ascending: true });
@@ -920,8 +918,6 @@ export const supabaseModoCriador: ModoCriadorRepository = {
     setLocal(`integrations_${workspaceId}`, list);
   },
 };
-
-export const supabaseGabinete: GabineteRepository = supabaseModoCriador;
 
 function clientIdSub(id: string): string {
   return id.replace(/[^a-zA-Z0-9]/g, "").slice(0, 8);

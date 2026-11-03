@@ -1,5 +1,5 @@
--- ==============================================================================
--- GABINETE — Sistema de Gestão Editorial, Equipe e Bastidor para o LAB Caramelo
+﻿-- ==============================================================================
+-- GABINETE — Sistema de Gestão de Conteúdo e Equipe para o LAB Caramelo
 -- Integrado com Supabase, RLS e isolamento por conta.
 -- ==============================================================================
 
@@ -10,7 +10,7 @@ insert into public.lab_tools (slug, appid, name, available)
 values ('gabinete', 11, 'Gabinete', true)
 on conflict (slug) do update set appid = excluded.appid, name = excluded.name, available = excluded.available;
 
--- 2. Tabela de Workspaces (Estúdios / Gabinetes)
+-- 2. Tabela de Workspaces (Estúdios de Criação)
 create table if not exists public.gabinete_workspaces (
   id uuid primary key default gen_random_uuid(),
   owner_id uuid not null references auth.users (id) on delete cascade,

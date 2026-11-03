@@ -13,7 +13,7 @@ import { RelatoriosView } from "./RelatoriosView";
 import { FinanceiroView } from "./FinanceiroView";
 import { LixeiraView } from "./LixeiraView";
 import { ClientPortalView } from "./ClientPortalView";
-import type { ModoCriadorRepository } from "./repo";
+import type { GabineteRepository } from "./repo";
 import type {
   Client,
   ContentReference,
@@ -27,7 +27,7 @@ import type {
 import "./gabinete.css";
 
 interface Props {
-  repo: ModoCriadorRepository;
+  repo: GabineteRepository;
 }
 
 export const GabineteApp: React.FC<Props> = ({ repo }) => {
@@ -342,5 +342,3 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
     </div>
   );
 };
-
-export const ModoCriadorApp = GabineteApp;

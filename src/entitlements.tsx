@@ -126,7 +126,7 @@ export function EntitlementsProvider({ children }: { children: ReactNode }) {
   }, [userId]);
 
   const value = useMemo<EntitlementsState>(
-    () => ({ status, owned, owns: (slug) => owned.has(slug) || (slug === "gabinete" && (owned.has("creative-os") || owned.has("modo-criador"))) || (slug === "creative-os" && owned.has("gabinete")), acquire, release, refresh: () => setTick((n) => n + 1) }),
+    () => ({ status, owned, owns: (slug) => owned.has(slug) || (slug === "gabinete" && owned.has("creative-os")) || (slug === "creative-os" && owned.has("gabinete")), acquire, release, refresh: () => setTick((n) => n + 1) }),
     [status, owned, acquire, release],
   );
 

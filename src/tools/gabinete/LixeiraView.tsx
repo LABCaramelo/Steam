@@ -1,13 +1,13 @@
-import React from "react";
+﻿import React from "react";
 import type { Client, Deliverable, Task, Workspace } from "./types";
-import type { ModoCriadorRepository } from "./repo";
+import type { GabineteRepository } from "./repo";
 
 interface Props {
   workspace: Workspace;
   clients: Client[];
   tasks: Task[];
   deliverables: Deliverable[];
-  repo: ModoCriadorRepository;
+  repo: GabineteRepository;
   onRefresh: () => void;
 }
 

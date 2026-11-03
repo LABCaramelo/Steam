@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import type { Opportunity, OpportunityStage, Workspace } from "./types";
-import type { ModoCriadorRepository } from "./repo";
+import type { GabineteRepository } from "./repo";
 
 interface Props {
   workspace: Workspace;
   opportunities: Opportunity[];
-  repo: ModoCriadorRepository;
+  repo: GabineteRepository;
   onRefresh: () => void;
 }
 

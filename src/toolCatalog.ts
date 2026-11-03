@@ -210,7 +210,6 @@ export const GRAVADOR_APP_ID = 9;
 export const MONTAGEM_APP_ID = 10;
 export const GABINETE_APP_ID = 11;
 export const CREATIVE_OS_APP_ID = 11;
-export const MODO_CRIADOR_APP_ID = 11;
 
 export const MONTAGEM_APP = tool(MONTAGEM_APP_ID, "Montagem", {
   slug: "montagem", available: true, stage: "beta",
@@ -332,7 +331,6 @@ export const GABINETE_APP = tool(GABINETE_APP_ID, "Gabinete", {
   },
 });
 
-export const MODO_CRIADOR_APP = GABINETE_APP;
 export const CREATIVE_OS_APP = GABINETE_APP;
 
 export const TOOL_CATALOG: readonly LibraryApp[] = [
@@ -428,7 +426,7 @@ export function getRegisteredTool(appid: number): LibraryApp | undefined {
 }
 
 export function getToolBySlug(slug: string): LibraryApp | undefined {
-  const normalized = slug === "creative-os" || slug === "modo-criador" ? "gabinete" : slug;
+  const normalized = slug === "creative-os" ? "gabinete" : slug;
   const base = TOOL_CATALOG.find((app) => app.tool?.slug === normalized || app.tool?.slug === slug);
   return base ? applyToolOverrides(base) : undefined;
 }
@@ -492,7 +490,7 @@ export function registerTools(snapshot: LibrarySnapshot, owned: ReadonlySet<stri
     apps: [
       ...dynamicCatalog.filter((app) => {
         const slug = app.tool!.slug;
-        return owned.has(slug) || (slug === "gabinete" && (owned.has("creative-os") || owned.has("modo-criador")));
+        return owned.has(slug) || (slug === "gabinete" && owned.has("creative-os"));
       }),
       ...snapshot.apps.filter((app) => !catalogIds.has(app.appid)),
     ],

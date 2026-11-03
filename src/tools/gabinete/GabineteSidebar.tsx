@@ -303,5 +303,3 @@ export const GabineteSidebar: React.FC<Props> = ({
   );
 };
 
-export const ModoCriadorSidebar = GabineteSidebar;
-

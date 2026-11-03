@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import type { Deliverable } from "./types";
-import type { ModoCriadorRepository } from "./repo";
+import type { GabineteRepository } from "./repo";
 
 interface Props {
   token: string;
-  repo: ModoCriadorRepository;
+  repo: GabineteRepository;
 }
 
 export const ClientPortalView: React.FC<Props> = ({ token, repo }) => {
