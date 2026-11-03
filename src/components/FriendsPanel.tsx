@@ -262,7 +262,7 @@ function ChatView({ id }: { id: string }) {
             title="Permitir que o navegador avise quando novas mensagens chegarem"
             onClick={enableNotifications}
           >
-            🔔 Ativar avisos
+            Ativar avisos
           </button>
         )}
       </div>

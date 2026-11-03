@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import type { BrandProfile, Client, Workspace } from "./types";
 import type { GabineteRepository } from "./repo";
 
@@ -88,7 +88,7 @@ export const ClientesView: React.FC<Props> = ({
       <div className="mc-view-header" style={{ padding: 0 }}>
         <div>
           <h2 className="mc-view-header__title">
-            <span>👥</span> Gestão de Clientes & Marcas
+            Gestão de Clientes & Marcas
           </h2>
           <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "var(--mc-text-muted)" }}>
             Fichas estratégicas, contatos, honorários e contexto canônico de cada marca.
@@ -222,14 +222,14 @@ export const ClientesView: React.FC<Props> = ({
                     alert("Link do Portal do Cliente copiado!");
                   }}
                 >
-                  🔗 Copiar Link de Aprovação
+                  Copiar Link de Aprovação
                 </button>
               </div>
             </div>
 
             <form onSubmit={handleSaveBrandProfile} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <div className="mc-field">
-                <label>🎯 Propósito & Transformação Central</label>
+                <label>Propósito & Transformação Central</label>
                 <input
                   type="text"
                   className="mc-input"
@@ -241,7 +241,7 @@ export const ClientesView: React.FC<Props> = ({
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                 <div className="mc-field">
-                  <label>📦 Oferta & Produtos Estrela</label>
+                  <label>Oferta & Produtos Estrela</label>
                   <textarea
                     className="mc-textarea"
                     rows={3}
@@ -252,7 +252,7 @@ export const ClientesView: React.FC<Props> = ({
                 </div>
 
                 <div className="mc-field">
-                  <label>🗣️ Tom de Voz & Linguagem</label>
+                  <label>Tom de Voz & Linguagem</label>
                   <textarea
                     className="mc-textarea"
                     rows={3}
@@ -264,7 +264,7 @@ export const ClientesView: React.FC<Props> = ({
               </div>
 
               <div className="mc-field">
-                <label>🚫 Restrições Inegociáveis (O que a marca NUNCA faz)</label>
+                <label>Restrições Inegociáveis (O que a marca NUNCA faz)</label>
                 <input
                   type="text"
                   className="mc-input"

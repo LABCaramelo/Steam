@@ -18,7 +18,7 @@ export const RelatoriosView: React.FC<Props> = ({ workspace, deliverables, tasks
       <div className="mc-view-header" style={{ padding: 0 }}>
         <div>
           <h2 className="mc-view-header__title">
-            <span>📈</span> Relatórios de Produtividade & Velocidade
+            Relatórios de Produtividade & Velocidade
           </h2>
           <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "var(--mc-text-muted)" }}>
             Métricas de entrega, ritmo de finalização da equipe do estúdio {workspace.name} e taxa de aprovação sem refações.

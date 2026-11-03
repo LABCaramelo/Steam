@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import type { ContentReference, Workspace } from "./types";
 import type { GabineteRepository } from "./repo";
 
@@ -52,7 +52,7 @@ export const BibliotecaView: React.FC<Props> = ({
       <div className="mc-view-header" style={{ padding: 0 }}>
         <div>
           <h2 className="mc-view-header__title">
-            <span>📚</span> Biblioteca de Referências & Acervo
+            Biblioteca de Referências & Acervo
           </h2>
           <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "var(--mc-text-muted)" }}>
             Central de repertório: copies comprovadas, ganchos virais, enquadramentos e inspirações de arte.
@@ -68,10 +68,10 @@ export const BibliotecaView: React.FC<Props> = ({
       <div style={{ display: "flex", gap: 8 }}>
         {[
           { id: "all", label: "Todas" },
-          { id: "copy", label: "✍️ Copywriting & Ganchos" },
-          { id: "visual", label: "🎨 Direção Visual" },
-          { id: "video", label: "🎥 Vídeo & Reels" },
-          { id: "estrategia", label: "🧭 Estratégia" },
+          { id: "copy", label: "Copywriting & Ganchos" },
+          { id: "visual", label: "Direção Visual" },
+          { id: "video", label: "Vídeo & Reels" },
+          { id: "estrategia", label: "Estratégia" },
         ].map((c) => (
           <button
             key={c.id}

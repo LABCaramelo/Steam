@@ -1,5 +1,6 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { Deliverable } from "./types";
+import { IconCheckCircle } from "./Icons";
 import type { GabineteRepository } from "./repo";
 
 interface Props {
@@ -49,7 +50,7 @@ export const ClientPortalView: React.FC<Props> = ({ token, repo }) => {
         feedback,
         clientName || portalData?.client?.name || "Cliente"
       );
-      alert(status === "approved" ? "Conteúdo aprovado com sucesso! ✨" : "Ajustes solicitados com sucesso! ✍️");
+      alert(status === "approved" ? "Conteúdo aprovado com sucesso!" : "Ajustes solicitados com sucesso!");
       setFeedback("");
       loadData();
     } catch (err: any) {
@@ -110,7 +111,9 @@ export const ClientPortalView: React.FC<Props> = ({ token, repo }) => {
         {/* Conteúdo Principal */}
         {deliverables.length === 0 ? (
           <div style={{ background: "#15151a", padding: 40, borderRadius: 16, textAlign: "center", border: "1px solid rgba(255,244,232,0.1)" }}>
-            <span style={{ fontSize: 36 }}>🎉</span>
+            <span style={{ display: "inline-flex", color: "#c8d44e" }}>
+              <IconCheckCircle size={36} />
+            </span>
             <h3 style={{ margin: "12px 0 4px 0" }}>Nenhuma entrega pendente de aprovação!</h3>
             <p style={{ opacity: 0.6, fontSize: 13 }}>Todas as peças da sua marca já foram aprovadas ou estão em produção.</p>
           </div>
@@ -209,7 +212,7 @@ export const ClientPortalView: React.FC<Props> = ({ token, repo }) => {
                         cursor: "pointer",
                       }}
                     >
-                      ✍️ Solicitar Ajustes
+                      Solicitar Ajustes
                     </button>
 
                     <button
@@ -226,7 +229,7 @@ export const ClientPortalView: React.FC<Props> = ({ token, repo }) => {
                         cursor: "pointer",
                       }}
                     >
-                      ✨ Aprovar Conteúdo
+                      Aprovar Conteúdo
                     </button>
                   </div>
                 </div>

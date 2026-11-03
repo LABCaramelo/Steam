@@ -79,7 +79,10 @@ export const ClientPortalView: React.FC<Props> = ({ token, repo }) => {
     return (
       <div className="cos-shell" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
         <div className="cos-card" style={{ maxWidth: 480, textAlign: "center" }}>
-          <span style={{ fontSize: 32, display: "block", marginBottom: 12 }}>🔒</span>
+          <svg width={32} height={32} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline-block", marginBottom: 12, opacity: 0.6 }}>
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
           <h2 style={{ margin: "0 0 8px 0" }}>Acesso Indisponível</h2>
           <p style={{ fontSize: 14, color: "var(--cos-text-secondary)", margin: "0 0 16px 0" }}>
             {error || "O link acessado é inválido ou já expirou. Solicite um novo link ao seu Head de Conteúdo."}

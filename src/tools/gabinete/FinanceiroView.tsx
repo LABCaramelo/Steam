@@ -51,7 +51,7 @@ export const FinanceiroView: React.FC<Props> = ({
       <div className="mc-view-header" style={{ padding: 0 }}>
         <div>
           <h2 className="mc-view-header__title">
-            <span>💳</span> Controle Financeiro da Agência
+            Controle Financeiro da Agência
           </h2>
           <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "var(--mc-text-muted)" }}>
             Mensalidades de clientes, previsibilidade de honorários e {entries.length} lançamentos registrados.

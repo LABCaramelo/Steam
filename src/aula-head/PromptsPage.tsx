@@ -186,7 +186,7 @@ export default function PromptsPage() {
                     title={`Copiar Prompt 0${p.number}`}
                     aria-label={`Copiar Prompt 0${p.number}`}
                   >
-                    {isItemCopied ? "✓" : "📋"}
+                    {isItemCopied ? "✓" : "⧉"}
                   </button>
                 </div>
               );
@@ -210,7 +210,7 @@ export default function PromptsPage() {
                 title={`Copiar Prompt 0${activePrompt.number}`}
               >
                 <span className="mega-copy-icon" aria-hidden="true">
-                  {isActiveCopied ? "✓" : "📋"}
+                  {isActiveCopied ? "✓" : "⧉"}
                 </span>
                 <strong>{isActiveCopied ? "COPIADO COM SUCESSO!" : `COPIAR PROMPT 0${activePrompt.number}`}</strong>
               </button>
@@ -238,7 +238,7 @@ export default function PromptsPage() {
 
                 <div className="inspector-tip-callout">
                   <div className="tip-header">
-                    <span className="tip-badge">💡 DICA OFICIAL DO CARAMELO</span>
+                    <span className="tip-badge">DICA OFICIAL DO CARAMELO</span>
                   </div>
                   <p>{activePrompt.customizationTip}</p>
                 </div>
@@ -250,9 +250,6 @@ export default function PromptsPage() {
               {/* TOOLBAR DO EDITOR LIMPA */}
               <div className="editor-top-bar">
                 <div className="editor-file-info">
-                  <span className="file-icon" aria-hidden="true">
-                    📄
-                  </span>
                   <strong>{activePrompt.filename}</strong>
                   <span className="line-count-tag">{lineCount.toLocaleString("pt-BR")} linhas</span>
                 </div>

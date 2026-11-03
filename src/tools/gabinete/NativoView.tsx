@@ -1,6 +1,7 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import type { Client, Workspace } from "./types";
 import type { GabineteRepository } from "./repo";
+import { IconZap } from "./Icons";
 
 interface Props {
   workspace: Workspace;
@@ -95,7 +96,7 @@ export const NativoView: React.FC<Props> = ({
       <div className="mc-view-header" style={{ padding: 0 }}>
         <div>
           <h2 className="mc-view-header__title">
-            <span>⚡</span> Estúdio Nativo IA
+            Estúdio Nativo IA
           </h2>
           <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "var(--mc-text-muted)" }}>
             Criação de posts, carrosséis no Método HEAD e roteiros de Reels com o DNA do Cérebro Caramelo.
@@ -108,19 +109,19 @@ export const NativoView: React.FC<Props> = ({
             className={`mc-btn ${activeMode === "carrossel" ? "mc-btn--acid" : "mc-btn--secondary"}`}
             onClick={() => setActiveMode("carrossel")}
           >
-            📑 Carrossel HEAD
+            Carrossel HEAD
           </button>
           <button
             className={`mc-btn ${activeMode === "reels" ? "mc-btn--acid" : "mc-btn--secondary"}`}
             onClick={() => setActiveMode("reels")}
           >
-            🎥 Roteiro Reels
+            Roteiro Reels
           </button>
           <button
             className={`mc-btn ${activeMode === "prompt_arte" ? "mc-btn--acid" : "mc-btn--secondary"}`}
             onClick={() => setActiveMode("prompt_arte")}
           >
-            🎨 Prompt de Imagem
+            Prompt de Imagem
           </button>
         </div>
       </div>
@@ -183,7 +184,7 @@ export const NativoView: React.FC<Props> = ({
             onClick={handleGenerate}
             disabled={isGenerating || !themeTopic.trim()}
           >
-            {isGenerating ? "⚡ Gerando com Cérebro Caramelo..." : "✨ Gerar Conteúdo com IA"}
+            {isGenerating ? "Gerando com Cérebro Caramelo..." : "Gerar Conteúdo com IA"}
           </button>
         </div>
 
@@ -210,7 +211,9 @@ export const NativoView: React.FC<Props> = ({
 
           {!generatedResult ? (
             <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--mc-text-muted)" }}>
-              <span style={{ fontSize: 36 }}>⚡</span>
+              <span style={{ display: "inline-flex", color: "var(--mc-caramel)", opacity: 0.6 }}>
+                <IconZap size={36} />
+              </span>
               <p style={{ marginTop: 8, fontSize: 13.5 }}>
                 Configure o tema à esquerda e clique em Gerar Conteúdo para aplicar a metodologia HEAD.
               </p>

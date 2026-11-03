@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import type { Client, Deliverable, Task, Workspace, WorkspaceMember } from "./types";
+import { IconUser, IconCheckCircle, IconAlertTriangle } from "./Icons";
 
 interface Props {
   workspace: Workspace;
@@ -51,11 +52,11 @@ export const MinhasDemandasView: React.FC<Props> = ({
               MINHAS DEMANDAS · {workspace.name} ({deliverables.length} peças ativas)
             </span>
             <span className="cm-type-hand" style={{ fontSize: 16 }}>
-              bastidor em ação ✨
+              bastidor em ação
             </span>
           </div>
           <h1 className="mc-view-header__title" style={{ marginTop: 4 }}>
-            Olá, Luiz! 🤠
+            Olá, Luiz!
           </h1>
         </div>
 
@@ -93,7 +94,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
           <div>
             <span className="mc-hero-card__badge">JÁ LIBERADO</span>
             <h3 className="mc-hero-card__title">
-              <span>⚡</span> Gabinete IA
+              Gabinete IA
             </h3>
             <p className="mc-hero-card__desc">
               Cria o planejamento do mês, os roteiros e os cards do seu cliente em poucos minutos.
@@ -109,7 +110,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
           <div>
             <span className="mc-hero-card__badge">NOVO</span>
             <h3 className="mc-hero-card__title">
-              <span>🎨</span> Nativo
+              Nativo
             </h3>
             <p className="mc-hero-card__desc">
               Cria posts e carrosséis com inteligência artificial, com a identidade visual do seu cliente ou do zero.
@@ -179,7 +180,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
                 className={`cm-showcase-tab ${filterPriority === p ? "is-active" : ""}`}
                 onClick={() => setFilterPriority(p)}
               >
-                {p === "all" ? "Todas" : p === "urgent" ? "🚨 Urgentes" : p === "high" ? "Alta" : "Média"}
+                {p === "all" ? "Todas" : p === "urgent" ? "Urgentes" : p === "high" ? "Alta" : "Média"}
               </button>
             ))}
           </div>
@@ -187,7 +188,9 @@ export const MinhasDemandasView: React.FC<Props> = ({
 
         {filteredTasks.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--mc-text-muted)" }}>
-            <span style={{ fontSize: 32 }}>🎉</span>
+            <span style={{ display: "inline-flex", color: "var(--mc-caramel)", opacity: 0.8 }}>
+              <IconCheckCircle size={32} />
+            </span>
             <p style={{ marginTop: 8, fontSize: 14 }}>Tudo limpo! Nenhuma demanda pendente por aqui.</p>
             <button className="mc-btn mc-btn--primary" style={{ marginTop: 8 }} onClick={onOpenNewTaskModal}>
               + Criar nova demanda
@@ -279,14 +282,18 @@ export const MinhasDemandasView: React.FC<Props> = ({
                           fontSize: 11.5,
                           fontWeight: 600,
                           color: isOverdue ? "var(--mc-danger)" : isToday ? "var(--mc-caramel)" : "var(--mc-text-muted)",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 4,
                         }}
                       >
-                        {isOverdue ? "⚠️ Atrasada" : isToday ? "🚨 Vence hoje" : `Prazo: ${t.due_date}`}
+                        {isOverdue && <IconAlertTriangle size={12} />}
+                        {isOverdue ? "Atrasada" : isToday ? "Vence hoje" : `Prazo: ${t.due_date}`}
                       </span>
                     )}
 
-                    <span style={{ fontSize: 12, color: "var(--mc-text-muted)" }}>
-                      👤 {t.assignee_name || "Luiz"}
+                    <span style={{ fontSize: 12, color: "var(--mc-text-muted)", display: "inline-flex", alignItems: "center", gap: 5 }}>
+                      <IconUser size={13} /> {t.assignee_name || "Luiz"}
                     </span>
                   </div>
                 </div>

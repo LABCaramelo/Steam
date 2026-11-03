@@ -145,13 +145,13 @@ export const BriefingsView: React.FC<Props> = ({
           className={`cos-btn ${tab === "briefings" ? "cos-btn--primary" : "cos-btn--secondary"}`}
           onClick={() => setTab("briefings")}
         >
-          📋 Briefings Realizados ({briefings.length})
+          Briefings Realizados ({briefings.length})
         </button>
         <button
           className={`cos-btn ${tab === "proposals" ? "cos-btn--primary" : "cos-btn--secondary"}`}
           onClick={() => setTab("proposals")}
         >
-          💼 Propostas Comerciais ({proposals.length})
+          Propostas Comerciais ({proposals.length})
         </button>
       </div>
 
@@ -273,7 +273,7 @@ export const BriefingsView: React.FC<Props> = ({
                   {p.contract_url && (
                     <div style={{ fontSize: 12, marginTop: 8 }}>
                       <a href={p.contract_url} target="_blank" rel="noopener noreferrer" style={{ color: "var(--cos-sky)" }}>
-                        🔗 Acessar Contrato Assinado Externo ↗
+                        Acessar Contrato Assinado Externo ↗
                       </a>
                     </div>
                   )}

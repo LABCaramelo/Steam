@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import type { Opportunity, OpportunityStage, Workspace } from "./types";
 import type { GabineteRepository } from "./repo";
 
@@ -62,7 +62,7 @@ export const VendasView: React.FC<Props> = ({
       <div className="mc-view-header" style={{ padding: 0 }}>
         <div>
           <h2 className="mc-view-header__title">
-            <span>💼</span> Pipeline de Vendas & Oportunidades
+            Pipeline de Vendas & Oportunidades
           </h2>
           <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "var(--mc-text-muted)" }}>
             Funil comercial para prospecção ativa, qualificação e fechamento de novos clientes para o estúdio.

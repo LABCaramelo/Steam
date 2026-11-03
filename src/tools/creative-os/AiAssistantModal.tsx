@@ -182,7 +182,7 @@ export const AiAssistantModal: React.FC<Props> = ({
                     alert("Copiado para a área de transferência!");
                   }}
                 >
-                  Copiar Texto 📋
+                  Copiar Texto
                 </button>
               </div>
               <pre

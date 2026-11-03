@@ -153,7 +153,7 @@ export const ApprovalsView: React.FC<Props> = ({
                         className="cos-btn cos-btn--secondary cos-btn--sm"
                         onClick={() => handleGenerateShareForClient(deliv.client_id)}
                       >
-                        Copiar Link do Portal 🔗
+                        Copiar Link do Portal
                       </button>
                     </div>
                   </div>

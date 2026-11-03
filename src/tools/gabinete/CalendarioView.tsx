@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import type { Client, Deliverable, DeliverableFormat, Workspace } from "./types";
 import type { GabineteRepository } from "./repo";
 
@@ -120,7 +120,7 @@ export const CalendarioView: React.FC<Props> = ({
       <div className="mc-view-header" style={{ padding: 0 }}>
         <div>
           <h2 className="mc-view-header__title">
-            <span>📅</span> Calendário Editorial
+            Calendário Editorial
           </h2>
           <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "var(--mc-text-muted)" }}>
             Planejamento mensal de publicações, agendamentos e aprovações com o cliente.
@@ -220,7 +220,9 @@ export const CalendarioView: React.FC<Props> = ({
                     }}
                     title={`${del.title} (${del.status})`}
                   >
-                    <span>{del.format === "carrossel" ? "📑" : del.format === "reels_roteiro" ? "🎥" : "🖼️"}</span>{" "}
+                    <span style={{ fontSize: 9.5, opacity: 0.7, marginRight: 4, textTransform: "uppercase", fontWeight: 700 }}>
+                      {del.format === "carrossel" ? "CAR" : del.format === "reels_roteiro" ? "REEL" : "POST"}
+                    </span>
                     {del.title}
                   </div>
                 );
@@ -333,7 +335,7 @@ export const CalendarioView: React.FC<Props> = ({
                 >
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <span style={{ fontSize: 12, fontWeight: 700, color: "var(--mc-caramel)" }}>
-                      🔗 Aprovação do Cliente por Link
+                      Aprovação do Cliente por Link
                     </span>
                     <button
                       type="button"

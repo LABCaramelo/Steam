@@ -169,7 +169,7 @@ export const ProjectsView: React.FC<Props> = ({ workspace, clients, repo }) => {
         </div>
         <div style={{ display: "flex", gap: 10 }}>
           <button className="cos-btn cos-btn--secondary" onClick={() => setViewMode(viewMode === "kanban" ? "list" : "kanban")}>
-            {viewMode === "kanban" ? "Visão Lista 📄" : "Visão Kanban 🗂"}
+            {viewMode === "kanban" ? "Visão Lista" : "Visão Kanban"}
           </button>
           <button className="cos-btn cos-btn--primary" onClick={() => setProjectModalOpen(true)}>
             + Novo Projeto

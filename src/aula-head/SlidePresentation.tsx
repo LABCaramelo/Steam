@@ -268,7 +268,7 @@ export default function SlidePresentation({ onBackToPrompts }: { onBackToPrompts
 
             <div className="top-actions">
               {onBackToPrompts && (
-                <button onClick={onBackToPrompts}>📋 8 Prompts</button>
+                <button onClick={onBackToPrompts}>8 Prompts</button>
               )}
               <button onClick={() => setModal("prompts")}>Ver Prompts ↗</button>
               <button onClick={returnHome}>← Início</button>

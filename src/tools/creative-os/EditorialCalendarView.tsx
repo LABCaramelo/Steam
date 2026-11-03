@@ -173,7 +173,7 @@ export const EditorialCalendarView: React.FC<Props> = ({
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span className="cos-calendar-card__date">
-                    📅 {deliv.scheduled_date ? new Date(deliv.scheduled_date).toLocaleDateString("pt-BR") : "A definir"}
+                    {deliv.scheduled_date ? new Date(deliv.scheduled_date).toLocaleDateString("pt-BR") : "A definir"}
                   </span>
                   <span className={`cos-badge cos-badge--${deliv.status}`}>
                     {deliv.status.replace("_", " ")}
@@ -346,7 +346,7 @@ export const EditorialCalendarView: React.FC<Props> = ({
                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                           <span style={{ fontWeight: 700 }}>{c.author_name}</span>
                           <span style={{ color: "var(--cos-text-muted)" }}>
-                            {c.is_internal ? "🔒 Interno" : "🌐 Cliente"}
+                            {c.is_internal ? "Interno" : "Cliente"}
                           </span>
                         </div>
                         <div style={{ color: "var(--cos-text-primary)" }}>{c.comment_text}</div>
@@ -375,7 +375,7 @@ export const EditorialCalendarView: React.FC<Props> = ({
                         onChange={(e) => setIsInternal(e.target.checked)}
                       />
                       <label htmlFor="comment-internal" style={{ fontSize: 12, cursor: "pointer" }}>
-                        🔒 Comentário Interno (Oculto do Cliente)
+                        Comentário Interno (Oculto do Cliente)
                       </label>
                     </div>
                     <button type="submit" className="cos-btn cos-btn--secondary cos-btn--sm" disabled={!commentText.trim()}>

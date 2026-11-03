@@ -304,7 +304,7 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
                       value={newTaskPriority}
                       onChange={(e) => setNewTaskPriority(e.target.value as any)}
                     >
-                      <option value="urgent">🚨 Urgente (Hoje)</option>
+                      <option value="urgent">Urgente (Hoje)</option>
                       <option value="high">Alta</option>
                       <option value="medium">Média</option>
                       <option value="low">Baixa</option>

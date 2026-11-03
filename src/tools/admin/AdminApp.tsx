@@ -575,13 +575,13 @@ export function AdminApp() {
           className={`admin-tab ${tab === "dashboard" ? "is-active" : ""}`}
           onClick={() => setTab("dashboard")}
         >
-          📊 Dashboard
+          Dashboard
         </button>
         <button
           className={`admin-tab ${tab === "tools" ? "is-active" : ""}`}
           onClick={() => setTab("tools")}
         >
-          🛠️ Ferramentas &amp; Loja ({tools.filter((t) => t.slug !== "admin").length})
+          Ferramentas &amp; Loja ({tools.filter((t) => t.slug !== "admin").length})
         </button>
         <button
           className={`admin-tab ${tab === "seeds" ? "is-active" : ""}`}
@@ -590,19 +590,19 @@ export function AdminApp() {
             if (!seedStats) loadSeedData(seedRange);
           }}
         >
-          🌱 Seeds &amp; Proveniência ({seedPublications.length || "v1"})
+          Seeds &amp; Proveniência ({seedPublications.length || "v1"})
         </button>
         <button
           className={`admin-tab ${tab === "achievements" ? "is-active" : ""}`}
           onClick={() => setTab("achievements")}
         >
-          🏆 Conquistas ({achievements.length})
+          Conquistas ({achievements.length})
         </button>
         <button
           className={`admin-tab ${tab === "users" ? "is-active" : ""}`}
           onClick={() => setTab("users")}
         >
-          👥 Membros ({stats?.total_users ?? users.length})
+          Membros ({stats?.total_users ?? users.length})
         </button>
       </nav>
 
@@ -613,7 +613,9 @@ export function AdminApp() {
         <section>
           <div className="admin-stats-grid">
             <div className="admin-stat-card">
-              <div className="admin-stat-card__icon">👥</div>
+              <div className="admin-stat-card__icon">
+                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
               <div className="admin-stat-card__val">{stats.total_users}</div>
               <div className="admin-stat-card__label">Usuários Cadastrados</div>
               <div className="admin-stat-card__sub">
@@ -622,14 +624,18 @@ export function AdminApp() {
             </div>
 
             <div className="admin-stat-card">
-              <div className="admin-stat-card__icon">🛡️</div>
+              <div className="admin-stat-card__icon">
+                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
               <div className="admin-stat-card__val">{stats.admin_users}</div>
               <div className="admin-stat-card__label">Administradores</div>
               <div className="admin-stat-card__sub">Com permissão total de governança</div>
             </div>
 
             <div className="admin-stat-card">
-              <div className="admin-stat-card__icon">🚀</div>
+              <div className="admin-stat-card__icon">
+                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+              </div>
               <div className="admin-stat-card__val">{stats.published_tools}</div>
               <div className="admin-stat-card__label">Ferramentas Publicadas</div>
               <div className="admin-stat-card__sub">
@@ -638,7 +644,9 @@ export function AdminApp() {
             </div>
 
             <div className="admin-stat-card">
-              <div className="admin-stat-card__icon">🏆</div>
+              <div className="admin-stat-card__icon">
+                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+              </div>
               <div className="admin-stat-card__val">{achievements.length}</div>
               <div className="admin-stat-card__label">Conquistas Disponíveis</div>
               <div className="admin-stat-card__sub">
@@ -647,14 +655,18 @@ export function AdminApp() {
             </div>
 
             <div className="admin-stat-card">
-              <div className="admin-stat-card__icon">📦</div>
+              <div className="admin-stat-card__icon">
+                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              </div>
               <div className="admin-stat-card__val">{stats.total_acquisitions}</div>
               <div className="admin-stat-card__label">Aquisições na Biblioteca</div>
               <div className="admin-stat-card__sub">Total de instalações por membros</div>
             </div>
 
             <div className="admin-stat-card">
-              <div className="admin-stat-card__icon">💬</div>
+              <div className="admin-stat-card__icon">
+                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
               <div className="admin-stat-card__val">{stats.whatsapp_verified}</div>
               <div className="admin-stat-card__label">WhatsApp Confirmados</div>
               <div className="admin-stat-card__sub">Membros verificados na comunidade</div>

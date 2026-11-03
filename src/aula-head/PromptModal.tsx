@@ -47,7 +47,7 @@ export function PromptModal({ initialIndex = 0, onClose }: PromptModalProps) {
           <header className="prompt-detail-header">
             <div className="prompt-badge-row">
               <span className="prompt-badge">PROMPT 0{prompt.number}</span>
-              <span className="prompt-tool-tag">🛠 {prompt.tool}</span>
+              <span className="prompt-tool-tag">{prompt.tool}</span>
               <span className="prompt-file-tag">Arquivo: {prompt.filename}</span>
             </div>
             <h2>{prompt.title}</h2>

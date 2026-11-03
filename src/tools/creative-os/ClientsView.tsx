@@ -244,10 +244,10 @@ export const ClientsView: React.FC<Props> = ({
                   className="cos-btn cos-btn--secondary"
                   onClick={() => onSelectClientForStrategy(selectedClient)}
                 >
-                  🎯 Abrir Ficha Estratégica
+                  Abrir Ficha Estratégica
                 </button>
                 <button className="cos-btn cos-btn--primary" onClick={handleGeneratePortalLink}>
-                  🔗 Gerar Link do Portal
+                  Gerar Link do Portal
                 </button>
               </div>
             </div>
@@ -335,7 +335,7 @@ export const ClientsView: React.FC<Props> = ({
                       )}
                       {contact.phone && (
                         <div style={{ fontSize: 12, color: "var(--cos-text-secondary)", marginTop: 2 }}>
-                          📞 {contact.phone}
+                          {contact.phone}
                         </div>
                       )}
                     </div>
@@ -381,7 +381,7 @@ export const ClientsView: React.FC<Props> = ({
                             setTimeout(() => setCopiedToken(null), 3000);
                           }}
                         >
-                          Copiar Link 📋
+                          Copiar Link
                         </button>
                       </div>
                     );

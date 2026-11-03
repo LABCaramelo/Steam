@@ -150,14 +150,14 @@ export const CreativeOsApp: React.FC<Props> = ({ repo }) => {
       {/* Navigation */}
       <nav className="cos-nav" aria-label="Navegação do Creative OS">
         {[
-          { id: "dashboard", label: "📊 Visão Geral" },
-          { id: "clients", label: `👥 Clientes (${clients.length})` },
-          { id: "strategy", label: "🎯 Ficha da Marca" },
-          { id: "briefings", label: "📋 Briefings & Propostas" },
-          { id: "projects", label: `🗂 Projetos (${projects.length})` },
-          { id: "calendar", label: `📅 Grade Editorial (${deliverables.length})` },
-          { id: "approvals", label: "✓ Aprovações" },
-          { id: "finance", label: "💰 Financeiro" },
+          { id: "dashboard", label: "Visão Geral" },
+          { id: "clients", label: `Clientes (${clients.length})` },
+          { id: "strategy", label: "Ficha da Marca" },
+          { id: "briefings", label: "Briefings & Propostas" },
+          { id: "projects", label: `Projetos (${projects.length})` },
+          { id: "calendar", label: `Grade Editorial (${deliverables.length})` },
+          { id: "approvals", label: "Aprovações" },
+          { id: "finance", label: "Financeiro" },
         ].map((tab) => (
           <button
             key={tab.id}

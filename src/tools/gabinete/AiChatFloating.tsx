@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { IconMessageSquare, IconZap } from "./Icons";
 
 interface Message {
   id: string;
@@ -63,7 +64,7 @@ export const AiChatFloating: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         title="Inteligência do Gabinete"
       >
-        <span>💬</span>
+        <IconMessageSquare size={20} />
       </button>
 
       {/* Janela do Chat */}
@@ -97,7 +98,7 @@ export const AiChatFloating: React.FC = () => {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 18 }}>⚡</span>
+              <IconZap size={18} color="var(--mc-caramel)" />
               <div>
                 <h4 style={{ margin: 0, fontSize: 13.5, fontWeight: 700, color: "var(--mc-text-title)" }}>
                   Gabinete IA

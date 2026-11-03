@@ -1,6 +1,20 @@
 import React, { useState } from "react";
 import { Isotype, ThemeToggle } from "@caramelo/design-system";
 import type { Client, Workspace } from "./types";
+import {
+  IconClipboard,
+  IconDashboard,
+  IconUsers,
+  IconBook,
+  IconZap,
+  IconCalendar,
+  IconShare,
+  IconBriefcase,
+  IconFileText,
+  IconTrash,
+  IconTrendingUp,
+  IconCreditCard,
+} from "./Icons";
 
 interface Props {
   workspace: Workspace;
@@ -55,7 +69,7 @@ export const GabineteSidebar: React.FC<Props> = ({
           onClick={() => onSelectTab("minhas-tarefas")}
         >
           <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon">📋</span>
+            <span className="mc-nav-item__icon"><IconClipboard size={16} /></span>
             <span>Minhas demandas</span>
           </div>
           {taskCount > 0 && <span className="mc-nav-item__badge">{taskCount}</span>}
@@ -67,7 +81,7 @@ export const GabineteSidebar: React.FC<Props> = ({
           onClick={() => onSelectTab("dashboard")}
         >
           <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon">📊</span>
+            <span className="mc-nav-item__icon"><IconDashboard size={16} /></span>
             <span>Dashboard</span>
           </div>
         </button>
@@ -79,7 +93,7 @@ export const GabineteSidebar: React.FC<Props> = ({
             onClick={() => onSelectTab("clientes")}
           >
             <div className="mc-nav-item__left">
-              <span className="mc-nav-item__icon">👥</span>
+              <span className="mc-nav-item__icon"><IconUsers size={16} /></span>
               <span>Clientes</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -175,7 +189,7 @@ export const GabineteSidebar: React.FC<Props> = ({
           onClick={() => onSelectTab("biblioteca")}
         >
           <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon">📚</span>
+            <span className="mc-nav-item__icon"><IconBook size={16} /></span>
             <span>Biblioteca</span>
           </div>
         </button>
@@ -186,7 +200,7 @@ export const GabineteSidebar: React.FC<Props> = ({
           onClick={() => onSelectTab("nativo")}
         >
           <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon">⚡</span>
+            <span className="mc-nav-item__icon"><IconZap size={16} /></span>
             <span>Nativo</span>
           </div>
           <span
@@ -210,7 +224,7 @@ export const GabineteSidebar: React.FC<Props> = ({
           onClick={() => onSelectTab("calendario")}
         >
           <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon">📅</span>
+            <span className="mc-nav-item__icon"><IconCalendar size={16} /></span>
             <span>Calendário</span>
           </div>
         </button>
@@ -221,7 +235,7 @@ export const GabineteSidebar: React.FC<Props> = ({
           onClick={() => onSelectTab("redes-sociais")}
         >
           <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon">🔗</span>
+            <span className="mc-nav-item__icon"><IconShare size={16} /></span>
             <span>Redes sociais</span>
           </div>
         </button>
@@ -234,7 +248,7 @@ export const GabineteSidebar: React.FC<Props> = ({
           onClick={() => onSelectTab("vendas")}
         >
           <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon">💼</span>
+            <span className="mc-nav-item__icon"><IconBriefcase size={16} /></span>
             <span>Vendas</span>
           </div>
         </button>
@@ -245,7 +259,7 @@ export const GabineteSidebar: React.FC<Props> = ({
           onClick={() => onSelectTab("formularios")}
         >
           <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon">📝</span>
+            <span className="mc-nav-item__icon"><IconFileText size={16} /></span>
             <span>Formulários</span>
           </div>
         </button>
@@ -256,7 +270,7 @@ export const GabineteSidebar: React.FC<Props> = ({
           onClick={() => onSelectTab("lixeira")}
         >
           <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon">🗑️</span>
+            <span className="mc-nav-item__icon"><IconTrash size={16} /></span>
             <span>Lixeira</span>
           </div>
         </button>
@@ -267,7 +281,7 @@ export const GabineteSidebar: React.FC<Props> = ({
           onClick={() => onSelectTab("relatorios")}
         >
           <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon">📈</span>
+            <span className="mc-nav-item__icon"><IconTrendingUp size={16} /></span>
             <span>Relatórios</span>
           </div>
         </button>
@@ -278,7 +292,7 @@ export const GabineteSidebar: React.FC<Props> = ({
           onClick={() => onSelectTab("financeiro")}
         >
           <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon">💳</span>
+            <span className="mc-nav-item__icon"><IconCreditCard size={16} /></span>
             <span>Financeiro</span>
           </div>
         </button>

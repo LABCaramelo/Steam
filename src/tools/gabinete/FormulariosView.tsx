@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import type { Client, Workspace } from "./types";
 import type { GabineteRepository } from "./repo";
 
@@ -15,7 +15,7 @@ export const FormulariosView: React.FC<Props> = ({ workspace, clients, repo: _re
       <div className="mc-view-header" style={{ padding: 0 }}>
         <div>
           <h2 className="mc-view-header__title">
-            <span>📝</span> Formulários & Briefings de Onboarding
+            Formulários & Briefings de Onboarding
           </h2>
           <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "var(--mc-text-muted)" }}>
             Modelos de questionários para os {clients.length} clientes do estúdio {workspace.name}.
@@ -23,7 +23,7 @@ export const FormulariosView: React.FC<Props> = ({ workspace, clients, repo: _re
         </div>
 
         <button className="mc-btn mc-btn--primary" onClick={() => alert("Link de formulário copiado para o clipboard!")}>
-          🔗 Copiar Link de Envio
+          Copiar Link de Envio
         </button>
       </div>
 

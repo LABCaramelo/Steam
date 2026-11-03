@@ -1,5 +1,6 @@
-﻿import React from "react";
+import React from "react";
 import type { Client, Deliverable, Task, Workspace } from "./types";
+import { IconCheckCircle } from "./Icons";
 import type { GabineteRepository } from "./repo";
 
 interface Props {
@@ -30,7 +31,7 @@ export const LixeiraView: React.FC<Props> = ({
       <div className="mc-view-header" style={{ padding: 0 }}>
         <div>
           <h2 className="mc-view-header__title">
-            <span>🗑️</span> Lixeira & Central de Restauração
+            Lixeira & Central de Restauração
           </h2>
           <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "var(--mc-text-muted)" }}>
             Itens arquivados no estúdio {workspace.name} podem ser restaurados com segurança.
@@ -49,7 +50,9 @@ export const LixeiraView: React.FC<Props> = ({
             color: "var(--mc-text-muted)",
           }}
         >
-          <span style={{ fontSize: 36 }}>✨</span>
+          <span style={{ display: "inline-flex", color: "var(--mc-caramel)", opacity: 0.8 }}>
+            <IconCheckCircle size={36} />
+          </span>
           <p style={{ marginTop: 8, fontSize: 14 }}>A lixeira está completamente limpa!</p>
         </div>
       ) : (

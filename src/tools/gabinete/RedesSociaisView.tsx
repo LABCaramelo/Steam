@@ -1,6 +1,7 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import type { SocialIntegration, Workspace } from "./types";
 import type { GabineteRepository } from "./repo";
+import { IconCamera, IconMusic, IconFolder } from "./Icons";
 
 interface Props {
   workspace: Workspace;
@@ -42,7 +43,7 @@ export const RedesSociaisView: React.FC<Props> = ({ workspace, repo }) => {
       <div className="mc-view-header" style={{ padding: 0 }}>
         <div>
           <h2 className="mc-view-header__title">
-            <span>🔗</span> Redes Sociais & Conexões
+            Redes Sociais & Conexões
           </h2>
           <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "var(--mc-text-muted)" }}>
             Publicação automática no Instagram, TikTok, integração com Meta for Agencies e backup no Google Drive.
@@ -66,7 +67,7 @@ export const RedesSociaisView: React.FC<Props> = ({ workspace, repo }) => {
         >
           <div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 28 }}>📸</span>
+              <IconCamera size={26} color="var(--mc-caramel)" />
               <span
                 style={{
                   fontSize: 11,
@@ -120,7 +121,7 @@ export const RedesSociaisView: React.FC<Props> = ({ workspace, repo }) => {
         >
           <div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 28 }}>🎵</span>
+              <IconMusic size={26} color="var(--mc-caramel)" />
               <span
                 style={{
                   fontSize: 11,
@@ -169,7 +170,7 @@ export const RedesSociaisView: React.FC<Props> = ({ workspace, repo }) => {
         >
           <div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 28 }}>📁</span>
+              <IconFolder size={26} color="var(--mc-caramel)" />
               <span
                 style={{
                   fontSize: 11,

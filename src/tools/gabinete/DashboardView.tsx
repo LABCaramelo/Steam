@@ -32,7 +32,7 @@ export const DashboardView: React.FC<Props> = ({
       <div className="mc-view-header" style={{ padding: 0 }}>
         <div>
           <h2 className="mc-view-header__title">
-            <span>📊</span> Dashboard Operacional — {workspace.name}
+            Dashboard Operacional — {workspace.name}
           </h2>
           <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "var(--mc-text-muted)" }}>
             Visão executiva da agência: entregas, {tasks.length} demandas cadastradas, produtividade e faturamento.
@@ -40,7 +40,7 @@ export const DashboardView: React.FC<Props> = ({
         </div>
 
         <button className="mc-btn mc-btn--acid" onClick={() => onNavigate("nativo")}>
-          ⚡ Criar Conteúdo com IA
+          Criar Conteúdo com IA
         </button>
       </div>
 
