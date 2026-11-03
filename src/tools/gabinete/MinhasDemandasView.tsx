@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { MagneticButton } from "@caramelo/design-system";
 import type { Client, Deliverable, Task, Workspace, WorkspaceMember } from "./types";
 import { IconUser, IconCheckCircle, IconAlertTriangle } from "./Icons";
 
@@ -81,9 +82,14 @@ export const MinhasDemandasView: React.FC<Props> = ({
             </select>
           </div>
 
-          <button className="mc-btn mc-btn--primary" data-tour="btn-nova-demanda" onClick={onOpenNewTaskModal}>
+          <MagneticButton
+            variant="accent"
+            size="sm"
+            data-tour="btn-nova-demanda"
+            onClick={onOpenNewTaskModal}
+          >
             + Nova demanda
-          </button>
+          </MagneticButton>
         </div>
       </div>
 
@@ -100,9 +106,13 @@ export const MinhasDemandasView: React.FC<Props> = ({
               Cria o planejamento do mês, os roteiros e os cards do seu cliente em poucos minutos.
             </p>
           </div>
-          <button className="mc-hero-card__btn cm-btn--cream" onClick={() => onNavigate("nativo")}>
+          <MagneticButton
+            variant="cream"
+            size="md"
+            onClick={() => onNavigate("nativo")}
+          >
             Criar o mês →
-          </button>
+          </MagneticButton>
         </div>
 
         {/* Card 2: Nativo */}
@@ -116,9 +126,13 @@ export const MinhasDemandasView: React.FC<Props> = ({
               Cria posts e carrosséis com inteligência artificial, com a identidade visual do seu cliente ou do zero.
             </p>
           </div>
-          <button className="mc-hero-card__btn mc-btn--primary" onClick={() => onNavigate("nativo")}>
+          <MagneticButton
+            variant="accent"
+            size="md"
+            onClick={() => onNavigate("nativo")}
+          >
             Abrir ↗
-          </button>
+          </MagneticButton>
         </div>
       </div>
 

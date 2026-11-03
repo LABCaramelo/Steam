@@ -38,12 +38,12 @@
   --mc-text-muted: rgb(var(--cm-fg-muted));
   --mc-text-dim: rgb(var(--cm-fg-dim));
 
-  --mc-radius-xs: var(--cm-radius-xs);
-  --mc-radius-sm: var(--cm-radius-sm);
-  --mc-radius-md: var(--cm-radius-md);
-  --mc-radius-lg: var(--cm-radius-lg);
-  --mc-radius-xl: var(--cm-radius-xl);
-  --mc-radius-pill: var(--cm-radius-pill);
+  --mc-radius-xs: 4px;
+  --mc-radius-sm: 8px;
+  --mc-radius-md: 12px;
+  --mc-radius-lg: 16px;
+  --mc-radius-xl: 24px;
+  --mc-radius-pill: 9999px;
 
   --mc-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
   --mc-shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.45);
@@ -450,83 +450,140 @@
   font-weight: 500;
 }
 
-/* Botões do Showcase Caramelo */
-.mc-btn {
+/* Botões do Showcase Caramelo (Pills Canônicas) */
+.mc-btn,
+button.mc-btn,
+.mc-hero-card__btn,
+.cm-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 8px 18px;
-  border-radius: var(--mc-radius-pill);
-  font-family: var(--mc-font-sans);
-  font-size: 13.5px;
-  font-weight: 600;
+  height: 38px;
+  min-height: 38px;
+  padding: 0 20px;
+  border-radius: 9999px !important;
+  font-family: var(--mc-font-sans, Inter, sans-serif);
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: background-color var(--cm-dur-micro) var(--cm-ease-standard),
-              border-color var(--cm-dur-micro) var(--cm-ease-standard),
-              color var(--cm-dur-micro) var(--cm-ease-standard),
-              transform var(--cm-dur-instant) var(--cm-ease-out),
-              box-shadow var(--cm-dur-micro) var(--cm-ease-standard);
+  user-select: none;
+  white-space: nowrap;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: transform var(--cm-dur-quick, 240ms) var(--cm-ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+              background var(--cm-dur-micro, 160ms) var(--cm-ease-standard, ease),
+              border-color var(--cm-dur-micro, 160ms) var(--cm-ease-standard, ease),
+              color var(--cm-dur-micro, 160ms) var(--cm-ease-standard, ease),
+              box-shadow var(--cm-dur-quick, 240ms) var(--cm-ease-out, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
-.mc-btn:active {
+.mc-btn:active,
+button.mc-btn:active,
+.mc-hero-card__btn:active,
+.cm-btn:active {
   transform: scale(0.97);
 }
 
-.mc-btn:focus-visible {
+.mc-btn:focus-visible,
+button.mc-btn:focus-visible,
+.mc-hero-card__btn:focus-visible,
+.cm-btn:focus-visible {
   outline: none;
-  box-shadow: var(--cm-focus-ring);
+  box-shadow: 0 0 0 2px rgb(37 191 255 / 0.5), 0 0 0 4px rgba(0, 0, 0, 0.6);
 }
 
-/* Botão Accent Primário */
-.mc-btn--primary, .cm-btn--accent {
-  background-color: rgb(var(--cm-accent));
-  color: rgb(var(--cm-accent-contrast));
-  font-weight: 700;
-  box-shadow: 0 2px 10px rgba(255, 112, 26, 0.25);
+/* Botão Accent Laranja Primário */
+.mc-btn--primary,
+.cm-btn--caramel,
+button.mc-btn--primary,
+button.cm-btn--caramel {
+  background: #FF701A !important;
+  color: #101014 !important;
+  border: 0 !important;
+  border-radius: 9999px !important;
+  font-weight: 800;
+  box-shadow: 0 2px 14px rgba(255, 112, 26, 0.35);
 }
 
-.mc-btn--primary:hover, .cm-btn--accent:hover {
-  background-color: rgb(var(--cm-accent-bright));
-  color: rgb(var(--cm-accent-contrast));
-  box-shadow: 0 4px 16px rgba(255, 112, 26, 0.4);
+.mc-btn--primary:hover,
+.cm-btn--caramel:hover,
+button.mc-btn--primary:hover,
+button.cm-btn--caramel:hover {
+  background: #FF8A3D !important;
+  color: #101014 !important;
+  box-shadow: 0 4px 22px rgba(255, 112, 26, 0.55);
+  transform: translateY(-1px);
 }
 
 /* Botão Tátil Cream Pill do Showcase */
-.cm-btn--cream {
-  background: linear-gradient(180deg, #FFFAF4, #EFDFCC);
-  color: #101014;
+.cm-btn--cream,
+.cm-glow-btn,
+button.cm-btn--cream,
+button.cm-glow-btn {
+  height: 38px;
+  min-height: 38px;
+  border: 0 !important;
+  border-radius: 9999px !important;
+  padding: 0 22px;
+  background: linear-gradient(180deg, #FFFAF4, #EFDFCC) !important;
+  color: #101014 !important;
+  font-family: var(--mc-font-sans, Inter, sans-serif);
   font-weight: 700;
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  letter-spacing: 0.01em;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -2px 0 rgba(16, 16, 20, 0.08), 0 2px 8px rgba(0, 0, 0, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.cm-btn--cream:hover {
-  background: #ffffff;
-  box-shadow: inset 0 1px 0 #ffffff, var(--cm-glow-sm);
-  color: #101014;
+.cm-btn--cream:hover,
+.cm-glow-btn:hover,
+button.cm-btn--cream:hover,
+button.cm-glow-btn:hover {
+  background: #ffffff !important;
+  box-shadow: inset 0 1px 0 #ffffff, 0 0 20px rgba(255, 244, 232, 0.45);
+  color: #101014 !important;
+  transform: translateY(-1px);
 }
 
-.mc-btn--acid {
-  background-color: #ffd52a;
-  color: #101014;
+/* Botão Acid Yellow */
+.mc-btn--acid,
+button.mc-btn--acid {
+  background: #ffd52a !important;
+  color: #101014 !important;
   font-weight: 800;
+  border: 0 !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 2px 10px rgba(255, 213, 42, 0.3);
 }
 
-.mc-btn--acid:hover {
-  background-color: #ffe066;
+.mc-btn--acid:hover,
+button.mc-btn--acid:hover {
+  background: #ffe066 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(255, 213, 42, 0.45);
 }
 
-.mc-btn--secondary {
-  background-color: var(--mc-ink-surface);
-  border-color: var(--mc-ink-border);
-  color: var(--mc-text-title);
+/* Botão Secundário Dark Surface */
+.mc-btn--secondary,
+button.mc-btn--secondary {
+  background: var(--mc-ink-surface) !important;
+  border: 1px solid var(--mc-ink-border) !important;
+  color: var(--mc-text-title) !important;
+  border-radius: 9999px !important;
 }
 
-.mc-btn--secondary:hover {
-  border-color: var(--mc-ink-border-hover);
-  background-color: var(--mc-ink-surface-subtle);
+.mc-btn--secondary:hover,
+button.mc-btn--secondary:hover {
+  border-color: var(--mc-ink-border-hover) !important;
+  background: var(--mc-ink-surface-subtle) !important;
+  transform: translateY(-1px);
 }
 
 /* Sliding Pill Tabs do Showcase */
