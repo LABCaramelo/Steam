@@ -9,15 +9,19 @@
  * Strict priority: If canonical format is detected, canonical wins without mixing formats.
  */
 
-function getMetaContent(html: string, name: string): string | null {
-  if (!html || !name) return null;
-  const regex1 = new RegExp(`<meta\\s+[^>]*name=["']${name}["'][^>]*content=["']([^"']*)["']`, "i");
-  const regex2 = new RegExp(`<meta\\s+[^>]*content=["']([^"']*)["'][^>]*name=["']${name}["']`, "i");
-  const m1 = html.match(regex1);
-  if (m1) return m1[1].trim();
-  const m2 = html.match(regex2);
-  if (m2) return m2[1].trim();
-  return null;
+function getAllMetaContent(html: string, name: string): string[] {
+  if (!html || !name) return [];
+  const results: string[] = [];
+  const regex1 = new RegExp(`<meta\\s+[^>]*name=["']${name}["'][^>]*content=["']([^"']*)["']`, "gi");
+  const regex2 = new RegExp(`<meta\\s+[^>]*content=["']([^"']*)["'][^>]*name=["']${name}["']`, "gi");
+  let m: RegExpExecArray | null;
+  while ((m = regex1.exec(html)) !== null) {
+    results.push(m[1].trim());
+  }
+  while ((m = regex2.exec(html)) !== null) {
+    results.push(m[1].trim());
+  }
+  return results;
 }
 
 export interface VerificationInput {
@@ -60,18 +64,18 @@ export function verifyHtmlContent({
   const cleanCanonical = String(expectedCanonicalUrl || `https://www.umcaracaramelo.com.br/prompts/${cleanSlug}`).trim();
 
   // 1. Check FORMAT A: canonical_meta_v1
-  const metaSeed = getMetaContent(html, "ucc:seed");
-  const metaPrompt = getMetaContent(html, "ucc:prompt");
-  const metaSource = getMetaContent(html, "ucc:source");
-  const metaGenerator = getMetaContent(html, "generator");
+  const allSeeds = getAllMetaContent(html, "ucc:seed");
+  const allPrompts = getAllMetaContent(html, "ucc:prompt");
+  const allSources = getAllMetaContent(html, "ucc:source");
+  const allGenerators = getAllMetaContent(html, "generator");
 
-  const hasCanonicalMeta = metaSeed !== null || metaPrompt !== null || metaSource !== null;
+  const hasCanonicalMeta = allSeeds.length > 0 || allPrompts.length > 0 || allSources.length > 0;
 
   if (hasCanonicalMeta) {
-    const seed_match = metaSeed === cleanSeed;
-    const prompt_match = metaPrompt === cleanSlug;
-    const source_match = metaSource === cleanCanonical;
-    const generator_match = metaGenerator === "Um Cara Caramelo";
+    const seed_match = allSeeds.includes(cleanSeed);
+    const prompt_match = allPrompts.includes(cleanSlug);
+    const source_match = allSources.includes(cleanCanonical);
+    const generator_match = allGenerators.includes("Um Cara Caramelo");
     const verified = seed_match && prompt_match && source_match;
 
     return {

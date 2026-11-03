@@ -46,3 +46,40 @@ test("verifier: rejects mismatching seed", () => {
   assert.equal(result.verified, false);
   assert.equal(result.seed_match, false);
 });
+
+test("verifier: verifies correctly in document containing multiple prompt seeds", () => {
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Um Cara Caramelo">
+  <meta name="ucc:seed" content="ucc_v1_prompt_one_1234567890">
+  <meta name="ucc:prompt" content="first-hero">
+  <meta name="ucc:source" content="https://www.umcaracaramelo.com.br/prompts/first-hero">
+
+  <meta name="ucc:seed" content="ucc_v1_prompt_two_0987654321">
+  <meta name="ucc:prompt" content="reelmark-v2">
+  <meta name="ucc:source" content="https://www.umcaracaramelo.com.br/prompts/reelmark-v2">
+</head>
+<body><h1>Multi-seed Page</h1></body>
+</html>`;
+
+  const resultOne = verifyHtmlContent({
+    html,
+    expectedSeed: "ucc_v1_prompt_one_1234567890",
+    expectedSlug: "first-hero",
+  });
+  assert.equal(resultOne.verified, true);
+  assert.equal(resultOne.seed_match, true);
+  assert.equal(resultOne.prompt_match, true);
+
+  const resultTwo = verifyHtmlContent({
+    html,
+    expectedSeed: "ucc_v1_prompt_two_0987654321",
+    expectedSlug: "reelmark-v2",
+  });
+  assert.equal(resultTwo.verified, true);
+  assert.equal(resultTwo.seed_match, true);
+  assert.equal(resultTwo.prompt_match, true);
+});
