@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Isotype, ThemeToggle } from "@caramelo/design-system";
+import { Isotype } from "@caramelo/design-system";
 import type { Client, Workspace } from "./types";
 import {
   IconClipboard,
@@ -412,10 +412,7 @@ export const GabineteSidebar: React.FC<Props> = ({
 
       {/* Rodapé da Sidebar */}
       <div className="mc-sidebar__footer">
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 11, color: "rgba(255,244,232,0.5)" }}>Tema</span>
-          <ThemeToggle />
-        </div>
+        <span style={{ fontSize: 11, color: "rgba(255,244,232,0.4)" }}>Gabinete Workstation</span>
         <span
           style={{
             fontSize: 10,

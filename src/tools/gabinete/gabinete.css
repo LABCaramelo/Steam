@@ -66,8 +66,8 @@
 .mc-shell {
   display: flex;
   min-height: 100vh;
-  background-color: var(--mc-ink);
-  color: var(--mc-text-title);
+  background-color: #0c0e14 !important;
+  color: #fff4e8 !important;
   font-family: var(--mc-font-sans);
   overflow: hidden;
 }
@@ -263,9 +263,10 @@
   height: 100vh;
   overflow-y: auto;
   position: relative;
-  background-color: rgb(var(--cm-stage));
-  background-image: radial-gradient(rgb(var(--cm-fg) / 0.055) 0.7px, transparent 0.8px);
+  background-color: #0c0e14 !important;
+  background-image: radial-gradient(rgba(255, 244, 232, 0.04) 0.7px, transparent 0.8px);
   background-size: 32px 32px;
+  color: #fff4e8 !important;
 }
 
 /* View Header */

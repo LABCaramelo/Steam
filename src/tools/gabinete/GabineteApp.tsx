@@ -63,6 +63,11 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
   const [newTaskPriority, setNewTaskPriority] = useState<Task["priority"]>("medium");
   const [newTaskDueDate, setNewTaskDueDate] = useState(new Date().toISOString().slice(0, 10));
 
+  useEffect(() => {
+    // Gabinete opera como estúdio canônico dark do LAB Caramelo
+    document.documentElement.setAttribute("data-caramelo-theme", "dark");
+  }, []);
+
   const loadAll = async () => {
     try {
       const wsList = await repo.getWorkspaces();

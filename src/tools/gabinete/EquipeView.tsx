@@ -171,11 +171,13 @@ export const EquipeView: React.FC<Props> = ({
               type="button"
               onClick={() => setActiveMainTab(tab)}
               style={{
-                background: isActive ? "rgba(255,244,232,0.12)" : "transparent",
-                color: isActive ? "#fff4e8" : "rgba(255,244,232,0.5)",
-                border: "none",
-                borderRadius: 4,
-                padding: "6px 12px",
+                background: isActive ? "#1c202a" : "rgba(255,255,255,0.03)",
+                color: isActive ? "#fff4e8" : "rgba(255,244,232,0.55)",
+                border: isActive
+                  ? "1px solid rgba(255,244,232,0.22)"
+                  : "1px solid rgba(255,244,232,0.07)",
+                borderRadius: 6,
+                padding: "6px 14px",
                 fontSize: 11,
                 fontWeight: 800,
                 letterSpacing: "0.06em",
@@ -217,12 +219,12 @@ export const EquipeView: React.FC<Props> = ({
                     type="button"
                     onClick={() => setActiveSubTab(sub.id as any)}
                     style={{
-                      background: isSubActive ? "#181824" : "transparent",
+                      background: isSubActive ? "#181824" : "rgba(255,255,255,0.02)",
                       border: isSubActive
                         ? "1px solid #c8d44e"
-                        : "1px solid rgba(255,244,232,0.1)",
+                        : "1px solid rgba(255,244,232,0.12)",
                       borderRadius: 6,
-                      padding: "6px 14px",
+                      padding: "7px 16px",
                       fontSize: 11.5,
                       fontWeight: 800,
                       color: isSubActive ? "#c8d44e" : "rgba(255,244,232,0.65)",
