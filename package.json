@@ -12,6 +12,7 @@
     "test": "node --test --experimental-strip-types server/*.test.ts",
     "caramelo:sync": "node scripts/sync-caramelo.mjs",
     "prompts:import": "node scripts/import-prompts.mjs",
+    "prompts:notify": "node scripts/notify-new-prompts.mjs",
     "seeds:compile": "node scripts/compile-seeds.mjs"
   },
   "dependencies": {

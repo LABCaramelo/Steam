@@ -1,9 +1,26 @@
 // Sincroniza o acervo da Biblioteca de Prompts (api/data/prompt-catalog.json) com todos os prompts do Supabase.
-// Execução: node scripts/import-prompts.mjs
+// Execução: node scripts/import-prompts.mjs [--no-notify] [--dry-run]
 
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  getUazapiNotificationConfig,
+  formatNewPromptsMessage,
+  sendNewPromptsNotification,
+} from "../server/promptNotification.ts";
+
+if (typeof process.loadEnvFile === "function") {
+  try {
+    process.loadEnvFile();
+  } catch {
+    // Ignora se .env não existir
+  }
+}
+
+const args = process.argv.slice(2);
+const isDryRun = args.includes("--dry-run");
+const skipNotify = args.includes("--no-notify") || args.includes("--skip-notify");
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const catalogPath = path.join(root, "api", "data", "prompt-catalog.json");
@@ -72,6 +89,14 @@ if (!Array.isArray(allPrompts) || allPrompts.length === 0) {
   if (toAdd.length === 0) {
     console.log("\nNenhum novo prompt pendente. O catálogo local já está 100% sincronizado com o Supabase!");
   } else {
+    if (isDryRun) {
+      console.log(`\n[DRY-RUN] ${toAdd.length} novos prompts seriam adicionados.`);
+      console.log("\n--- Prévia da Notificação no WhatsApp ---");
+      console.log(formatNewPromptsMessage(toAdd));
+      console.log("-----------------------------------------");
+      process.exit(0);
+    }
+
     catalog.items.push(...toAdd);
     function getPriorityTier(item) {
       if (!item) return 99;
@@ -91,5 +116,22 @@ if (!Array.isArray(allPrompts) || allPrompts.length === 0) {
 
     fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2) + "\n");
     console.log(`\nImportação concluída com sucesso! Total no catálogo: ${catalog.items.length} prompts (+${toAdd.length} adicionados).`);
+
+    if (skipNotify) {
+      console.log("ℹ️  Notificação no grupo desativada via flag (--no-notify).");
+    } else {
+      const config = getUazapiNotificationConfig();
+      if (!config.uazapiUrl || !config.uazapiToken || !config.groupJid) {
+        console.warn("⚠️  Aviso de WhatsApp não enviado: variáveis UAZAPI_URL / UAZAPI_TOKEN / UAZAPI_GROUP_JID ausentes no .env.");
+      } else {
+        try {
+          console.log(`\nDisparando notificação no grupo do WhatsApp (${config.groupJid})...`);
+          const result = await sendNewPromptsNotification(config, toAdd);
+          console.log(`📢 Aviso enviado com sucesso para o grupo do WhatsApp do LAB! (${result.count} prompts notificados)`);
+        } catch (err) {
+          console.error(`⚠️  Falha ao enviar notificação no WhatsApp:`, err?.message || err);
+        }
+      }
+    }
   }
 }
