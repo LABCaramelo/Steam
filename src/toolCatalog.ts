@@ -490,7 +490,10 @@ export function registerTools(snapshot: LibrarySnapshot, owned: ReadonlySet<stri
   return {
     ...snapshot,
     apps: [
-      ...dynamicCatalog.filter((app) => owned.has(app.tool!.slug)),
+      ...dynamicCatalog.filter((app) => {
+        const slug = app.tool!.slug;
+        return owned.has(slug) || (slug === "gabinete" && (owned.has("creative-os") || owned.has("modo-criador")));
+      }),
       ...snapshot.apps.filter((app) => !catalogIds.has(app.appid)),
     ],
   };
