@@ -33,12 +33,12 @@
     'linear-gradient(137deg,#FFFFFF 0%,#7DD3FC 45%,#06B6D4 100%)',
     'linear-gradient(137deg,#4361EE 0%,#E0AEFF 45%,#F72585 100%)'
   ];
-  const state = { items: [], category: '', query: '', savedOnly: false, limit: PAGE_SIZE, sort: 'popular' };
+  const state = { items: [], category: '', query: '', savedOnly: false, limit: PAGE_SIZE, sort: 'recent' };
   const cache = new Map();
   const previews = window.PromptVideoPreviews.createManager();
   const motion = window.PromptLibraryMotion;
   const categoryControl = window.PromptLibraryControls.createSelect({ id: 'categorySelect', options: [{ value: '', label: 'Todas as categorias' }], value: '', onChange: value => { state.category = value; resetPage(); } });
-  const sortControl = window.PromptLibraryControls.createSelect({ id: 'sortSelect', options: [{ value: 'popular', label: 'Mais populares' }, { value: 'recent', label: 'Mais recentes' }, { value: 'title', label: 'Título A–Z' }], value: 'popular', onChange: value => { state.sort = value; $('popularityNote').hidden = value !== 'popular'; resetPage(); } });
+  const sortControl = window.PromptLibraryControls.createSelect({ id: 'sortSelect', options: [{ value: 'recent', label: 'Mais recentes' }, { value: 'popular', label: 'Mais populares' }, { value: 'title', label: 'Título A–Z' }], value: 'recent', onChange: value => { state.sort = value; $('popularityNote').hidden = value !== 'popular'; resetPage(); } });
   let selected = null;
   let detailVersion = 0;
   let toastTimer;
