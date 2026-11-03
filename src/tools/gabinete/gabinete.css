@@ -531,50 +531,6 @@
   background-color: rgba(255, 255, 255, 0.06);
 }
 
-/* Floating Elements */
-.mc-floating-chat {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: var(--mc-acid);
-  color: #101014;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  cursor: pointer;
-  z-index: 50;
-  border: none;
-  font-size: 22px;
-  transition: transform 0.2s ease;
-}
-
-.mc-floating-chat:hover {
-  transform: scale(1.08);
-}
-
-.mc-guide-pill {
-  position: fixed;
-  bottom: 24px;
-  right: 88px;
-  background: var(--mc-acid);
-  color: #101014;
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 12.5px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-  cursor: pointer;
-  z-index: 50;
-  border: none;
-}
-
 /* Modals */
 .mc-modal-backdrop {
   position: fixed;

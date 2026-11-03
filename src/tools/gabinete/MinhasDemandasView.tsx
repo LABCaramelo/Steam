@@ -298,11 +298,6 @@ export const MinhasDemandasView: React.FC<Props> = ({
           </div>
         )}
       </div>
-
-      {/* Botão de Ajuda Guiada */}
-      <button className="mc-guide-pill" onClick={() => onNavigate("nativo")}>
-        <span>💡</span> Me guie (11)
-      </button>
     </div>
   );
 };

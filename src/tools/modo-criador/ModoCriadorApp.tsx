@@ -13,7 +13,6 @@ import { RelatoriosView } from "./RelatoriosView";
 import { FinanceiroView } from "./FinanceiroView";
 import { LixeiraView } from "./LixeiraView";
 import { ClientPortalView } from "./ClientPortalView";
-import { AiChatFloating } from "./AiChatFloating";
 import type { ModoCriadorRepository } from "./repo";
 import type {
   Client,
@@ -316,9 +315,6 @@ export const ModoCriadorApp: React.FC<Props> = ({ repo }) => {
           )}
         </div>
       </main>
-
-      {/* Chat Flutuante IA */}
-      <AiChatFloating />
 
       {/* Modal Nova Demanda */}
       {taskModalOpen && (
