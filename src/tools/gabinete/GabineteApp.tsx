@@ -121,7 +121,7 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
   if (loading || !workspace) {
     return (
       <div className="mc-shell" style={{ alignItems: "center", justifyContent: "center" }}>
-        <p style={{ color: "var(--mc-text-muted)" }}>Iniciando o Modo Criador…</p>
+        <p style={{ color: "var(--mc-text-muted)" }}>Iniciando o Gabinete…</p>
       </div>
     );
   }

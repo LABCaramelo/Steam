@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ThemeToggle } from "@caramelo/design-system";
+import { Isotype, ThemeToggle } from "@caramelo/design-system";
 import type { Client, Workspace } from "./types";
 
 interface Props {
@@ -32,11 +32,16 @@ export const GabineteSidebar: React.FC<Props> = ({
       {/* Perfil & Nível de Agência */}
       <div className="mc-sidebar__header">
         <div className="mc-sidebar__profile">
-          <h2 className="mc-sidebar__title">
-            <span>LUIZ</span>
-            <span style={{ fontSize: 13, opacity: 0.6 }}>✦</span>
-          </h2>
-          <p className="mc-sidebar__subtitle">Gestão de conteúdo e criação</p>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <Isotype size={28} variant="caramel" decorative interactive />
+            <div>
+              <h2 className="mc-sidebar__title">
+                <span>GABINETE</span>
+                <span style={{ fontSize: 13, color: "var(--mc-caramel)", opacity: 0.9 }}>✦</span>
+              </h2>
+              <p className="mc-sidebar__subtitle">Gestão de bastidor · {workspace.name || "Luiz"}</p>
+            </div>
+          </div>
           <div className="mc-sidebar__badge">
             <span>🛡️</span>
             <span>{workspace.agency_level || "Agência Bronze I"}</span>

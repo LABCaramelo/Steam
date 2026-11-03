@@ -87,7 +87,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
       {/* Cards de Destaque: Gabinete IA & Nativo */}
       <div className="mc-featured-cards">
         {/* Card 1: Gabinete IA */}
-        <div className="mc-hero-card mc-hero-card--acid">
+        <div className="mc-hero-card mc-hero-card--acid cm-surface--spotlight">
           <div>
             <span className="mc-hero-card__badge">JÁ LIBERADO</span>
             <h3 className="mc-hero-card__title">
@@ -103,7 +103,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
         </div>
 
         {/* Card 2: Nativo */}
-        <div className="mc-hero-card mc-hero-card--dark">
+        <div className="mc-hero-card mc-hero-card--dark cm-surface--spotlight">
           <div>
             <span className="mc-hero-card__badge">NOVO</span>
             <h3 className="mc-hero-card__title">
@@ -121,28 +121,28 @@ export const MinhasDemandasView: React.FC<Props> = ({
 
       {/* Contadores de Tarefas */}
       <div className="mc-counters">
-        <div className="mc-counter-card">
+        <div className="mc-counter-card cm-surface--spotlight">
           <span className="mc-counter-card__number mc-counter-card__number--danger">
             {overdueTasks.length}
           </span>
           <span className="mc-counter-card__label">Atrasadas</span>
         </div>
 
-        <div className="mc-counter-card">
+        <div className="mc-counter-card cm-surface--spotlight">
           <span className="mc-counter-card__number mc-counter-card__number--warning">
             {todayTasks.length}
           </span>
           <span className="mc-counter-card__label">Para hoje</span>
         </div>
 
-        <div className="mc-counter-card">
+        <div className="mc-counter-card cm-surface--spotlight">
           <span className="mc-counter-card__number mc-counter-card__number--sky">
             {next7DaysTasks.length}
           </span>
           <span className="mc-counter-card__label">Próximos 7 dias</span>
         </div>
 
-        <div className="mc-counter-card">
+        <div className="mc-counter-card cm-surface--spotlight">
           <span className="mc-counter-card__number mc-counter-card__number--neutral">
             {allOpenTasks.length}
           </span>
