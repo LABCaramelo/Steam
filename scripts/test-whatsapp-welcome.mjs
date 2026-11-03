@@ -3,7 +3,7 @@
 //   node scripts/test-whatsapp-welcome.mjs --preview              (visualiza os 6 modelos)
 //   node --env-file=.env scripts/test-whatsapp-welcome.mjs --send 5531985869015   (dispara no grupo de teste)
 
-import { WELCOME_TEMPLATES, resolveMemberName } from "../server/whatsappWelcome.ts";
+import { WELCOME_TEMPLATES, resolveMemberDetails } from "../server/whatsappWelcome.ts";
 
 const args = process.argv.slice(2);
 const isPreview = args.includes("--preview") || args.length === 0;
@@ -50,10 +50,11 @@ if (targetPhone) {
 
   console.log(`Buscando perfil do WhatsApp de ${cleanNumber}...`);
   const config = { uazapiUrl: url, uazapiToken: token, groupJid };
-  const memberName = await resolveMemberName(config, groupJid, cleanNumber);
-  console.log(`Nome identificado: ${memberName ? `"${memberName}"` : "(nenhum, usando número como fallback)"}`);
+  const member = await resolveMemberDetails(config, groupJid, cleanNumber);
+  console.log(`Telefone PN: ${member.phone}`);
+  console.log(`Nome identificado: ${member.name ? `"${member.name}"` : "(nenhum, usando número como fallback)"}`);
 
-  const messageText = tpl.format(cleanNumber, memberName || undefined);
+  const messageText = tpl.format(member.phone, member.name);
 
   console.log(`\nDisparando Modelo [${tpl.id}] para o grupo ${groupJid}...`);
   console.log(`Texto enviado:\n${messageText}\n`);
@@ -65,7 +66,7 @@ if (targetPhone) {
       body: JSON.stringify({
         number: groupJid,
         text: messageText,
-        mentions: cleanNumber,
+        mentions: member.phone,
       }),
     });
 

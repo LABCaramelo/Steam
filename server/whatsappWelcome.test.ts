@@ -68,6 +68,22 @@ test("parseGroupJoinEvent aceita action 'join' e múltiplos participantes", () =
   assert.deepEqual(event?.participants, ["5511999999999", "5521988888888"]);
 });
 
+test("parseGroupJoinEvent aceita variações de entrada por link de convite (invite, linked_group_join, joined)", () => {
+  for (const act of ["invite", "invite_link", "linked_group_join", "joined", "member_add"]) {
+    const payload = {
+      event: "groups",
+      data: {
+        id: "120363111111111111@g.us",
+        action: act,
+        participants: ["5531985869015@s.whatsapp.net"],
+      },
+    };
+    const event = parseGroupJoinEvent(payload);
+    assert.ok(event, `Deve aceitar action '${act}'`);
+    assert.deepEqual(event?.participants, ["5531985869015"]);
+  }
+});
+
 test("parseGroupJoinEvent ignora eventos de saída (remove / leave)", () => {
   const payload = {
     EventType: "groups",
@@ -156,7 +172,7 @@ test("sendWelcomeToGroup usa nome do usuário no texto quando disponível", asyn
         JSON.stringify({
           participant_profiles: [
             {
-              pn: "553185869015@s.whatsapp.net",
+              pn: "5531985869015@s.whatsapp.net",
               name: "Luiz Caramelo",
             },
           ],
@@ -189,6 +205,61 @@ test("sendWelcomeToGroup usa nome do usuário no texto quando disponível", asyn
     assert.equal(sendCall.body.mentions, "5531985869015");
     assert.match(String(sendCall.body.text), /\*Luiz Caramelo\*/);
     assert.doesNotMatch(String(sendCall.body.text), /@5531985869015/);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("sendWelcomeToGroup resolve LID para número de telefone real e nome", async () => {
+  const calls: { url: string; body: Record<string, unknown>; headers: Record<string, string> }[] = [];
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = (async (input: string | URL | Request, init: RequestInit = {}) => {
+    const urlStr = String(input);
+    const body = JSON.parse(String(init.body || "{}"));
+    calls.push({
+      url: urlStr,
+      body,
+      headers: init.headers as Record<string, string>,
+    });
+    if (urlStr.includes("/group/info")) {
+      return new Response(
+        JSON.stringify({
+          participant_profiles: [
+            {
+              lid: "248021644226779@lid",
+              pn: "553188015544@s.whatsapp.net",
+              name: "Camila Alves",
+            },
+          ],
+        }),
+        { status: 200 }
+      );
+    }
+    return new Response(JSON.stringify({ status: "success" }), { status: 200 });
+  }) as typeof fetch;
+
+  try {
+    const config = {
+      uazapiUrl: "https://uazapi.test",
+      uazapiToken: "token-123",
+      groupJid: "120363000000000000@g.us",
+    };
+
+    const event = {
+      groupJid: "120363000000000000@g.us",
+      action: "add" as const,
+      participants: ["248021644226779"],
+      rawParticipants: ["248021644226779@lid"],
+    };
+
+    const result = await sendWelcomeToGroup(config, event, 0);
+    assert.equal(result.success, true);
+    assert.equal(result.resolvedNames?.["248021644226779"], "Camila Alves");
+    assert.equal(result.resolvedNames?.["553188015544"], "Camila Alves");
+    const sendCall = calls.find((c) => c.url.endsWith("/send/text"));
+    assert.ok(sendCall);
+    assert.equal(sendCall.body.mentions, "553188015544", "Deve mencionar o número PN real, não o LID");
+    assert.match(String(sendCall.body.text), /\*Camila Alves\*/);
   } finally {
     globalThis.fetch = originalFetch;
   }

@@ -141,24 +141,27 @@ export interface GroupJoinParticipant {
 export interface GroupJoinEvent {
   groupJid: string;
   action: "add" | "join";
-  participants: string[]; // apenas dígitos numéricos para menções (ex: "5531985869015")
+  participants: string[]; // dígitos numéricos para menções (ex: "5531985869015" ou LID)
   rawParticipants: string[];
   participantDetails?: GroupJoinParticipant[];
 }
 
 function cleanDigits(value: unknown): string | null {
   if (typeof value === "string") {
-    // Remove sufixo de servidor (@s.whatsapp.net) e sufixo de device (:12)
+    // Pode vir como 5531985869015@s.whatsapp.net, 261211841101990@lid, ou 5531985869015:12@s.whatsapp.net
     const withoutServer = value.split("@")[0].trim();
     const withoutDevice = withoutServer.split(":")[0].trim();
     const raw = withoutDevice.replace(/\D/g, "");
     return raw.length >= 8 ? raw : null;
   }
-  if (value && typeof value === "object" && "id" in value && typeof (value as { id: unknown }).id === "string") {
-    const withoutServer = (value as { id: string }).id.split("@")[0].trim();
-    const withoutDevice = withoutServer.split(":")[0].trim();
-    const raw = withoutDevice.replace(/\D/g, "");
-    return raw.length >= 8 ? raw : null;
+  if (value && typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    for (const key of ["id", "jid", "user", "phone", "pn", "number"]) {
+      if (typeof obj[key] === "string") {
+        const res = cleanDigits(obj[key]);
+        if (res) return res;
+      }
+    }
   }
   return null;
 }
@@ -186,13 +189,74 @@ export function parseGroupJoinEvent(body: unknown): GroupJoinEvent | null {
   const data = (payload.data && typeof payload.data === "object" ? payload.data : payload) as Record<string, unknown>;
 
   // Detecta ação
-  const rawAction = String(data.action || payload.action || data.actionType || "").toLowerCase();
-  const isJoin = rawAction === "add" || rawAction === "join" || rawAction === "invite";
-  if (!isJoin) return null;
+  const rawAction = String(
+    data.action ||
+      payload.action ||
+      data.actionType ||
+      data.subType ||
+      data.type ||
+      payload.type ||
+      ""
+  ).toLowerCase().trim();
+
+  // Ignora ações explícitas de saída
+  const isLeave =
+    rawAction === "remove" ||
+    rawAction === "leave" ||
+    rawAction === "left" ||
+    rawAction === "kick" ||
+    rawAction === "delete" ||
+    rawAction === "promote" ||
+    rawAction === "demote";
+  if (isLeave) return null;
+
+  // Ações que configuram entrada no grupo
+  const eventName = String(payload.event || payload.eventType || payload.EventType || data.event || "").toLowerCase();
+  const isJoinAction =
+    rawAction === "add" ||
+    rawAction === "join" ||
+    rawAction === "joined" ||
+    rawAction === "invite" ||
+    rawAction === "invited" ||
+    rawAction === "invite_link" ||
+    rawAction === "linked_group_join" ||
+    rawAction === "member_add" ||
+    rawAction === "participant_add" ||
+    rawAction === "approval" ||
+    rawAction.includes("add") ||
+    rawAction.includes("join") ||
+    rawAction.includes("invite");
+
+  // Se não foi informada uma ação explícita, mas o evento é de grupo e temos participantes
+  const isGroupEvent =
+    eventName === "groups" ||
+    eventName === "group" ||
+    eventName.includes("participant") ||
+    eventName.includes("group");
+
+  if (!isJoinAction && !isGroupEvent && rawAction !== "") return null;
 
   // Detecta JID do grupo
-  const groupJid = String(data.jid || data.id || data.groupId || payload.jid || payload.group || payload.chatId || "").trim();
-  if (!groupJid.endsWith("@g.us")) return null;
+  const rawGroupJid = String(
+    data.jid ||
+      data.id ||
+      data.groupId ||
+      data.groupJid ||
+      data.group_jid ||
+      data.chatId ||
+      data.chat ||
+      data.remoteJid ||
+      payload.jid ||
+      payload.id ||
+      payload.groupId ||
+      payload.groupJid ||
+      payload.group ||
+      payload.chatId ||
+      ""
+  ).trim();
+
+  if (!rawGroupJid.includes("@g.us")) return null;
+  const groupJid = rawGroupJid.split(":")[0].replace(/@.*$/, "") + "@g.us";
 
   // Extrai participantes
   const listRaw = Array.isArray(data.participants)
@@ -203,6 +267,10 @@ export function parseGroupJoinEvent(body: unknown): GroupJoinEvent | null {
     ? [data.participant]
     : payload.participant
     ? [payload.participant]
+    : Array.isArray(data.users)
+    ? data.users
+    : data.user
+    ? [data.user]
     : [];
 
   const participants: string[] = [];
@@ -255,30 +323,30 @@ export function getUazapiConfig(): UazapiConfig {
   };
 }
 
+export interface ResolvedMember {
+  phone: string; // número limpo para menção (ex: 553188015544)
+  name?: string;  // nome público de perfil se houver
+}
+
 /**
- * Busca o nome de perfil do usuário no WhatsApp via UAZAPI.
- * 1. Se já fornecido pelo webhook, usa de imediato.
- * 2. Consulta /group/info (participantes e seus perfis com nome).
- * 3. Consulta /chat/find como fallback de perfil.
- * 4. Retorna null se não houver nome público configurado.
+ * Busca o nome e o número real do participante no WhatsApp via UAZAPI.
+ * Mapeia LID (@lid) para número de telefone real (PN) e extrai o nome do perfil.
  */
-export async function resolveMemberName(
+export async function resolveMemberDetails(
   config: UazapiConfig,
   groupJid: string,
-  phone: string,
+  rawPhoneOrLid: string,
   initialName?: string
-): Promise<string | null> {
-  if (initialName && initialName.trim()) {
-    return initialName.trim();
-  }
+): Promise<ResolvedMember> {
+  const cleanTarget = rawPhoneOrLid.replace(/\D/g, "");
+  let resolvedName = initialName && initialName.trim() ? initialName.trim() : undefined;
+  let resolvedPhone = cleanTarget;
 
   if (!config.uazapiUrl || !config.uazapiToken) {
-    return null;
+    return { phone: resolvedPhone, name: resolvedName };
   }
 
-  const cleanTarget = phone.replace(/\D/g, "");
-
-  // 1. Tenta POST /group/info
+  // 1. Tenta POST /group/info para mapear LID -> PN e capturar Name
   try {
     const res = await fetch(`${config.uazapiUrl}/group/info`, {
       method: "POST",
@@ -288,57 +356,81 @@ export async function resolveMemberName(
         Accept: "application/json",
       },
       body: JSON.stringify({ groupJid }),
-      signal: AbortSignal.timeout(5_000),
+      signal: AbortSignal.timeout(6_000),
     });
 
     if (res.ok) {
       const data = (await res.json()) as {
-        participant_profiles?: Array<{ pn?: string; jid?: string; name?: string }>;
+        participant_profiles?: Array<{ pn?: string; jid?: string; lid?: string; name?: string }>;
       };
       const profiles = data.participant_profiles || [];
       for (const p of profiles) {
-        const pNum = (p.pn || p.jid || "").split("@")[0].replace(/\D/g, "");
-        if (pNum && (pNum === cleanTarget || pNum.endsWith(cleanTarget.slice(-8)))) {
-          if (p.name && p.name.trim()) {
-            return p.name.trim();
+        const pLid = (p.lid || p.jid || "").split("@")[0].replace(/\D/g, "");
+        const pPn = (p.pn || "").split("@")[0].replace(/\D/g, "");
+
+        const matchesLid = pLid && (pLid === cleanTarget || pLid.endsWith(cleanTarget));
+        const matchesPn = pPn && (pPn === cleanTarget || pPn.endsWith(cleanTarget.slice(-8)));
+
+        if (matchesLid || matchesPn) {
+          if (pPn && pPn.length >= 8) {
+            resolvedPhone = pPn;
+          }
+          if (!resolvedName && p.name && p.name.trim()) {
+            resolvedName = p.name.trim();
+          }
+          break;
+        }
+      }
+    }
+  } catch {
+    // Silencioso para não travar o envio de boas-vindas
+  }
+
+  // 2. Se ainda não tiver nome, tenta POST /chat/find usando o número resolvido
+  if (!resolvedName) {
+    try {
+      const res = await fetch(`${config.uazapiUrl}/chat/find`, {
+        method: "POST",
+        headers: {
+          token: config.uazapiToken,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ wa_chatid: `${resolvedPhone}@s.whatsapp.net` }),
+        signal: AbortSignal.timeout(5_000),
+      });
+
+      if (res.ok) {
+        const data = (await res.json()) as {
+          chats?: Array<{ wa_name?: string; name?: string; wa_contactName?: string; lead_name?: string }>;
+        };
+        const chat = (data.chats || [])[0];
+        if (chat) {
+          const found = chat.wa_name || chat.name || chat.wa_contactName || chat.lead_name;
+          if (found && found.trim()) {
+            resolvedName = found.trim();
           }
         }
       }
+    } catch {
+      // Silencioso para não travar o envio de boas-vindas
     }
-  } catch {
-    // Silencioso para não travar o envio de boas-vindas
   }
 
-  // 2. Fallback: POST /chat/find
-  try {
-    const res = await fetch(`${config.uazapiUrl}/chat/find`, {
-      method: "POST",
-      headers: {
-        token: config.uazapiToken,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({ wa_chatid: `${cleanTarget}@s.whatsapp.net` }),
-      signal: AbortSignal.timeout(5_000),
-    });
+  return { phone: resolvedPhone, name: resolvedName };
+}
 
-    if (res.ok) {
-      const data = (await res.json()) as {
-        chats?: Array<{ wa_name?: string; name?: string; wa_contactName?: string; lead_name?: string }>;
-      };
-      const chat = (data.chats || [])[0];
-      if (chat) {
-        const found = chat.wa_name || chat.name || chat.wa_contactName || chat.lead_name;
-        if (found && found.trim()) {
-          return found.trim();
-        }
-      }
-    }
-  } catch {
-    // Silencioso para não travar o envio de boas-vindas
-  }
-
-  return null;
+/**
+ * Retorna o nome do membro (compatibilidade com versões anteriores).
+ */
+export async function resolveMemberName(
+  config: UazapiConfig,
+  groupJid: string,
+  phone: string,
+  initialName?: string
+): Promise<string | null> {
+  const details = await resolveMemberDetails(config, groupJid, phone, initialName);
+  return details.name || null;
 }
 
 /**
@@ -357,21 +449,24 @@ export async function sendWelcomeToGroup(
   let lastTemplateId = "";
   const resolvedNames: Record<string, string> = {};
 
-  for (const phone of event.participants) {
-    const detail = event.participantDetails?.find((d) => d.phone === phone);
-    const memberName = await resolveMemberName(config, event.groupJid, phone, detail?.name);
-    if (memberName) {
-      resolvedNames[phone] = memberName;
+  for (const rawPhone of event.participants) {
+    const detail = event.participantDetails?.find((d) => d.phone === rawPhone);
+    const member = await resolveMemberDetails(config, event.groupJid, rawPhone, detail?.name);
+    const finalPhone = member.phone || rawPhone;
+
+    if (member.name) {
+      resolvedNames[rawPhone] = member.name;
+      resolvedNames[finalPhone] = member.name;
     }
 
     const { template } = getNextWelcomeTemplate(forcedTemplateIndex);
     lastTemplateId = template.id;
-    const messageText = template.format(phone, memberName || undefined);
+    const messageText = template.format(finalPhone, member.name);
 
     const payload = {
       number: event.groupJid,
       text: messageText,
-      mentions: phone,
+      mentions: finalPhone,
     };
 
     const response = await fetch(`${config.uazapiUrl}/send/text`, {
@@ -400,6 +495,13 @@ type Req = Pick<IncomingMessage, "method" | "headers"> & AsyncIterable<unknown> 
 
 async function readJson(req: Req): Promise<unknown> {
   if (req.body && typeof req.body === "object") return req.body;
+  if (typeof req.body === "string" && req.body.trim()) {
+    try {
+      return JSON.parse(req.body);
+    } catch {
+      return {};
+    }
+  }
   const chunks: Buffer[] = [];
   for await (const chunk of req) chunks.push(chunk as Buffer);
   const raw = Buffer.concat(chunks).toString("utf8");
@@ -445,26 +547,36 @@ export async function handleWhatsAppWebhook(req: Req, res: ServerResponse): Prom
 
   try {
     const body = await readJson(req);
+    console.log("[WhatsAppWebhook] Payload recebido:", JSON.stringify(body));
+
     const event = parseGroupJoinEvent(body);
 
     if (!event) {
-      // Eventos normais que não sejam de novo membro no grupo (ex: mensagens comuns, saídas, etc.)
+      console.log("[WhatsAppWebhook] Evento ignorado (não é entrada de participante):", JSON.stringify(body));
       return replyJson(res, 200, {
         ignored: true,
         reason: "Evento não é de entrada de participante em grupo (@g.us).",
       });
     }
 
-    // Se um JID de grupo específico foi configurado, valida se é o grupo do LAB
-    if (config.groupJid && event.groupJid !== config.groupJid) {
-      return replyJson(res, 200, {
-        ignored: true,
-        reason: `Evento pertence a outro grupo (${event.groupJid}). Grupo monitorado: ${config.groupJid}`,
-      });
+    // Se um JID de grupo específico foi configurado, valida se é o grupo do LAB (ignorando sufixos)
+    if (config.groupJid) {
+      const targetClean = config.groupJid.split(":")[0].replace(/@.*$/, "");
+      const eventClean = event.groupJid.split(":")[0].replace(/@.*$/, "");
+      if (targetClean && eventClean !== targetClean) {
+        console.log(`[WhatsAppWebhook] Evento ignorado (grupo diferente: ${event.groupJid}, monitorado: ${config.groupJid})`);
+        return replyJson(res, 200, {
+          ignored: true,
+          reason: `Evento pertence a outro grupo (${event.groupJid}). Grupo monitorado: ${config.groupJid}`,
+        });
+      }
     }
+
+    console.log("[WhatsAppWebhook] Processando boas-vindas para participantes:", event.participants);
 
     // Dispara a mensagem com menção e rotação de template
     const result = await sendWelcomeToGroup(config, event);
+    console.log("[WhatsAppWebhook] Boas-vindas enviadas com sucesso:", result);
 
     return replyJson(res, 200, {
       received: true,
