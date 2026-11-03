@@ -95,7 +95,7 @@ export const ClientesView: React.FC<Props> = ({
           </p>
         </div>
 
-        <button className="mc-btn mc-btn--primary" onClick={() => setModalOpen(true)}>
+        <button className="mc-btn mc-btn--primary" onClick={() => setModalOpen(true)} data-tour="btn-novo-cliente">
           + Novo Cliente
         </button>
       </div>
@@ -103,6 +103,7 @@ export const ClientesView: React.FC<Props> = ({
       <div style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: 24 }}>
         {/* Painel Esquerdo: Lista de Clientes */}
         <div
+          data-tour="clientes-lista"
           style={{
             background: "var(--mc-ink-surface)",
             border: "1px solid var(--mc-ink-border)",
@@ -147,54 +148,68 @@ export const ClientesView: React.FC<Props> = ({
 
           {/* Lista */}
           <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: "65vh", overflowY: "auto" }}>
-            {filteredClients.map((c) => {
-              const isSelected = selectedClient?.id === c.id;
-              const formattedFee = (c.monthly_fee_cents / 100).toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              });
-
-              return (
-                <div
-                  key={c.id}
-                  onClick={() => loadBrandProfile(c)}
-                  style={{
-                    padding: "10px 14px",
-                    borderRadius: "var(--mc-radius-sm)",
-                    background: isSelected ? "var(--mc-sidebar-active)" : "var(--mc-ink)",
-                    border: `1px solid ${isSelected ? "var(--mc-caramel)" : "var(--mc-ink-border)"}`,
-                    cursor: "pointer",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4,
-                  }}
+            {filteredClients.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "30px 12px", color: "var(--mc-text-muted)", fontSize: 13 }}>
+                <p style={{ margin: 0 }}>Nenhum cliente encontrado.</p>
+                <button
+                  className="mc-btn mc-btn--primary"
+                  style={{ marginTop: 12, width: "100%", fontSize: 12 }}
+                  onClick={() => setModalOpen(true)}
                 >
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ fontWeight: 700, fontSize: 13.5, color: "var(--mc-text-title)" }}>
-                      {c.name}
-                    </span>
-                    <span
-                      style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: "50%",
-                        background: c.color || "var(--mc-caramel)",
-                      }}
-                    />
+                  + Cadastrar Cliente
+                </button>
+              </div>
+            ) : (
+              filteredClients.map((c) => {
+                const isSelected = selectedClient?.id === c.id;
+                const formattedFee = (c.monthly_fee_cents / 100).toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                });
+
+                return (
+                  <div
+                    key={c.id}
+                    onClick={() => loadBrandProfile(c)}
+                    style={{
+                      padding: "10px 14px",
+                      borderRadius: "var(--mc-radius-sm)",
+                      background: isSelected ? "var(--mc-sidebar-active)" : "var(--mc-ink)",
+                      border: `1px solid ${isSelected ? "var(--mc-caramel)" : "var(--mc-ink-border)"}`,
+                      cursor: "pointer",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 4,
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <span style={{ fontWeight: 700, fontSize: 13.5, color: "var(--mc-text-title)" }}>
+                        {c.name}
+                      </span>
+                      <span
+                        style={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: "50%",
+                          background: c.color || "var(--mc-caramel)",
+                        }}
+                      />
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "var(--mc-text-muted)" }}>
+                      <span>{c.segment}</span>
+                      <span style={{ fontWeight: 600, color: "var(--mc-acid)" }}>{formattedFee}/mês</span>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "var(--mc-text-muted)" }}>
-                    <span>{c.segment}</span>
-                    <span style={{ fontWeight: 600, color: "var(--mc-acid)" }}>{formattedFee}/mês</span>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
 
         {/* Painel Direito: Ficha Estratégica da Marca Selecionada */}
         {selectedClient ? (
           <div
+            data-tour="ficha-estrategica"
             style={{
               background: "var(--mc-ink-surface)",
               border: "1px solid var(--mc-ink-border)",
@@ -263,7 +278,7 @@ export const ClientesView: React.FC<Props> = ({
                 </div>
               </div>
 
-              <div className="mc-field">
+              <div className="mc-field" data-tour="ficha-restricoes">
                 <label>Restrições Inegociáveis (O que a marca NUNCA faz)</label>
                 <input
                   type="text"
@@ -282,8 +297,31 @@ export const ClientesView: React.FC<Props> = ({
             </form>
           </div>
         ) : (
-          <div style={{ padding: 40, textAlign: "center", color: "var(--mc-text-muted)" }}>
-            Selecione um cliente para ver os detalhes.
+          <div
+            style={{
+              background: "var(--mc-ink-surface)",
+              border: "1px solid var(--mc-ink-border)",
+              borderRadius: "var(--mc-radius-lg)",
+              padding: "60px 24px",
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 12,
+            }}
+          >
+            <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Ficha Estratégica da Marca</h3>
+            <p style={{ margin: 0, maxWidth: 440, fontSize: 13.5, color: "var(--mc-text-muted)" }}>
+              {clients.length === 0
+                ? "Cadastre seu primeiro cliente para estruturar o propósito da marca, produtos estrela, diretrizes de tom de voz e gerar links de aprovação."
+                : "Selecione um cliente na lista ao lado para editar sua ficha e orientações de IA."}
+            </p>
+            {clients.length === 0 && (
+              <button className="mc-btn mc-btn--primary" onClick={() => setModalOpen(true)}>
+                + Cadastrar Primeiro Cliente
+              </button>
+            )}
           </div>
         )}
       </div>

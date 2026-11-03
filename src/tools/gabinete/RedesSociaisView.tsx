@@ -51,7 +51,7 @@ export const RedesSociaisView: React.FC<Props> = ({ workspace, repo }) => {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
+      <div data-tour="redes-cards" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
         {/* Instagram */}
         <div
           style={{
@@ -157,6 +157,7 @@ export const RedesSociaisView: React.FC<Props> = ({ workspace, repo }) => {
 
         {/* Google Drive */}
         <div
+          data-tour="drive-card"
           style={{
             background: "var(--mc-ink-surface)",
             border: "1px solid var(--mc-ink-border)",

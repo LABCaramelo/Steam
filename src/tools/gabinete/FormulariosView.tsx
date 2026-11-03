@@ -27,7 +27,7 @@ export const FormulariosView: React.FC<Props> = ({ workspace, clients, repo: _re
         </button>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+      <div data-tour="form-templates" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
         {/* Card 1: Onboarding Canônico Head de Conteúdo */}
         <div
           style={{
@@ -63,7 +63,7 @@ export const FormulariosView: React.FC<Props> = ({ workspace, clients, repo: _re
             <button className="mc-btn mc-btn--secondary" onClick={() => alert("Prévia aberta!")}>
               Visualizar Prévia
             </button>
-            <button className="mc-btn mc-btn--acid" onClick={() => alert("Link gerado e copiado!")}>
+            <button data-tour="btn-copiar-form" className="mc-btn mc-btn--acid" onClick={() => alert("Link gerado e copiado!")}>
               Enviar ao Cliente
             </button>
           </div>
@@ -103,7 +103,7 @@ export const FormulariosView: React.FC<Props> = ({ workspace, clients, repo: _re
             <button className="mc-btn mc-btn--secondary" onClick={() => alert("Prévia aberta!")}>
               Visualizar Prévia
             </button>
-            <button className="mc-btn mc-btn--acid" onClick={() => alert("Link gerado e copiado!")}>
+            <button data-tour="btn-copiar-form" className="mc-btn mc-btn--acid" onClick={() => alert("Link gerado e copiado!")}>
               Enviar ao Cliente
             </button>
           </div>

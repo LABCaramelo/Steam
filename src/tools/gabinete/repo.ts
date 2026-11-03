@@ -20,10 +20,49 @@ import type {
 
 const STORAGE_KEY_PREFIX = "gabinete_";
 
+const MOCK_IDS = new Set([
+  "cli-1", "cli-2", "cli-3",
+  "task-1", "task-2",
+  "del-1", "del-2",
+  "ref-1", "ref-2",
+  "opp-1", "opp-2",
+  "fin-1", "fin-2",
+  "mem-2", "mem-3"
+]);
+
+function purgeLegacyMockData(): void {
+  try {
+    if (localStorage.getItem("gabinete_mock_purged_v2")) return;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(STORAGE_KEY_PREFIX)) {
+        try {
+          const raw = localStorage.getItem(key);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+              const cleaned = parsed.filter((item: any) => !item?.id || !MOCK_IDS.has(item.id));
+              localStorage.setItem(key, JSON.stringify(cleaned));
+            }
+          }
+        } catch {}
+      }
+    }
+    localStorage.setItem("gabinete_mock_purged_v2", "true");
+  } catch {}
+}
+
+purgeLegacyMockData();
+
 function getLocal<T>(key: string, fallback: T): T {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_PREFIX + key);
-    return raw ? JSON.parse(raw) : fallback;
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      return parsed.filter((item: any) => !item?.id || !MOCK_IDS.has(item.id)) as unknown as T;
+    }
+    return parsed;
   } catch {
     return fallback;
   }
@@ -159,24 +198,6 @@ export const supabaseGabinete: GabineteRepository = {
         status: "active",
         created_at: new Date().toISOString(),
       },
-      {
-        id: "mem-2",
-        workspace_id: workspaceId,
-        name: "Copywriter Sênior",
-        email: "copy@caramelo.lab",
-        role: "collaborator",
-        status: "active",
-        created_at: new Date().toISOString(),
-      },
-      {
-        id: "mem-3",
-        workspace_id: workspaceId,
-        name: "Designer de Interação",
-        email: "design@caramelo.lab",
-        role: "collaborator",
-        status: "active",
-        created_at: new Date().toISOString(),
-      },
     ]);
     return list;
   },
@@ -194,53 +215,7 @@ export const supabaseGabinete: GabineteRepository = {
       }
     } catch {}
 
-    const local = getLocal<Client[]>(`clients_${workspaceId}`, [
-      {
-        id: "cli-1",
-        workspace_id: workspaceId,
-        name: "Graao — Café Especial",
-        category: "ativos",
-        segment: "Alimentação & Experiência",
-        status: "active",
-        monthly_fee_cents: 350000,
-        currency: "BRL",
-        color: "#FF701A",
-        notes: "Planejamento mensal de carrosséis e reels de bastidores do café.",
-        instagram_handle: "@graao.cafe",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      {
-        id: "cli-2",
-        workspace_id: workspaceId,
-        name: "Soci — Moda & Identidade",
-        category: "ativos",
-        segment: "Moda & Streetwear",
-        status: "active",
-        monthly_fee_cents: 480000,
-        currency: "BRL",
-        color: "#25BFFF",
-        notes: "Narrativas visuais e ensaios com direção cinematográfica.",
-        instagram_handle: "@soci.wear",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      {
-        id: "cli-3",
-        workspace_id: workspaceId,
-        name: "Carmelita — Confeitaria",
-        category: "avulsos",
-        segment: "Gastronomia Afetiva",
-        status: "active",
-        monthly_fee_cents: 120000,
-        currency: "BRL",
-        color: "#FF3D8D",
-        notes: "Demanda avulsa para lançamento de Páscoa e datas comemorativas.",
-        instagram_handle: "@carmelita.doces",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-    ]);
+    const local = getLocal<Client[]>(`clients_${workspaceId}`, []);
     return local;
   },
 
@@ -339,41 +314,7 @@ export const supabaseGabinete: GabineteRepository = {
   },
 
   async getTasks(workspaceId) {
-    const list = getLocal<Task[]>(`tasks_${workspaceId}`, [
-      {
-        id: "task-1",
-        workspace_id: workspaceId,
-        client_id: "cli-1",
-        title: "Revisar roteiro do Reel de lançamento do Grão Especial",
-        description: "Alinhar gancho inicial de conflito e contraste antes de enviar ao cliente.",
-        status: "todo",
-        priority: "high",
-        due_date: new Date(Date.now() + 86400000).toISOString().slice(0, 10),
-        assignee_name: "Luiz (eu)",
-        checklist: [
-          { id: "c1", text: "Aplicar fórmula do Método HEAD", completed: true },
-          { id: "c2", text: "Definir CTA protagonista", completed: false },
-        ],
-        position: 0,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      {
-        id: "task-2",
-        workspace_id: workspaceId,
-        client_id: "cli-2",
-        title: "Montar grade editorial de novembro — Soci",
-        description: "12 peças: 6 carrosséis de posicionamento + 6 Reels de produto.",
-        status: "in_progress",
-        priority: "urgent",
-        due_date: new Date().toISOString().slice(0, 10), // Vence hoje
-        assignee_name: "Luiz (eu)",
-        checklist: [],
-        position: 1,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-    ]);
+    const list = getLocal<Task[]>(`tasks_${workspaceId}`, []);
     return list;
   },
 
@@ -443,55 +384,7 @@ export const supabaseGabinete: GabineteRepository = {
   },
 
   async getDeliverables(workspaceId) {
-    const list = getLocal<Deliverable[]>(`deliverables_${workspaceId}`, [
-      {
-        id: "del-1",
-        workspace_id: workspaceId,
-        client_id: "cli-1",
-        client_name: "Graao — Café Especial",
-        title: "Carrossel: Os 4 erros que estragam seu café em casa",
-        format: "carrossel",
-        channel: "instagram",
-        description: "Carrossel educativo baseado no Método HEAD com 8 lâminas.",
-        scheduled_date: new Date().toISOString().slice(0, 10),
-        scheduled_time: "18:00",
-        status: "client_review",
-        cover_url: "",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        versions: [
-          {
-            id: "ver-1",
-            deliverable_id: "del-1",
-            version_number: 1,
-            title: "Versão 1 — Gancho Direto",
-            copy_text: "Se você ainda ferve a água até borbulhar antes de passar o café, pare agora mesmo...",
-            slide_content: [
-              { slide: 1, headline: "Você está queimando seu café (e nem percebe)", body: "O erro mais comum que transforma grãos nobres em amargor puro." },
-              { slide: 2, headline: "Erro 1: Água fervendo a 100°C", body: "Espere 1 minuto após ferver para atingir os 92-94°C ideais." },
-              { slide: 3, headline: "Erro 2: Moagem incorreta para o método", body: "Prensa francesa precisa de moagem grossa; coador v60 pede média." },
-            ],
-            media_urls: [],
-            created_at: new Date().toISOString(),
-          },
-        ],
-      },
-      {
-        id: "del-2",
-        workspace_id: workspaceId,
-        client_id: "cli-2",
-        client_name: "Soci — Moda & Identidade",
-        title: "Reels: Manifesto de Marca — Rua Mangabeiras",
-        format: "reels_roteiro",
-        channel: "instagram",
-        description: "Direção cinematográfica de moda urbana em Belo Horizonte.",
-        scheduled_date: new Date(Date.now() + 86400000 * 3).toISOString().slice(0, 10),
-        scheduled_time: "12:30",
-        status: "production",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-    ]);
+    const list = getLocal<Deliverable[]>(`deliverables_${workspaceId}`, []);
     return list;
   },
 
@@ -658,26 +551,7 @@ export const supabaseGabinete: GabineteRepository = {
   },
 
   async getReferences(workspaceId) {
-    const list = getLocal<ContentReference[]>(`references_${workspaceId}`, [
-      {
-        id: "ref-1",
-        workspace_id: workspaceId,
-        title: "Gancho de Contraste — Case Nike & Apple",
-        category: "copy",
-        tags: ["gancho", "método head", "contraste"],
-        notes: "Começar com 'Todo mundo acha X, mas a verdade é Y'. Alta retenção.",
-        created_at: new Date().toISOString(),
-      },
-      {
-        id: "ref-2",
-        workspace_id: workspaceId,
-        title: "Paleta Urbana de Belo Horizonte — Luz Dourada & Sombra Fria",
-        category: "visual",
-        tags: ["direção de arte", "cor", "iluminação"],
-        notes: "Sol quente a 45° contrastando com céu azul/ciano. Identidade Caramelo pura.",
-        created_at: new Date().toISOString(),
-      },
-    ]);
+    const list = getLocal<ContentReference[]>(`references_${workspaceId}`, []);
     return list;
   },
 
@@ -709,33 +583,7 @@ export const supabaseGabinete: GabineteRepository = {
   },
 
   async getOpportunities(workspaceId) {
-    const list = getLocal<Opportunity[]>(`opps_${workspaceId}`, [
-      {
-        id: "opp-1",
-        workspace_id: workspaceId,
-        client_name: "Estúdio de Arquitetura Nó",
-        title: "Contrato Mensal de Posicionamento & Reels",
-        stage: "proposta",
-        estimated_value_cents: 420000,
-        monthly_value_cents: 420000,
-        next_action: "Apresentar proposta de 8 Reels cinematográficos",
-        notes: "Interessados em reforçar estética e materiais no Instagram.",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      {
-        id: "opp-2",
-        workspace_id: workspaceId,
-        client_name: "Clínica Dermatológica Derma",
-        title: "Lançamento de Protocolo Estético",
-        stage: "qualificado",
-        estimated_value_cents: 350000,
-        next_action: "Enviar briefing de diagnóstico de público",
-        notes: "Querem autoridade médica sem parecer comercial genérico.",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-    ]);
+    const list = getLocal<Opportunity[]>(`opps_${workspaceId}`, []);
     return list;
   },
 
@@ -834,34 +682,7 @@ export const supabaseGabinete: GabineteRepository = {
   },
 
   async getFinancialEntries(workspaceId) {
-    const list = getLocal<FinancialEntry[]>(`finance_${workspaceId}`, [
-      {
-        id: "fin-1",
-        workspace_id: workspaceId,
-        client_name: "Graao — Café Especial",
-        type: "revenue_received",
-        amount_cents: 350000,
-        currency: "BRL",
-        date: new Date().toISOString().slice(0, 10),
-        description: "Mensalidade de Gestão de Conteúdo (Outubro/2026)",
-        category: "mensalidade",
-        status: "pago",
-        created_at: new Date().toISOString(),
-      },
-      {
-        id: "fin-2",
-        workspace_id: workspaceId,
-        client_name: "Soci — Moda & Identidade",
-        type: "revenue_expected",
-        amount_cents: 480000,
-        currency: "BRL",
-        date: new Date(Date.now() + 86400000 * 5).toISOString().slice(0, 10),
-        description: "Mensalidade de Gestão & Direção de Arte (Novembro/2026)",
-        category: "mensalidade",
-        status: "pendente",
-        created_at: new Date().toISOString(),
-      },
-    ]);
+    const list = getLocal<FinancialEntry[]>(`finance_${workspaceId}`, []);
     return list;
   },
 
@@ -897,10 +718,10 @@ export const supabaseGabinete: GabineteRepository = {
 
   async getIntegrations(workspaceId) {
     const list = getLocal<SocialIntegration[]>(`integrations_${workspaceId}`, [
-      { provider: "instagram", connected: true, account_name: "@umcaracaramelo", last_sync: "Hoje às 10:20" },
+      { provider: "instagram", connected: false },
       { provider: "tiktok", connected: false },
-      { provider: "drive", connected: true, account_name: "estudio-caramelo-backup" },
-      { provider: "facebook", connected: true, account_name: "Laboratório de Interação" },
+      { provider: "drive", connected: false },
+      { provider: "facebook", connected: false },
     ]);
     return list;
   },

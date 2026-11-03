@@ -58,12 +58,12 @@ export const FinanceiroView: React.FC<Props> = ({
           </p>
         </div>
 
-        <button className="mc-btn mc-btn--primary" onClick={() => setModalOpen(true)}>
+        <button data-tour="btn-novo-lancamento" className="mc-btn mc-btn--primary" onClick={() => setModalOpen(true)}>
           + Novo Lançamento
         </button>
       </div>
 
-      <div className="mc-counters">
+      <div className="mc-counters" data-tour="fin-counters">
         <div className="mc-counter-card">
           <span className="mc-counter-card__number mc-counter-card__number--warning">{totalFormatted}</span>
           <span className="mc-counter-card__label">Faturamento Mensal (MRR)</span>
@@ -104,43 +104,49 @@ export const FinanceiroView: React.FC<Props> = ({
         <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Contratos & Mensalidades Ativas</h3>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {activeClients.map((c) => {
-            const feeFormatted = (c.monthly_fee_cents / 100).toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            });
+          {activeClients.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "30px 16px", color: "var(--mc-text-muted)", fontSize: 13.5 }}>
+              Nenhum contrato ativo registrado ainda. Cadastre clientes com honorários mensais para acompanhar MRR e previsibilidade financeira.
+            </div>
+          ) : (
+            activeClients.map((c) => {
+              const feeFormatted = (c.monthly_fee_cents / 100).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              });
 
-            return (
-              <div
-                key={c.id}
-                style={{
-                  background: "var(--mc-ink)",
-                  border: "1px solid var(--mc-ink-border)",
-                  borderRadius: "var(--mc-radius-sm)",
-                  padding: "14px 18px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: "var(--mc-text-title)" }}>{c.name}</div>
-                  <div style={{ fontSize: 11.5, color: "var(--mc-text-muted)", marginTop: 2 }}>
-                    Segmento: {c.segment} · Categoria: {c.category}
+              return (
+                <div
+                  key={c.id}
+                  style={{
+                    background: "var(--mc-ink)",
+                    border: "1px solid var(--mc-ink-border)",
+                    borderRadius: "var(--mc-radius-sm)",
+                    padding: "14px 18px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 14, color: "var(--mc-text-title)" }}>{c.name}</div>
+                    <div style={{ fontSize: 11.5, color: "var(--mc-text-muted)", marginTop: 2 }}>
+                      Segmento: {c.segment} · Categoria: {c.category}
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: "rgba(42,213,135,0.15)", color: "var(--mc-mint)" }}>
+                      ATIVO
+                    </span>
+                    <span style={{ fontSize: 15, fontWeight: 800, color: "var(--mc-acid)" }}>
+                      {feeFormatted}/mês
+                    </span>
                   </div>
                 </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: "rgba(42,213,135,0.15)", color: "var(--mc-mint)" }}>
-                    ATIVO
-                  </span>
-                  <span style={{ fontSize: 15, fontWeight: 800, color: "var(--mc-acid)" }}>
-                    {feeFormatted}/mês
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
 

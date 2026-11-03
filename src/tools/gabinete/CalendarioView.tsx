@@ -156,7 +156,7 @@ export const CalendarioView: React.FC<Props> = ({
             </button>
           </div>
 
-          <button className="mc-btn mc-btn--primary" onClick={() => openNewDeliverableModal()}>
+          <button data-tour="calendario-novo" className="mc-btn mc-btn--primary" onClick={() => openNewDeliverableModal()}>
             + Agendar publicação
           </button>
         </div>
@@ -172,7 +172,7 @@ export const CalendarioView: React.FC<Props> = ({
       </div>
 
       {/* Grade de Dias */}
-      <div className="mc-calendar-grid">
+      <div className="mc-calendar-grid" data-tour="calendario-grid">
         {/* Espaços em branco antes do dia 1 */}
         {Array.from({ length: firstDayIndex }).map((_, i) => (
           <div key={`empty-${i}`} style={{ opacity: 0.25 }} className="mc-calendar-day" />
@@ -339,6 +339,7 @@ export const CalendarioView: React.FC<Props> = ({
                     </span>
                     <button
                       type="button"
+                      data-tour="portal-link-btn"
                       className="mc-btn mc-btn--secondary"
                       style={{ fontSize: 11, padding: "3px 8px" }}
                       onClick={handleGenerateShareLink}

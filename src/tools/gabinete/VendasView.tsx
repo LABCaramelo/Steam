@@ -69,13 +69,13 @@ export const VendasView: React.FC<Props> = ({
           </p>
         </div>
 
-        <button className="mc-btn mc-btn--primary" onClick={() => setModalOpen(true)}>
+        <button data-tour="btn-nova-opp" className="mc-btn mc-btn--primary" onClick={() => setModalOpen(true)}>
           + Nova Oportunidade
         </button>
       </div>
 
       {/* Colunas do Pipeline */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12, alignItems: "start" }}>
+      <div data-tour="vendas-kanban" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12, alignItems: "start" }}>
         {stages.map((st) => {
           const colOpps = opportunities.filter((o) => o.stage === st.id);
           const colTotalCents = colOpps.reduce((acc, o) => acc + (o.estimated_value_cents || 0), 0);

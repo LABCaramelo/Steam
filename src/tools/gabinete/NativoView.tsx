@@ -104,7 +104,7 @@ export const NativoView: React.FC<Props> = ({
         </div>
 
         {/* Abas de Formato */}
-        <div style={{ display: "flex", gap: 6 }}>
+        <div data-tour="nativo-abas" style={{ display: "flex", gap: 6 }}>
           <button
             className={`mc-btn ${activeMode === "carrossel" ? "mc-btn--acid" : "mc-btn--secondary"}`}
             onClick={() => setActiveMode("carrossel")}
@@ -129,6 +129,7 @@ export const NativoView: React.FC<Props> = ({
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
         {/* Painel Esquerdo: Configuração do Prompt */}
         <div
+          data-tour="nativo-form"
           style={{
             background: "var(--mc-ink-surface)",
             border: "1px solid var(--mc-ink-border)",
@@ -179,6 +180,7 @@ export const NativoView: React.FC<Props> = ({
           </div>
 
           <button
+            data-tour="nativo-gerar"
             className="mc-btn mc-btn--primary"
             style={{ marginTop: 8, padding: "12px 20px", fontSize: 14 }}
             onClick={handleGenerate}

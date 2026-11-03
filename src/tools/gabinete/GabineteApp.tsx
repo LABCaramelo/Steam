@@ -13,6 +13,7 @@ import { RelatoriosView } from "./RelatoriosView";
 import { FinanceiroView } from "./FinanceiroView";
 import { LixeiraView } from "./LixeiraView";
 import { ClientPortalView } from "./ClientPortalView";
+import { OnboardingGuide } from "./OnboardingGuide";
 import type { GabineteRepository } from "./repo";
 import type {
   Client,
@@ -142,6 +143,12 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
 
       {/* Conteúdo Central */}
       <main className="mc-main">
+        {/* Onboarding & Guia de Funcionalidades */}
+        <OnboardingGuide
+          activeTab={activeTab}
+          onNavigate={(tab) => setActiveTab(tab)}
+        />
+
         {/* Views Baseadas na Aba Ativa */}
         <div style={{ flex: 1, padding: "20px 0" }}>
           {activeTab === "minhas-tarefas" && (

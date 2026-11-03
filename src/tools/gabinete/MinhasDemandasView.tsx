@@ -81,7 +81,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
             </select>
           </div>
 
-          <button className="mc-btn mc-btn--primary" onClick={onOpenNewTaskModal}>
+          <button className="mc-btn mc-btn--primary" data-tour="btn-nova-demanda" onClick={onOpenNewTaskModal}>
             + Nova demanda
           </button>
         </div>
@@ -90,7 +90,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
       {/* Cards de Destaque: Gabinete IA & Nativo */}
       <div className="mc-featured-cards">
         {/* Card 1: Gabinete IA */}
-        <div className="mc-hero-card mc-hero-card--acid cm-surface--spotlight">
+        <div className="mc-hero-card mc-hero-card--acid cm-surface--spotlight" data-tour="hero-gabinete-ia">
           <div>
             <span className="mc-hero-card__badge">JÁ LIBERADO</span>
             <h3 className="mc-hero-card__title">
@@ -173,7 +173,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
             </p>
           </div>
 
-          <div className="cm-showcase-tabs">
+          <div className="cm-showcase-tabs" data-tour="filtro-prioridades">
             {["all", "urgent", "high", "medium"].map((p) => (
               <button
                 key={p}

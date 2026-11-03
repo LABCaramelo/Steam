@@ -59,13 +59,13 @@ export const BibliotecaView: React.FC<Props> = ({
           </p>
         </div>
 
-        <button className="mc-btn mc-btn--primary" onClick={() => setModalOpen(true)}>
+        <button data-tour="btn-nova-ref" className="mc-btn mc-btn--primary" onClick={() => setModalOpen(true)}>
           + Nova Referência
         </button>
       </div>
 
       {/* Categorias */}
-      <div style={{ display: "flex", gap: 8 }}>
+      <div data-tour="biblioteca-categorias" style={{ display: "flex", gap: 8 }}>
         {[
           { id: "all", label: "Todas" },
           { id: "copy", label: "Copywriting & Ganchos" },
@@ -85,66 +85,84 @@ export const BibliotecaView: React.FC<Props> = ({
       </div>
 
       {/* Grid de Cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 16 }}>
-        {filtered.map((ref) => (
-          <div
-            key={ref.id}
-            style={{
-              background: "var(--mc-ink-surface)",
-              border: "1px solid var(--mc-ink-border)",
-              borderRadius: "var(--mc-radius-md)",
-              padding: 18,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              gap: 12,
-            }}
-          >
-            <div>
-              <span
-                style={{
-                  fontSize: 10.5,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  color: "var(--mc-caramel)",
-                  letterSpacing: "0.06em",
-                }}
-              >
-                {ref.category}
-              </span>
-              <h4 style={{ margin: "6px 0 8px 0", fontSize: 15, fontWeight: 700 }}>{ref.title}</h4>
-              <p style={{ margin: 0, fontSize: 12.5, color: "var(--mc-text-body)", lineHeight: 1.5 }}>{ref.notes}</p>
-            </div>
-
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "1px solid var(--mc-ink-border)", paddingTop: 10 }}>
-              {ref.url ? (
-                <a
-                  href={ref.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ fontSize: 12, color: "var(--mc-sky)", textDecoration: "none", fontWeight: 600 }}
+      {filtered.length === 0 ? (
+        <div
+          style={{
+            background: "var(--mc-ink-surface)",
+            border: "1px solid var(--mc-ink-border)",
+            borderRadius: "var(--mc-radius-lg)",
+            padding: "60px 20px",
+            textAlign: "center",
+            color: "var(--mc-text-muted)",
+          }}
+        >
+          <p style={{ margin: "0 0 12px 0", fontSize: 14 }}>Nenhuma referência cadastrada nesta categoria.</p>
+          <button className="mc-btn mc-btn--primary" onClick={() => setModalOpen(true)}>
+            + Cadastrar Referência
+          </button>
+        </div>
+      ) : (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 16 }}>
+          {filtered.map((ref) => (
+            <div
+              key={ref.id}
+              style={{
+                background: "var(--mc-ink-surface)",
+                border: "1px solid var(--mc-ink-border)",
+                borderRadius: "var(--mc-radius-md)",
+                padding: 18,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                gap: 12,
+              }}
+            >
+              <div>
+                <span
+                  style={{
+                    fontSize: 10.5,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    color: "var(--mc-caramel)",
+                    letterSpacing: "0.06em",
+                  }}
                 >
-                  Abrir link externo ↗
-                </a>
-              ) : (
-                <span style={{ fontSize: 11, color: "var(--mc-text-muted)" }}>Acervo interno</span>
-              )}
+                  {ref.category}
+                </span>
+                <h4 style={{ margin: "6px 0 8px 0", fontSize: 15, fontWeight: 700 }}>{ref.title}</h4>
+                <p style={{ margin: 0, fontSize: 12.5, color: "var(--mc-text-body)", lineHeight: 1.5 }}>{ref.notes}</p>
+              </div>
 
-              <button
-                style={{ background: "none", border: "none", color: "var(--mc-text-muted)", cursor: "pointer", fontSize: 12 }}
-                onClick={async () => {
-                  if (confirm("Excluir esta referência?")) {
-                    await repo.deleteReference(ref.id);
-                    onRefresh();
-                  }
-                }}
-              >
-                Excluir
-              </button>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "1px solid var(--mc-ink-border)", paddingTop: 10 }}>
+                {ref.url ? (
+                  <a
+                    href={ref.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ fontSize: 12, color: "var(--mc-sky)", textDecoration: "none", fontWeight: 600 }}
+                  >
+                    Abrir link externo ↗
+                  </a>
+                ) : (
+                  <span style={{ fontSize: 11, color: "var(--mc-text-muted)" }}>Acervo interno</span>
+                )}
+
+                <button
+                  style={{ background: "none", border: "none", color: "var(--mc-text-muted)", cursor: "pointer", fontSize: 12 }}
+                  onClick={async () => {
+                    if (confirm("Excluir esta referência?")) {
+                      await repo.deleteReference(ref.id);
+                      onRefresh();
+                    }
+                  }}
+                >
+                  Excluir
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Modal Nova Referência */}
       {modalOpen && (
