@@ -51,13 +51,6 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [financialEntries, setFinancialEntries] = useState<FinancialEntry[]>([]);
 
-  // Banners dismissíveis
-  const [banners, setBanners] = useState({
-    features: true,
-    tutorials: true,
-    importAi: true,
-  });
-
   // Modal Rápido de Nova Demanda
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -149,63 +142,6 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
 
       {/* Conteúdo Central */}
       <main className="mc-main">
-        {/* Banners Superiores Clicáveis */}
-        <div className="mc-banners">
-          {banners.features && (
-            <div className="mc-banner">
-              <div>
-                <span>✨ </span>
-                <span className="link" onClick={() => setActiveTab("dashboard")}>
-                  Clique aqui pra conferir todas as funcionalidades do Modo Criador →
-                </span>
-              </div>
-              <button
-                className="mc-banner__close"
-                onClick={() => setBanners({ ...banners, features: false })}
-              >
-                ✕
-              </button>
-            </div>
-          )}
-
-          {banners.tutorials && (
-            <div className="mc-banner">
-              <div>
-                <span>🎥 </span>
-                <span className="link" onClick={() => setActiveTab("biblioteca")}>
-                  Novo: tutoriais em vídeo. Conheça mais sobre o novo Modo Criador →
-                </span>
-              </div>
-              <button
-                className="mc-banner__close"
-                onClick={() => setBanners({ ...banners, tutorials: false })}
-              >
-                ✕
-              </button>
-            </div>
-          )}
-
-          {banners.importAi && (
-            <div className="mc-banner">
-              <div>
-                <span>📄 </span>
-                <span>
-                  Traga seus clientes de onde já estão —{" "}
-                  <span className="link" onClick={() => setActiveTab("nativo")}>
-                    manda uma planilha, print ou PDF e a IA organiza pra você revisar.
-                  </span>
-                </span>
-              </div>
-              <button
-                className="mc-banner__close"
-                onClick={() => setBanners({ ...banners, importAi: false })}
-              >
-                ✕
-              </button>
-            </div>
-          )}
-        </div>
-
         {/* Views Baseadas na Aba Ativa */}
         <div style={{ flex: 1, padding: "20px 0" }}>
           {activeTab === "minhas-tarefas" && (
