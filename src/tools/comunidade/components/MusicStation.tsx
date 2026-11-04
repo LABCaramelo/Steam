@@ -216,71 +216,76 @@ export function MusicStation({
   if (layout === 'chat') {
     return (
       <div className="music-station-chat" aria-label="Controle de música e playlist">
-        <div className="music-chat-header">
-          <div className="music-chat-source-tag">
-            {currentTrack.source === 'youtube' ? (
-              <span className="tag-youtube">
-                <YoutubeIcon size={13} /> YouTube
-              </span>
-            ) : (
-              <span className="tag-spotify">
-                <SpotifyIcon size={13} /> Spotify
-              </span>
-            )}
-            <span className="track-counter">
-              {currentIndex + 1}/{playlist.length}
-            </span>
-          </div>
-          {currentTrack.addedBy && (
-            <span className="added-by" title={`Adicionado por ${currentTrack.addedBy}`}>
-              por {currentTrack.addedBy}
-            </span>
-          )}
-        </div>
-
-        <div className="music-embed-wrapper music-embed-wrapper-chat">
-          {isPlaying ? (
+        {/* Motor de Áudio Invisível (Somente Áudio) */}
+        <div className="music-audio-engine" aria-hidden="true">
+          {isPlaying && (
             <iframe
               key={currentTrack.embedUrl}
               src={currentTrack.embedUrl}
               title={currentTrack.title}
-              className={`music-embed-iframe ${currentTrack.source === 'spotify' ? 'spotify-frame' : 'youtube-frame'}`}
-              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
+              allow="autoplay; encrypted-media"
+              tabIndex={-1}
             />
-          ) : (
-            <div className="music-paused-placeholder music-paused-placeholder-chat">
-              <button
-                type="button"
-                className="resume-play-btn"
-                onClick={() => broadcastUpdate(playlist, currentIndex, true)}
-              >
-                <Play size={24} />
-                <span>Retomar Música</span>
-              </button>
-            </div>
           )}
         </div>
 
-        <div className="music-player-controls-bar music-chat-controls-bar">
-          <div className="track-titles">
-            <h4 className="track-title" title={currentTrack.title}>
-              {currentTrack.title}
-            </h4>
-            {currentTrack.artist && (
-              <p className="track-artist">{currentTrack.artist}</p>
+        {/* Card de Controle de Áudio */}
+        <div className="music-audio-card">
+          <div className="music-audio-thumb-col">
+            {currentTrack.thumbnailUrl ? (
+              <img
+                src={currentTrack.thumbnailUrl}
+                alt={currentTrack.title}
+                className="music-audio-thumb"
+              />
+            ) : (
+              <div className="music-audio-icon-box">
+                <Music size={22} />
+              </div>
+            )}
+            {isPlaying && (
+              <span className="soundwave-badge" title="Tocando agora">
+                <span className="bar bar-1" />
+                <span className="bar bar-2" />
+                <span className="bar bar-3" />
+              </span>
             )}
           </div>
 
-          <div className="playback-buttons">
+          <div className="music-audio-details">
+            <div className="music-audio-tags-row">
+              {currentTrack.source === 'youtube' ? (
+                <span className="tag-youtube">
+                  <YoutubeIcon size={12} /> YouTube
+                </span>
+              ) : (
+                <span className="tag-spotify">
+                  <SpotifyIcon size={12} /> Spotify
+                </span>
+              )}
+              <span className="track-counter">{currentIndex + 1} de {playlist.length}</span>
+              {currentTrack.addedBy && (
+                <span className="added-by">por {currentTrack.addedBy}</span>
+              )}
+            </div>
+
+            <h4 className="music-audio-title" title={currentTrack.title}>
+              {currentTrack.title}
+            </h4>
+            {currentTrack.artist && (
+              <p className="music-audio-artist">{currentTrack.artist}</p>
+            )}
+          </div>
+
+          <div className="music-audio-controls">
             <button
               type="button"
-              className="control-btn"
+              className="control-btn sm"
               onClick={handlePrev}
               title="Faixa anterior"
               aria-label="Faixa anterior"
             >
-              <SkipBack size={15} />
+              <SkipBack size={14} />
             </button>
             <button
               type="button"
@@ -289,16 +294,16 @@ export function MusicStation({
               title={isPlaying ? 'Pausar' : 'Tocar'}
               aria-label={isPlaying ? 'Pausar' : 'Tocar'}
             >
-              {isPlaying ? <Pause size={17} /> : <Play size={17} />}
+              {isPlaying ? <Pause size={16} /> : <Play size={16} />}
             </button>
             <button
               type="button"
-              className="control-btn"
+              className="control-btn sm"
               onClick={handleNext}
               title="Próxima faixa"
               aria-label="Próxima faixa"
             >
-              <SkipForward size={15} />
+              <SkipForward size={14} />
             </button>
           </div>
         </div>
