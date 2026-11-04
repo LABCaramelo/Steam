@@ -118,7 +118,7 @@ export const ClientsView: React.FC<Props> = ({
     try {
       const share = await repo.createClientShare(workspace.id, selectedClient.id, 14);
       loadClientDetails(selectedClient);
-      const url = `${window.location.origin}/tools/creative-os/index.html?portal=${share.token}`;
+      const url = `${window.location.origin}/tools/creative-os?portal=${share.token}`;
       navigator.clipboard.writeText(url);
       setCopiedToken(share.token);
       setTimeout(() => setCopiedToken(null), 3000);

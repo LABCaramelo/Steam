@@ -363,7 +363,7 @@
   $('copyDialogPrompt').addEventListener('click', () => copyText($('dialogPrompt').textContent, 'Prompt copiado. Agora é fazer do seu jeito.').then(markCopied($('copyDialogPrompt'))));
   $('sharePrompt').addEventListener('click', () => {
     if (!selected) return;
-    const url = new URL('/tools/prompt-library/index.html', parentOrigin);
+    const url = new URL('/tools/prompt-library', parentOrigin);
     url.searchParams.set('prompt', selected.slug);
     copyText(url.href, 'Link copiado para compartilhar.').then(markCopied($('sharePrompt')));
   });

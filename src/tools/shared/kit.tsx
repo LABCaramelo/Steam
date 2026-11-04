@@ -124,7 +124,7 @@ function tokenExpiresAt(session: Session): number {
 }
 
 /** Renders the tool only for a signed-in person who has it in the library. */
-export function ToolGate({ tool, children }: { tool: ToolInfo; children: ReactNode }) {
+export function ToolGate({ tool, children, allowAnonymous }: { tool: ToolInfo; children: ReactNode; allowAnonymous?: boolean }) {
   const [state, setState] = useState<GateState>({ kind: "loading" });
   const [attempt, setAttempt] = useState(0);
   const userId = useRef<string | null>(null);
@@ -248,9 +248,12 @@ export function ToolGate({ tool, children }: { tool: ToolInfo; children: ReactNo
 
   if (state.kind === "ready") return <ToolUserProvider key={state.user.id} user={state.user}>{children}</ToolUserProvider>;
   if (state.kind === "loading") return <GateScreen title={tool.name} busy text="Abrindo…" />;
-  if (state.kind === "signed_out")
-    return <GateScreen title={tool.name} text="Entre no LAB para usar esta ferramenta." action={{ label: "Entrar no LAB", href: "/library/home" }} />;
-  if (state.kind === "locked")
+  if (state.kind === "signed_out" || state.kind === "locked") {
+    if (allowAnonymous) {
+      return <ToolUserProvider key="anon" user={null}>{children}</ToolUserProvider>;
+    }
+    if (state.kind === "signed_out")
+      return <GateScreen title={tool.name} text="Entre no LAB para usar esta ferramenta." action={{ label: "Entrar no LAB", href: "/library/home" }} />;
     return (
       <GateScreen
         title={tool.name}
@@ -258,20 +261,24 @@ export function ToolGate({ tool, children }: { tool: ToolInfo; children: ReactNo
         action={tool.slug === "admin" ? { label: "Voltar ao LAB", href: "/library/home" } : { label: "Ver na Loja", href: STORE_URL(tool.appid) }}
       />
     );
+  }
   if (state.kind === "unconfigured")
     return <GateScreen title={tool.name} text="O banco das ferramentas ainda não foi configurado no Supabase (supabase/lab-tools.sql)." />;
   return <GateScreen title={tool.name} text={state.message} action={{ label: "Tentar de novo", onClick: () => setAttempt((n) => n + 1) }} />;
 }
 
 /** Provides the signed-in person to a tool (ToolGate does it after checking the session). */
-export function ToolUserProvider({ user, children }: { user: ToolUser; children: ReactNode }) {
+export function ToolUserProvider({ user, children }: { user: ToolUser | null; children: ReactNode }) {
   return <UserCtx.Provider value={user}>{children}</UserCtx.Provider>;
 }
 
 export function useToolUser(): ToolUser {
   const user = useContext(UserCtx);
-  if (!user) throw new Error("useToolUser fora do ToolGate");
-  return user;
+  return user as ToolUser;
+}
+
+export function useOptionalToolUser(): ToolUser | null {
+  return useContext(UserCtx);
 }
 
 function GateScreen({ title, text, busy, action }: { title: string; text: string; busy?: boolean; action?: { label: string; href?: string; onClick?: () => void } }) {

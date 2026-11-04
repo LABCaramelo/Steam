@@ -35,7 +35,7 @@ export const ApprovalsView: React.FC<Props> = ({
   const handleGenerateShareForClient = async (clientId: string) => {
     try {
       const share = await repo.createClientShare(workspace.id, clientId, 14);
-      const url = `${window.location.origin}/tools/creative-os/index.html?portal=${share.token}`;
+      const url = `${window.location.origin}/tools/creative-os?portal=${share.token}`;
       navigator.clipboard.writeText(url);
       setCopiedToken(share.token);
       onRefresh();

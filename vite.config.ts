@@ -122,7 +122,13 @@ function siteRoutes(): Plugin {
 
     if (/^\/prompts\/?$/.test(page)) {
       res.statusCode = 308;
-      res.setHeader("Location", "/tools/prompt-library/index.html");
+      res.setHeader("Location", "/tools/prompt-library");
+      return res.end();
+    }
+    const toolIndexMatch = page.match(/^\/tools\/([^/]+)\/index\.html$/);
+    if (toolIndexMatch && TOOL_PAGES.includes(toolIndexMatch[1])) {
+      res.statusCode = 308;
+      res.setHeader("Location", `/tools/${toolIndexMatch[1]}${url.search}`);
       return res.end();
     }
     if (page === "/") req.url = `/index.html${url.search}`;

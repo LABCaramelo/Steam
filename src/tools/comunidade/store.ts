@@ -138,11 +138,12 @@ export function findChannel(servers: Server[], serverId: string, channelId: stri
 }
 
 function initialState(storageKey: string | null): State {
+  const primaryServer = seedServers[0];
   const fallback: State = {
     profile: { id: crypto.randomUUID(), name: '' },
-    servers: seedServers,
-    view: { kind: 'server', serverId: seedServers[0].id },
-    channelByServer: Object.fromEntries(seedServers.map((s) => [s.id, firstChannel(s)!])),
+    servers: [primaryServer],
+    view: { kind: 'server', serverId: primaryServer.id },
+    channelByServer: { [primaryServer.id]: firstChannel(primaryServer)! },
     voice: null,
     messages: seedMessages,
     collapsed: {},
@@ -155,15 +156,19 @@ function initialState(storageKey: string | null): State {
     modal: null,
   };
   try {
-    // The old shared cache has no owner: never import another account's conversations.
     const saved = storageKey ? localStorage.getItem(storageKey) : null;
     if (saved) {
       const parsed = JSON.parse(saved) as Partial<State>;
+      const existing = parsed.servers?.find((s) => s.id === primaryServer.id);
+      const server = existing ?? primaryServer;
+      const initialChannel = parsed.channelByServer?.[server.id] ?? firstChannel(server)!;
       return {
         ...fallback,
         ...parsed,
+        servers: [server],
+        view: { kind: 'server', serverId: server.id },
+        channelByServer: { ...parsed.channelByServer, [server.id]: initialChannel },
         settings: { ...defaultSettings, ...parsed.settings },
-        // A conexão de voz depende do microfone aberto, então nunca é restaurada.
         voice: null,
         modal: null,
       };

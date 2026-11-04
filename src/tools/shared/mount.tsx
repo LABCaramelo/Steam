@@ -6,6 +6,7 @@ import "./kit.css";
 
 interface MountOptions {
   forceTheme?: "dark" | "light";
+  allowAnonymous?: boolean;
 }
 
 /** Entry point shared by every tool page: theme, spotlight, toasts and the library gate. */
@@ -19,7 +20,7 @@ export function mountTool(tool: ToolInfo, app: ReactNode, options?: MountOptions
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
       <ToastProvider>
-        <ToolGate tool={tool}>{app}</ToolGate>
+        <ToolGate tool={tool} allowAnonymous={options?.allowAnonymous}>{app}</ToolGate>
       </ToastProvider>
     </StrictMode>,
   );

@@ -9,7 +9,32 @@
   "redirects": [
     {
       "source": "/prompts",
-      "destination": "/tools/prompt-library/index.html",
+      "destination": "/tools/prompt-library",
+      "permanent": true
+    },
+    {
+      "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|trama|academy|claquete|comunidade|admin|gravador|montagem|creative-os|gabinete)/index.html",
+      "destination": "/tools/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/aula-head/index.html",
+      "destination": "/aula-head",
+      "permanent": true
+    },
+    {
+      "source": "/head-de-conteudo/index.html",
+      "destination": "/head-de-conteudo",
+      "permanent": true
+    },
+    {
+      "source": "/sites-e-experiencias/index.html",
+      "destination": "/sites-e-experiencias",
+      "permanent": true
+    },
+    {
+      "source": "/projetos/um-cara-caramelo-conteudo/index.html",
+      "destination": "/projetos/um-cara-caramelo-conteudo",
       "permanent": true
     },
     {
@@ -45,6 +70,10 @@
     },
     {
       "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|trama|academy|claquete|comunidade|admin|gravador|montagem|creative-os|gabinete)",
+      "destination": "/tools/:slug/index.html"
+    },
+    {
+      "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|trama|academy|claquete|comunidade|admin|gravador|montagem|creative-os|gabinete)/",
       "destination": "/tools/:slug/index.html"
     },
     {

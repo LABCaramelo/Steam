@@ -3,7 +3,6 @@ import { ME, directMessages, users } from '../data';
 import {
   ChevronDown,
   Close,
-  DoorExit,
   Friends,
   Gear,
   Hangup,
@@ -148,15 +147,6 @@ function ServerMenu({ server, dispatch }: { server: Server; dispatch: (a: Action
           >
             Criar canal
             <Plus size={18} />
-          </button>
-          <div className="status-menu-separator" />
-          <button
-            role="menuitem"
-            className="danger"
-            onClick={() => pick({ type: 'openModal', modal: { kind: 'leaveServer', serverId: server.id } })}
-          >
-            Sair do servidor
-            <DoorExit size={18} />
           </button>
         </div>
       )}

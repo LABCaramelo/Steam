@@ -110,7 +110,6 @@ textarea {
   display: flex;
   min-width: 0;
   overflow: hidden;
-  border-left: 1px solid var(--divider);
 }
 
 .app-content {

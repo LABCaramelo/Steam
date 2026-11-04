@@ -11,7 +11,6 @@ import { AddServerModal, ConfirmModal, CreateChannelModal, InviteModal } from '.
 import { UserProfileModal } from './components/UserProfileModal';
 import { NamePrompt } from './components/NamePrompt';
 import { QuickSwitcher, type QuickDestination } from './components/QuickSwitcher';
-import { ServerRail } from './components/ServerRail';
 import { SettingsView } from './components/Settings';
 import { ChannelIcon, HomeSidebar, ServerSidebar, type VoiceUi } from './components/Sidebar';
 
@@ -62,7 +61,7 @@ export function App({ user }: { user?: ToolUser } = {}) {
   const occupancy = useVoiceOccupancy(voiceKey);
 
   // O chat da sala em que você está conta como lido só enquanto está aberto na tela.
-  const server = view.kind === 'server' ? findServer(state.servers, view.serverId) : undefined;
+  const server = (view.kind === 'server' ? findServer(state.servers, view.serverId) : undefined) ?? state.servers[0];
   const voiceChannelId = state.voice?.channelId ?? null;
   const voiceChatVisible =
     !!server &&
@@ -243,7 +242,6 @@ export function App({ user }: { user?: ToolUser } = {}) {
           <div className="app" data-nav={navOpen ? 'open' : 'closed'}>
 
             <div className="app-body">
-              <ServerRail servers={state.servers} view={view} dispatch={dispatch} isAdmin={isAdmin} />
               <div className="app-panel">
                 {sidebar}
                 <div className="app-content">{content}</div>

@@ -32,7 +32,7 @@ test("formatNewToolMessage formata mensagem com identidade Caramelo e links", ()
 
   assert.match(text, /NOVA FERRAMENTA LIBERADA NO LAB/i);
   assert.match(text, /\*Gabinete\*/);
-  assert.match(text, /https:\/\/www\.umcaracaramelo\.com\.br\/tools\/gabinete\/index\.html/);
+  assert.match(text, /https:\/\/www\.umcaracaramelo\.com\.br\/tools\/gabinete/);
   assert.match(text, /Acabamos de subir os novos templates/);
   assert.match(text, /Bora testar/i);
 });

@@ -159,59 +159,6 @@ export const servers: Server[] = [
       },
     ],
   },
-  {
-    id: 's-games',
-    name: 'Formação Head',
-    acronym: 'FH',
-    color: '#FF701A',
-    roles: [
-      { id: 'r-dono', name: 'Mentor', color: '#FF701A', members: ['u-ana'] },
-      { id: 'r-player', name: 'Alunos', color: '#D9D3CC', members: ['u-me', 'u-diego', 'u-bruno', 'u-felipe'] },
-    ],
-    categories: [
-      {
-        id: 'c-g-texto',
-        name: 'Aulas & Prática',
-        channels: [
-          { id: 'ch-g-geral', name: 'discussão', kind: 'text', topic: 'Dúvidas e reflexões dos módulos.' },
-          { id: 'ch-g-clips', name: 'estudos-de-caso', kind: 'text', topic: 'Análise de conteúdos e campanhas.' },
-        ],
-      },
-      {
-        id: 'c-g-voz',
-        name: 'Voz & Mentorias',
-        channels: [
-          { id: 'ch-g-squad', name: 'Sala de Mentoria', kind: 'voice' },
-          { id: 'ch-g-afk', name: 'Pausa para Café', kind: 'voice' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 's-estudos',
-    name: 'Laboratório Criativo',
-    acronym: 'LC',
-    color: '#25BFFF',
-    roles: [
-      { id: 'r-prof', name: 'Líder de Projeto', color: '#25BFFF', members: ['u-carla'] },
-      { id: 'r-aluno', name: 'Criadores', color: '#D9D3CC', members: ['u-me', 'u-eva', 'u-bruno'] },
-    ],
-    categories: [
-      {
-        id: 'c-e-texto',
-        name: 'Projetos',
-        channels: [
-          { id: 'ch-e-duvidas', name: 'experimentos', kind: 'text', topic: 'Testes de novas ferramentas e modelos.' },
-          { id: 'ch-e-material', name: 'referências', kind: 'text', topic: 'Acervo e links úteis.' },
-        ],
-      },
-      {
-        id: 'c-e-voz',
-        name: 'Salas',
-        channels: [{ id: 'ch-e-sala', name: 'Brainstorm em Voz', kind: 'voice' }],
-      },
-    ],
-  },
 ];
 
 export const directMessages: DirectMessage[] = [
@@ -237,10 +184,6 @@ export const seedMessages: Record<string, Message[]> = {
   'ch-frontend': [
     { id: 'f1', authorId: 'u-diego', content: 'Alguém tem uma dica boa de CSS para layout de 4 colunas?', timestamp: t(300) },
     { id: 'f2', authorId: 'u-me', content: 'Flexbox resolve: colunas fixas e a do meio com flex: 1.', timestamp: t(298) },
-  ],
-  'ch-g-geral': [
-    { id: 'g1', authorId: 'u-ana', content: 'Bora uma ranked hoje às 21h?', timestamp: t(50) },
-    { id: 'g2', authorId: 'u-felipe', content: 'Tô dentro!', timestamp: t(48) },
   ],
   'dm-ana': [
     { id: 'd1', authorId: 'u-ana', content: 'Oi! Viu o que eu mandei no servidor?', timestamp: t(20) },

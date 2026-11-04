@@ -42,7 +42,7 @@ export const PROMPT_LIBRARY_APP = tool(PROMPT_LIBRARY_APP_ID, "Biblioteca de pro
   slug: "prompt-library",
   available: true,
   launchPath: `/library/app/${PROMPT_LIBRARY_APP_ID}/open`,
-  publicPage: "/tools/prompt-library/index.html",
+  publicPage: "/tools/prompt-library",
   description: "Encontre, organize e copie prompts para criar com inteligência artificial.",
   assets: art("/tools/prompt-library/art"),
   store: {
@@ -65,7 +65,7 @@ export const PROMPT_LIBRARY_APP = tool(PROMPT_LIBRARY_APP_ID, "Biblioteca de pro
 export const KANBAN_APP = tool(KANBAN_APP_ID, "Kanban", {
   slug: "kanban",
   launchPath: `/library/app/${KANBAN_APP_ID}/open`,
-  publicPage: "/tools/kanban/index.html",
+  publicPage: "/tools/kanban",
   description: "Quadros, listas e cartões para organizar a rotina, com o template Rotina Superprodutiva pronto para usar.",
   assets: art("/tools/kanban/art"),
   store: {
@@ -90,7 +90,7 @@ export const PRANCHETA_APP = tool(PRANCHETA_APP_ID, "Prancheta", {
   available: true,
   stage: "beta",
   launchPath: `/library/app/${PRANCHETA_APP_ID}/open`,
-  publicPage: "/tools/prancheta/index.html",
+  publicPage: "/tools/prancheta",
   description: "Editor de design no navegador: frames, formas, texto, camadas, componentes e exportação.",
   assets: art("/tools/prancheta/art"),
   store: {
@@ -115,7 +115,7 @@ export const AUTOMATION_APP = tool(AUTOMATION_APP_ID, "Trama", {
   available: true,
   stage: "beta",
   launchPath: `/library/app/${AUTOMATION_APP_ID}/open`,
-  publicPage: "/tools/automation/index.html",
+  publicPage: "/tools/automation",
   description: "Conecte dados e aplicativos em fluxos visuais, execute ações e acompanhe cada resultado.",
   assets: art("/tools/automation/art"),
   store: {
@@ -137,7 +137,7 @@ export const AUTOMATION_APP = tool(AUTOMATION_APP_ID, "Trama", {
 export const ACADEMY_APP = tool(ACADEMY_APP_ID, "Academy", {
   slug: "academy",
   launchPath: `/library/app/${ACADEMY_APP_ID}/open`,
-  publicPage: "/tools/academy/index.html",
+  publicPage: "/tools/academy",
   description: "Aulas criadas pelo LAB: assista, marque o progresso, favorite, anote e converse com a turma.",
   assets: art("/tools/academy/art"),
   store: {
@@ -160,7 +160,7 @@ export const ACADEMY_APP = tool(ACADEMY_APP_ID, "Academy", {
 export const COMUNIDADE_APP = tool(COMUNIDADE_APP_ID, "Comunidade", {
   slug: "comunidade",
   launchPath: `/library/app/${COMUNIDADE_APP_ID}/open`,
-  publicPage: "/tools/comunidade/index.html",
+  publicPage: "/tools/comunidade",
   description: "Canais de texto, voz em tempo real, compartilhamento de tela e conexão direta entre membros do LAB.",
   assets: art("/tools/comunidade/art"),
   store: {
@@ -183,7 +183,7 @@ export const COMUNIDADE_APP = tool(COMUNIDADE_APP_ID, "Comunidade", {
 export const CLAQUETE_APP = tool(CLAQUETE_APP_ID, "Claquete", {
   slug: "claquete",
   launchPath: `/library/app/${CLAQUETE_APP_ID}/open`,
-  publicPage: "/tools/claquete/index.html",
+  publicPage: "/tools/claquete",
   description: "Plataforma de cinema e vídeo com IA: canvas infinito, roteiro, set 3D e editor de vídeo multi-trilha.",
   assets: art("/tools/claquete/art"),
   store: {
@@ -214,7 +214,7 @@ export const CREATIVE_OS_APP_ID = 11;
 export const MONTAGEM_APP = tool(MONTAGEM_APP_ID, "Montagem", {
   slug: "montagem", available: true, stage: "beta",
   launchPath: `/library/app/${MONTAGEM_APP_ID}/open`,
-  publicPage: "/tools/montagem/index.html",
+  publicPage: "/tools/montagem",
   description: "Editor de vídeo do LAB: timeline com várias faixas, cortes, textos, legendas SRT, ajustes de imagem e mixagem de áudio.",
   assets: art("/tools/montagem/art"),
   store: {
@@ -239,7 +239,7 @@ export const GRAVADOR_APP = tool(GRAVADOR_APP_ID, "No Ar", {
   available: true,
   stage: "beta",
   launchPath: `/library/app/${GRAVADOR_APP_ID}/open`,
-  publicPage: "/tools/gravador/index.html",
+  publicPage: "/tools/gravador",
   description: "Estúdio web para compor cenas, capturar tela e câmera, misturar áudio, gravar vídeos e transmitir por WHIP.",
   assets: art("/tools/gravador/art"),
   store: {
@@ -271,7 +271,7 @@ export const GRAVADOR_APP = tool(GRAVADOR_APP_ID, "No Ar", {
 export const ADMIN_APP = tool(ADMIN_APP_ID, "Administração do LAB", {
   slug: "admin",
   launchPath: `/library/app/${ADMIN_APP_ID}/open`,
-  publicPage: "/tools/admin/index.html",
+  publicPage: "/tools/admin",
   available: true,
   adminOnly: true,
   description: "Painel de controle e governança do LAB: métricas gerais, gestão do catálogo de ferramentas, publicação e controle de membros.",
@@ -302,7 +302,7 @@ export const GABINETE_APP = tool(GABINETE_APP_ID, "Gabinete", {
   available: true,
   stage: "beta",
   launchPath: `/library/app/${GABINETE_APP_ID}/open`,
-  publicPage: "/tools/gabinete/index.html",
+  publicPage: "/tools/gabinete",
   description: "Centralize demandas, calendário editorial, aprovação de cliente por link, estúdio IA Nativo e inteligência de bastidor.",
   assets: art("/tools/gabinete/art"),
   store: {

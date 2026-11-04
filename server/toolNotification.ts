@@ -61,7 +61,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
       { title: "Conexões e APIs", text: "Configure webhooks e APIs HTTP com credenciais protegidas." },
       { title: "Execuções e Replay", text: "Acompanhe saídas de cada etapa, histórico e replay em tempo real." },
     ],
-    publicPage: "/tools/automation/index.html",
+    publicPage: "/tools/automation",
   },
   trama: {
     slug: "automation",
@@ -89,7 +89,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
       { title: "Formas e Tipografia", text: "Frames, formas vetoriais, estilos e texto editável." },
       { title: "Exportação em alta", text: "Gere arquivos em PNG, JPG e cópias editáveis." },
     ],
-    publicPage: "/tools/prancheta/index.html",
+    publicPage: "/tools/prancheta",
   },
   gabinete: {
     slug: "gabinete",
@@ -104,7 +104,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
       { title: "Aprovação por Link Seguro", text: "Compartilhamento com clientes via token sem login para aprovação com 1 clique." },
       { title: "Estúdio Nativo IA", text: "Geração de carrosséis com Método HEAD, roteiros em 5 passos e prompts oficiais." },
     ],
-    publicPage: "/tools/gabinete/index.html",
+    publicPage: "/tools/gabinete",
   },
   "creative-os": {
     slug: "gabinete",
@@ -131,7 +131,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
       { title: "Set 3D com Câmera Virtual", text: "Ensaie planos reais com lentes e movimentos de câmera cinematográficos." },
       { title: "Editor de Vídeo Multi-trilha", text: "Cortes, transições, ajuste de velocidade e mixagem de áudio." },
     ],
-    publicPage: "/tools/claquete/index.html",
+    publicPage: "/tools/claquete",
   },
   montagem: {
     slug: "montagem",
@@ -145,7 +145,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
       { title: "Legendas e Áudio", text: "Importe legendas SRT, adicione trilhas e faça ajustes finos de volume." },
       { title: "Exportação Direta", text: "Baixe seu vídeo montado direto no computador." },
     ],
-    publicPage: "/tools/montagem/index.html",
+    publicPage: "/tools/montagem",
   },
   gravador: {
     slug: "gravador",
@@ -159,7 +159,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
       { title: "Preview & Program", text: "Prepare no preview e faça cortes suaves para o programa no ar." },
       { title: "Gravação & Transmissão WHIP", text: "Grave localmente ou transmita para serviços ao vivo compatíveis." },
     ],
-    publicPage: "/tools/gravador/index.html",
+    publicPage: "/tools/gravador",
   },
   kanban: {
     slug: "kanban",
@@ -172,7 +172,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
       { title: "Agenda Semanal", text: "Grade de horários integrada para visualizar o ritmo da semana." },
       { title: "Métricas de Execução", text: "Acompanhe equilíbrio de tempo e tarefas concluídas." },
     ],
-    publicPage: "/tools/kanban/index.html",
+    publicPage: "/tools/kanban",
   },
   academy: {
     slug: "academy",
@@ -184,7 +184,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
       { title: "Aulas de Alto Nível", text: "Aulas práticas com bastidores reais de criação e estratégia." },
       { title: "Progresso & Anotações", text: "Marque seu avanço e faça anotações sincronizadas à sua conta." },
     ],
-    publicPage: "/tools/academy/index.html",
+    publicPage: "/tools/academy",
   },
   comunidade: {
     slug: "comunidade",
@@ -196,7 +196,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
       { title: "Salas de Voz em Tempo Real", text: "Converse, troque ideias e compartilhe a tela via WebRTC." },
       { title: "Canais Temáticos", text: "Discussões organizadas por projetos, ferramentas e referências." },
     ],
-    publicPage: "/tools/comunidade/index.html",
+    publicPage: "/tools/comunidade",
   },
   "prompt-library": {
     slug: "prompt-library",
@@ -208,7 +208,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
       { title: "Acervo Curado", text: "Centenas de referências de arte, UI e direção criativa testadas." },
       { title: "Copie com 1 Clique", text: "Textos estruturados prontos para rodar nas IAs mais avançadas." },
     ],
-    publicPage: "/tools/prompt-library/index.html",
+    publicPage: "/tools/prompt-library",
   },
 };
 
@@ -230,7 +230,7 @@ export function buildToolNotificationData(
     description: input.description || known.description || "",
     features: input.features || known.features || [],
     stage: input.stage || known.stage || "",
-    publicPage: input.publicPage || known.publicPage || `/tools/${input.slug}/index.html`,
+    publicPage: input.publicPage || known.publicPage || `/tools/${input.slug}`,
     customNote: input.customNote || "",
   };
 }
@@ -269,7 +269,7 @@ export function formatNewToolMessage(
     featuresBlock = `\n\n📦 *O que você pode fazer com ela:*\n` + lines.join("\n");
   }
 
-  const pagePath = tool.publicPage || `/tools/${tool.slug}/index.html`;
+  const pagePath = tool.publicPage || `/tools/${tool.slug}`;
   const directLink = `${baseUrl}${pagePath.startsWith("/") ? "" : "/"}${pagePath}`;
   const storeLink = `${baseUrl}/app.html#/store`;
 
