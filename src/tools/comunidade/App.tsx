@@ -158,12 +158,6 @@ export function App({ user }: { user?: ToolUser } = {}) {
         <main className="chat empty-state">
           <h2>{server.name}</h2>
           <p>Este servidor ainda não tem canais.</p>
-          <button
-            className="button brand"
-            onClick={() => dispatch({ type: 'openModal', modal: { kind: 'createChannel', serverId: server.id, categoryId: null } })}
-          >
-            Criar canal
-          </button>
         </main>
       );
     } else if (channel.kind === 'voice') {

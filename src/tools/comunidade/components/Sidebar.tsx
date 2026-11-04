@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useState } from 'react';
 import { ME, directMessages, users } from '../data';
 import {
   ChevronDown,
@@ -14,7 +14,6 @@ import {
   ScreenShare,
   Signal,
   Speaker,
-  UserPlus,
   Video,
 } from '../icons';
 import { findChannel, findServer, type Action, type State } from '../store';
@@ -49,7 +48,7 @@ export function ServerSidebar({ server, state, voiceUi, dispatch }: ServerSideba
   const connectedChannel = state.voice?.channelId;
   return (
     <aside className="sidebar">
-      <ServerMenu server={server} dispatch={dispatch} />
+      <ServerHeader server={server} />
       <div className="sidebar-scroll">
         {!server.categories.some((c) => c.channels.length) && (
           <p className="sidebar-empty">Nenhum canal ainda. Use o menu do servidor para criar um.</p>
@@ -67,16 +66,7 @@ export function ServerSidebar({ server, state, voiceUi, dispatch }: ServerSideba
                   <ChevronDown size={12} />
                   <span>{cat.name}</span>
                 </button>
-                <button
-                  className="category-add"
-                  title="Criar canal"
-                  aria-label={`Criar canal em ${cat.name}`}
-                  onClick={() =>
-                    dispatch({ type: 'openModal', modal: { kind: 'createChannel', serverId: server.id, categoryId: cat.id } })
-                  }
-                >
-                  <Plus size={16} />
-                </button>
+
               </div>
               {cat.channels
                 .filter((ch) => !collapsed || ch.id === activeChannel || ch.id === connectedChannel)
@@ -102,57 +92,13 @@ export function ServerSidebar({ server, state, voiceUi, dispatch }: ServerSideba
   );
 }
 
-/** Menu do nome do servidor, como o do Discord (Convidar pessoas, Criar canal, Sair). */
-function ServerMenu({ server, dispatch }: { server: Server; dispatch: (a: Action) => void }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: MouseEvent) => !ref.current?.contains(e.target as Node) && setOpen(false);
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
-    document.addEventListener('mousedown', onDown);
-    window.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onDown);
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
-
-  const pick = (a: Action) => {
-    setOpen(false);
-    dispatch(a);
-  };
-
+function ServerHeader({ server }: { server: Server }) {
   return (
-    <div className="server-menu-wrap" ref={ref}>
-      <button
-        className={`sidebar-header server-header ${open ? 'open' : ''}`}
-        onClick={() => setOpen((v) => !v)}
-        aria-haspopup="menu"
-        aria-expanded={open}
-      >
-        <span className="server-header-title">
-          <span>{server.name}</span>
-          <span className="comunidade-beta-badge">BETA</span>
-        </span>
-        {open ? <Close size={18} /> : <ChevronDown size={18} />}
-      </button>
-      {open && (
-        <div className="server-menu" role="menu">
-          <button role="menuitem" className="brand" onClick={() => pick({ type: 'openModal', modal: { kind: 'invite', serverId: server.id } })}>
-            Convidar pessoas
-            <UserPlus size={18} />
-          </button>
-          <button
-            role="menuitem"
-            onClick={() => pick({ type: 'openModal', modal: { kind: 'createChannel', serverId: server.id, categoryId: null } })}
-          >
-            Criar canal
-            <Plus size={18} />
-          </button>
-        </div>
-      )}
+    <div className="sidebar-header server-header">
+      <span className="server-header-title">
+        <span>{server.name}</span>
+        <span className="comunidade-beta-badge">BETA</span>
+      </span>
     </div>
   );
 }

@@ -335,9 +335,7 @@ textarea {
   padding: 1px 6px;
   line-height: 1.3;
 }
-.server-header:hover {
-  background: var(--bg-hover);
-}
+
 
 .search-trigger {
   width: 100%;
