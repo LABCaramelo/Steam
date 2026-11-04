@@ -14,7 +14,6 @@ import {
   IconTrash,
   IconTrendingUp,
   IconCreditCard,
-  IconShield,
 } from "./Icons";
 
 interface Props {
@@ -49,7 +48,7 @@ export const GabineteSidebar: React.FC<Props> = ({
       {/* Perfil do Gabinete */}
       <div className="mc-sidebar__header">
         <div className="mc-sidebar__profile">
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Isotype size={28} variant="caramel" decorative interactive />
             <div>
               <h2 className="mc-sidebar__title">
@@ -57,25 +56,6 @@ export const GabineteSidebar: React.FC<Props> = ({
                 <span style={{ fontSize: 13, color: "var(--mc-caramel)", opacity: 0.9 }}>✦</span>
               </h2>
               <p className="mc-sidebar__subtitle">Gestão de conteúdo e criação</p>
-              <div style={{ marginTop: 6 }}>
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 5,
-                    padding: "2px 8px",
-                    borderRadius: 9999,
-                    border: "1px solid rgba(255, 112, 26, 0.4)",
-                    background: "rgba(255, 112, 26, 0.1)",
-                    color: "var(--mc-caramel)",
-                    fontSize: 10.5,
-                    fontWeight: 700,
-                  }}
-                >
-                  <IconShield size={11} />
-                  <span>{workspace.agency_level || "Agência Bronze I"}</span>
-                </span>
-              </div>
             </div>
           </div>
         </div>
