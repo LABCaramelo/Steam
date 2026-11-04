@@ -57,6 +57,7 @@ export default async function handler(req: Req, res: ServerResponse) {
               identity: p.identity,
               name: p.name || p.identity,
               color: COLOR.test(p.attributes?.color ?? '') ? p.attributes.color : undefined,
+              avatarUrl: typeof p.attributes?.avatarUrl === 'string' ? p.attributes.avatarUrl : undefined,
             })),
           ] as const;
         }),
@@ -69,15 +70,18 @@ export default async function handler(req: Req, res: ServerResponse) {
       const channelId = String(body.channelId ?? '');
       const identity = access.user.id;
       const meta = access.user.user_metadata ?? {};
-      const display = [meta.nickname, meta.name, access.user.email?.split('@')[0]].find((value) => typeof value === 'string' && value.trim());
+      const display = [meta.name, meta.nickname, access.user.email?.split('@')[0]].find((value) => typeof value === 'string' && value.trim());
       const name = typeof display === 'string' ? display.trim().slice(0, 32) : 'Membro do LAB';
       const color = String(body.color ?? '');
+      const avatarUrl = typeof body.avatarUrl === 'string' && body.avatarUrl.trim() ? body.avatarUrl.trim() : (typeof meta.avatar_url === 'string' ? meta.avatar_url : undefined);
       if (!CHANNEL_ID.test(channelId)) {
         return send(res, 400, { error: 'invalid_request' });
       }
-      // A cor do perfil vai como atributo da pessoa na sala, para todos verem a mesma.
-      const attributes = COLOR.test(color) ? { color } : undefined;
-      const token = new AccessToken(cfg.apiKey, cfg.apiSecret, { identity, name, attributes, ttl: '15m' });
+      // A cor e avatar do perfil vão como atributo da pessoa na sala, para todos verem a mesma.
+      const attributes: Record<string, string> = {};
+      if (COLOR.test(color)) attributes.color = color;
+      if (avatarUrl && /^https?:\/\//i.test(avatarUrl)) attributes.avatarUrl = avatarUrl;
+      const token = new AccessToken(cfg.apiKey, cfg.apiSecret, { identity, name, attributes: Object.keys(attributes).length ? attributes : undefined, ttl: '15m' });
       token.addGrant({
         room: ROOM_PREFIX + channelId,
         roomJoin: true,

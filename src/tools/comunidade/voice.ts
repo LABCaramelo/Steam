@@ -61,7 +61,7 @@ export interface VoiceChatStore {
 }
 
 /** Quem está em cada canal de voz (chave: id do canal), segundo o servidor. */
-export type Occupancy = Record<string, { identity: string; name: string; color?: string }[]>;
+export type Occupancy = Record<string, { identity: string; name: string; color?: string; avatarUrl?: string }[]>;
 
 /* ---------------------------------------------------------------- utilidades */
 
@@ -75,8 +75,8 @@ export function colorFor(identity: string) {
   return PALETTE[h % PALETTE.length];
 }
 
-export function memberUser(m: { identity: string; name: string; color?: string }): User {
-  return { id: m.identity, name: m.name, color: m.color ?? colorFor(m.identity), status: 'online' };
+export function memberUser(m: { identity: string; name: string; color?: string; avatarUrl?: string }): User {
+  return { id: m.identity, name: m.name, color: m.color ?? colorFor(m.identity), avatarUrl: m.avatarUrl, status: 'online' };
 }
 
 /** Sons curtos, sintetizados para não depender de arquivos de áudio. */
@@ -191,7 +191,7 @@ function parseAttachment(raw: unknown): WireAttachment | null {
 /** Valida uma mensagem vinda de outra pessoa. */
 function parseChatMessage(raw: unknown, profileId: string): WireMessage | null {
   if (!raw || typeof raw !== 'object') return null;
-  const { id, authorId, authorName, authorColor, content, timestamp, attachments } = raw as Record<string, unknown>;
+  const { id, authorId, authorName, authorColor, authorAvatarUrl, content, timestamp, attachments } = raw as Record<string, unknown>;
   if (typeof id !== 'string' || typeof authorId !== 'string' || typeof content !== 'string') return null;
   if (typeof timestamp !== 'number') return null;
   // Ninguém se passa por alguém do diretório local nem por você. Suas mensagens já estão
@@ -206,6 +206,7 @@ function parseChatMessage(raw: unknown, profileId: string): WireMessage | null {
     authorId,
     authorName: typeof authorName === 'string' ? authorName.slice(0, 32) : undefined,
     authorColor: typeof authorColor === 'string' && COLOR.test(authorColor) ? authorColor : undefined,
+    authorAvatarUrl: typeof authorAvatarUrl === 'string' && /^https?:\/\//i.test(authorAvatarUrl) ? authorAvatarUrl : undefined,
     content: content.slice(0, CHAT_MAX_LENGTH),
     // Um relógio adiantado não joga a mensagem para o fim da conversa.
     timestamp: Math.min(timestamp, Date.now()),
@@ -232,7 +233,7 @@ async function materialize(m: WireMessage): Promise<Message> {
 
 async function toWire(m: Message, profile: Profile, budget = { left: Infinity }): Promise<WireMessage> {
   const session = captureAttachmentSession();
-  const base = m.authorId === ME ? { ...m, authorId: profile.id, authorName: profile.name, authorColor: profile.color } : m;
+  const base = m.authorId === ME ? { ...m, authorId: profile.id, authorName: profile.name, authorColor: profile.color, authorAvatarUrl: profile.avatarUrl ?? undefined } : m;
   if (!m.attachments?.length) return base;
   const attachments = await Promise.all(
     m.attachments.map(async (a): Promise<WireAttachment> => {
@@ -410,7 +411,7 @@ export function useVoiceSession(
         const res = await fetch('/api/livekit?action=token', {
           method: 'POST',
           headers: { ...authorization, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ channelId, color: profile.color }),
+          body: JSON.stringify({ channelId, color: profile.color, name: profile.name, avatarUrl: profile.avatarUrl }),
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(errorMessage(res.status, data.error));

@@ -23,11 +23,19 @@ export function App({ user }: { user?: ToolUser } = {}) {
   const { view, profile, settings, modal } = state;
   const isAdmin = user?.role === 'admin';
 
+  // Sincroniza nome e foto de perfil do usuário autenticado no LAB
   useEffect(() => {
-    if (user?.name && !profile.name) {
-      dispatch({ type: 'setName', name: user.name });
+    if (!user) return;
+    const shouldUpdateName = !!user.name && profile.name !== user.name;
+    const shouldUpdateAvatar = user.avatarUrl !== undefined && profile.avatarUrl !== user.avatarUrl;
+    if (shouldUpdateName || shouldUpdateAvatar) {
+      dispatch({
+        type: 'syncUserProfile',
+        name: user.name || profile.name,
+        avatarUrl: user.avatarUrl ?? null,
+      });
     }
-  }, [user?.name, profile.name, dispatch]);
+  }, [user?.name, user?.avatarUrl, profile.name, profile.avatarUrl, dispatch]);
   const [quickSwitcherOpen, setQuickSwitcherOpen] = useState(false);
   const quickSwitcherTrigger = useRef<HTMLElement | null>(null);
   const openQuickSwitcher = useCallback(() => {
@@ -50,7 +58,14 @@ export function App({ user }: { user?: ToolUser } = {}) {
 
   // O usuário "você" do diretório local passa a ter o nome e a cor deste visitante,
   // para o chat, a lista de membros e as salas de voz mostrarem a mesma pessoa.
-  users[ME] = { ...users[ME], name: profile.name || 'você', color: profile.color ?? colorFor(profile.id) };
+  const activeAvatarUrl = (profile.avatarUrl !== undefined ? profile.avatarUrl : user?.avatarUrl) || undefined;
+  users[ME] = {
+    ...users[ME],
+    name: profile.name || user?.name || 'você',
+    nickname: user?.nickname || users[ME]?.nickname || 'caramelo',
+    avatarUrl: activeAvatarUrl,
+    color: profile.color ?? colorFor(profile.id),
+  };
 
   const session = useVoiceSession(state.voice, profile, state.muted, state.deafened, settings, {
     history: state.voice ? (state.messages[state.voice.channelId] ?? []) : [],

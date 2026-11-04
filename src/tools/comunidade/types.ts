@@ -56,6 +56,7 @@ export interface Message {
   /** Nome e cor de quem escreveu, para autores fora do diretório local (pessoas das salas de voz). */
   authorName?: string;
   authorColor?: string;
+  authorAvatarUrl?: string;
   content: string;
   timestamp: number;
   editedAt?: number;

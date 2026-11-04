@@ -16,7 +16,7 @@ export function Avatar({ size = 32 }: { size?: number }) {
   const { profile } = useAuth();
   const { status } = useUi();
   const [failed, setFailed] = useState(false);
-  const name = profile?.nickname || profile?.name || snapshot?.user?.personaName || "?";
+  const name = profile?.name || profile?.nickname || snapshot?.user?.personaName || "?";
   const avatarUrl = profile?.avatar_url || snapshot?.user?.avatarUrl;
   const style = { width: size, height: size, borderColor: STATUS_COLOR[status] };
 

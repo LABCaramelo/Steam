@@ -309,7 +309,14 @@ function ProfilePage({ profile, dispatch }: { profile: Profile; dispatch: (a: Ac
   const [color, setColor] = useState<string | undefined>(profile.color);
   const dirty = name.trim() !== profile.name || color !== profile.color;
   const shown = color ?? colorFor(profile.id);
-  const preview = { id: profile.id, name: name.trim() || profile.name, color: shown, status: 'online' as const };
+  const me = users[ME];
+  const preview = {
+    id: profile.id,
+    name: name.trim() || profile.name,
+    color: shown,
+    status: 'online' as const,
+    avatarUrl: profile.avatarUrl || me.avatarUrl,
+  };
 
   return (
     <div className="profile-page">

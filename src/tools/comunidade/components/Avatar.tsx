@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import type { Status, User } from '../types';
 
 interface Props {
@@ -11,18 +12,25 @@ interface Props {
 }
 
 export function Avatar({ user, size = 32, status, ring = 'var(--bg-secondary)', speaking }: Props) {
+  const [failed, setFailed] = useState(false);
   const dot = Math.round(size * 0.3);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [user.avatarUrl]);
+
   return (
     <div
       className={`avatar ${speaking ? 'speaking' : ''}`}
       style={{ width: size, height: size, '--ring-gap': ring } as React.CSSProperties}
     >
       <div className="avatar-img" style={{ background: user.color, fontSize: size * 0.42 }}>
-        {user.avatarUrl ? (
+        {user.avatarUrl && !failed ? (
           <img
             src={user.avatarUrl}
             alt=""
             style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+            onError={() => setFailed(true)}
           />
         ) : (
           user.name[0]?.toUpperCase() || 'U'

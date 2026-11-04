@@ -306,8 +306,8 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
     });
 
     const personaName =
-      profile?.nickname ||
       profile?.name ||
+      profile?.nickname ||
       (user?.user_metadata?.nickname as string | undefined) ||
       (user?.user_metadata?.name as string | undefined) ||
       user?.email?.split("@")[0];

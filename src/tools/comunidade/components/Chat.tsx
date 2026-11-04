@@ -394,7 +394,7 @@ function MessageList({
         const grouped = !!prev && !newDay && prev.authorId === m.authorId && m.timestamp - prev.timestamp < GROUP_WINDOW_MS;
         // Quem fala nas salas de voz não está no diretório local: usa o nome que veio com a mensagem.
         const author =
-          users[m.authorId] ?? memberUser({ identity: m.authorId, name: m.authorName ?? 'Alguém', color: m.authorColor });
+          users[m.authorId] ?? memberUser({ identity: m.authorId, name: m.authorName ?? 'Alguém', color: m.authorColor, avatarUrl: m.authorAvatarUrl });
         const handleAuthorClick = (e: React.MouseEvent) => {
           e.stopPropagation();
           onSelectUser?.(author);

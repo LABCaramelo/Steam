@@ -16,6 +16,7 @@ export interface Profile {
   name: string;
   /** Cor do avatar; sem ela, a cor sai do id (ver colorFor). */
   color?: string;
+  avatarUrl?: string | null;
 }
 
 export type Theme = 'escuro' | 'cinza' | 'onix' | 'claro';
@@ -89,7 +90,8 @@ export type Action =
   | { type: 'toggleDeafen' }
   | { type: 'setStatus'; status: Status }
   | { type: 'setName'; name: string }
-  | { type: 'updateProfile'; name?: string; color?: string | null }
+  | { type: 'syncUserProfile'; name?: string; avatarUrl?: string | null }
+  | { type: 'updateProfile'; name?: string; color?: string | null; avatarUrl?: string | null }
   | { type: 'updateSettings'; patch: Partial<Settings> }
   | { type: 'openModal'; modal: Modal }
   | { type: 'closeModal' }
@@ -289,12 +291,20 @@ function reducer(state: State, action: Action): State {
       const name = action.name.trim().slice(0, 32);
       return name ? { ...state, profile: { ...state.profile, name } } : state;
     }
+    case 'syncUserProfile': {
+      const name = action.name?.trim().slice(0, 32);
+      const profile = { ...state.profile };
+      if (name) profile.name = name;
+      if (action.avatarUrl !== undefined) profile.avatarUrl = action.avatarUrl;
+      return { ...state, profile };
+    }
     case 'updateProfile': {
       const name = action.name?.trim().slice(0, 32);
       const profile = { ...state.profile };
       if (name) profile.name = name;
       if (action.color === null) delete profile.color;
       else if (action.color) profile.color = action.color;
+      if (action.avatarUrl !== undefined) profile.avatarUrl = action.avatarUrl;
       return { ...state, profile };
     }
     case 'updateSettings':
