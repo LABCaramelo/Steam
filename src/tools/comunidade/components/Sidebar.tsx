@@ -214,10 +214,10 @@ function VoiceConnectedPanel({ state, voiceUi, dispatch }: { state: State; voice
         <button
           className={session.cameraOn ? 'on' : ''}
           onClick={session.toggleCamera}
-          disabled={session.status !== 'connected'}
-          aria-label={session.cameraOn ? 'Desligar câmera' : 'Ligar câmera'}
+          disabled={channelId === 'ch-pair' || session.status !== 'connected'}
+          aria-label={channelId === 'ch-pair' ? 'Câmera desativada no Coworking Silencioso' : session.cameraOn ? 'Desligar câmera' : 'Ligar câmera'}
           aria-pressed={session.cameraOn}
-          title={session.cameraOn ? 'Desligar câmera' : 'Ligar câmera'}
+          title={channelId === 'ch-pair' ? 'Câmera desativada no Coworking Silencioso' : session.cameraOn ? 'Desligar câmera' : 'Ligar câmera'}
         >
           <Video size={18} />
         </button>
@@ -330,10 +330,13 @@ function UserPanel({ state, dispatch }: { state: State; dispatch: (a: Action) =>
       )}
       <div className="user-panel-actions">
         <button
-          className={state.muted ? 'off slashed' : ''}
-          onClick={() => dispatch({ type: 'toggleMute' })}
-          aria-label={state.muted ? 'Ativar microfone' : 'Silenciar'}
-          title={state.muted ? 'Ativar microfone' : 'Silenciar'}
+          className={`${state.muted ? 'off slashed' : ''} ${state.voice?.channelId === 'ch-pair' ? 'locked' : ''}`}
+          onClick={() => {
+            if (state.voice?.channelId !== 'ch-pair') dispatch({ type: 'toggleMute' });
+          }}
+          disabled={state.voice?.channelId === 'ch-pair'}
+          aria-label={state.voice?.channelId === 'ch-pair' ? 'Microfone desativado no Coworking Silencioso' : state.muted ? 'Ativar microfone' : 'Silenciar'}
+          title={state.voice?.channelId === 'ch-pair' ? 'Microfone desativado no Coworking Silencioso' : state.muted ? 'Ativar microfone' : 'Silenciar'}
         >
           <Mic size={20} />
         </button>

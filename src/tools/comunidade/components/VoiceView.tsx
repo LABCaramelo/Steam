@@ -19,6 +19,7 @@ import { memberUser, type Occupancy, type VoiceMember, type VoiceSession } from 
 import { NavButton } from '../ui';
 import { Avatar } from './Avatar';
 import { Conversation } from './Chat';
+import { MusicStation } from './MusicStation';
 
 interface Props {
   serverId: string;
@@ -91,7 +92,7 @@ export function VoiceView({ serverId, channel, state, session, occupancy, unread
           </div>
         </header>
 
-        {connected ? <Call state={state} session={session} fullscreen={fullscreen} dispatch={dispatch} /> : (
+        {connected ? <Call channel={channel} state={state} session={session} fullscreen={fullscreen} dispatch={dispatch} /> : (
           <Lobby
             channel={channel}
             people={occupancy[channel.id] ?? []}
@@ -226,16 +227,19 @@ function videoOf(tile: TileInfo) {
 }
 
 function Call({
+  channel,
   state,
   session,
   fullscreen,
   dispatch,
 }: {
+  channel: Channel;
   state: State;
   session: VoiceSession;
   fullscreen: FullscreenControl;
   dispatch: (a: Action) => void;
 }) {
+  const isSilentChannel = channel.id === 'ch-pair' || channel.name.toLowerCase().includes('coworking');
   const tiles: TileInfo[] = [
     ...session.members.filter((m) => m.screen).map((m) => ({ key: `${m.identity}:tela`, member: m, screen: true })),
     ...session.members.map((m) => ({ key: m.identity, member: m, screen: false })),
@@ -278,6 +282,66 @@ function Call({
       ) : session.status === 'connecting' ? (
         <div className="voice-lobby">
           <p>Conectando…</p>
+        </div>
+      ) : isSilentChannel ? (
+        <div className="coworking-stage-layout">
+          {focused ? (
+            <>
+              <MusicStation
+                channelId={channel.id}
+                session={session}
+                userName={state.profile.name || 'Membro do LAB'}
+                isFocusMode={true}
+              />
+              <div className="voice-focus">
+                <div className="voice-focus-main">
+                  <CallTile
+                    tile={focused}
+                    mode="focus"
+                    fullscreen={fullscreen.active}
+                    onGrid={() => setFocusedKey(null)}
+                    onFullscreen={fullscreenFor(focused.key)}
+                  />
+                </div>
+                <div className="voice-strip">
+                  {tiles
+                    .filter((t) => t !== focused)
+                    .map((t) => (
+                      <CallTile key={t.key} tile={t} mode="strip" onFocus={() => setFocusedKey(t.key)} />
+                    ))}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="coworking-stage-content">
+              <MusicStation
+                channelId={channel.id}
+                session={session}
+                userName={state.profile.name || 'Membro do LAB'}
+                isFocusMode={false}
+              />
+              {tiles.length > 0 && (
+                <div className="coworking-tiles-section">
+                  <div className="coworking-tiles-header">
+                    <h4>Pessoas conectadas ({tiles.length})</h4>
+                  </div>
+                  <div className="voice-grid coworking-grid" ref={gridRef}>
+                    {tiles.map((t) => (
+                      <CallTile
+                        key={t.key}
+                        tile={t}
+                        mode="grid"
+                        style={{ width: tileWidth }}
+                        fullscreen={fullscreen.active}
+                        onFocus={() => setFocusedKey(t.key)}
+                        onFullscreen={fullscreenFor(t.key)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ) : focused ? (
         <div className="voice-focus">
@@ -327,10 +391,13 @@ function Call({
 
       <div className="voice-controls">
         <button
-          className={state.muted ? 'off slashed' : ''}
-          onClick={() => dispatch({ type: 'toggleMute' })}
-          aria-label={state.muted ? 'Ativar microfone' : 'Silenciar'}
-          title={state.muted ? 'Ativar microfone' : 'Silenciar'}
+          className={`${state.muted ? 'off slashed' : ''} ${isSilentChannel ? 'locked' : ''}`}
+          onClick={() => {
+            if (!isSilentChannel) dispatch({ type: 'toggleMute' });
+          }}
+          disabled={isSilentChannel}
+          aria-label={isSilentChannel ? 'Microfone desativado no Coworking Silencioso' : state.muted ? 'Ativar microfone' : 'Silenciar'}
+          title={isSilentChannel ? 'Microfone desativado no Coworking Silencioso' : state.muted ? 'Ativar microfone' : 'Silenciar'}
         >
           <Mic size={24} />
         </button>
@@ -343,12 +410,12 @@ function Call({
           <Headphones size={24} />
         </button>
         <button
-          className={session.cameraOn ? 'on' : ''}
+          className={`${session.cameraOn ? 'on' : ''} ${isSilentChannel ? 'locked' : ''}`}
           onClick={session.toggleCamera}
-          disabled={session.status !== 'connected'}
-          aria-label={session.cameraOn ? 'Desligar câmera' : 'Ligar câmera'}
+          disabled={isSilentChannel || session.status !== 'connected'}
+          aria-label={isSilentChannel ? 'Câmera desativada no Coworking Silencioso' : session.cameraOn ? 'Desligar câmera' : 'Ligar câmera'}
           aria-pressed={session.cameraOn}
-          title={session.cameraOn ? 'Desligar câmera' : 'Ligar câmera'}
+          title={isSilentChannel ? 'Câmera desativada no Coworking Silencioso' : session.cameraOn ? 'Desligar câmera' : 'Ligar câmera'}
         >
           <Video size={24} />
         </button>
@@ -521,6 +588,7 @@ function Lobby({
   people: { identity: string; name: string }[];
   onJoin: () => void;
 }) {
+  const isSilentChannel = channel.id === 'ch-pair' || channel.name.toLowerCase().includes('coworking');
   return (
     <div className="voice-lobby">
       <div className="voice-lobby-avatars">
@@ -529,13 +597,19 @@ function Lobby({
         ))}
       </div>
       <h2>{channel.name}</h2>
-      <p>
-        {people.length
-          ? `${people.map((p) => p.name).join(', ')} ${people.length === 1 ? 'está' : 'estão'} na sala.`
-          : 'Ninguém está aqui ainda.'}
-      </p>
+      {isSilentChannel ? (
+        <p className="coworking-lobby-sub">
+          Espaço silencioso para foco mútuo e música. Microfones e webcams ficam desativados, e o compartilhamento de tela é livre.
+        </p>
+      ) : (
+        <p>
+          {people.length
+            ? `${people.map((p) => p.name).join(', ')} ${people.length === 1 ? 'está' : 'estão'} na sala.`
+            : 'Ninguém está aqui ainda.'}
+        </p>
+      )}
       <button className="voice-join" onClick={onJoin}>
-        Entrar na voz
+        {isSilentChannel ? 'Entrar no Coworking' : 'Entrar na voz'}
       </button>
     </div>
   );

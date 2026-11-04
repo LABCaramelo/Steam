@@ -49,6 +49,8 @@ export interface VoiceSession {
   sendChat: (content: string, files: File[]) => Promise<void>;
   /** Apaga uma mensagem sua do chat da sala, para todos. */
   deleteChat: (messageId: string) => void;
+  sendMusicPacket?: (packet: Record<string, unknown>) => Promise<void>;
+  onMusicPacket?: (handler: (packet: Record<string, unknown>, from: string) => void) => () => void;
 }
 
 /**
@@ -165,6 +167,7 @@ function snapshot(room: Room): VoiceMember[] {
  * Arquivos vão junto da mensagem, como data URL.
  */
 const CHAT_TOPIC = 'chat';
+const MUSIC_TOPIC = 'music';
 const CHAT_HISTORY_LIMIT = 100;
 const CHAT_MAX_LENGTH = 4000;
 /** Quanto de arquivos o histórico carrega para quem chega (as mensagens mais novas primeiro). */
@@ -289,6 +292,7 @@ export function useVoiceSession(
   settingsRef.current = settings;
   const chatRef = useRef(chat);
   chatRef.current = chat;
+  const musicListenersRef = useRef<Set<(packet: Record<string, unknown>, from: string) => void>>(new Set());
 
   const channelId = voice?.channelId ?? null;
 
@@ -418,6 +422,19 @@ export function useVoiceSession(
         .catch((err) => console.warn('[voz] mensagem de chat inválida', err));
     });
 
+    room.registerTextStreamHandler(MUSIC_TOPIC, (reader, { identity }) => {
+      reader
+        .readAll()
+        .then((text) => {
+          if (cancelled) return;
+          const packet: unknown = JSON.parse(text);
+          if (packet && typeof packet === 'object') {
+            musicListenersRef.current.forEach((fn) => fn(packet as Record<string, unknown>, identity));
+          }
+        })
+        .catch((err) => console.warn('[voz] pacote de música inválido', err));
+    });
+
     (async () => {
       try {
         const authorization = await voiceAuthorization();
@@ -456,6 +473,7 @@ export function useVoiceSession(
       cancelled = true;
       room.removeAllListeners();
       room.unregisterTextStreamHandler(CHAT_TOPIC);
+      room.unregisterTextStreamHandler(MUSIC_TOPIC);
       for (const p of room.remoteParticipants.values()) {
         for (const pub of p.audioTrackPublications.values()) pub.track?.detach().forEach((el) => el.remove());
       }
@@ -467,15 +485,26 @@ export function useVoiceSession(
     // Nome e cor só valem para a próxima entrada: mudar o perfil não derruba a chamada.
   }, [channelId, profile.id, attempt]);
 
-  // Silenciar = parar de publicar o microfone.
+  // Silenciar = parar de publicar o microfone (no Coworking Silencioso sempre forçado mutado).
   useEffect(() => {
     const room = roomRef.current;
     if (!room || status !== 'connected') return;
+    const isSilent = channelId === 'ch-pair';
+    const effectiveMuted = isSilent ? true : muted;
     room.localParticipant
-      .setMicrophoneEnabled(!muted, captureOptions(settingsRef.current))
+      .setMicrophoneEnabled(!effectiveMuted, captureOptions(settingsRef.current))
       .then(() => setMembers(snapshot(room)))
       .catch(() => setDeviceError('Sem permissão para usar o microfone. Você só vai ouvir.'));
-  }, [muted, status]);
+  }, [muted, status, channelId]);
+
+  // Se entrar no canal silencioso com câmera ligada, desliga a câmera imediatamente
+  useEffect(() => {
+    const room = roomRef.current;
+    if (!room || status !== 'connected') return;
+    if (channelId === 'ch-pair' && room.localParticipant.isCameraEnabled) {
+      void room.localParticipant.setCameraEnabled(false).then(() => setMembers(snapshot(room)));
+    }
+  }, [channelId, status]);
 
   // Desativar o áudio = silenciar tudo o que chega dos outros.
   useEffect(() => {
@@ -522,6 +551,10 @@ export function useVoiceSession(
   const toggleCamera = useCallback(async () => {
     const room = roomRef.current;
     if (!room) return;
+    if (channelId === 'ch-pair') {
+      setDeviceError('A câmera está desativada no Coworking Silencioso.');
+      return;
+    }
     const lp = room.localParticipant;
     try {
       await lp.setCameraEnabled(!lp.isCameraEnabled, {
@@ -533,7 +566,7 @@ export function useVoiceSession(
       setDeviceError('Sem permissão para usar a câmera.');
     }
     setMembers(snapshot(room));
-  }, []);
+  }, [channelId]);
 
   const toggleScreen = useCallback(async () => {
     const room = roomRef.current;
@@ -596,6 +629,21 @@ export function useVoiceSession(
     retry: () => setAttempt((a) => a + 1),
     sendChat,
     deleteChat,
+    sendMusicPacket: useCallback(async (packet: Record<string, unknown>) => {
+      const room = roomRef.current;
+      if (!room || room.state !== 'connected') return;
+      try {
+        await room.localParticipant.sendText(JSON.stringify(packet), { topic: MUSIC_TOPIC });
+      } catch (err) {
+        console.warn('[voz] erro ao transmitir pacote de música', err);
+      }
+    }, []),
+    onMusicPacket: useCallback((handler: (packet: Record<string, unknown>, from: string) => void) => {
+      musicListenersRef.current.add(handler);
+      return () => {
+        musicListenersRef.current.delete(handler);
+      };
+    }, []),
   };
 }
 

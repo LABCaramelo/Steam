@@ -3635,3 +3635,596 @@ a.attachment-file-name:hover {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* ---------------------------------------------------------------- Coworking Silencioso & MusicStation */
+
+.coworking-stage-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--bg-primary);
+}
+
+.coworking-stage-content {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 24px 32px;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.coworking-banner {
+  background: linear-gradient(135deg, rgba(255, 112, 26, 0.08) 0%, rgba(118, 87, 255, 0.06) 100%);
+  border: 1px solid rgba(255, 112, 26, 0.2);
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.coworking-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.coworking-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #FF701A;
+}
+
+.coworking-rules-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 61, 141, 0.12);
+  color: #FF3D8D;
+  border: 1px solid rgba(255, 61, 141, 0.25);
+}
+
+.coworking-desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.coworking-lobby-sub {
+  margin: 8px 0 16px;
+  color: var(--text-muted);
+  font-size: 14px;
+  max-width: 420px;
+  line-height: 1.5;
+}
+
+.music-station-container {
+  display: grid;
+  grid-template-columns: minmax(360px, 1.4fr) minmax(300px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .music-station-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card do Player */
+.music-player-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--divider);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.music-player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.music-player-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tag-youtube {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #ff4444;
+  font-weight: 700;
+  background: rgba(255, 68, 68, 0.1);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.tag-spotify {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #1ed760;
+  font-weight: 700;
+  background: rgba(30, 215, 96, 0.1);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.track-counter {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.added-by {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.music-embed-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid var(--divider);
+}
+
+.music-embed-iframe {
+  width: 100%;
+  border: none;
+  display: block;
+}
+
+.music-embed-iframe.youtube-frame {
+  aspect-ratio: 16 / 9;
+  min-height: 220px;
+  max-height: 380px;
+}
+
+.music-embed-iframe.spotify-frame {
+  height: 220px;
+}
+
+.music-paused-placeholder {
+  aspect-ratio: 16 / 9;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.resume-play-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--text-normal);
+  border: 2px dashed rgba(255, 244, 232, 0.2);
+  border-radius: 12px;
+  padding: 20px 30px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resume-play-btn:hover {
+  border-color: #FF701A;
+  color: #FF701A;
+  transform: scale(1.02);
+}
+
+.music-player-controls-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-top: 6px;
+}
+
+.track-titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.track-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-normal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-artist {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.playback-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.control-btn {
+  background: var(--bg-input);
+  border: 1px solid var(--divider);
+  color: var(--text-normal);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.control-btn:hover {
+  background: var(--bg-hover);
+  color: #FF701A;
+  border-color: rgba(255, 112, 26, 0.4);
+}
+
+.control-btn.primary-play {
+  width: 44px;
+  height: 44px;
+  background: #FF701A;
+  color: #101014;
+  border: none;
+}
+
+.control-btn.primary-play:hover {
+  background: #FF8838;
+  color: #101014;
+  transform: scale(1.05);
+}
+
+/* Painel de Playlist / Fila */
+.music-playlist-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--divider);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 520px;
+}
+
+.playlist-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title-row h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-normal);
+}
+
+.badge-count {
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(118, 87, 255, 0.18);
+  color: var(--brand-hover);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.toggle-queue-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.toggle-queue-btn:hover {
+  color: var(--text-normal);
+}
+
+/* Formulário de adicionar música */
+.add-track-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.add-input-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.add-track-input {
+  flex: 1;
+  background: var(--bg-input);
+  border: 1px solid var(--divider);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text-normal);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.add-track-input:focus {
+  border-color: #FF701A;
+}
+
+.add-track-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.add-track-btn:hover:not(:disabled) {
+  background: var(--brand-hover);
+}
+
+.add-track-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.music-form-error {
+  margin: 0;
+  font-size: 12px;
+  color: #FF3D8D;
+  line-height: 1.4;
+}
+
+.music-form-success {
+  margin: 0;
+  font-size: 12px;
+  color: #22c55e;
+  line-height: 1.4;
+}
+
+/* Fila de Músicas */
+.playlist-queue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  padding-right: 4px;
+  max-height: 340px;
+}
+
+.queue-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  background: var(--bg-panel);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.queue-item:hover {
+  background: var(--bg-hover);
+  border-color: var(--divider);
+}
+
+.queue-item.active {
+  background: rgba(255, 112, 26, 0.08);
+  border-color: rgba(255, 112, 26, 0.35);
+}
+
+.queue-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.queue-index {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  width: 18px;
+  text-align: center;
+}
+
+.soundwave-anim {
+  color: #FF701A;
+  font-size: 11px;
+}
+
+.queue-source-icon {
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+}
+
+.queue-item.active .queue-source-icon {
+  color: #FF701A;
+}
+
+.queue-track-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.queue-title {
+  font-size: 13px;
+  color: var(--text-normal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queue-item.active .queue-title {
+  color: #FF701A;
+}
+
+.queue-artist {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queue-remove-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.15s ease;
+}
+
+.queue-remove-btn:hover {
+  color: #FF3D8D;
+  opacity: 1;
+  background: rgba(255, 61, 141, 0.1);
+}
+
+/* Barra compacta no modo focado */
+.music-compact-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--divider);
+  padding: 8px 16px;
+  gap: 16px;
+}
+
+.music-compact-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.music-compact-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music-compact-text strong {
+  color: var(--text-normal);
+}
+
+.music-compact-text span {
+  color: var(--text-muted);
+}
+
+.music-compact-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.music-compact-controls button {
+  background: transparent;
+  border: none;
+  color: var(--text-normal);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.music-compact-controls button:hover {
+  color: #FF701A;
+}
+
+.music-compact-controls .play-btn {
+  color: #FF701A;
+}
+
+/* Seção de pessoas conectadas no coworking */
+.coworking-tiles-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--divider);
+}
+
+.coworking-tiles-header h4 {
+  margin: 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.coworking-grid {
+  justify-content: flex-start;
+}
+
+/* Botões travados/bloqueados no canal silencioso */
+.voice-controls button.locked,
+.voice-panel-buttons button.locked,
+.user-panel-actions button.locked {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+}
+
+.voice-controls button.locked:hover,
+.user-panel-actions button.locked:hover {
+  background: var(--bg-secondary) !important;
+  color: var(--text-muted) !important;
+}
+

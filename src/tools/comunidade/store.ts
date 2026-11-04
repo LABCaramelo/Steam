@@ -234,10 +234,15 @@ function reducer(state: State, action: Action): State {
         view: { kind: 'server', serverId: action.serverId },
         channelByServer: { ...state.channelByServer, [action.serverId]: action.channelId },
         voice: joins ? { serverId: action.serverId, channelId: action.channelId } : state.voice,
+        muted: (joins && action.channelId === 'ch-pair') ? true : state.muted,
       };
     }
     case 'joinVoice':
-      return { ...state, voice: { serverId: action.serverId, channelId: action.channelId } };
+      return {
+        ...state,
+        voice: { serverId: action.serverId, channelId: action.channelId },
+        muted: action.channelId === 'ch-pair' ? true : state.muted,
+      };
     case 'leaveVoice':
       return { ...state, voice: null };
     case 'send': {
@@ -295,6 +300,8 @@ function reducer(state: State, action: Action): State {
     case 'toggleVoiceChat':
       return { ...state, showVoiceChat: !state.showVoiceChat };
     case 'toggleMute':
+      // No Coworking Silencioso o microfone não pode ser desmutado
+      if (state.voice?.channelId === 'ch-pair') return { ...state, muted: true };
       // Reativar o microfone também reativa o áudio, como no Discord.
       return { ...state, muted: !state.muted, deafened: state.muted ? false : state.deafened };
     case 'toggleDeafen':
