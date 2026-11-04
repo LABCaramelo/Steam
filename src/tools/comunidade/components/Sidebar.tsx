@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import { ME, directMessages, users } from '../data';
 import {
-  ChevronDown,
   Close,
   Friends,
   Gear,
@@ -45,46 +44,31 @@ interface ServerSidebarProps {
 
 export function ServerSidebar({ server, state, voiceUi, dispatch }: ServerSidebarProps) {
   const activeChannel = state.channelByServer[server.id];
-  const connectedChannel = state.voice?.channelId;
+  const allChannels = server.categories.flatMap((c) => c.channels);
+
   return (
     <aside className="sidebar">
       <ServerHeader server={server} />
       <div className="sidebar-scroll">
-        {!server.categories.some((c) => c.channels.length) && (
-          <p className="sidebar-empty">Nenhum canal ainda. Use o menu do servidor para criar um.</p>
+        {!allChannels.length && (
+          <p className="sidebar-empty">Nenhum canal ainda.</p>
         )}
-        {server.categories.map((cat) => {
-          const collapsed = !!state.collapsed[cat.id];
-          return (
-            <section key={cat.id} className="category">
-              <div className="category-header">
-                <button
-                  className={`category-toggle ${collapsed ? 'collapsed' : ''}`}
-                  onClick={() => dispatch({ type: 'toggleCategory', categoryId: cat.id })}
-                  aria-expanded={!collapsed}
-                >
-                  <ChevronDown size={12} />
-                  <span>{cat.name}</span>
-                </button>
-
-              </div>
-              {cat.channels
-                .filter((ch) => !collapsed || ch.id === activeChannel || ch.id === connectedChannel)
-                .map((ch) => (
-                  <div key={ch.id}>
-                    <button
-                      className={`channel ${ch.id === activeChannel ? 'active' : ''} ${ch.kind}`}
-                      onClick={() => dispatch({ type: 'openChannel', serverId: server.id, channelId: ch.id })}
-                    >
-                      <ChannelIcon channel={ch} />
-                      <span className="channel-name">{ch.name}</span>
-                    </button>
-                    {ch.kind === 'voice' && <VoiceUserList channelId={ch.id} state={state} voiceUi={voiceUi} dispatch={dispatch} />}
-                  </div>
-                ))}
-            </section>
-          );
-        })}
+        <div className="channels-list">
+          {allChannels.map((ch) => (
+            <div key={ch.id} className="channel-item-wrapper">
+              <button
+                className={`channel ${ch.id === activeChannel ? 'active' : ''} ${ch.kind}`}
+                onClick={() => dispatch({ type: 'openChannel', serverId: server.id, channelId: ch.id })}
+              >
+                <ChannelIcon channel={ch} />
+                <span className="channel-name">{ch.name}</span>
+              </button>
+              {ch.kind === 'voice' && (
+                <VoiceUserList channelId={ch.id} state={state} voiceUi={voiceUi} dispatch={dispatch} />
+              )}
+            </div>
+          ))}
+        </div>
       </div>
       <VoiceConnectedPanel state={state} voiceUi={voiceUi} dispatch={dispatch} />
       <UserPanel state={state} dispatch={dispatch} />

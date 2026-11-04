@@ -166,12 +166,22 @@ function initialState(storageKey: string | null): State {
       const removedChannelNames = new Set(['regras', 'prompts-e-ia', 'design-e-motion', 'feedback']);
       let server = existing ?? primaryServer;
       if (server) {
+        const canonicalChannels = primaryServer.categories[0]?.channels ?? [];
+        const rawChannels = server.categories
+          .flatMap((c) => c.channels)
+          .filter((ch) => !removedChannelIds.has(ch.id) && !removedChannelNames.has(ch.name));
+        const customChannels = rawChannels.filter(
+          (ch) => !canonicalChannels.some((canon) => canon.id === ch.id)
+        );
         server = {
           ...server,
-          categories: server.categories.map((c) => ({
-            ...c,
-            channels: c.channels.filter((ch) => !removedChannelIds.has(ch.id) && !removedChannelNames.has(ch.name)),
-          })).filter((c) => c.channels.length > 0),
+          categories: [
+            {
+              id: 'c-main',
+              name: 'Canais',
+              channels: [...canonicalChannels, ...customChannels],
+            },
+          ],
         };
       }
       const savedChannel = parsed.channelByServer?.[server.id];

@@ -357,6 +357,18 @@ textarea {
   padding: 6px 6px 14px;
 }
 
+.channels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 4px;
+}
+
+.channel-item-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .category {
   margin-top: 12px;
 }

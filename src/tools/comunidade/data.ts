@@ -132,25 +132,13 @@ export const servers: Server[] = [
     ],
     categories: [
       {
-        id: 'c-info',
-        name: 'Informações',
+        id: 'c-main',
+        name: 'Canais',
         channels: [
           { id: 'ch-anuncios', name: 'anúncios', kind: 'announcement', topic: 'Novidades e atualizações do LAB.' },
-        ],
-      },
-      {
-        id: 'c-texto',
-        name: 'Canais de texto',
-        channels: [
           { id: 'ch-geral', name: 'geral', kind: 'text', topic: 'Papo livre sobre criação, inteligência artificial e design.' },
-        ],
-      },
-      {
-        id: 'c-voz',
-        name: 'Canais de voz',
-        channels: [
           { id: 'ch-lounge', name: 'Lounge Caramelo', kind: 'voice' },
-          { id: 'ch-pair', name: 'Coworking Silencioso', kind: 'voice' },
+          { id: 'ch-pair', name: 'Coworking Silencioso', kind: 'voice', topic: 'Espaço silencioso para foco mútuo e música. Microfones e webcams desativados.' },
         ],
       },
     ],
