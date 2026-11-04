@@ -115,6 +115,36 @@ export const WELCOME_TEMPLATES: WelcomeTemplate[] = [
       );
     },
   },
+  {
+    id: "mao-na-massa",
+    title: "Mão na Massa & Construção Prática",
+    format: (phone: string, name?: string) => {
+      const target = formatMention(phone, name);
+      return (
+        `Chegou na hora certa, ${target}! Boas-vindas ao *LAB Caramelo*! ⚡🛠️\n\n` +
+        `Aqui a gente valoriza quem testa, erra rápido e coloca ideia na rua. Nada de teoria vazia: é design, código, IA e direção criativa aplicados.\n\n` +
+        `Se liga no checklist de entrada:\n` +
+        `📖 *Dá uma conferida nas regras na descrição do grupo* para entender como funcionam as trocas e os links da comunidade.\n` +
+        `💬 *Conta pra turma quem é você:* se apresenta com seu nome, sua área e o que você tá criando ou querendo aprender por aqui!\n\n` +
+        `Bora colocar a mão na massa! 🚀`
+      );
+    },
+  },
+  {
+    id: "ecossistema-criativo",
+    title: "Ecossistema & Troca Real",
+    format: (phone: string, name?: string) => {
+      const target = formatMention(phone, name);
+      return (
+        `Muito bom ter você por aqui, ${target}! Seja bem-vindo(a) ao *LAB Caramelo*! 🐕💫\n\n` +
+        `Este é o nosso espaço de colaboração e estudo contínuo. Aqui se encontram mentes criativas que pensam diferente e executam com excelência.\n\n` +
+        `Dois toques essenciais pra começar:\n` +
+        `📌 *Leia com atenção as regras na descrição do grupo* (elas mantêm o nível de foco e respeito da galera lá no alto).\n` +
+        `🎙️ *Dê um olá e se apresente:* compartilha com a gente seu nome, de onde você fala e o que mais desperta sua curiosidade hoje!\n\n` +
+        `Aproveite cada troca! ☕🔥`
+      );
+    },
+  },
 ];
 
 let globalTemplateCounter = 0;
