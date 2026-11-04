@@ -9,7 +9,7 @@ import {
   useAttachmentUrl,
 } from '../attachments';
 import { ME, users } from '../data';
-import { Bell, Close, Emoji, FileIcon, Pin, Plus, Search, Threads, Trash } from '../icons';
+import { Close, Emoji, FileIcon, Pin, Plus, Search, Trash } from '../icons';
 import type { Action } from '../store';
 import type { Attachment, Message, User } from '../types';
 import { NavButton, SettingsContext } from '../ui';
@@ -38,7 +38,6 @@ export function Chat(p: Props) {
   const [query, setQuery] = useState('');
   const [jump, setJump] = useState<{ id: string; sequence: number } | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
-  const pinsRef = useRef<HTMLButtonElement>(null);
   const panelId = `chat-panel-${p.conversationId}`;
 
   useEffect(() => {
@@ -48,11 +47,9 @@ export function Chat(p: Props) {
   }, [p.conversationId]);
 
   const closePanel = () => {
-    const previous = panel;
     setPanel(null);
     setQuery('');
-    if (previous === 'pins') pinsRef.current?.focus();
-    else searchRef.current?.focus();
+    searchRef.current?.focus();
   };
   const normalizedQuery = normalizeSearch(query.trim());
   const panelMessages = p.messages.filter((message) => panel === 'pins'
@@ -79,23 +76,7 @@ export function Chat(p: Props) {
           </>
         )}
         <div className="chat-header-tools">
-          <button className="optional" title="Threads" aria-label="Threads">
-            <Threads size={24} />
-          </button>
-          <button className="optional" title="Notificações" aria-label="Notificações">
-            <Bell size={24} />
-          </button>
-          <button
-            ref={pinsRef}
-            className={`chat-pins-toggle ${panel === 'pins' ? 'on' : ''}`}
-            title="Mensagens fixadas"
-            aria-label="Mensagens fixadas"
-            aria-expanded={panel === 'pins'}
-            aria-controls={panel === 'pins' ? panelId : undefined}
-            onClick={() => setPanel((current) => current === 'pins' ? null : 'pins')}
-          >
-            <Pin size={24} />
-          </button>
+          
           <label className="header-search chat-local-search">
             <input
               ref={searchRef}
