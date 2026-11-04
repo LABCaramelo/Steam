@@ -162,18 +162,20 @@ function initialState(storageKey: string | null): State {
     if (saved) {
       const parsed = JSON.parse(saved) as Partial<State>;
       const existing = parsed.servers?.find((s) => s.id === primaryServer.id);
+      const removedChannelIds = new Set(['ch-regras', 'ch-frontend', 'ch-backend', 'ch-memes']);
+      const removedChannelNames = new Set(['regras', 'prompts-e-ia', 'design-e-motion', 'feedback']);
       let server = existing ?? primaryServer;
       if (server) {
         server = {
           ...server,
           categories: server.categories.map((c) => ({
             ...c,
-            channels: c.channels.filter((ch) => ch.id !== 'ch-regras' && ch.name !== 'regras'),
+            channels: c.channels.filter((ch) => !removedChannelIds.has(ch.id) && !removedChannelNames.has(ch.name)),
           })).filter((c) => c.channels.length > 0),
         };
       }
       const savedChannel = parsed.channelByServer?.[server.id];
-      const initialChannel = (savedChannel && savedChannel !== 'ch-regras')
+      const initialChannel = (savedChannel && !removedChannelIds.has(savedChannel))
         ? savedChannel
         : firstChannel(server)!;
       return {

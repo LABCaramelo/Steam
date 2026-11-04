@@ -143,9 +143,6 @@ export const servers: Server[] = [
         name: 'Canais de texto',
         channels: [
           { id: 'ch-geral', name: 'geral', kind: 'text', topic: 'Papo livre sobre criação, inteligência artificial e design.' },
-          { id: 'ch-frontend', name: 'prompts-e-ia', kind: 'text', topic: 'Compartilhe prompts, imagens e ideias geradas.' },
-          { id: 'ch-backend', name: 'design-e-motion', kind: 'text', topic: 'Interfaces, tipografia, animação e referências visuais.' },
-          { id: 'ch-memes', name: 'feedback', kind: 'text', topic: 'Mostre seu trabalho e receba feedback da comunidade.' },
         ],
       },
       {
@@ -176,10 +173,6 @@ export const seedMessages: Record<string, Message[]> = {
     { id: 'm5', authorId: 'u-bot', content: 'GG @Bruno, você subiu para o nível 12!', timestamp: t(94) },
     { id: 'm6', authorId: 'u-carla', content: 'Lembrando: sem spam no #geral, usem o #memes.', timestamp: t(30) },
     { id: 'm7', authorId: 'u-me', content: 'A nova Comunidade do LAB integrada ficou sensacional! As salas de voz e os canais de texto estão voando 🚀', timestamp: t(4) },
-  ],
-  'ch-frontend': [
-    { id: 'f1', authorId: 'u-diego', content: 'Alguém tem uma dica boa de CSS para layout de 4 colunas?', timestamp: t(300) },
-    { id: 'f2', authorId: 'u-me', content: 'Flexbox resolve: colunas fixas e a do meio com flex: 1.', timestamp: t(298) },
   ],
   'dm-ana': [
     { id: 'd1', authorId: 'u-ana', content: 'Oi! Viu o que eu mandei no servidor?', timestamp: t(20) },
