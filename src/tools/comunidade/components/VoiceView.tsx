@@ -20,6 +20,13 @@ import { NavButton } from '../ui';
 import { Avatar } from './Avatar';
 import { Conversation } from './Chat';
 import { MusicStation } from './MusicStation';
+import {
+  loadPlaylist,
+  parseMusicUrl,
+  resolveTrackMetadata,
+  savePlaylist,
+  type PlaylistItem,
+} from '../music';
 
 interface Props {
   serverId: string;
@@ -101,16 +108,16 @@ export function VoiceView({ serverId, channel, state, session, occupancy, unread
         )}
       </section>
 
-      {showChat && (
-        <VoiceChat
-          channel={channel}
-          messages={messages}
-          canSend={connected && session.status === 'connected'}
-          session={session}
-          onClose={() => dispatch({ type: 'toggleVoiceChat' })}
-          dispatch={dispatch}
-        />
-      )}
+      <VoiceChat
+        channel={channel}
+        messages={messages}
+        canSend={connected && session.status === 'connected'}
+        session={session}
+        state={state}
+        visible={showChat}
+        onClose={() => dispatch({ type: 'toggleVoiceChat' })}
+        dispatch={dispatch}
+      />
     </main>
   );
 }
@@ -171,6 +178,8 @@ function VoiceChat({
   messages,
   canSend,
   session,
+  state,
+  visible = true,
   onClose,
   dispatch,
 }: {
@@ -178,11 +187,19 @@ function VoiceChat({
   messages: Message[];
   canSend: boolean;
   session: VoiceSession;
+  state: State;
+  visible?: boolean;
   onClose: () => void;
   dispatch: (a: Action) => void;
 }) {
+  const isSilentChannel = channel.id === 'ch-pair' || channel.name.toLowerCase().includes('coworking');
+
   return (
-    <aside className="voice-chat" aria-label={`Chat de ${channel.name}`}>
+    <aside
+      className={`voice-chat ${visible ? 'is-visible' : 'is-hidden'} ${isSilentChannel ? 'silent-channel-chat' : ''}`}
+      aria-label={`Chat de ${channel.name}`}
+      aria-hidden={!visible}
+    >
       <header className="voice-chat-header">
         <Speaker size={20} />
         <h2>{channel.name}</h2>
@@ -190,6 +207,18 @@ function VoiceChat({
           <Close size={20} />
         </button>
       </header>
+
+      {isSilentChannel && (
+        <div className="voice-chat-music-section">
+          <MusicStation
+            channelId={channel.id}
+            session={session}
+            userName={state.profile.name || 'Membro do LAB'}
+            layout="chat"
+          />
+        </div>
+      )}
+
       <Conversation
         conversationId={channel.id}
         title={channel.name}
@@ -199,13 +228,52 @@ function VoiceChat({
               <Speaker size={36} />
             </div>
             <h2>Bem-vindo(a) a {channel.name}!</h2>
-            <p>As mensagens deste chat chegam a todos que estão na sala de voz.</p>
+            <p>
+              {isSilentChannel
+                ? 'Espaço silencioso para foco mútuo. Adicione faixas pelo player acima ou cole links do YouTube/Spotify diretamente neste chat.'
+                : 'As mensagens deste chat chegam a todos que estão na sala de voz.'}
+            </p>
           </>
         }
         messages={messages}
         placeholder={canSend ? `Conversar em ${channel.name}` : 'Entre na sala de voz para conversar'}
         disabled={!canSend}
-        onSend={session.sendChat}
+        onSend={async (content, files) => {
+          if (isSilentChannel && content) {
+            const music = parseMusicUrl(content);
+            if (music) {
+              try {
+                const meta = await resolveTrackMetadata(music);
+                const current = loadPlaylist(channel.id);
+                const newItem: PlaylistItem = {
+                  id: `track-${crypto.randomUUID().slice(0, 8)}`,
+                  source: music.source,
+                  type: music.type,
+                  url: content.trim(),
+                  embedUrl: music.embedUrl,
+                  title: meta.title,
+                  artist: meta.artist,
+                  thumbnailUrl: meta.thumbnailUrl,
+                  addedBy: state.profile.name || 'Membro do LAB',
+                  addedAt: Date.now(),
+                };
+                const updated = [...current, newItem];
+                savePlaylist(channel.id, updated);
+                if (session.sendMusicPacket) {
+                  void session.sendMusicPacket({
+                    type: 'music:sync',
+                    playlist: updated,
+                    currentIndex: updated.length - 1,
+                    isPlaying: true,
+                  });
+                }
+              } catch (err) {
+                console.error('Erro ao resolver link musical no chat:', err);
+              }
+            }
+          }
+          await session.sendChat(content, files);
+        }}
         onDelete={canSend ? session.deleteChat : undefined}
         onSelectUser={(u) => dispatch({ type: 'openModal', modal: { kind: 'userProfile', user: u } })}
       />
@@ -285,61 +353,50 @@ function Call({
         </div>
       ) : isSilentChannel ? (
         <div className="coworking-stage-layout">
+          <div className="coworking-stage-header-bar">
+            <div className="coworking-header-tag">
+              <span className="live-dot" />
+              <strong>COWORKING SILENCIOSO</strong>
+              <span className="sep">•</span>
+              <span>SOMENTE MÚSICA & TELA</span>
+            </div>
+            <p className="coworking-header-desc">
+              Microfone e webcam desativados. Compartilhamento de tela liberado. O controle de música e a playlist estão no chat ao lado 👉
+            </p>
+          </div>
+
           {focused ? (
-            <>
-              <MusicStation
-                channelId={channel.id}
-                session={session}
-                userName={state.profile.name || 'Membro do LAB'}
-                isFocusMode={true}
-              />
-              <div className="voice-focus">
-                <div className="voice-focus-main">
-                  <CallTile
-                    tile={focused}
-                    mode="focus"
-                    fullscreen={fullscreen.active}
-                    onGrid={() => setFocusedKey(null)}
-                    onFullscreen={fullscreenFor(focused.key)}
-                  />
-                </div>
-                <div className="voice-strip">
-                  {tiles
-                    .filter((t) => t !== focused)
-                    .map((t) => (
-                      <CallTile key={t.key} tile={t} mode="strip" onFocus={() => setFocusedKey(t.key)} />
-                    ))}
-                </div>
+            <div className="voice-focus">
+              <div className="voice-focus-main">
+                <CallTile
+                  tile={focused}
+                  mode="focus"
+                  fullscreen={fullscreen.active}
+                  onGrid={() => setFocusedKey(null)}
+                  onFullscreen={fullscreenFor(focused.key)}
+                />
               </div>
-            </>
+              <div className="voice-strip">
+                {tiles
+                  .filter((t) => t !== focused)
+                  .map((t) => (
+                    <CallTile key={t.key} tile={t} mode="strip" onFocus={() => setFocusedKey(t.key)} />
+                  ))}
+              </div>
+            </div>
           ) : (
-            <div className="coworking-stage-content">
-              <MusicStation
-                channelId={channel.id}
-                session={session}
-                userName={state.profile.name || 'Membro do LAB'}
-                isFocusMode={false}
-              />
-              {tiles.length > 0 && (
-                <div className="coworking-tiles-section">
-                  <div className="coworking-tiles-header">
-                    <h4>Pessoas conectadas ({tiles.length})</h4>
-                  </div>
-                  <div className="voice-grid coworking-grid" ref={gridRef}>
-                    {tiles.map((t) => (
-                      <CallTile
-                        key={t.key}
-                        tile={t}
-                        mode="grid"
-                        style={{ width: tileWidth }}
-                        fullscreen={fullscreen.active}
-                        onFocus={() => setFocusedKey(t.key)}
-                        onFullscreen={fullscreenFor(t.key)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+            <div className="voice-grid coworking-grid" ref={gridRef}>
+              {tiles.map((t) => (
+                <CallTile
+                  key={t.key}
+                  tile={t}
+                  mode="grid"
+                  style={{ width: tileWidth }}
+                  fullscreen={fullscreen.active}
+                  onFocus={() => setFocusedKey(t.key)}
+                  onFullscreen={fullscreenFor(t.key)}
+                />
+              ))}
             </div>
           )}
         </div>

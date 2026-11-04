@@ -26,6 +26,7 @@ interface Props {
   userName?: string;
   members?: VoiceMember[];
   isFocusMode?: boolean;
+  layout?: 'stage' | 'chat';
 }
 
 export function MusicStation({
@@ -33,6 +34,7 @@ export function MusicStation({
   session,
   userName = 'Membro do LAB',
   isFocusMode = false,
+  layout = 'chat',
 }: Props) {
   const [playlist, setPlaylist] = useState<PlaylistItem[]>(() => loadPlaylist(channelId));
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -41,7 +43,7 @@ export function MusicStation({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [showQueue, setShowQueue] = useState(true);
+  const [showQueue, setShowQueue] = useState(layout !== 'chat');
 
   const playlistRef = useRef(playlist);
   playlistRef.current = playlist;
@@ -206,6 +208,190 @@ export function MusicStation({
             <SkipForward size={18} />
           </button>
         </div>
+      </div>
+    );
+  }
+
+  // Layout compacto quando renderizado dentro do chat da sala de voz
+  if (layout === 'chat') {
+    return (
+      <div className="music-station-chat" aria-label="Controle de música e playlist">
+        <div className="music-chat-header">
+          <div className="music-chat-source-tag">
+            {currentTrack.source === 'youtube' ? (
+              <span className="tag-youtube">
+                <YoutubeIcon size={13} /> YouTube
+              </span>
+            ) : (
+              <span className="tag-spotify">
+                <SpotifyIcon size={13} /> Spotify
+              </span>
+            )}
+            <span className="track-counter">
+              {currentIndex + 1}/{playlist.length}
+            </span>
+          </div>
+          {currentTrack.addedBy && (
+            <span className="added-by" title={`Adicionado por ${currentTrack.addedBy}`}>
+              por {currentTrack.addedBy}
+            </span>
+          )}
+        </div>
+
+        <div className="music-embed-wrapper music-embed-wrapper-chat">
+          {isPlaying ? (
+            <iframe
+              key={currentTrack.embedUrl}
+              src={currentTrack.embedUrl}
+              title={currentTrack.title}
+              className={`music-embed-iframe ${currentTrack.source === 'spotify' ? 'spotify-frame' : 'youtube-frame'}`}
+              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            />
+          ) : (
+            <div className="music-paused-placeholder music-paused-placeholder-chat">
+              <button
+                type="button"
+                className="resume-play-btn"
+                onClick={() => broadcastUpdate(playlist, currentIndex, true)}
+              >
+                <Play size={24} />
+                <span>Retomar Música</span>
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="music-player-controls-bar music-chat-controls-bar">
+          <div className="track-titles">
+            <h4 className="track-title" title={currentTrack.title}>
+              {currentTrack.title}
+            </h4>
+            {currentTrack.artist && (
+              <p className="track-artist">{currentTrack.artist}</p>
+            )}
+          </div>
+
+          <div className="playback-buttons">
+            <button
+              type="button"
+              className="control-btn"
+              onClick={handlePrev}
+              title="Faixa anterior"
+              aria-label="Faixa anterior"
+            >
+              <SkipBack size={15} />
+            </button>
+            <button
+              type="button"
+              className="control-btn primary-play"
+              onClick={() => broadcastUpdate(playlist, currentIndex, !isPlaying)}
+              title={isPlaying ? 'Pausar' : 'Tocar'}
+              aria-label={isPlaying ? 'Pausar' : 'Tocar'}
+            >
+              {isPlaying ? <Pause size={17} /> : <Play size={17} />}
+            </button>
+            <button
+              type="button"
+              className="control-btn"
+              onClick={handleNext}
+              title="Próxima faixa"
+              aria-label="Próxima faixa"
+            >
+              <SkipForward size={15} />
+            </button>
+          </div>
+        </div>
+
+        {/* Adicionar música na playlist */}
+        <form className="add-track-form add-track-form-chat" onSubmit={handleAddTrack}>
+          <div className="add-input-wrapper">
+            <input
+              type="url"
+              value={urlInput}
+              onChange={(e) => setUrlInput(e.target.value)}
+              placeholder="Cole link do YouTube ou Spotify..."
+              className="add-track-input"
+              disabled={isSubmitting}
+              required
+            />
+            <button
+              type="submit"
+              className="add-track-btn"
+              disabled={isSubmitting || !urlInput.trim()}
+              title="Adicionar à playlist"
+            >
+              <Plus size={14} />
+              <span>{isSubmitting ? '…' : 'Adicionar'}</span>
+            </button>
+          </div>
+          {errorMessage && <p className="music-form-error">{errorMessage}</p>}
+          {successMessage && <p className="music-form-success">{successMessage}</p>}
+        </form>
+
+        {/* Fila / Drawer da Playlist */}
+        <div className="playlist-chat-toggle-row">
+          <button
+            type="button"
+            className="toggle-queue-btn-chat"
+            onClick={() => setShowQueue(!showQueue)}
+          >
+            <span>Playlist Colaborativa ({playlist.length})</span>
+            <span>{showQueue ? '▲ Ocultar fila' : '▼ Ver fila'}</span>
+          </button>
+        </div>
+
+        {showQueue && (
+          <div className="playlist-queue-list playlist-queue-list-chat" role="list">
+            {playlist.map((item, idx) => {
+              const isCurrent = idx === currentIndex;
+              return (
+                <div
+                  key={item.id}
+                  className={`queue-item ${isCurrent ? 'active' : ''}`}
+                  onClick={() => handleSelectTrack(idx)}
+                  role="button"
+                  tabIndex={0}
+                  title={`Tocar ${item.title}`}
+                >
+                  <div className="queue-item-left">
+                    <span className="queue-index">
+                      {isCurrent && isPlaying ? (
+                        <span className="soundwave-anim">▶</span>
+                      ) : (
+                        idx + 1
+                      )}
+                    </span>
+                    <span className="queue-source-icon">
+                      {item.source === 'youtube' ? (
+                        <YoutubeIcon size={14} />
+                      ) : (
+                        <SpotifyIcon size={14} />
+                      )}
+                    </span>
+                    <div className="queue-track-info">
+                      <strong className="queue-title">{item.title}</strong>
+                      <span className="queue-artist">
+                        {item.artist || (item.source === 'youtube' ? 'YouTube' : 'Spotify')}
+                        {item.addedBy && ` • ${item.addedBy}`}
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="queue-remove-btn"
+                    onClick={(e) => handleRemoveTrack(item.id, e)}
+                    title="Remover da playlist"
+                    aria-label={`Remover ${item.title}`}
+                  >
+                    <Trash size={14} />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   }
