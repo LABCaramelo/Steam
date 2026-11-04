@@ -48,7 +48,7 @@ async function call(handler: Handler, url: string, responses: MockResponse[], op
 
 test("anonymous requests never reach prompt data, LiveKit or R2", async () => {
   for (const [handler, url, method] of [
-    [promptLibrary, "/api/prompt-library", "GET"], [livekit, "/api/livekit?action=rooms", "GET"],
+    [promptLibrary, "/api/prompt-library?slug=motion-frame", "GET"], [livekit, "/api/livekit?action=rooms", "GET"],
     [livekit, "/api/livekit?action=token", "POST"], [upload, "/api/upload", "POST"],
   ] as [Handler, string, string][]) {
     const result = await call(handler, url, [], { token: null, method });
@@ -59,7 +59,7 @@ test("anonymous requests never reach prompt data, LiveKit or R2", async () => {
 
 test("invalid or expired credentials stop every protected API before its provider", async () => {
   for (const [handler, url, method] of [
-    [promptLibrary, "/api/prompt-library", "GET"], [livekit, "/api/livekit?action=token", "POST"], [upload, "/api/upload", "POST"],
+    [promptLibrary, "/api/prompt-library?slug=motion-frame", "GET"], [livekit, "/api/livekit?action=token", "POST"], [upload, "/api/upload", "POST"],
   ] as [Handler, string, string][]) {
     const result = await call(handler, url, [{ status: 401 }], { method });
     assert.equal(result.status, 401);
@@ -70,7 +70,7 @@ test("invalid or expired credentials stop every protected API before its provide
 
 test("anonymous Supabase accounts cannot use protected APIs even with a valid Auth response", async () => {
   for (const [handler, url, method] of [
-    [promptLibrary, "/api/prompt-library", "GET"], [livekit, "/api/livekit?action=rooms", "GET"],
+    [promptLibrary, "/api/prompt-library?slug=motion-frame", "GET"], [livekit, "/api/livekit?action=rooms", "GET"],
     [livekit, "/api/livekit?action=token", "POST"], [upload, "/api/upload", "POST"],
   ] as [Handler, string, string][]) {
     const result = await call(handler, url, [{ body: { ...USER, is_anonymous: true } }], { method });

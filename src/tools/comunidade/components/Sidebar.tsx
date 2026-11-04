@@ -132,7 +132,10 @@ function ServerMenu({ server, dispatch }: { server: Server; dispatch: (a: Action
         aria-haspopup="menu"
         aria-expanded={open}
       >
-        <span>{server.name}</span>
+        <span className="server-header-title">
+          <span>{server.name}</span>
+          <span className="comunidade-beta-badge">BETA</span>
+        </span>
         {open ? <Close size={18} /> : <ChevronDown size={18} />}
       </button>
       {open && (

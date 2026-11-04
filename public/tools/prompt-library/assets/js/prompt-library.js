@@ -3,7 +3,7 @@
   const $ = id => document.getElementById(id);
   const parentOrigin = new URL(document.baseURI).origin;
   const pageUrl = new URL(document.querySelector('meta[name="lab-page-url"]')?.content || document.baseURI);
-  const account = document.querySelector('meta[name="lab-account"]')?.content;
+  const account = document.querySelector('meta[name="lab-account"]')?.content || '';
   const favoritesKey = account ? `lab:tool:prompt-library:${encodeURIComponent(account)}:favorites` : null;
   const requests = new Map();
   let markReady;
@@ -99,15 +99,21 @@
     return true;
   }
   async function getJson(url) {
-    if (parent === window || !account) throw Error('Entre no LAB para acessar a biblioteca.');
+    if (parent === window) throw Error('Entre no LAB para acessar a biblioteca.');
     const target = new URL(url, document.baseURI);
     if (target.origin !== parentOrigin || target.pathname !== '/api/prompt-library') throw Error('Requisição inválida.');
+    const slug = target.searchParams.get('slug');
+    if (!account && slug) {
+      const error = Error('Faça login no LAB para ver ou copiar este prompt.');
+      error.code = 'AUTH_REQUIRED';
+      throw error;
+    }
     await Promise.race([ready, new Promise((_, reject) => setTimeout(() => reject(Error('Acesso indisponível. Reabra pelo LAB.')), 30000))]);
     return new Promise((resolve, reject) => {
       const id = crypto.randomUUID();
       const timeout = setTimeout(() => { requests.delete(id); reject(Error('A consulta demorou demais. Tente novamente.')); }, 30000);
       requests.set(id, { resolve, reject, timeout });
-      parent.postMessage({ type: 'lab:prompts:request', id, slug: target.searchParams.get('slug') }, parentOrigin);
+      parent.postMessage({ type: 'lab:prompts:request', id, slug }, parentOrigin);
     });
   }
   function getPrompt(item) {
@@ -192,6 +198,11 @@
     const copyLabel = node('span', 'copy-label', 'Copiar prompt');
     copyLabel.dataset.cmCopyLabel = '';
     const copy = button('button secondary card-copy cm-copy cm-copy--labeled', '', async () => {
+      if (!account) {
+        openPrompt(item);
+        notify('Faça login no LAB para copiar o prompt.');
+        return;
+      }
       copy.disabled = true;
       copyLabel.textContent = 'Carregando…';
       let copied = false;
@@ -236,10 +247,21 @@
     const item = selected;
     const version = ++detailVersion;
     $('dialogPrompt').textContent = '';
+    $('dialogPrompt').hidden = false;
+    const authGate = $('dialogAuthGate');
+    if (authGate) authGate.hidden = true;
     $('copyDialogPrompt').disabled = true;
     $('promptStatus').hidden = false;
     $('promptStatus').textContent = 'Carregando o texto do prompt…';
     $('retryPrompt').hidden = true;
+
+    if (!account) {
+      $('dialogPrompt').hidden = true;
+      $('promptStatus').hidden = true;
+      if (authGate) authGate.hidden = false;
+      return;
+    }
+
     try {
       const text = await getPrompt(item);
       if (version !== detailVersion || !$('promptDialog').open) return;
@@ -248,9 +270,15 @@
       $('copyDialogPrompt').disabled = false;
     } catch (error) {
       if (version !== detailVersion || !$('promptDialog').open) return;
-      $('promptStatus').textContent = error.code === 'TEXT_SERVICE_UNAVAILABLE'
-        ? error.message : 'Não foi possível carregar este prompt. Tente novamente.';
-      $('retryPrompt').hidden = false;
+      if (error.code === 'AUTH_REQUIRED') {
+        $('dialogPrompt').hidden = true;
+        $('promptStatus').hidden = true;
+        if (authGate) authGate.hidden = false;
+      } else {
+        $('promptStatus').textContent = error.code === 'TEXT_SERVICE_UNAVAILABLE'
+          ? error.message : 'Não foi possível carregar este prompt. Tente novamente.';
+        $('retryPrompt').hidden = false;
+      }
     }
   }
   function openPrompt(item) {
@@ -335,6 +363,9 @@
     detailVersion++;
     selected = null;
     $('dialogPrompt').textContent = '';
+    $('dialogPrompt').hidden = false;
+    const authGate = $('dialogAuthGate');
+    if (authGate) authGate.hidden = true;
     selectPrompt(null);
   }
   function closePrompt() {
@@ -360,7 +391,13 @@
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   });
   const markCopied = element => copied => { if (copied) window.CarameloInteractions?.markCopied(element); };
-  $('copyDialogPrompt').addEventListener('click', () => copyText($('dialogPrompt').textContent, 'Prompt copiado. Agora é fazer do seu jeito.').then(markCopied($('copyDialogPrompt'))));
+  $('copyDialogPrompt').addEventListener('click', () => {
+    if (!account) {
+      notify('Faça login no LAB para copiar o prompt.');
+      return;
+    }
+    copyText($('dialogPrompt').textContent, 'Prompt copiado. Agora é fazer do seu jeito.').then(markCopied($('copyDialogPrompt')));
+  });
   $('sharePrompt').addEventListener('click', () => {
     if (!selected) return;
     const url = new URL('/tools/prompt-library', parentOrigin);

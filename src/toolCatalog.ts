@@ -159,13 +159,14 @@ export const ACADEMY_APP = tool(ACADEMY_APP_ID, "Academy", {
 
 export const COMUNIDADE_APP = tool(COMUNIDADE_APP_ID, "Comunidade", {
   slug: "comunidade",
+  stage: "beta",
   launchPath: `/library/app/${COMUNIDADE_APP_ID}/open`,
   publicPage: "/tools/comunidade",
   description: "Canais de texto, voz em tempo real, compartilhamento de tela e conexão direta entre membros do LAB.",
   assets: art("/tools/comunidade/art"),
   store: {
     tagline: "Canais de texto e salas de voz em tempo real.",
-    eyebrow: "CONEXÃO / COMUNIDADE EM TEMPO REAL",
+    eyebrow: "CONEXÃO / COMUNIDADE EM TEMPO REAL / BETA",
     headline: "Voz, canais\ne conexões.",
     features: [
       { title: "Salas de voz de verdade", text: "Converse em tempo real via WebRTC, compartilhe a tela e transmita vídeo com quem estiver no LAB." },
@@ -174,7 +175,7 @@ export const COMUNIDADE_APP = tool(COMUNIDADE_APP_ID, "Comunidade", {
       { title: "Navegação rápida", text: "Atalho Ctrl+K para pular direto entre canais, servidores e conversas sem tirar a mão do teclado." },
     ],
     steps: ["Adquira a Comunidade na Loja e abra pelo LAB.", "Explore os canais de texto e conecte-se aos membros.", "Entre num canal de voz para trocar ideias e compartilhar a tela."],
-    about: [["Formato", "Canais de texto e voz"], ["Áudio e vídeo", "WebRTC em tempo real"], ["Navegação", "Atalho Ctrl+K"]],
+    about: [["Formato", "Canais de texto e voz"], ["Versão", "Beta"], ["Áudio e vídeo", "WebRTC em tempo real"], ["Navegação", "Atalho Ctrl+K"]],
     dataNote: "Canais de voz e vídeo conectam em tempo real. Suas mensagens e preferências locais ficam no seu navegador.",
     category: "Comunicação",
   },

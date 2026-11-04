@@ -16,7 +16,7 @@ test("prompt document escapes bootstrap values and keeps sharing on the protecte
   const result = buildPromptDocument('<head><script src="./assets/js/prompt-library.js"></script></head>', 'https://example.com/tools/prompt-library/index.html?embed=1&prompt=motion-frame', '"><script>bad</script>');
   assert.match(result, /<base href="https:\/\/example.com\/tools\/prompt-library\/">/);
   assert.match(result, /dataset.embedded='true'/);
-  assert.match(result, /lab-auth-2/);
+  assert.match(result, /lab-auth-3/);
   assert.doesNotMatch(result, /<script>bad/);
   assert.doesNotMatch(result, /access_token|refresh_token|Bearer/);
 });

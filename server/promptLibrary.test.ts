@@ -33,12 +33,12 @@ async function call(url: string, responses: MockResponse[] = [], method = "GET",
   }
 }
 
-test("prompt catalog requires a verified session and ownership and is never cached publicly", async () => {
-  const result = await call("/api/prompt-library");
+test("prompt catalog is publicly readable to allow browsing and is never cached publicly", async () => {
+  const result = await call("/api/prompt-library", [], "GET", null);
   assert.equal(result.status, 200);
   assert.deepEqual(result.body, catalog);
   assert.ok(catalog.items.length > 0);
-  assert.equal(result.calls.length, 2);
+  assert.equal(result.calls.length, 0);
   assert.equal(result.headers["Cache-Control"], "private, no-store");
   assert.equal(result.headers.Vary, "Authorization");
 });
@@ -91,18 +91,16 @@ test("upstream failures return a retryable error without leaking details", async
   assert.doesNotMatch(JSON.stringify(result.body), /private-value/);
 });
 
-test("anonymous and non-owning callers cannot read catalog or texts and never call the copy upstream", async () => {
-  for (const url of ["/api/prompt-library", `/api/prompt-library?slug=${catalog.items[0].slug}`]) {
-    const anonymous = await call(url, [], "GET", null);
-    assert.equal(anonymous.status, 401);
-    assert.equal(anonymous.calls.length, 0);
-    const nonOwner = await call(url, [], "GET", TOKEN, false);
-    assert.equal(nonOwner.status, 403);
-    assert.equal(nonOwner.calls.length, 2);
-    assert.ok(nonOwner.calls.every((c) => !c.url.includes("get_caramelo_prompt_copy")));
-  }
+test("anonymous and non-owning callers cannot read prompt texts and never call the copy upstream", async () => {
+  const url = `/api/prompt-library?slug=${catalog.items[0].slug}`;
+  const anonymous = await call(url, [], "GET", null);
+  assert.equal(anonymous.status, 401);
+  assert.equal(anonymous.calls.length, 0);
+  const nonOwner = await call(url, [], "GET", TOKEN, false);
+  assert.equal(nonOwner.status, 403);
+  assert.equal(nonOwner.calls.length, 2);
+  assert.ok(nonOwner.calls.every((c) => !c.url.includes("get_caramelo_prompt_copy")));
 });
-
 
 test("prompt catalog has no Movimentos de Câmera or camera-typed items", () => {
   const camItems = catalog.items.filter(
