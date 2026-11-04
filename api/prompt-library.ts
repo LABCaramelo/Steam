@@ -28,9 +28,10 @@ export async function promptLibrary(
   }
 
   try {
-    const access = await requireToolAccess(req, "prompt-library");
     const slug = new URL(req.url ?? "/", "https://library.invalid").searchParams.get("slug");
     if (slug === null) return reply(res, 200, catalog);
+
+    const access = await requireToolAccess(req, "prompt-library");
     if (!/^[a-z0-9][a-z0-9-]{0,179}$/.test(slug)) return reply(res, 400, { error: "Prompt inválido." });
     if (!catalog.items.some((item) => item.slug === slug)) return reply(res, 404, { error: "Prompt não encontrado ou indisponível." });
 

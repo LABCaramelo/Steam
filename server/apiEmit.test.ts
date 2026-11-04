@@ -39,7 +39,7 @@ test("compiled API entry points use emitted JavaScript dependencies and preserve
       setHeader(name: string, value: string) { headers.set(name, value); },
       end(value: string) { body = JSON.parse(value); },
     };
-    await promptLibrary({ method: "GET", url: "/api/prompt-library", headers: {} }, response);
+    await promptLibrary({ method: "GET", url: "/api/prompt-library?slug=motion-frame", headers: {} }, response);
     assert.equal(response.statusCode, 401);
     assert.equal((body as { code?: string }).code, "AUTH_REQUIRED");
     assert.equal(headers.get("Cache-Control"), "private, no-store");
