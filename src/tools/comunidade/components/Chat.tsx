@@ -772,10 +772,6 @@ function Composer({
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!blocked) ref.current?.focus();
-  }, [blocked]);
-
-  useEffect(() => {
     const el = ref.current;
     if (!el) return;
     el.style.height = 'auto';
