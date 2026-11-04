@@ -20,6 +20,7 @@ export interface VoiceMember {
   name: string;
   /** Cor escolhida no perfil de quem está na sala, se houver. */
   color?: string;
+  avatarUrl?: string;
   isLocal: boolean;
   speaking: boolean;
   micMuted: boolean;
@@ -75,8 +76,16 @@ export function colorFor(identity: string) {
   return PALETTE[h % PALETTE.length];
 }
 
-export function memberUser(m: { identity: string; name: string; color?: string; avatarUrl?: string }): User {
-  return { id: m.identity, name: m.name, color: m.color ?? colorFor(m.identity), avatarUrl: m.avatarUrl, status: 'online' };
+export function memberUser(m: { identity: string; name: string; color?: string; avatarUrl?: string; isLocal?: boolean }): User {
+  const me = users[ME];
+  const isMe = m.isLocal || m.identity === me?.id || m.identity === 'u-me';
+  return {
+    id: m.identity,
+    name: isMe ? (me?.name || m.name) : m.name,
+    color: m.color ?? (isMe ? me?.color : colorFor(m.identity)),
+    avatarUrl: (isMe ? (me?.avatarUrl || m.avatarUrl) : m.avatarUrl) ?? undefined,
+    status: 'online',
+  };
 }
 
 /** Sons curtos, sintetizados para não depender de arquivos de áudio. */
@@ -127,13 +136,18 @@ function publishedTrack(p: Participant, source: Track.Source) {
 
 function snapshot(room: Room): VoiceMember[] {
   const all: Participant[] = [room.localParticipant, ...room.remoteParticipants.values()];
+  const me = users[ME];
   return all.map((p) => {
+    const isLocal = p === room.localParticipant;
     const color = p.attributes?.color;
+    const attrAvatar = p.attributes?.avatarUrl;
+    const avatarUrl = isLocal ? (me?.avatarUrl || attrAvatar) : attrAvatar;
     return {
       identity: p.identity,
-      name: p.name || p.identity,
-      color: color && COLOR.test(color) ? color : undefined,
-      isLocal: p === room.localParticipant,
+      name: isLocal ? (me?.name || p.name || p.identity) : (p.name || p.identity),
+      color: isLocal ? (me?.color || (color && COLOR.test(color) ? color : undefined)) : (color && COLOR.test(color) ? color : undefined),
+      avatarUrl: avatarUrl && /^https?:\/\//i.test(avatarUrl) ? avatarUrl : undefined,
+      isLocal,
       speaking: p.isSpeaking,
       micMuted: !p.isMicrophoneEnabled,
       camera: publishedTrack(p, Track.Source.Camera),
@@ -411,7 +425,7 @@ export function useVoiceSession(
         const res = await fetch('/api/livekit?action=token', {
           method: 'POST',
           headers: { ...authorization, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ channelId, color: profile.color, name: profile.name, avatarUrl: profile.avatarUrl }),
+          body: JSON.stringify({ channelId, color: profile.color, name: profile.name, avatarUrl: profile.avatarUrl || users[ME]?.avatarUrl }),
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(errorMessage(res.status, data.error));

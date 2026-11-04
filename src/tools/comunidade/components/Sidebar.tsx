@@ -107,11 +107,12 @@ function VoiceUserList({ channelId, state, voiceUi, dispatch }: { channelId: str
   const { session, occupancy } = voiceUi;
   // No canal em que você está, a lista vem da própria chamada (ao vivo); nos outros, do servidor.
   const live = state.voice?.channelId === channelId && session.members.length > 0;
+  const me = users[ME];
   const people: VoiceMember[] = live
     ? session.members
     : (occupancy[channelId] ?? [])
-        .filter((p) => p.identity !== state.profile.id)
-        .map((p) => ({ ...p, isLocal: false, speaking: false, micMuted: false, camera: null, screen: null }));
+        .filter((p) => p.identity !== state.profile.id && p.identity !== me?.id)
+        .map((p) => ({ ...p, avatarUrl: p.avatarUrl, isLocal: false, speaking: false, micMuted: false, camera: null, screen: null }));
   if (!people.length) return null;
 
   return (
