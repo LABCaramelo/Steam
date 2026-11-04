@@ -135,7 +135,6 @@ export const servers: Server[] = [
         id: 'c-info',
         name: 'Informações',
         channels: [
-          { id: 'ch-regras', name: 'regras', kind: 'text', topic: 'Diretrizes da comunidade e boas práticas.' },
           { id: 'ch-anuncios', name: 'anúncios', kind: 'announcement', topic: 'Novidades e atualizações do LAB.' },
         ],
       },
@@ -177,9 +176,6 @@ export const seedMessages: Record<string, Message[]> = {
     { id: 'm5', authorId: 'u-bot', content: 'GG @Bruno, você subiu para o nível 12!', timestamp: t(94) },
     { id: 'm6', authorId: 'u-carla', content: 'Lembrando: sem spam no #geral, usem o #memes.', timestamp: t(30) },
     { id: 'm7', authorId: 'u-me', content: 'A nova Comunidade do LAB integrada ficou sensacional! As salas de voz e os canais de texto estão voando 🚀', timestamp: t(4) },
-  ],
-  'ch-regras': [
-    { id: 'r1', authorId: 'u-ana', content: '1. Respeite todo mundo.\n2. Nada de spam.\n3. Use o canal certo para cada assunto.', timestamp: t(60 * 24 * 30) },
   ],
   'ch-frontend': [
     { id: 'f1', authorId: 'u-diego', content: 'Alguém tem uma dica boa de CSS para layout de 4 colunas?', timestamp: t(300) },
