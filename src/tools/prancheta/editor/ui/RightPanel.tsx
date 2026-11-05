@@ -5,6 +5,7 @@ import { fitTextBox } from '../canvas/shapes';
 import { item, sep, type MenuEntry } from '../commands';
 import { WEIGHT_NAMES, ensureFontFace, fontDef } from '../fonts';
 import { FontPicker } from './FontPicker';
+import { EffectPicker, AddEffectMenu } from './EffectPicker';
 import { type ExportFormat, type ExportSetting, exportNodes, exportPrefs } from '../io/export';
 import { TYPE_LABELS, solid } from '../model/defaults';
 import { applyAutoLayout, getPage } from '../model/document';
@@ -957,24 +958,30 @@ function PaintsSection({ kind, nodes, ids }: { kind: 'fills' | 'strokes'; nodes:
   );
 }
 
-// ---------- efeitos ----------
+// ---------- efeitos (8 Modos Oficiais) ----------
 
-const EFFECT_LABELS: Record<EffectType, string> = {
-  DROP_SHADOW: 'Sombra projetada',
-  INNER_SHADOW: 'Sombra interna',
-  LAYER_BLUR: 'Desfoque de camada',
+const defaultEffect = (type: EffectType = 'DROP_SHADOW'): Effect => {
+  switch (type) {
+    case 'INNER_SHADOW':
+      return { type, visible: true, color: '#000000', opacity: 0.35, x: 0, y: 3, radius: 6, spread: 0 };
+    case 'DROP_SHADOW':
+      return { type, visible: true, color: '#000000', opacity: 0.25, x: 0, y: 6, radius: 12, spread: 0 };
+    case 'LAYER_BLUR':
+      return { type, visible: true, color: '#000000', opacity: 1, x: 0, y: 0, radius: 8, spread: 0 };
+    case 'BACKGROUND_BLUR':
+      return { type, visible: true, color: '#ffffff', opacity: 0.15, x: 0, y: 0, radius: 16, spread: 0 };
+    case 'NOISE':
+      return { type, visible: true, color: '#ffffff', opacity: 0.25, x: 0, y: 0, radius: 2, spread: 0 };
+    case 'TEXTURE':
+      return { type, visible: true, color: '#ffffff', opacity: 0.3, x: 0, y: 0, radius: 4, spread: 0 };
+    case 'GLASS':
+      return { type, visible: true, color: '#ffffff', opacity: 0.2, x: 0, y: 4, radius: 14, spread: 1 };
+    case 'SHADER':
+      return { type, visible: true, color: '#FF701A', opacity: 0.4, x: 0, y: 0, radius: 8, spread: 0 };
+    default:
+      return { type: 'DROP_SHADOW', visible: true, color: '#000000', opacity: 0.25, x: 0, y: 4, radius: 4, spread: 0 };
+  }
 };
-
-const defaultEffect = (type: EffectType = 'DROP_SHADOW'): Effect => ({
-  type,
-  visible: true,
-  color: '#000000',
-  opacity: 0.25,
-  x: 0,
-  y: type === 'LAYER_BLUR' ? 0 : 4,
-  radius: 4,
-  spread: 0,
-});
 
 function EffectsSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
   const [pop, setPop] = useState<{ index: number; rect: DOMRect } | null>(null);
@@ -989,9 +996,11 @@ function EffectsSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
     <Section
       title="Efeitos"
       actions={
-        <IconButton title="Adicionar efeito" onClick={() => editEffects((l) => (uniform ? [...l, defaultEffect()] : [defaultEffect()]))}>
-          <I.IconPlus />
-        </IconButton>
+        <AddEffectMenu onSelect={(t) => editEffects((l) => (uniform ? [...l, defaultEffect(t)] : [defaultEffect(t)]))}>
+          <IconButton title="Adicionar efeito" onClick={() => {}}>
+            <I.IconPlus />
+          </IconButton>
+        </AddEffectMenu>
       }
     >
       {effects === null ? (
@@ -1000,13 +1009,10 @@ function EffectsSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
         effects.map((e, i) => (
           <div key={i} className={'effect' + (e.visible ? '' : ' hidden')}>
             <div className="paint-row">
-              <select className="select grow" value={e.type} onChange={(ev) => set(i, { type: ev.target.value as EffectType })}>
-                {(Object.keys(EFFECT_LABELS) as EffectType[]).map((t) => (
-                  <option key={t} value={t}>
-                    {EFFECT_LABELS[t]}
-                  </option>
-                ))}
-              </select>
+              <EffectPicker
+                value={e.type}
+                onChange={(newType) => set(i, defaultEffect(newType))}
+              />
               <IconButton title={e.visible ? 'Ocultar' : 'Mostrar'} onClick={() => set(i, { visible: !e.visible })}>
                 {e.visible ? <I.IconEye /> : <I.IconEyeOff />}
               </IconButton>
@@ -1020,11 +1026,101 @@ function EffectsSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
                 <I.IconMinus />
               </IconButton>
             </div>
-            {e.type === 'LAYER_BLUR' ? (
+
+            {/* Controles para cada um dos 8 efeitos */}
+            {e.type === 'LAYER_BLUR' && (
               <div className="rp-grid">
-                <NumberField label="D" title="Desfoque" value={e.radius} min={0} onChange={(v, live) => set(i, { radius: v }, live)} />
+                <NumberField label="D" title="Desfoque (raio)" value={e.radius} min={0} onChange={(v, live) => set(i, { radius: v }, live)} />
               </div>
-            ) : (
+            )}
+
+            {e.type === 'BACKGROUND_BLUR' && (
+              <div className="rp-grid">
+                <NumberField label="D" title="Desfoque do fundo" value={e.radius} min={0} onChange={(v, live) => set(i, { radius: v }, live)} />
+                <NumberField
+                  label="Opac."
+                  title="Intensidade"
+                  value={e.opacity}
+                  displayScale={100}
+                  suffix="%"
+                  min={0}
+                  max={1}
+                  onChange={(v, live) => set(i, { opacity: v }, live)}
+                />
+              </div>
+            )}
+
+            {e.type === 'NOISE' && (
+              <div className="rp-grid">
+                <NumberField
+                  label="Ruído"
+                  title="Intensidade do ruído"
+                  value={e.opacity}
+                  displayScale={100}
+                  suffix="%"
+                  min={0}
+                  max={1}
+                  onChange={(v, live) => set(i, { opacity: v }, live)}
+                />
+                <NumberField label="Grão" title="Tamanho do grão" value={e.radius} min={1} max={10} onChange={(v, live) => set(i, { radius: v }, live)} />
+              </div>
+            )}
+
+            {e.type === 'TEXTURE' && (
+              <div className="rp-grid">
+                <NumberField label="Ponto" title="Escala da retícula" value={e.radius} min={1} max={20} onChange={(v, live) => set(i, { radius: v }, live)} />
+                <NumberField
+                  label="Opac."
+                  title="Opacidade da textura"
+                  value={e.opacity}
+                  displayScale={100}
+                  suffix="%"
+                  min={0}
+                  max={1}
+                  onChange={(v, live) => set(i, { opacity: v }, live)}
+                />
+              </div>
+            )}
+
+            {e.type === 'GLASS' && (
+              <>
+                <div className="rp-grid">
+                  <NumberField label="D" title="Desfoque de fundo" value={e.radius} min={0} onChange={(v, live) => set(i, { radius: v }, live)} />
+                  <NumberField label="Bisel" title="Reflexo da borda" value={e.spread} min={0} max={10} onChange={(v, live) => set(i, { spread: v }, live)} />
+                </div>
+                <div className="paint-row">
+                  <Swatch paint={solid(e.color, e.opacity)} onClick={(rect) => setPop(pop?.index === i ? null : { index: i, rect })} />
+                  <HexInput value={e.color} onCommit={(c) => set(i, { color: c })} />
+                  <NumberField
+                    className="paint-opacity"
+                    value={e.opacity}
+                    displayScale={100}
+                    suffix="%"
+                    min={0}
+                    max={1}
+                    onChange={(v, live) => set(i, { opacity: v }, live)}
+                  />
+                </div>
+              </>
+            )}
+
+            {e.type === 'SHADER' && (
+              <div className="rp-grid">
+                <NumberField label="Aura" title="Dispersão cromática" value={e.radius} min={1} max={30} onChange={(v, live) => set(i, { radius: v }, live)} />
+                <NumberField
+                  label="Opac."
+                  title="Opacidade do shader"
+                  value={e.opacity}
+                  displayScale={100}
+                  suffix="%"
+                  min={0}
+                  max={1}
+                  onChange={(v, live) => set(i, { opacity: v }, live)}
+                />
+              </div>
+            )}
+
+            {(e.type === 'DROP_SHADOW' || e.type === 'INNER_SHADOW') && (
               <>
                 <div className="rp-grid">
                   <NumberField label="X" value={e.x} onChange={(v, live) => set(i, { x: v }, live)} />
@@ -1057,7 +1153,7 @@ function EffectsSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
           anchor={pop.rect}
           paint={solid(effects[pop.index].color, effects[pop.index].opacity)}
           allowImage={false}
-          title="Cor da sombra"
+          title="Cor do efeito"
           docColors={docColors()}
           onClose={() => setPop(null)}
           onChange={(p, live) => p.type === 'SOLID' && set(pop.index, { color: p.color, opacity: p.opacity }, live)}

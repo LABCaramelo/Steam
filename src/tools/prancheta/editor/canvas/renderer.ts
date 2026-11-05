@@ -62,7 +62,11 @@ function drawNodeContents(ctx: CanvasRenderingContext2D, dc: DrawContext, n: Sce
   const blur = effects.find((e) => e.type === 'LAYER_BLUR');
   if (blur && blur.radius > 0) ctx.filter = `blur(${(blur.radius * dc.pxScale) / 2}px)`;
 
-  for (const e of effects) if (e.type === 'DROP_SHADOW') drawDropShadow(ctx, dc, n, path, e);
+  for (const e of effects) {
+    if (e.type === 'DROP_SHADOW') drawDropShadow(ctx, dc, n, path, e);
+    else if (e.type === 'GLASS') drawGlassBase(ctx, dc, n, path, e);
+    else if (e.type === 'BACKGROUND_BLUR') drawBackgroundBlurBase(ctx, dc, n, path, e);
+  }
 
   if (n.type === 'TEXT') {
     if (dc.skipTextId !== n.id) {
@@ -72,7 +76,13 @@ function drawNodeContents(ctx: CanvasRenderingContext2D, dc: DrawContext, n: Sce
     for (const f of n.fills) if (f.visible) paintFill(ctx, dc, n, path, f);
   }
 
-  for (const e of effects) if (e.type === 'INNER_SHADOW' && n.type !== 'TEXT') drawInnerShadow(ctx, dc, path, e);
+  for (const e of effects) {
+    if (e.type === 'INNER_SHADOW' && n.type !== 'TEXT') drawInnerShadow(ctx, dc, path, e);
+    else if (e.type === 'GLASS') drawGlassOverlay(ctx, dc, n, path, e);
+    else if (e.type === 'NOISE') drawNoiseOverlay(ctx, dc, path, e);
+    else if (e.type === 'TEXTURE') drawTextureOverlay(ctx, dc, path, e);
+    else if (e.type === 'SHADER') drawShaderOverlay(ctx, dc, n, path, e);
+  }
 
   if (n.type === 'FRAME' || n.type === 'COMPONENT') {
     ctx.save();
@@ -198,6 +208,133 @@ function drawDropShadow(ctx: CanvasRenderingContext2D, dc: DrawContext, n: Scene
       ctx.stroke(path);
     }
   }
+  ctx.restore();
+}
+
+
+// Cache de padrões procedurais de alta performance
+let noisePatternCache: CanvasPattern | null = null;
+function getNoisePattern(): CanvasPattern | null {
+  if (noisePatternCache) return noisePatternCache;
+  if (typeof document === 'undefined') return null;
+  const c = document.createElement('canvas');
+  c.width = 64;
+  c.height = 64;
+  const ctx = c.getContext('2d');
+  if (!ctx) return null;
+  const imgData = ctx.createImageData(64, 64);
+  const d = imgData.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const v = Math.random() * 255;
+    d[i] = v;
+    d[i + 1] = v;
+    d[i + 2] = v;
+    d[i + 3] = 45;
+  }
+  ctx.putImageData(imgData, 0, 0);
+  noisePatternCache = ctx.createPattern(c, 'repeat');
+  return noisePatternCache;
+}
+
+let texturePatternCache: CanvasPattern | null = null;
+function getTexturePattern(): CanvasPattern | null {
+  if (texturePatternCache) return texturePatternCache;
+  if (typeof document === 'undefined') return null;
+  const c = document.createElement('canvas');
+  c.width = 14;
+  c.height = 14;
+  const ctx = c.getContext('2d');
+  if (!ctx) return null;
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+  ctx.beginPath();
+  ctx.arc(7, 7, 2, 0, Math.PI * 2);
+  ctx.fill();
+  texturePatternCache = ctx.createPattern(c, 'repeat');
+  return texturePatternCache;
+}
+
+function drawBackgroundBlurBase(ctx: CanvasRenderingContext2D, _dc: DrawContext, _n: SceneNode, path: Path2D, e: Effect) {
+  ctx.save();
+  ctx.fillStyle = rgba(e.color || '#ffffff', Math.min(0.25, e.opacity || 0.1));
+  ctx.fill(path);
+  ctx.restore();
+}
+
+function drawGlassBase(ctx: CanvasRenderingContext2D, dc: DrawContext, _n: SceneNode, path: Path2D, e: Effect) {
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
+  ctx.shadowBlur = Math.max(6, (e.radius || 12) * dc.pxScale);
+  ctx.shadowOffsetY = Math.max(2, 4 * dc.pxScale);
+  ctx.fillStyle = rgba(e.color || '#ffffff', (e.opacity || 0.15) * 0.7);
+  ctx.fill(path);
+  ctx.restore();
+}
+
+function drawGlassOverlay(ctx: CanvasRenderingContext2D, dc: DrawContext, n: SceneNode, path: Path2D, _e: Effect) {
+  ctx.save();
+  ctx.clip(path);
+  const grad = ctx.createLinearGradient(0, 0, n.width, n.height);
+  grad.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
+  grad.addColorStop(0.3, 'rgba(255, 255, 255, 0.05)');
+  grad.addColorStop(0.7, 'rgba(255, 255, 255, 0.02)');
+  grad.addColorStop(1, 'rgba(255, 255, 255, 0.2)');
+  ctx.fillStyle = grad;
+  ctx.fill(path);
+
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+  ctx.lineWidth = Math.max(1, 1.25 * dc.pxScale);
+  ctx.stroke(path);
+  ctx.restore();
+}
+
+function drawNoiseOverlay(ctx: CanvasRenderingContext2D, _dc: DrawContext, path: Path2D, e: Effect) {
+  const pat = getNoisePattern();
+  if (!pat) return;
+  ctx.save();
+  ctx.clip(path);
+  ctx.globalCompositeOperation = 'overlay';
+  ctx.globalAlpha = Math.min(1, Math.max(0, e.opacity ?? 0.25));
+  ctx.fillStyle = pat;
+  ctx.fill(path);
+  ctx.restore();
+}
+
+function drawTextureOverlay(ctx: CanvasRenderingContext2D, _dc: DrawContext, path: Path2D, e: Effect) {
+  const pat = getTexturePattern();
+  if (!pat) return;
+  ctx.save();
+  ctx.clip(path);
+  ctx.globalCompositeOperation = 'soft-light';
+  ctx.globalAlpha = Math.min(1, Math.max(0, e.opacity ?? 0.35));
+  ctx.fillStyle = pat;
+  ctx.fill(path);
+  ctx.restore();
+}
+
+function drawShaderOverlay(ctx: CanvasRenderingContext2D, dc: DrawContext, n: SceneNode, path: Path2D, e: Effect) {
+  ctx.save();
+  const offset = Math.max(1.5, (e.radius || 6) * dc.pxScale * 0.4);
+  ctx.save();
+  ctx.translate(-offset, 0);
+  ctx.strokeStyle = 'rgba(37, 191, 255, 0.45)';
+  ctx.lineWidth = 2 * dc.pxScale;
+  ctx.stroke(path);
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(offset, 0);
+  ctx.strokeStyle = 'rgba(255, 61, 141, 0.45)';
+  ctx.lineWidth = 2 * dc.pxScale;
+  ctx.stroke(path);
+  ctx.restore();
+
+  ctx.clip(path);
+  const grad = ctx.createLinearGradient(0, 0, n.width, n.height);
+  grad.addColorStop(0, 'rgba(255, 112, 26, 0.2)');
+  grad.addColorStop(0.5, 'rgba(118, 87, 255, 0.2)');
+  grad.addColorStop(1, 'rgba(37, 191, 255, 0.2)');
+  ctx.fillStyle = grad;
+  ctx.fill(path);
   ctx.restore();
 }
 
