@@ -25,6 +25,7 @@ const query = new Proxy({}, { get(_target, method) {
 const mocks = new Map([
   [modulePath("editor/store/store.ts"), { store }],
   [modulePath("editor/io/persist.ts"), { compactDocument: (document) => structuredClone(document) }],
+  [modulePath("editor/io/export.ts"), { renderDocumentThumbnail: async () => null }],
   [path.resolve(root, "../../supabase.ts"), { supabase: query }],
 ]);
 

@@ -56,18 +56,30 @@ function prepareIds(doc: DocumentData, ids: string[]) {
   return sortByPaintOrder(doc, topLevelIds(doc, ids)).filter((id) => doc.nodes[id]);
 }
 
-export async function renderToCanvas(ids: string[], scale: number, background?: string): Promise<HTMLCanvasElement | null> {
-  const doc = store.state.doc;
+export async function renderToCanvas(
+  ids: string[],
+  scale: number,
+  background?: string,
+  docParam?: DocumentData,
+): Promise<HTMLCanvasElement | null> {
+  const doc = docParam ?? store.state.doc;
   ids = prepareIds(doc, ids);
   const b = exportBounds(doc, ids);
   if (!b) return null;
   await ensureImagesLoaded(doc, imageIdsOf(doc, ids));
-  await document.fonts.ready;
+  if (typeof document !== 'undefined' && document.fonts) {
+    try {
+      await document.fonts.ready;
+    } catch {
+      // ignorar se fonts.ready falhar
+    }
+  }
   const s = Math.min(scale, MAX_CANVAS / Math.max(b.width, 1), MAX_CANVAS / Math.max(b.height, 1));
   const canvas = document.createElement('canvas');
   canvas.width = Math.max(1, Math.ceil(b.width * s));
   canvas.height = Math.max(1, Math.ceil(b.height * s));
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
   if (background) {
     ctx.fillStyle = background;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -332,8 +344,8 @@ function childrenSvg(c: SvgCtx, n: SceneNode): string {
     .join('');
 }
 
-export function nodesToSvg(ids: string[]): string | null {
-  const doc = store.state.doc;
+export function nodesToSvg(ids: string[], docParam?: DocumentData): string | null {
+  const doc = docParam ?? store.state.doc;
   ids = prepareIds(doc, ids);
   const b = exportBounds(doc, ids);
   if (!b) return null;
@@ -352,12 +364,35 @@ export function nodesToSvg(ids: string[]): string | null {
 }
 
 /** Miniatura em data URL (usada na prévia do painel de exportação). */
-export async function thumbnail(ids: string[], maxSize = 200): Promise<string | null> {
-  const doc = store.state.doc;
+export async function thumbnail(ids: string[], maxSize = 200, docParam?: DocumentData): Promise<string | null> {
+  const doc = docParam ?? store.state.doc;
   const b = boundsOf(doc, ids);
   if (!b) return null;
   const s = Math.min(2, maxSize / Math.max(b.width, b.height, 1));
-  const canvas = await renderToCanvas(ids, s);
+  const canvas = await renderToCanvas(ids, s, undefined, doc);
   return canvas ? canvas.toDataURL('image/png') : null;
+}
+
+/** Gera a miniatura visual do projeto/documento para exibição no card de Meus Arquivos. */
+export async function renderDocumentThumbnail(doc: DocumentData, maxSize = 320): Promise<string | null> {
+  if (typeof document === 'undefined') return null;
+  const page = doc.pages[0];
+  if (!page || !page.children || !page.children.length) return null;
+  const ids = prepareIds(doc, page.children);
+  if (!ids.length) return null;
+  const b = boundsOf(doc, ids);
+  if (!b || b.width <= 0 || b.height <= 0) return null;
+
+  const s = Math.min(2, maxSize / Math.max(b.width, b.height, 1));
+  const canvas = await renderToCanvas(ids, s, page.background ?? undefined, doc);
+  if (!canvas) return null;
+
+  try {
+    const webp = canvas.toDataURL('image/webp', 0.85);
+    if (webp.startsWith('data:image/webp')) return webp;
+  } catch {
+    // fallback para PNG se webp falhar
+  }
+  return canvas.toDataURL('image/png');
 }
 

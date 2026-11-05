@@ -3,6 +3,7 @@ import { Isotype } from "@caramelo/design-system";
 import { Modal, Spinner, useTheme, useToast, useToolUser } from "../shared/kit";
 import { App as Editor } from "./editor/App";
 import { bindPersistence, compactDocument, normalizeDocument, saveLocalCopy } from "./editor/io/persist";
+import { renderDocumentThumbnail } from "./editor/io/export";
 import { createEmptyDocument } from "./editor/model/defaults";
 import { createSampleDocument } from "./editor/model/sample";
 import type { DocumentData } from "./editor/model/types";
@@ -51,6 +52,32 @@ function Workspace({ repo }: { repo: PranchetaRepo }) {
   const actions = useRef<{ create: () => void; import: (document: DocumentData) => Promise<void> }>({ create() {}, async import() {} });
 
   useEffect(() => { store.setTheme(theme); }, [theme]);
+
+  // Gera miniaturas em segundo plano para arquivos que ainda não possuem
+  useEffect(() => {
+    if (session || busy || loading || !files.length) return;
+    const pending = files.filter((f) => !f.thumbnail);
+    if (!pending.length) return;
+    let cancelled = false;
+    (async () => {
+      for (const item of pending) {
+        if (cancelled) break;
+        try {
+          const full = await repo.getFile(item.id);
+          if (cancelled) break;
+          const thumb = await renderDocumentThumbnail(full.document);
+          if (!thumb || cancelled) continue;
+          setFiles((curr) => curr.map((f) => (f.id === item.id ? { ...f, thumbnail: thumb } : f)));
+          if (repo.saveThumbnail) await repo.saveThumbnail(item.id, thumb);
+        } catch (err) {
+          console.warn("Falha ao gerar miniatura:", item.id, err);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [files, session, busy, loading, repo]);
 
   const install = useCallback((file: PranchetaFile) => {
     const document = compactDocument(normalizeDocument(file.document));
@@ -140,7 +167,13 @@ function Workspace({ repo }: { repo: PranchetaRepo }) {
 
   const create = (document = createEmptyDocument()) => run(async () => {
     const generation = epoch.current;
-    const file = await repo.createFile(compactDocument(document));
+    let thumb: string | null = null;
+    try {
+      thumb = await renderDocumentThumbnail(document);
+    } catch {
+      // continua mesmo se o thumbnail falhar
+    }
+    const file = await repo.createFile(compactDocument(document), thumb);
     if (!mounted.current || generation !== epoch.current) return;
     setFiles((list) => [file, ...list]);
     setError("");
@@ -168,7 +201,7 @@ function Workspace({ repo }: { repo: PranchetaRepo }) {
   });
   const duplicate = (file: PranchetaFileInfo) => run(async () => {
     const loaded = await repo.getFile(file.id);
-    const copy = await repo.createFile({ ...loaded.document, name: `${loaded.name.slice(0, 190)} — cópia` });
+    const copy = await repo.createFile({ ...loaded.document, name: `${loaded.name.slice(0, 190)} — cópia` }, file.thumbnail);
     if (mounted.current) { setFiles((list) => [copy, ...list]); toast("Cópia criada no LAB.", "success"); }
   });
   const preserveCopy = () => run(async () => {
@@ -221,7 +254,22 @@ function Workspace({ repo }: { repo: PranchetaRepo }) {
         </div>
         {loading ? <div className="pr-loading"><Spinner label="Carregando arquivos" />Carregando seus arquivos…</div> : error ? <div className="pr-error" role="alert"><p>{error}</p><button className="pr-btn" onClick={() => void refresh()}>Tentar novamente</button></div> : filtered.length ? <div className="pr-files">
           {filtered.map((file) => <article key={file.id} className="pr-file cm-surface cm-surface--spotlight">
-            <button className="pr-file__open" onClick={() => void open(file)} disabled={busy} aria-label={`Abrir ${file.name}`}><span className="pr-file__visual"><svg viewBox="0 0 160 110" width="160" aria-hidden="true"><rect x="18" y="12" width="124" height="86" rx="4" fill="none" stroke="currentColor" opacity=".25" /><rect x="32" y="29" width="52" height="32" rx="4" fill="currentColor" opacity=".2" /><circle cx="116" cy="43" r="14" fill="none" stroke="currentColor" /><path d="M32 73h72m-72 8h45" stroke="currentColor" opacity=".6" /></svg></span><h3>{file.name}</h3><span className="pr-file__meta">{updated(file.updated_at)} · {bytes(file.size_bytes)}</span></button>
+            <button className="pr-file__open" onClick={() => void open(file)} disabled={busy} aria-label={`Abrir ${file.name}`}>
+              <span className="pr-file__visual">
+                {file.thumbnail ? (
+                  <img src={file.thumbnail} alt="" className="pr-file__thumb" loading="lazy" />
+                ) : (
+                  <svg viewBox="0 0 160 110" width="160" aria-hidden="true">
+                    <rect x="18" y="12" width="124" height="86" rx="4" fill="none" stroke="currentColor" opacity=".25" />
+                    <rect x="32" y="29" width="52" height="32" rx="4" fill="currentColor" opacity=".2" />
+                    <circle cx="116" cy="43" r="14" fill="none" stroke="currentColor" />
+                    <path d="M32 73h72m-72 8h45" stroke="currentColor" opacity=".6" />
+                  </svg>
+                )}
+              </span>
+              <h3>{file.name}</h3>
+              <span className="pr-file__meta">{updated(file.updated_at)} · {bytes(file.size_bytes)}</span>
+            </button>
             <div className="pr-file__actions"><button className="pr-btn" disabled={busy} onClick={() => { setRenaming(file); setName(file.name); }}>Renomear</button><button className="pr-btn" disabled={busy} onClick={() => void duplicate(file)}>Duplicar</button><button className="pr-btn" disabled={busy} onClick={() => setDeleting(file)}>Excluir</button></div>
           </article>)}
         </div> : <div className="pr-empty"><h3>{query ? "Nenhum arquivo com esse nome." : "Seu próximo projeto começa aqui."}</h3><p>{query ? "Experimente outra busca." : "Crie um arquivo em branco ou explore o exemplo completo do editor."}</p></div>}

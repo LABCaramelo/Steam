@@ -247,9 +247,11 @@ create table if not exists public.prancheta_files (
   name text not null check (char_length(name) between 1 and 200),
   document jsonb not null check (jsonb_typeof(document) = 'object'),
   size_bytes integer not null default 0 check (size_bytes between 0 and 26214400),
+  thumbnail text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+alter table public.prancheta_files add column if not exists thumbnail text;
 create index if not exists prancheta_files_user_idx on public.prancheta_files (user_id, updated_at desc);
 drop trigger if exists prancheta_files_touch on public.prancheta_files;
 create trigger prancheta_files_touch before update on public.prancheta_files for each row execute function public.touch_updated_at();

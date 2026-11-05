@@ -5,6 +5,7 @@ export interface PranchetaFileInfo {
   id: string;
   name: string;
   size_bytes: number;
+  thumbnail?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -12,8 +13,9 @@ export interface PranchetaFile extends PranchetaFileInfo { document: DocumentDat
 export interface PranchetaRepo {
   listFiles(): Promise<PranchetaFileInfo[]>;
   getFile(id: string): Promise<PranchetaFile>;
-  createFile(document: DocumentData): Promise<PranchetaFile>;
-  saveFile(id: string, document: DocumentData, expectedUpdatedAt: string): Promise<PranchetaFileInfo>;
+  createFile(document: DocumentData, thumbnail?: string | null): Promise<PranchetaFile>;
+  saveFile(id: string, document: DocumentData, expectedUpdatedAt: string, thumbnail?: string | null): Promise<PranchetaFileInfo>;
+  saveThumbnail?(id: string, thumbnail: string): Promise<void>;
   deleteFile(id: string, expectedUpdatedAt: string): Promise<void>;
 }
 
@@ -24,15 +26,25 @@ export class PranchetaConflictError extends Error {
   }
 }
 
-const META = "id, name, size_bytes, created_at, updated_at";
+const META = "id, name, size_bytes, thumbnail, created_at, updated_at";
 export const MAX_DOCUMENT_BYTES = 25 * 1024 * 1024;
 
-export function documentPayload(document: DocumentData) {
+export function documentPayload(document: DocumentData, thumbnail?: string | null) {
   const name = document.name.trim();
   if (!name || name.length > 200) throw new Error("Use um nome de 1 a 200 caracteres.");
-  const size_bytes = new TextEncoder().encode(JSON.stringify(document)).byteLength;
+  const thumb = thumbnail !== undefined ? thumbnail : ((document as { thumbnail?: string | null }).thumbnail ?? null);
+  const docToSave = thumb ? { ...document, name, thumbnail: thumb } : { ...document, name };
+  const size_bytes = new TextEncoder().encode(JSON.stringify(docToSave)).byteLength;
   if (size_bytes > MAX_DOCUMENT_BYTES) throw new Error("Este arquivo passou de 25 MB. Reduza as imagens antes de salvar.");
-  return { name, document: { ...document, name }, size_bytes };
+  const payload: { name: string; document: DocumentData; size_bytes: number; thumbnail?: string | null } = {
+    name,
+    document: docToSave,
+    size_bytes,
+  };
+  if (thumb !== undefined) {
+    payload.thumbnail = thumb;
+  }
+  return payload;
 }
 
 /** Every request filters the signed-in owner; the database also enforces ownership and has_tool. */
@@ -52,20 +64,25 @@ export function createSupabasePranchetaRepo(userId: string): PranchetaRepo {
       if (!data) throw new Error("Arquivo não encontrado ou acesso indisponível.");
       return data as PranchetaFile;
     },
-    async createFile(document) {
+    async createFile(document, thumbnail) {
       const { data, error } = await supabase.from("prancheta_files")
-        .insert({ ...documentPayload(document), user_id: userId })
+        .insert({ ...documentPayload(document, thumbnail), user_id: userId })
         .select(`${META}, document`).single();
       if (error) throw new Error(error.message);
       return data as PranchetaFile;
     },
-    async saveFile(id, document, expectedUpdatedAt) {
-      const { data, error } = await supabase.from("prancheta_files").update(documentPayload(document))
+    async saveFile(id, document, expectedUpdatedAt, thumbnail) {
+      const { data, error } = await supabase.from("prancheta_files").update(documentPayload(document, thumbnail))
         .eq("user_id", userId).eq("id", id).eq("updated_at", expectedUpdatedAt)
         .select(META).maybeSingle();
       if (error) throw new Error(error.message);
       if (!data) throw new PranchetaConflictError();
       return data as PranchetaFileInfo;
+    },
+    async saveThumbnail(id, thumbnail) {
+      const { error } = await supabase.from("prancheta_files").update({ thumbnail })
+        .eq("user_id", userId).eq("id", id);
+      if (error) console.warn("Failed to update thumbnail in database:", error.message);
     },
     async deleteFile(id, expectedUpdatedAt) {
       const { data, error } = await supabase.from("prancheta_files").delete()
