@@ -836,6 +836,51 @@ function Swatch({ paint, onClick }: { paint: Paint; onClick: (r: DOMRect) => voi
   );
 }
 
+function ImageAiActions({ nodes }: { nodes: SceneNode[] }) {
+  const [isRemovingBg, setIsRemovingBg] = useState(false);
+  const target = nodes.find((n) => n.fills?.some((f) => f.type === 'IMAGE'));
+  if (!target) return null;
+
+  return (
+    <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <button
+        type="button"
+        className="cp-ai-btn"
+        disabled={isRemovingBg}
+        style={{ width: '100%', margin: 0, padding: '7px 10px', fontSize: 11 }}
+        onClick={async () => {
+          try {
+            setIsRemovingBg(true);
+            await A.removeBackgroundFromNode(target.id, 'replace');
+          } finally {
+            setIsRemovingBg(false);
+          }
+        }}
+      >
+        <I.IconSparkles size={14} />
+        {isRemovingBg ? 'Processando recorte com IA...' : 'Remover plano de fundo (IA)'}
+      </button>
+      <button
+        type="button"
+        className="btn secondary full"
+        disabled={isRemovingBg}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 11, padding: '6px 10px' }}
+        title="Duplica a imagem recortada e posiciona no topo da pilha para deixar o texto atrás do assunto"
+        onClick={async () => {
+          try {
+            setIsRemovingBg(true);
+            await A.removeBackgroundFromNode(target.id, 'depthLayer');
+          } finally {
+            setIsRemovingBg(false);
+          }
+        }}
+      >
+        {isRemovingBg ? 'Processando recorte...' : '📸 Efeito Revista (Recorte no topo)'}
+      </button>
+    </div>
+  );
+}
+
 function PaintsSection({ kind, nodes, ids }: { kind: 'fills' | 'strokes'; nodes: SceneNode[]; ids: string[] }) {
   const [pop, setPop] = useState<{ index: number; rect: DOMRect } | null>(null);
   const all = nodes.map((n) => n[kind]);
@@ -905,32 +950,7 @@ function PaintsSection({ kind, nodes, ids }: { kind: 'fills' | 'strokes'; nodes:
           ))
       )}
       {kind === 'fills' && paints && paints.some((p) => p.type === 'IMAGE') && (
-        <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <button
-            type="button"
-            className="cp-ai-btn"
-            style={{ width: '100%', margin: 0, padding: '7px 10px', fontSize: 11 }}
-            onClick={() => {
-              const target = nodes.find((n) => n.fills?.some((f) => f.type === 'IMAGE'));
-              if (target) void A.removeBackgroundFromNode(target.id, 'replace');
-            }}
-          >
-            <I.IconSparkles size={14} />
-            Remover plano de fundo (IA)
-          </button>
-          <button
-            type="button"
-            className="btn secondary full"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 11, padding: '6px 10px' }}
-            title="Duplica a imagem recortada e posiciona no topo da pilha para deixar o texto atrás do assunto"
-            onClick={() => {
-              const target = nodes.find((n) => n.fills?.some((f) => f.type === 'IMAGE'));
-              if (target) void A.removeBackgroundFromNode(target.id, 'depthLayer');
-            }}
-          >
-            📸 Efeito Revista (Recorte no topo)
-          </button>
-        </div>
+        <ImageAiActions nodes={nodes} />
       )}
       {kind === 'strokes' && (paints === null || paints.length > 0) && (
         <>

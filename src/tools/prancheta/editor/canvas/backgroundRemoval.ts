@@ -9,43 +9,89 @@ let cachedSegmenter: any = null;
 async function getSegmenter(onProgress?: (msg: string) => void) {
   if (cachedSegmenter) return cachedSegmenter;
 
-  onProgress?.('Carregando motor de visão neural...');
-  const moduleUrl = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs';
+  onProgress?.('Carregando motor neural...');
   // Dynamic import via function constructor para evitar avisos do TypeScript e Vite
   const importDynamic = new Function('url', 'return import(url)');
-  const vision = await importDynamic(moduleUrl);
+
+  let vision: any;
+  try {
+    vision = await importDynamic(
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs'
+    );
+  } catch (errJsdelivr) {
+    console.warn('Falha no CDN jsdelivr, tentando unpkg...', errJsdelivr);
+    vision = await importDynamic(
+      'https://unpkg.com/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs'
+    );
+  }
 
   const { FilesetResolver, ImageSegmenter } = vision;
 
-  onProgress?.('Inicializando WebAssembly/GPU...');
-  const filesetResolver = await FilesetResolver.forVisionTasks(
-    'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm'
+  onProgress?.('Inicializando WebAssembly / GPU...');
+  let filesetResolver: any;
+  try {
+    filesetResolver = await FilesetResolver.forVisionTasks(
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm'
+    );
+  } catch (errWasm) {
+    console.warn('Falha no wasm jsdelivr, tentando unpkg...', errWasm);
+    filesetResolver = await FilesetResolver.forVisionTasks(
+      'https://unpkg.com/@mediapipe/tasks-vision@0.10.14/wasm'
+    );
+  }
+
+  onProgress?.('Carregando modelo neural...');
+
+  // Modelo oficial selfie_segmenter float16 (249 KB)
+  // 1. Host local (servido estático do LAB via /models/selfie_segmenter.tflite)
+  // 2. Google Cloud Storage oficial float16
+  const candidateUrls: string[] = [];
+  if (typeof window !== 'undefined' && window.location) {
+    candidateUrls.push(`${window.location.origin}/models/selfie_segmenter.tflite`);
+    candidateUrls.push('/models/selfie_segmenter.tflite');
+  }
+  candidateUrls.push(
+    'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/latest/selfie_segmenter.tflite'
   );
 
-  onProgress?.('Carregando modelo de recorte...');
-  try {
-    cachedSegmenter = await ImageSegmenter.createFromOptions(filesetResolver, {
-      baseOptions: {
-        modelAssetPath:
-          'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float32/latest/selfie_segmenter.tflite',
-        delegate: 'GPU',
-      },
-      runningMode: 'IMAGE',
-      outputCategoryMask: false,
-      outputConfidenceMasks: true,
-    });
-  } catch (err) {
-    console.warn('Falha ao inicializar com GPU, tentando CPU...', err);
-    cachedSegmenter = await ImageSegmenter.createFromOptions(filesetResolver, {
-      baseOptions: {
-        modelAssetPath:
-          'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float32/latest/selfie_segmenter.tflite',
-        delegate: 'CPU',
-      },
-      runningMode: 'IMAGE',
-      outputCategoryMask: false,
-      outputConfidenceMasks: true,
-    });
+  let lastError: any = null;
+
+  for (const modelPath of candidateUrls) {
+    // 1. Tentar com GPU (WebGL / WebGPU)
+    try {
+      cachedSegmenter = await ImageSegmenter.createFromOptions(filesetResolver, {
+        baseOptions: {
+          modelAssetPath: modelPath,
+          delegate: 'GPU',
+        },
+        runningMode: 'IMAGE',
+        outputCategoryMask: false,
+        outputConfidenceMasks: true,
+      });
+      if (cachedSegmenter) break;
+    } catch (errGPU) {
+      console.warn(`Tentativa GPU falhou com modelo ${modelPath}, tentando CPU...`, errGPU);
+      // 2. Fallback para CPU
+      try {
+        cachedSegmenter = await ImageSegmenter.createFromOptions(filesetResolver, {
+          baseOptions: {
+            modelAssetPath: modelPath,
+            delegate: 'CPU',
+          },
+          runningMode: 'IMAGE',
+          outputCategoryMask: false,
+          outputConfidenceMasks: true,
+        });
+        if (cachedSegmenter) break;
+      } catch (errCPU) {
+        lastError = errCPU;
+        console.warn(`Tentativa CPU falhou com modelo ${modelPath}:`, errCPU);
+      }
+    }
+  }
+
+  if (!cachedSegmenter) {
+    throw lastError || new Error('Não foi possível carregar o modelo de recorte neural.');
   }
 
   return cachedSegmenter;
@@ -63,10 +109,24 @@ export async function removeImageBackground(
 
     onProgress?.('Decodificando imagem...');
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    const isDataOrBlob = imageSrc.startsWith('data:') || imageSrc.startsWith('blob:');
+    if (!isDataOrBlob) {
+      img.crossOrigin = 'anonymous';
+    }
+
     await new Promise<void>((resolve, reject) => {
       img.onload = () => resolve();
-      img.onerror = () => reject(new Error('Falha ao decodificar imagem para recorte.'));
+      img.onerror = () => {
+        if (img.crossOrigin) {
+          // Se falhou com crossOrigin, tenta sem
+          const retryImg = new Image();
+          retryImg.onload = () => resolve();
+          retryImg.onerror = () => reject(new Error('Falha ao decodificar imagem para recorte.'));
+          retryImg.src = imageSrc;
+        } else {
+          reject(new Error('Falha ao decodificar imagem para recorte.'));
+        }
+      };
       img.src = imageSrc;
     });
 
@@ -87,7 +147,7 @@ export async function removeImageBackground(
     const outCanvas = document.createElement('canvas');
     outCanvas.width = img.naturalWidth || img.width;
     outCanvas.height = img.naturalHeight || img.height;
-    const outCtx = outCanvas.getContext('2d');
+    const outCtx = outCanvas.getContext('2d', { willReadFrequently: true });
     if (!outCtx) throw new Error('Falha ao criar contexto 2D');
 
     outCtx.drawImage(img, 0, 0);
@@ -120,10 +180,19 @@ export async function removeImageBackground(
     }
 
     outCtx.putImageData(imgData, 0, 0);
+
+    // Libera texturas GPU para evitar memory leak
+    for (const m of confidenceMasks) {
+      try {
+        m.close?.();
+      } catch {}
+    }
+
     onProgress?.('Concluído!');
     return outCanvas.toDataURL('image/png');
   } catch (err: any) {
     console.error('Erro no recorte neural:', err);
+    cachedSegmenter = null;
     throw new Error(err?.message || 'Falha ao processar recorte de fundo com IA.');
   }
 }

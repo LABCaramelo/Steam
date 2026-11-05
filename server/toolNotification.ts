@@ -262,7 +262,7 @@ export function formatNewToolMessage(
       `⚠️ *ACESSO EXCLUSIVO: FERRAMENTA EM MODO BETA*\n` +
       `Esta ferramenta foi lançada em *modo BETA* (fase experimental). ` +
       `As ferramentas em modo beta são liberadas *apenas para usuários com acesso Beta no LAB*.\n\n` +
-      `• *Se você é usuário Beta*: seu acesso já está liberado para testar e validar em primeira mão!\n` +
+      `• *Se você é usuário Beta:* seu acesso já está liberado para testar e validar em primeira mão!\n` +
       `• *Demais membros do LAB:* a ferramenta está em testes e refinamento junto aos usuários beta, e em breve será liberada em versão estável para toda a comunidade.`;
   } else {
     header = `🐕⚡ *NOVA FERRAMENTA LIBERADA NO LAB!*${stageBadge}\n\n` +
@@ -292,18 +292,18 @@ export function formatNewToolMessage(
 
   const pagePath = tool.publicPage || `/tools/${tool.slug}`;
   const directLink = `${baseUrl}${pagePath.startsWith("/") ? "" : "/"}${pagePath}`;
-  const storeLink = `${baseUrl}/app.html#/store`;
+  const labLink = `${baseUrl}/library/home`;
 
   let footer = "";
   if (isBeta) {
     footer = `\n\n👉 *Se você tem acesso Beta, acesse agora no LAB para testar:*\n` +
       `🔗 ${directLink}\n` +
-      `🏪 Ou confira na Loja do LAB: ${storeLink}\n\n` +
+      `🏪 Ou confira na Biblioteca do LAB: ${labLink}\n\n` +
       `💬 *Usuários Beta: testem sem moderação e mandem todas as dúvidas, impressões e bugs aqui no grupo para lapidarmos juntos!* 🚀☕`;
   } else {
     footer = `\n\n👉 *Acesse agora no LAB e coloque a mão na massa:*\n` +
       `🔗 ${directLink}\n` +
-      `🏪 Ou confira na Loja do LAB: ${storeLink}\n\n` +
+      `🏪 Ou confira na Biblioteca do LAB: ${labLink}\n\n` +
       `💬 *Bora testar! Quem for usando, manda o feedback, dúvidas e o que você criou aqui no grupo!* 🚀☕`;
   }
 

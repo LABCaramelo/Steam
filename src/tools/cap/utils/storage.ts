@@ -41,7 +41,7 @@ export async function getAllTakes(): Promise<TakeRecord[]> {
       const records: TakeRecord[] = request.result || [];
       // Re-hydrate videoUrl from Blob if present
       const hydrated = records.map((rec) => {
-        if (rec.blob && !rec.videoUrl) {
+        if (rec.blob) {
           rec.videoUrl = URL.createObjectURL(rec.blob);
         }
         return rec;
@@ -76,7 +76,7 @@ export async function updateTake(id: string, patch: Partial<TakeRecord>): Promis
         resolve();
         return;
       }
-      const updated = { ...getReq.result, ...patch };
+      const updated = { ...getReq.result, ...patch, videoUrl: "" };
       store.put(updated);
     };
     tx.oncomplete = () => resolve();
