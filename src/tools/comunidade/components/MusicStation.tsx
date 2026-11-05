@@ -11,75 +11,79 @@ import {
   YoutubeIcon,
 } from '../icons';
 import {
-  DEFAULT_COWORKING_PLAYLIST,
-  loadPlaylist,
+  broadcastRadioLocal,
+  getRadioEmbedUrl,
+  loadRadioState,
   parseMusicUrl,
   resolveTrackMetadata,
-  savePlaylist,
+  saveRadioState,
+  subscribeRadioState,
   type PlaylistItem,
+  type RadioState,
 } from '../music';
-import type { VoiceMember, VoiceSession } from '../voice';
+import type { VoiceSession } from '../voice';
 
-interface Props {
-  channelId: string;
-  session?: VoiceSession;
-  userName?: string;
-  members?: VoiceMember[];
-  isFocusMode?: boolean;
-  layout?: 'stage' | 'chat';
-}
-
-export function MusicStation({
-  channelId,
+/**
+ * Motor invisível de reprodução de áudio da Rádio Coworking.
+ * Fica montado no App SOMENTE enquanto o usuário estiver conectado à sala de voz do Coworking.
+ * Se o usuário não entrou na sala ou se desconectou, este componente é desmontado e NENHUM som é emitido.
+ */
+export function CoworkingRadioAudioHost({
+  channelId = 'ch-pair',
   session,
-  userName = 'Membro do LAB',
-  isFocusMode = false,
-  layout = 'chat',
-}: Props) {
-  const [playlist, setPlaylist] = useState<PlaylistItem[]>(() => loadPlaylist(channelId));
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [urlInput, setUrlInput] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [showQueue, setShowQueue] = useState(layout !== 'chat');
+}: {
+  channelId?: string;
+  session: VoiceSession;
+}) {
+  const [radio, setRadio] = useState<RadioState>(() => loadRadioState(channelId));
+  const radioRef = useRef(radio);
+  radioRef.current = radio;
 
-  const playlistRef = useRef(playlist);
-  playlistRef.current = playlist;
-  const currentIndexRef = useRef(currentIndex);
-  currentIndexRef.current = currentIndex;
-
-  // Sincronização em tempo real via LiveKit Data/Text Stream
+  // 1. Escuta alterações locais disparadas pelo painel de controle ou chat
   useEffect(() => {
-    if (!session?.onMusicPacket) return;
+    return subscribeRadioState(channelId, (updated) => {
+      setRadio(updated);
+    });
+  }, [channelId]);
+
+  // 2. Escuta pacotes de sincronização da Rádio via LiveKit entre os participantes da sala
+  useEffect(() => {
+    if (!session.onMusicPacket) return;
 
     const cleanup = session.onMusicPacket((packet) => {
       if (packet.type === 'music:sync') {
         const remotePlaylist = packet.playlist as PlaylistItem[];
         const remoteIndex = typeof packet.currentIndex === 'number' ? packet.currentIndex : 0;
+        const remoteStartedAt = typeof packet.trackStartedAt === 'number' ? packet.trackStartedAt : Date.now();
         const remotePlaying = typeof packet.isPlaying === 'boolean' ? packet.isPlaying : true;
 
         if (Array.isArray(remotePlaylist) && remotePlaylist.length > 0) {
-          setPlaylist(remotePlaylist);
-          savePlaylist(channelId, remotePlaylist);
-          setCurrentIndex(Math.min(remoteIndex, remotePlaylist.length - 1));
-          setIsPlaying(remotePlaying);
+          const updated: RadioState = {
+            playlist: remotePlaylist,
+            currentIndex: Math.min(remoteIndex, remotePlaylist.length - 1),
+            trackStartedAt: remoteStartedAt,
+            isPlaying: remotePlaying,
+            updatedAt: Date.now(),
+          };
+          saveRadioState(channelId, updated);
+          setRadio(updated);
+          broadcastRadioLocal(channelId, updated);
         }
       } else if (packet.type === 'music:request') {
-        // Envia o estado atual da playlist para quem acabou de entrar
-        if (session.sendMusicPacket && playlistRef.current.length > 0) {
+        // Envia o estado sincronizado da rádio para quem acabou de entrar na chamada
+        if (session.sendMusicPacket && radioRef.current.playlist.length > 0) {
           void session.sendMusicPacket({
             type: 'music:sync',
-            playlist: playlistRef.current,
-            currentIndex: currentIndexRef.current,
-            isPlaying: true,
+            playlist: radioRef.current.playlist,
+            currentIndex: radioRef.current.currentIndex,
+            trackStartedAt: radioRef.current.trackStartedAt,
+            isPlaying: radioRef.current.isPlaying,
           });
         }
       }
     });
 
-    // Pede o estado da playlist ao conectar
+    // Pede o estado da rádio para quem já estiver na chamada
     if (session.sendMusicPacket) {
       void session.sendMusicPacket({ type: 'music:request' });
     }
@@ -87,57 +91,201 @@ export function MusicStation({
     return cleanup;
   }, [session, channelId]);
 
-  const currentTrack = playlist[currentIndex] ?? playlist[0] ?? DEFAULT_COWORKING_PLAYLIST[0];
+  // 3. Auto-avanço da rádio quando a faixa termina (via postMessage da API do YouTube)
+  useEffect(() => {
+    const onWindowMessage = (e: MessageEvent) => {
+      try {
+        if (typeof e.data !== 'string') return;
+        const data = JSON.parse(e.data);
+        const state = data?.info?.playerState ?? (data?.event === 'onStateChange' ? data?.data : null);
+        if (state === 0) {
+          // Faixa finalizou: avança a rádio coletiva para a próxima música
+          const cur = radioRef.current;
+          if (cur.playlist.length > 0) {
+            const nextIndex = (cur.currentIndex + 1) % cur.playlist.length;
+            const updated: RadioState = {
+              ...cur,
+              currentIndex: nextIndex,
+              trackStartedAt: Date.now(),
+              isPlaying: true,
+              updatedAt: Date.now(),
+            };
+            saveRadioState(channelId, updated);
+            setRadio(updated);
+            broadcastRadioLocal(channelId, updated);
+            if (session.sendMusicPacket) {
+              void session.sendMusicPacket({
+                type: 'music:sync',
+                playlist: updated.playlist,
+                currentIndex: updated.currentIndex,
+                trackStartedAt: updated.trackStartedAt,
+                isPlaying: true,
+              });
+            }
+          }
+        }
+      } catch {
+        // ignora mensagens não-JSON ou de outros iframes
+      }
+    };
+    window.addEventListener('message', onWindowMessage);
+    return () => window.removeEventListener('message', onWindowMessage);
+  }, [session, channelId]);
 
-  const broadcastUpdate = (newPlaylist: PlaylistItem[], newIndex: number, newPlaying: boolean) => {
-    setPlaylist(newPlaylist);
-    savePlaylist(channelId, newPlaylist);
-    setCurrentIndex(newIndex);
-    setIsPlaying(newPlaying);
+  const currentTrack = radio.playlist[radio.currentIndex] ?? radio.playlist[0];
+  if (!currentTrack || !radio.isPlaying) return null;
+
+  return (
+    <div className="music-audio-engine" aria-hidden="true">
+      <iframe
+        key={`${currentTrack.id}-${radio.trackStartedAt}`}
+        src={getRadioEmbedUrl(currentTrack, radio.trackStartedAt)}
+        title={currentTrack.title}
+        allow="autoplay; encrypted-media"
+        tabIndex={-1}
+      />
+    </div>
+  );
+}
+
+interface Props {
+  channelId: string;
+  session?: VoiceSession;
+  userName?: string;
+  isConnectedToVoice?: boolean;
+  onJoinVoice?: () => void;
+  isFocusMode?: boolean;
+  layout?: 'stage' | 'chat';
+}
+
+/**
+ * Painel interativo de controle da Rádio Coworking (visualizado no chat).
+ * Não renderiza nenhum iframe diretamente — a reprodução sonora é centralizada no CoworkingRadioAudioHost.
+ */
+export function MusicStation({
+  channelId,
+  session,
+  userName = 'Membro do LAB',
+  isConnectedToVoice = false,
+  onJoinVoice,
+  layout = 'chat',
+}: Props) {
+  const [radio, setRadio] = useState<RadioState>(() => loadRadioState(channelId));
+  const [urlInput, setUrlInput] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showQueue, setShowQueue] = useState(layout !== 'chat');
+
+  // Sincroniza com alterações locais disparadas por outros componentes ou pelo host
+  useEffect(() => {
+    return subscribeRadioState(channelId, (updated) => {
+      setRadio(updated);
+    });
+  }, [channelId]);
+
+  const currentTrack = radio.playlist[radio.currentIndex] ?? radio.playlist[0];
+
+  const broadcastRadio = (updated: RadioState) => {
+    saveRadioState(channelId, updated);
+    setRadio(updated);
+    broadcastRadioLocal(channelId, updated);
 
     if (session?.sendMusicPacket) {
       void session.sendMusicPacket({
         type: 'music:sync',
-        playlist: newPlaylist,
-        currentIndex: newIndex,
-        isPlaying: newPlaying,
+        playlist: updated.playlist,
+        currentIndex: updated.currentIndex,
+        trackStartedAt: updated.trackStartedAt,
+        isPlaying: updated.isPlaying,
       });
     }
   };
 
   const handleNext = () => {
-    if (!playlist.length) return;
-    const nextIndex = (currentIndex + 1) % playlist.length;
-    broadcastUpdate(playlist, nextIndex, true);
+    if (!isConnectedToVoice) {
+      onJoinVoice?.();
+      return;
+    }
+    if (!radio.playlist.length) return;
+    const nextIndex = (radio.currentIndex + 1) % radio.playlist.length;
+    broadcastRadio({
+      ...radio,
+      currentIndex: nextIndex,
+      trackStartedAt: Date.now(),
+      isPlaying: true,
+      updatedAt: Date.now(),
+    });
   };
 
   const handlePrev = () => {
-    if (!playlist.length) return;
-    const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-    broadcastUpdate(playlist, prevIndex, true);
+    if (!isConnectedToVoice) {
+      onJoinVoice?.();
+      return;
+    }
+    if (!radio.playlist.length) return;
+    const prevIndex = (radio.currentIndex - 1 + radio.playlist.length) % radio.playlist.length;
+    broadcastRadio({
+      ...radio,
+      currentIndex: prevIndex,
+      trackStartedAt: Date.now(),
+      isPlaying: true,
+      updatedAt: Date.now(),
+    });
+  };
+
+  const handleTogglePlay = () => {
+    if (!isConnectedToVoice) {
+      onJoinVoice?.();
+      return;
+    }
+    const nextPlaying = !radio.isPlaying;
+    broadcastRadio({
+      ...radio,
+      isPlaying: nextPlaying,
+      trackStartedAt: nextPlaying ? Date.now() : radio.trackStartedAt,
+      updatedAt: Date.now(),
+    });
   };
 
   const handleSelectTrack = (index: number) => {
-    if (index < 0 || index >= playlist.length) return;
-    broadcastUpdate(playlist, index, true);
+    if (!isConnectedToVoice) {
+      onJoinVoice?.();
+      return;
+    }
+    if (index < 0 || index >= radio.playlist.length) return;
+    broadcastRadio({
+      ...radio,
+      currentIndex: index,
+      trackStartedAt: Date.now(),
+      isPlaying: true,
+      updatedAt: Date.now(),
+    });
   };
 
   const handleRemoveTrack = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (playlist.length <= 1) {
-      setErrorMessage('A playlist precisa ter pelo menos uma música.');
+    if (radio.playlist.length <= 1) {
+      setErrorMessage('A playlist da rádio precisa ter pelo menos uma música.');
       setTimeout(() => setErrorMessage(null), 3000);
       return;
     }
 
-    const filtered = playlist.filter((item) => item.id !== id);
-    let nextIndex = currentIndex;
-    if (currentIndex >= filtered.length) {
+    const filtered = radio.playlist.filter((item) => item.id !== id);
+    let nextIndex = radio.currentIndex;
+    if (radio.currentIndex >= filtered.length) {
       nextIndex = 0;
-    } else if (playlist[currentIndex]?.id === id) {
-      nextIndex = Math.min(currentIndex, filtered.length - 1);
+    } else if (radio.playlist[radio.currentIndex]?.id === id) {
+      nextIndex = Math.min(radio.currentIndex, filtered.length - 1);
     }
-    broadcastUpdate(filtered, nextIndex, isPlaying);
+
+    broadcastRadio({
+      ...radio,
+      playlist: filtered,
+      currentIndex: nextIndex,
+      trackStartedAt: Date.now(),
+      updatedAt: Date.now(),
+    });
   };
 
   const handleAddTrack = async (e: FormEvent) => {
@@ -147,7 +295,7 @@ export function MusicStation({
 
     const parsed = parseMusicUrl(urlInput);
     if (!parsed) {
-      setErrorMessage('Link inválido. Insira um link válido do YouTube (vídeo/playlist) ou Spotify (música/álbum/playlist).');
+      setErrorMessage('Link inválido. Insira um link válido do YouTube ou Spotify.');
       return;
     }
 
@@ -167,10 +315,14 @@ export function MusicStation({
         addedAt: Date.now(),
       };
 
-      const updated = [...playlist, newItem];
-      broadcastUpdate(updated, currentIndex, isPlaying);
+      const updatedPlaylist = [...radio.playlist, newItem];
+      broadcastRadio({
+        ...radio,
+        playlist: updatedPlaylist,
+        updatedAt: Date.now(),
+      });
       setUrlInput('');
-      setSuccessMessage(`"${newItem.title}" foi adicionada à playlist!`);
+      setSuccessMessage(`"${newItem.title}" adicionada à rádio!`);
       setTimeout(() => setSuccessMessage(null), 4000);
     } catch {
       setErrorMessage('Não foi possível obter detalhes do link. Tente novamente.');
@@ -179,110 +331,84 @@ export function MusicStation({
     }
   };
 
-  // Modo focado (quando uma tela compartilhada está ampliada)
-  if (isFocusMode) {
-    return (
-      <div className="music-compact-bar" aria-label="Player de música compacto">
-        <div className="music-compact-meta">
-          <span className="music-source-icon">
-            {currentTrack.source === 'youtube' ? <YoutubeIcon size={18} /> : <SpotifyIcon size={18} />}
-          </span>
-          <div className="music-compact-text">
-            <strong>{currentTrack.title}</strong>
-            {currentTrack.artist && <span>{currentTrack.artist}</span>}
-          </div>
-        </div>
-        <div className="music-compact-controls">
-          <button onClick={handlePrev} title="Faixa anterior" aria-label="Faixa anterior">
-            <SkipBack size={18} />
-          </button>
-          <button
-            onClick={() => broadcastUpdate(playlist, currentIndex, !isPlaying)}
-            title={isPlaying ? 'Pausar' : 'Tocar'}
-            aria-label={isPlaying ? 'Pausar' : 'Tocar'}
-            className="play-btn"
-          >
-            {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-          </button>
-          <button onClick={handleNext} title="Próxima faixa" aria-label="Próxima faixa">
-            <SkipForward size={18} />
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Layout compacto quando renderizado dentro do chat da sala de voz
-  if (layout === 'chat') {
-    return (
-      <div className="music-station-chat" aria-label="Controle de música e playlist">
-        {/* Motor de Áudio Invisível (Somente Áudio) */}
-        <div className="music-audio-engine" aria-hidden="true">
-          {isPlaying && (
-            <iframe
-              key={currentTrack.embedUrl}
-              src={currentTrack.embedUrl}
-              title={currentTrack.title}
-              allow="autoplay; encrypted-media"
-              tabIndex={-1}
+  return (
+    <div className="music-station-chat" aria-label="Controle da Rádio Coworking">
+      {/* Card Compacto da Rádio */}
+      <div className={`music-audio-card ${isConnectedToVoice ? 'connected' : 'disconnected'}`}>
+        <div className="music-audio-thumb-col">
+          {currentTrack.thumbnailUrl ? (
+            <img
+              src={currentTrack.thumbnailUrl}
+              alt={currentTrack.title}
+              className="music-audio-thumb"
             />
+          ) : (
+            <div className="music-audio-icon-box">
+              <Music size={22} />
+            </div>
+          )}
+          {isConnectedToVoice && radio.isPlaying && (
+            <span className="soundwave-badge" title="No ar agora">
+              <span className="bar bar-1" />
+              <span className="bar bar-2" />
+              <span className="bar bar-3" />
+            </span>
           )}
         </div>
 
-        {/* Card de Controle de Áudio */}
-        <div className="music-audio-card">
-          <div className="music-audio-thumb-col">
-            {currentTrack.thumbnailUrl ? (
-              <img
-                src={currentTrack.thumbnailUrl}
-                alt={currentTrack.title}
-                className="music-audio-thumb"
-              />
+        <div className="music-audio-details">
+          <div className="music-audio-tags-row">
+            {isConnectedToVoice ? (
+              <span className="tag-radio-live">
+                <span className="live-pulse" /> AO VIVO
+              </span>
             ) : (
-              <div className="music-audio-icon-box">
-                <Music size={22} />
-              </div>
+              <span className="tag-radio-off">RÁDIO COWORKING</span>
             )}
-            {isPlaying && (
-              <span className="soundwave-badge" title="Tocando agora">
-                <span className="bar bar-1" />
-                <span className="bar bar-2" />
-                <span className="bar bar-3" />
+
+            {currentTrack.source === 'youtube' ? (
+              <span className="tag-youtube">
+                <YoutubeIcon size={12} /> YouTube
+              </span>
+            ) : (
+              <span className="tag-spotify">
+                <SpotifyIcon size={12} /> Spotify
               </span>
             )}
+            <span className="track-counter">
+              {radio.currentIndex + 1} de {radio.playlist.length}
+            </span>
           </div>
 
-          <div className="music-audio-details">
-            <div className="music-audio-tags-row">
-              {currentTrack.source === 'youtube' ? (
-                <span className="tag-youtube">
-                  <YoutubeIcon size={12} /> YouTube
-                </span>
-              ) : (
-                <span className="tag-spotify">
-                  <SpotifyIcon size={12} /> Spotify
-                </span>
-              )}
-              <span className="track-counter">{currentIndex + 1} de {playlist.length}</span>
-              {currentTrack.addedBy && (
-                <span className="added-by">por {currentTrack.addedBy}</span>
-              )}
+          <h4 className="music-audio-title" title={currentTrack.title}>
+            {currentTrack.title}
+          </h4>
+          {currentTrack.artist && (
+            <p className="music-audio-artist">{currentTrack.artist}</p>
+          )}
+
+          {!isConnectedToVoice && (
+            <div className="music-radio-connect-prompt">
+              <button
+                type="button"
+                className="join-radio-inline-btn"
+                onClick={onJoinVoice}
+                title="Conectar ao canal para ouvir a rádio ao vivo com todos"
+              >
+                <Play size={12} />
+                <span>Entrar no canal para ouvir junto</span>
+              </button>
             </div>
+          )}
+        </div>
 
-            <h4 className="music-audio-title" title={currentTrack.title}>
-              {currentTrack.title}
-            </h4>
-            {currentTrack.artist && (
-              <p className="music-audio-artist">{currentTrack.artist}</p>
-            )}
-          </div>
-
+        {isConnectedToVoice && (
           <div className="music-audio-controls">
             <button
               type="button"
               className="control-btn sm"
               onClick={handlePrev}
-              title="Faixa anterior"
+              title="Faixa anterior (sincronizada)"
               aria-label="Faixa anterior"
             >
               <SkipBack size={14} />
@@ -290,313 +416,114 @@ export function MusicStation({
             <button
               type="button"
               className="control-btn primary-play"
-              onClick={() => broadcastUpdate(playlist, currentIndex, !isPlaying)}
-              title={isPlaying ? 'Pausar' : 'Tocar'}
-              aria-label={isPlaying ? 'Pausar' : 'Tocar'}
+              onClick={handleTogglePlay}
+              title={radio.isPlaying ? 'Pausar rádio para todos' : 'Retomar rádio'}
+              aria-label={radio.isPlaying ? 'Pausar' : 'Tocar'}
             >
-              {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+              {radio.isPlaying ? <Pause size={16} /> : <Play size={16} />}
             </button>
             <button
               type="button"
               className="control-btn sm"
               onClick={handleNext}
-              title="Próxima faixa"
+              title="Próxima faixa (sincronizada)"
               aria-label="Próxima faixa"
             >
               <SkipForward size={14} />
             </button>
           </div>
-        </div>
-
-        {/* Adicionar música na playlist */}
-        <form className="add-track-form add-track-form-chat" onSubmit={handleAddTrack}>
-          <div className="add-input-wrapper">
-            <input
-              type="url"
-              value={urlInput}
-              onChange={(e) => setUrlInput(e.target.value)}
-              placeholder="Cole link do YouTube ou Spotify..."
-              className="add-track-input"
-              disabled={isSubmitting}
-              required
-            />
-            <button
-              type="submit"
-              className="add-track-btn"
-              disabled={isSubmitting || !urlInput.trim()}
-              title="Adicionar à playlist"
-            >
-              <Plus size={14} />
-              <span>{isSubmitting ? '…' : 'Adicionar'}</span>
-            </button>
-          </div>
-          {errorMessage && <p className="music-form-error">{errorMessage}</p>}
-          {successMessage && <p className="music-form-success">{successMessage}</p>}
-        </form>
-
-        {/* Fila / Drawer da Playlist */}
-        <div className="playlist-chat-toggle-row">
-          <button
-            type="button"
-            className="toggle-queue-btn-chat"
-            onClick={() => setShowQueue(!showQueue)}
-          >
-            <span>Playlist Colaborativa ({playlist.length})</span>
-            <span>{showQueue ? '▲ Ocultar fila' : '▼ Ver fila'}</span>
-          </button>
-        </div>
-
-        {showQueue && (
-          <div className="playlist-queue-list playlist-queue-list-chat" role="list">
-            {playlist.map((item, idx) => {
-              const isCurrent = idx === currentIndex;
-              return (
-                <div
-                  key={item.id}
-                  className={`queue-item ${isCurrent ? 'active' : ''}`}
-                  onClick={() => handleSelectTrack(idx)}
-                  role="button"
-                  tabIndex={0}
-                  title={`Tocar ${item.title}`}
-                >
-                  <div className="queue-item-left">
-                    <span className="queue-index">
-                      {isCurrent && isPlaying ? (
-                        <span className="soundwave-anim">▶</span>
-                      ) : (
-                        idx + 1
-                      )}
-                    </span>
-                    <span className="queue-source-icon">
-                      {item.source === 'youtube' ? (
-                        <YoutubeIcon size={14} />
-                      ) : (
-                        <SpotifyIcon size={14} />
-                      )}
-                    </span>
-                    <div className="queue-track-info">
-                      <strong className="queue-title">{item.title}</strong>
-                      <span className="queue-artist">
-                        {item.artist || (item.source === 'youtube' ? 'YouTube' : 'Spotify')}
-                        {item.addedBy && ` • ${item.addedBy}`}
-                      </span>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    className="queue-remove-btn"
-                    onClick={(e) => handleRemoveTrack(item.id, e)}
-                    title="Remover da playlist"
-                    aria-label={`Remover ${item.title}`}
-                  >
-                    <Trash size={14} />
-                  </button>
-                </div>
-              );
-            })}
-          </div>
         )}
       </div>
-    );
-  }
 
-  return (
-    <section className="music-station-stage" aria-label="Coworking Silencioso e Playlist">
-      {/* Banner de Boas-Vindas e Regras do Canal */}
-      <div className="coworking-banner">
-        <div className="coworking-banner-left">
-          <div className="coworking-badge">
-            <Music size={18} />
-            <span>Coworking Silencioso</span>
-          </div>
-          <span className="coworking-rules-tag">
-            🔇 Somente Música • Microfone & Câmera Desativados
-          </span>
+      {/* Formulário para adicionar faixas */}
+      <form className="add-track-form add-track-form-chat" onSubmit={handleAddTrack}>
+        <div className="add-input-wrapper">
+          <input
+            type="url"
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+            placeholder="Cole link do YouTube ou Spotify..."
+            className="add-track-input"
+            disabled={isSubmitting}
+            required
+          />
+          <button
+            type="submit"
+            className="add-track-btn"
+            disabled={isSubmitting || !urlInput.trim()}
+            title="Adicionar faixa à rádio coletiva"
+          >
+            <Plus size={14} />
+            <span>{isSubmitting ? '…' : 'Adicionar'}</span>
+          </button>
         </div>
-        <p className="coworking-desc">
-          Ambiente para foco individual e trabalho compartilhado. Compartilhamento de tela liberado. Qualquer membro pode editar a playlist coletiva.
-        </p>
+        {errorMessage && <p className="music-form-error">{errorMessage}</p>}
+        {successMessage && <p className="music-form-success">{successMessage}</p>}
+      </form>
+
+      {/* Fila / Drawer da Playlist */}
+      <div className="playlist-chat-toggle-row">
+        <button
+          type="button"
+          className="toggle-queue-btn-chat"
+          onClick={() => setShowQueue(!showQueue)}
+        >
+          <span>Playlist da Rádio ({radio.playlist.length})</span>
+          <span>{showQueue ? '▲ Ocultar fila' : '▼ Ver fila'}</span>
+        </button>
       </div>
 
-      <div className="music-station-container">
-        {/* Lado Esquerdo: Player Principal & Controles */}
-        <div className="music-player-card">
-          <div className="music-player-header">
-            <div className="music-player-tag">
-              {currentTrack.source === 'youtube' ? (
-                <span className="tag-youtube">
-                  <YoutubeIcon size={16} /> YouTube
-                </span>
-              ) : (
-                <span className="tag-spotify">
-                  <SpotifyIcon size={16} /> Spotify
-                </span>
-              )}
-              <span className="track-counter">
-                Faixa {currentIndex + 1} de {playlist.length}
-              </span>
-            </div>
-            {currentTrack.addedBy && (
-              <span className="added-by">Adicionado por {currentTrack.addedBy}</span>
-            )}
-          </div>
+      {showQueue && (
+        <div className="playlist-queue-list playlist-queue-list-chat" role="list">
+          {radio.playlist.map((item, idx) => {
+            const isCurrent = idx === radio.currentIndex;
+            return (
+              <div
+                key={item.id}
+                className={`queue-item ${isCurrent ? 'active' : ''}`}
+                onClick={() => handleSelectTrack(idx)}
+                role="button"
+                tabIndex={0}
+                title={isConnectedToVoice ? `Tocar ${item.title} na rádio` : 'Conecte-se para tocar'}
+              >
+                <div className="queue-item-left">
+                  <span className="queue-index">
+                    {isCurrent && isConnectedToVoice && radio.isPlaying ? (
+                      <span className="soundwave-anim">▶</span>
+                    ) : (
+                      idx + 1
+                    )}
+                  </span>
+                  <span className="queue-source-icon">
+                    {item.source === 'youtube' ? (
+                      <YoutubeIcon size={14} />
+                    ) : (
+                      <SpotifyIcon size={14} />
+                    )}
+                  </span>
+                  <div className="queue-track-info">
+                    <strong className="queue-title">{item.title}</strong>
+                    <span className="queue-artist">
+                      {item.artist || (item.source === 'youtube' ? 'YouTube' : 'Spotify')}
+                      {item.addedBy && ` • ${item.addedBy}`}
+                    </span>
+                  </div>
+                </div>
 
-          <div className="music-embed-wrapper">
-            {isPlaying ? (
-              <iframe
-                key={currentTrack.embedUrl}
-                src={currentTrack.embedUrl}
-                title={currentTrack.title}
-                className={`music-embed-iframe ${currentTrack.source === 'spotify' ? 'spotify-frame' : 'youtube-frame'}`}
-                allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy"
-              />
-            ) : (
-              <div className="music-paused-placeholder">
                 <button
-                  className="resume-play-btn"
-                  onClick={() => broadcastUpdate(playlist, currentIndex, true)}
+                  type="button"
+                  className="queue-remove-btn"
+                  onClick={(e) => handleRemoveTrack(item.id, e)}
+                  title="Remover da rádio"
+                  aria-label={`Remover ${item.title}`}
                 >
-                  <Play size={36} />
-                  <span>Retomar Reprodução</span>
+                  <Trash size={14} />
                 </button>
               </div>
-            )}
-          </div>
-
-          <div className="music-player-controls-bar">
-            <div className="track-titles">
-              <h3 className="track-title" title={currentTrack.title}>
-                {currentTrack.title}
-              </h3>
-              {currentTrack.artist && (
-                <p className="track-artist">{currentTrack.artist}</p>
-              )}
-            </div>
-
-            <div className="playback-buttons">
-              <button
-                className="control-btn"
-                onClick={handlePrev}
-                title="Faixa anterior"
-                aria-label="Faixa anterior"
-              >
-                <SkipBack size={20} />
-              </button>
-              <button
-                className="control-btn primary-play"
-                onClick={() => broadcastUpdate(playlist, currentIndex, !isPlaying)}
-                title={isPlaying ? 'Pausar' : 'Tocar'}
-                aria-label={isPlaying ? 'Pausar' : 'Tocar'}
-              >
-                {isPlaying ? <Pause size={22} /> : <Play size={22} />}
-              </button>
-              <button
-                className="control-btn"
-                onClick={handleNext}
-                title="Próxima faixa"
-                aria-label="Próxima faixa"
-              >
-                <SkipForward size={20} />
-              </button>
-            </div>
-          </div>
+            );
+          })}
         </div>
-
-        {/* Lado Direito: Formulário de Adicionar + Fila da Playlist */}
-        <div className="music-playlist-panel">
-          <div className="playlist-panel-header">
-            <div className="panel-title-row">
-              <h3>Playlist Colaborativa</h3>
-              <span className="badge-count">{playlist.length}</span>
-            </div>
-            <button
-              className="toggle-queue-btn"
-              onClick={() => setShowQueue(!showQueue)}
-            >
-              {showQueue ? 'Ocultar fila' : 'Mostrar fila'}
-            </button>
-          </div>
-
-          {/* Form para adicionar músicas */}
-          <form className="add-track-form" onSubmit={handleAddTrack}>
-            <div className="add-input-wrapper">
-              <input
-                type="url"
-                value={urlInput}
-                onChange={(e) => setUrlInput(e.target.value)}
-                placeholder="Cole o link do YouTube ou Spotify..."
-                className="add-track-input"
-                disabled={isSubmitting}
-                required
-              />
-              <button
-                type="submit"
-                className="add-track-btn"
-                disabled={isSubmitting || !urlInput.trim()}
-                title="Adicionar à playlist"
-              >
-                <Plus size={18} />
-                <span>{isSubmitting ? 'Adicionando…' : 'Adicionar'}</span>
-              </button>
-            </div>
-            {errorMessage && <p className="music-form-error">{errorMessage}</p>}
-            {successMessage && <p className="music-form-success">{successMessage}</p>}
-          </form>
-
-          {/* Fila / Queue de Músicas */}
-          {showQueue && (
-            <div className="playlist-queue-list" role="list">
-              {playlist.map((item, idx) => {
-                const isCurrent = idx === currentIndex;
-                return (
-                  <div
-                    key={item.id}
-                    className={`queue-item ${isCurrent ? 'active' : ''}`}
-                    onClick={() => handleSelectTrack(idx)}
-                    role="listitem"
-                    title={`Tocar ${item.title}`}
-                  >
-                    <div className="queue-item-left">
-                      <span className="queue-index">
-                        {isCurrent && isPlaying ? (
-                          <span className="soundwave-anim">▶</span>
-                        ) : (
-                          idx + 1
-                        )}
-                      </span>
-                      <span className="queue-source-icon">
-                        {item.source === 'youtube' ? (
-                          <YoutubeIcon size={16} />
-                        ) : (
-                          <SpotifyIcon size={16} />
-                        )}
-                      </span>
-                      <div className="queue-track-info">
-                        <strong className="queue-title">{item.title}</strong>
-                        <span className="queue-artist">
-                          {item.artist || (item.source === 'youtube' ? 'YouTube' : 'Spotify')}
-                          {item.addedBy && ` • por ${item.addedBy}`}
-                        </span>
-                      </div>
-                    </div>
-
-                    <button
-                      className="queue-remove-btn"
-                      onClick={(e) => handleRemoveTrack(item.id, e)}
-                      title="Remover da playlist"
-                      aria-label={`Remover ${item.title} da playlist`}
-                    >
-                      <Trash size={16} />
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
+      )}
+    </div>
   );
 }

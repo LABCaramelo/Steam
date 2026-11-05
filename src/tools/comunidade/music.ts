@@ -173,3 +173,95 @@ export function savePlaylist(channelId: string, items: PlaylistItem[]): void {
     // localStorage indisponível
   }
 }
+
+export interface RadioState {
+  playlist: PlaylistItem[];
+  currentIndex: number;
+  trackStartedAt: number;
+  isPlaying: boolean;
+  updatedAt: number;
+}
+
+const RADIO_PREFIX = 'comunidade:radio:';
+const radioListeners = new Map<string, Set<(s: RadioState) => void>>();
+
+export function subscribeRadioState(channelId: string, callback: (s: RadioState) => void): () => void {
+  if (!radioListeners.has(channelId)) {
+    radioListeners.set(channelId, new Set());
+  }
+  radioListeners.get(channelId)!.add(callback);
+  return () => {
+    radioListeners.get(channelId)?.delete(callback);
+  };
+}
+
+export function broadcastRadioLocal(channelId: string, state: RadioState): void {
+  const set = radioListeners.get(channelId);
+  if (set) {
+    set.forEach((cb) => {
+      try {
+        cb(state);
+      } catch (err) {
+        console.error('[radio] erro no listener local:', err);
+      }
+    });
+  }
+}
+
+export function loadRadioState(channelId: string): RadioState {
+  try {
+    const saved = localStorage.getItem(`${RADIO_PREFIX}${channelId}`);
+    if (saved) {
+      const parsed = JSON.parse(saved) as Partial<RadioState>;
+      if (Array.isArray(parsed.playlist) && parsed.playlist.length > 0) {
+        return {
+          playlist: parsed.playlist,
+          currentIndex: typeof parsed.currentIndex === 'number' ? Math.min(parsed.currentIndex, parsed.playlist.length - 1) : 0,
+          trackStartedAt: typeof parsed.trackStartedAt === 'number' ? parsed.trackStartedAt : Date.now(),
+          isPlaying: typeof parsed.isPlaying === 'boolean' ? parsed.isPlaying : true,
+          updatedAt: typeof parsed.updatedAt === 'number' ? parsed.updatedAt : Date.now(),
+        };
+      }
+    }
+  } catch {
+    // fallback
+  }
+  const playlist = loadPlaylist(channelId);
+  return {
+    playlist,
+    currentIndex: 0,
+    trackStartedAt: Date.now(),
+    isPlaying: true,
+    updatedAt: Date.now(),
+  };
+}
+
+export function saveRadioState(channelId: string, state: RadioState): void {
+  try {
+    localStorage.setItem(`${RADIO_PREFIX}${channelId}`, JSON.stringify(state));
+    savePlaylist(channelId, state.playlist);
+  } catch {
+    // ignore
+  }
+}
+
+export function getRadioEmbedUrl(track: PlaylistItem, trackStartedAt: number): string {
+  if (track.source === 'spotify') {
+    return track.embedUrl;
+  }
+  const now = Date.now();
+  const elapsedSec = Math.max(0, Math.floor((now - trackStartedAt) / 1000));
+
+  // Se for live stream ou início recente (menos de 3s), usa a URL base
+  if (elapsedSec < 3 || track.id.includes('live') || track.url.includes('live')) {
+    return track.embedUrl;
+  }
+
+  try {
+    const u = new URL(track.embedUrl);
+    u.searchParams.set('start', String(elapsedSec));
+    return u.toString();
+  } catch {
+    return `${track.embedUrl}&start=${elapsedSec}`;
+  }
+}

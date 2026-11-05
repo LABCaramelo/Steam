@@ -15,6 +15,7 @@ import { SettingsView } from './components/Settings';
 import { ChannelIcon, HomeSidebar, ServerSidebar, type VoiceUi } from './components/Sidebar';
 
 import { VoiceView } from './components/VoiceView';
+import { CoworkingRadioAudioHost } from './components/MusicStation';
 import { activateAttachmentOwner } from './attachments';
 
 export function App({ user }: { user?: ToolUser } = {}) {
@@ -249,6 +250,11 @@ export function App({ user }: { user?: ToolUser } = {}) {
       <OpenNavContext.Provider value={() => setNavOpen(true)}>
         <OpenQuickSwitcherContext.Provider value={openQuickSwitcher}>
           <div className="app" data-nav={navOpen ? 'open' : 'closed'}>
+
+            {/* Rádio Coworking: toca áudio sincronizado SOMENTE quando conectado à chamada do Coworking */}
+            {state.voice?.channelId === 'ch-pair' && session.status === 'connected' && (
+              <CoworkingRadioAudioHost session={session} channelId="ch-pair" />
+            )}
 
             <div className="app-body">
               <div className="app-panel">

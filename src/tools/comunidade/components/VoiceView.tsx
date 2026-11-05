@@ -21,11 +21,13 @@ import { Avatar } from './Avatar';
 import { Conversation } from './Chat';
 import { MusicStation } from './MusicStation';
 import {
-  loadPlaylist,
+  broadcastRadioLocal,
+  loadRadioState,
   parseMusicUrl,
   resolveTrackMetadata,
-  savePlaylist,
+  saveRadioState,
   type PlaylistItem,
+  type RadioState,
 } from '../music';
 
 interface Props {
@@ -214,6 +216,8 @@ function VoiceChat({
             channelId={channel.id}
             session={session}
             userName={state.profile.name || 'Membro do LAB'}
+            isConnectedToVoice={canSend}
+            onJoinVoice={() => dispatch({ type: 'joinVoice', serverId: state.servers[0]?.id || 's-main', channelId: channel.id })}
             layout="chat"
           />
         </div>
@@ -244,7 +248,7 @@ function VoiceChat({
             if (music) {
               try {
                 const meta = await resolveTrackMetadata(music);
-                const current = loadPlaylist(channel.id);
+                const curRadio = loadRadioState(channel.id);
                 const newItem: PlaylistItem = {
                   id: `track-${crypto.randomUUID().slice(0, 8)}`,
                   source: music.source,
@@ -257,13 +261,23 @@ function VoiceChat({
                   addedBy: state.profile.name || 'Membro do LAB',
                   addedAt: Date.now(),
                 };
-                const updated = [...current, newItem];
-                savePlaylist(channel.id, updated);
+                const updatedPlaylist = [...curRadio.playlist, newItem];
+                const updatedRadio: RadioState = {
+                  ...curRadio,
+                  playlist: updatedPlaylist,
+                  currentIndex: updatedPlaylist.length - 1,
+                  trackStartedAt: Date.now(),
+                  isPlaying: true,
+                  updatedAt: Date.now(),
+                };
+                saveRadioState(channel.id, updatedRadio);
+                broadcastRadioLocal(channel.id, updatedRadio);
                 if (session.sendMusicPacket) {
                   void session.sendMusicPacket({
                     type: 'music:sync',
-                    playlist: updated,
-                    currentIndex: updated.length - 1,
+                    playlist: updatedRadio.playlist,
+                    currentIndex: updatedRadio.currentIndex,
+                    trackStartedAt: updatedRadio.trackStartedAt,
                     isPlaying: true,
                   });
                 }
