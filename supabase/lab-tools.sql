@@ -85,7 +85,7 @@ insert into public.lab_tools (slug, appid, name, available) values
   ('gravador', 9, 'No Ar', true),
   ('montagem', 10, 'Montagem', true),
   ('gabinete', 11, 'Gabinete', false),
-  ('stories', 14, 'Stories Maker', true),
+  ('stories', 14, 'Stories Maker', false),
   ('logomotion', 15, 'Logo Motion', false),
   ('cap', 16, 'Cap', false),
   ('caderno', 18, 'Caderno', false),

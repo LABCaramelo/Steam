@@ -1566,20 +1566,22 @@ export function AdminApp() {
                             className="admin-user-cell__avatar"
                           />
                         ) : (
-                          <div className="admin-user-cell__avatar" style={{ display: "grid", placeItems: "center", fontSize: "14px", fontWeight: "900" }}>
+                          <div className="admin-user-cell__avatar" style={{ display: "grid", placeItems: "center", fontSize: "13px", fontWeight: "900" }}>
                             {u.name?.slice(0, 1) || "U"}
                           </div>
                         )}
-                        <div className="admin-user-cell__info">
-                          <span className="admin-user-cell__name">{u.name}</span>
+                        <div className="admin-user-cell__info" style={{ minWidth: 0, maxWidth: "130px" }}>
+                          <span className="admin-user-cell__name" title={u.name} style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block" }}>{u.name}</span>
                           {u.nickname && (
-                            <span className="admin-user-cell__nick">@{u.nickname}</span>
+                            <span className="admin-user-cell__nick" title={`@${u.nickname}`} style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block" }}>@{u.nickname}</span>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td>{u.email}</td>
-                    <td>
+                    <td style={{ maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={u.email}>
+                      {u.email}
+                    </td>
+                    <td style={{ whiteSpace: "nowrap", fontSize: "12px" }}>
                       {u.whatsapp ? (
                         <span>
                           {u.whatsapp} {u.whatsapp_verified ? "✅" : "⏳"}
@@ -1588,7 +1590,7 @@ export function AdminApp() {
                         <span style={{ opacity: 0.4 }}>—</span>
                       )}
                     </td>
-                    <td>
+                    <td style={{ whiteSpace: "nowrap" }}>
                       {u.is_admin || u.role === "admin" ? (
                         <span className="admin-badge admin-badge--admin">Administrador</span>
                       ) : u.role === "beta" ? (
@@ -1599,7 +1601,7 @@ export function AdminApp() {
                         <span className="admin-badge admin-badge--member">Membro</span>
                       )}
                     </td>
-                    <td>
+                    <td style={{ whiteSpace: "nowrap" }}>
                       <span className={`admin-badge admin-badge--${u.access_status}`}>
                         {u.access_status === "active"
                           ? "Ativo"
@@ -1608,10 +1610,10 @@ export function AdminApp() {
                           : "Bloqueado"}
                       </span>
                     </td>
-                    <td>
+                    <td style={{ maxWidth: "180px" }}>
                       {u.tools_owned.length > 0 ? (
-                        <div className="admin-chip-list">
-                          {u.tools_owned.map((slug) => (
+                        <div className="admin-chip-list" style={{ alignItems: "center" }}>
+                          {u.tools_owned.slice(0, 2).map((slug) => (
                             <span key={slug} className="admin-chip admin-chip--tool" title={`Ferramenta: ${slug}`}>
                               <span>{slug}</span>
                               <button
@@ -1624,29 +1626,41 @@ export function AdminApp() {
                               </button>
                             </span>
                           ))}
+                          {u.tools_owned.length > 2 && (
+                            <button
+                              type="button"
+                              className="admin-chip admin-chip--more"
+                              title={`Total de ${u.tools_owned.length} ferramentas: ${u.tools_owned.join(", ")}. Clique para gerenciar.`}
+                              onClick={() => setEditingUser({ ...u })}
+                            >
+                              +{u.tools_owned.length - 2} mais
+                            </button>
+                          )}
                         </div>
                       ) : (
                         <span style={{ opacity: 0.4, fontSize: "12px" }}>Nenhuma</span>
                       )}
                     </td>
-                    <td style={{ fontSize: "12px", opacity: 0.7 }}>
+                    <td style={{ fontSize: "12px", opacity: 0.7, whiteSpace: "nowrap" }}>
                       {new Date(u.created_at).toLocaleDateString("pt-BR")}
                     </td>
-                    <td style={{ textAlign: "right" }}>
-                      <div style={{ display: "inline-flex", gap: "6px" }}>
+                    <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+                      <div style={{ display: "inline-flex", gap: "6px", alignItems: "center" }}>
                         <button
-                          className="admin-btn admin-btn--ghost admin-btn--sm"
+                          className="admin-btn admin-btn--ghost admin-btn--icon"
                           title="Ver histórico de atividades e gerenciar horas deste membro"
                           onClick={() => openUserActivities(u)}
+                          aria-label="Atividades"
                         >
-                          ⏱️ Atividades
+                          ⏱️
                         </button>
                         <button
-                          className="admin-btn admin-btn--primary admin-btn--sm"
+                          className="admin-btn admin-btn--primary admin-btn--icon"
                           title="Gerenciar Conquistas deste membro"
                           onClick={() => openUserAchievements(u)}
+                          aria-label="Conquistas"
                         >
-                          🏆 Conquistas
+                          🏆
                         </button>
                         <button
                           className="admin-btn admin-btn--ghost admin-btn--sm"
@@ -1655,7 +1669,7 @@ export function AdminApp() {
                           Gerenciar
                         </button>
                         <button
-                          className="admin-btn admin-btn--ghost admin-btn--danger admin-btn--sm"
+                          className="admin-btn admin-btn--ghost admin-btn--danger admin-btn--icon"
                           title={
                             u.id === currentUserId
                               ? "Você não pode excluir sua própria conta"
@@ -1668,6 +1682,7 @@ export function AdminApp() {
                             setDeleteConfirmText("");
                           }}
                           disabled={u.id === currentUserId || u.email === "holaluiz.mail@gmail.com"}
+                          aria-label="Excluir usuário"
                         >
                           🗑️
                         </button>
