@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { getRegisteredTool } from "../../toolCatalog";
 import type { LibraryApp } from "../../types";
 import { useUi } from "../../ui";
+import { useAuth } from "../../auth";
+import { canUseTool, toolAccessMessage } from "../../toolPermissions";
 
 export type PlayVariant = "play" | "install" | "update" | "running" | "busy";
 
@@ -22,11 +24,15 @@ export function usePlayAction(app: LibraryApp): PlayAction {
   const [run, setRun] = useRun(app.appid);
   const downloads = useDownloads();
   const ui = useUi();
+  const { profile } = useAuth();
   const real = ui.settings.launchViaSteamProtocol;
 
   const tool = app.tool ?? getRegisteredTool(app.appid)?.tool;
   if (tool) {
-    return { variant: "play", label: "Abrir", onClick: () => navigate(tool.launchPath) };
+    return { variant: "play", label: "Abrir", onClick: () => {
+      if (!canUseTool(tool, profile)) { ui.toast(toolAccessMessage(tool, profile)); return; }
+      navigate(tool.launchPath);
+    } };
   }
 
   const settled = app.installed ? { kind: "idle" as const } : { kind: "installed" as const };

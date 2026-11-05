@@ -28,6 +28,7 @@ export interface AdminToolItem {
   name: string;
   price_cents: number;
   available: boolean;
+  stage: "beta" | "stable";
   created_at: string;
   owners_count: number;
   custom_assets?: ToolCustomAssets;
@@ -40,7 +41,7 @@ export interface AdminUserItem {
   nickname: string | null;
   avatar_url: string | null;
   bio: string | null;
-  role: "admin" | "member" | "student" | string;
+  role: "admin" | "beta" | "member" | "student" | string;
   access_status: "active" | "pending" | "blocked" | string;
   blocked_reason: string | null;
   created_at: string;

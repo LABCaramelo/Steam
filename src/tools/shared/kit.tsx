@@ -102,7 +102,7 @@ const MISSING = new Set(["PGRST202", "PGRST205", "42P01"]);
 function toUser(
   user: User,
   admin: boolean,
-  profile?: { name?: string | null; nickname?: string | null; avatar_url?: string | null } | null
+  profile?: { name?: string | null; nickname?: string | null; avatar_url?: string | null; role?: string | null } | null
 ): ToolUser {
   const meta = user.user_metadata ?? {};
   const text = (value: unknown) => typeof value === "string" ? value.trim() : "";
@@ -120,7 +120,8 @@ function toUser(
     text(meta.avatar_url) ||
     text(meta.picture) ||
     null;
-  return { id: user.id, email, name, nickname, role: admin ? "admin" : "member", avatarUrl };
+  const role = admin ? "admin" : profile?.role === "beta" || profile?.role === "student" ? profile.role : "member";
+  return { id: user.id, email, name, nickname, role, avatarUrl };
 }
 
 /** Only used to stop an already server-validated token at its signed expiry, never to grant access. */
@@ -175,7 +176,7 @@ export function ToolGate({ tool, children, allowAnonymous }: { tool: ToolInfo; c
       expiryTimer = window.setTimeout(() => signedOut(), Math.min(expiresAt - Date.now(), 2_147_000_000));
       const result = await Promise.all([
         tool.slug === "admin" ? Promise.resolve({ data: true, error: null }) : supabase.rpc("has_tool", { p_slug: tool.slug }),
-        supabase.from("profiles").select("name, nickname, avatar_url").eq("id", verified.id).maybeSingle(),
+        supabase.from("profiles").select("name, nickname, avatar_url, role").eq("id", verified.id).maybeSingle(),
         supabase.rpc("is_lab_admin"),
         supabase.rpc("is_admin"),
       ]).catch(() => null);

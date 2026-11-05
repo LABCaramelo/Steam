@@ -336,7 +336,7 @@ export function EditProfileModal({ onClose }: { onClose: () => void }) {
                 <div>
                   <div className="muted small">Acesso</div>
                   <span className="cm-brand-badge" style={{ textTransform: "uppercase" }}>
-                    {profile?.role === "admin" ? "Administrador" : "Membro"}
+                    {profile?.role === "admin" ? "Administrador" : profile?.role === "beta" ? "Beta" : profile?.role === "student" ? "Aluno" : "Membro"}
                   </span>
                 </div>
               </div>

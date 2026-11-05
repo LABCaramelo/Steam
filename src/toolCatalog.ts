@@ -1,5 +1,6 @@
 import type { ArtKind, LibraryApp, LibrarySnapshot, ToolMetadata } from "./types";
 import { supabase } from "./supabase";
+import { canUseTool, isActiveAdmin, type ToolAccessProfile } from "./toolPermissions";
 
 /**
  * LAB tools. Every tool is sold in the store; only the ones in public.user_tools for the signed-in
@@ -212,7 +213,8 @@ export const STORIES_APP_ID = 14;
 
 export const STORIES_APP = tool(STORIES_APP_ID, "Stories Maker", {
   slug: "stories",
-  available: true,
+  available: false,
+  stage: "beta",
   launchPath: `/library/app/${STORIES_APP_ID}/open`,
   publicPage: "/tools/stories",
   description: "Crie stories para o Instagram em imagem e vídeo, com tipografia, paletas personalizadas, templates de diagramação e widgets nativos.",
@@ -529,6 +531,7 @@ export const TOOL_CATALOG: readonly LibraryApp[] = [
 export interface DynamicToolMeta {
   name?: string;
   available?: boolean;
+  stage?: "beta" | "stable";
   price_cents?: number;
   custom_assets?: Record<string, string | undefined>;
 }
@@ -593,6 +596,7 @@ export function applyToolOverrides(app: LibraryApp): LibraryApp {
       ? {
           ...app.tool,
           available: meta.available !== undefined ? meta.available : app.tool.available,
+          stage: meta.stage ?? app.tool.stage,
           price_cents: meta.price_cents !== undefined ? meta.price_cents : app.tool.price_cents,
         }
       : undefined,
@@ -620,7 +624,7 @@ export async function syncCustomToolAssets(): Promise<void> {
   try {
     const { data, error } = await supabase
       .from("lab_tools")
-      .select("appid, slug, name, available, price_cents, custom_assets");
+      .select("appid, slug, name, available, stage, price_cents, custom_assets");
     if (!error && Array.isArray(data)) {
       const metaMap: Record<number, DynamicToolMeta> = {};
       for (const row of data) {
@@ -628,6 +632,7 @@ export async function syncCustomToolAssets(): Promise<void> {
           metaMap[row.appid] = {
             name: row.name || undefined,
             available: typeof row.available === "boolean" ? row.available : undefined,
+            stage: row.stage === "beta" || row.stage === "stable" ? row.stage : undefined,
             price_cents: typeof row.price_cents === "number" ? row.price_cents : undefined,
             custom_assets: (row.custom_assets && typeof row.custom_assets === "object") ? row.custom_assets : undefined,
           };
@@ -661,15 +666,16 @@ export function toolArtUrl(appid: number, kind: ArtKind): string | undefined {
  * Adds the tools this person owns to the current source. Catalog tools they have not acquired
  * are removed, so a Steam snapshot can never bring one in either.
  */
-export function registerTools(snapshot: LibrarySnapshot, owned: ReadonlySet<string>, isAdmin = false): LibrarySnapshot {
-  const dynamicCatalog = getCatalogApps(isAdmin);
-  const catalogIds = new Set(dynamicCatalog.map((app) => app.appid));
+export function registerTools(snapshot: LibrarySnapshot, owned: ReadonlySet<string>, profile?: ToolAccessProfile | null): LibrarySnapshot {
+  const admin = isActiveAdmin(profile);
+  const dynamicCatalog = getCatalogApps(admin);
+  const catalogIds = new Set(TOOL_CATALOG.map((app) => app.appid));
   return {
     ...snapshot,
     apps: [
       ...dynamicCatalog.filter((app) => {
         const slug = app.tool!.slug;
-        return owned.has(slug) || (slug === "gabinete" && owned.has("creative-os"));
+        return canUseTool(app.tool!, profile) && (admin || owned.has(slug) || (slug === "gabinete" && owned.has("creative-os")));
       }),
       ...snapshot.apps.filter((app) => !catalogIds.has(app.appid)),
     ],

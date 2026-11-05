@@ -4,6 +4,7 @@ import { supabase } from "./supabase";
 import { getToolBySlug } from "./toolCatalog";
 import { clearToolLocalData, publishToolRelease, subscribeToolReleases } from "./toolLifecycle";
 import { assertToolReleaseConfirmed, toolReleaseFailure } from "./toolRelease";
+import { canUseTool, toolAccessMessage } from "./toolPermissions";
 
 /**
  * Tools in the signed-in person's library (public.user_tools). The store reads it to show
@@ -33,7 +34,7 @@ const MISSING = new Set(["PGRST202", "PGRST205", "42P01", "42883"]);
 export const UNCONFIGURED_MESSAGE = "A loja ainda não está ligada ao banco do LAB. Rode supabase/lab-tools.sql no Supabase.";
 
 export function EntitlementsProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const userId = user?.id ?? null;
   const [status, setStatus] = useState<EntitlementStatus>("loading");
   const [owned, setOwned] = useState<ReadonlySet<string>>(NONE);
@@ -90,9 +91,9 @@ export function EntitlementsProvider({ children }: { children: ReactNode }) {
 
   const acquire = useCallback(async (slug: string) => {
     if (!userId) throw new Error("Entre no LAB para adquirir ferramentas.");
-    if (!getToolBySlug(slug)?.tool?.available) {
-      throw new Error("Esta ferramenta estará disponível em breve. A aquisição ainda não foi liberada.");
-    }
+    const tool = getToolBySlug(slug)?.tool;
+    if (!tool) throw new Error("Ferramenta não encontrada.");
+    if (!canUseTool(tool, profile)) throw new Error(toolAccessMessage(tool, profile));
     const { error } = await supabase.rpc("acquire_tool", { p_slug: slug });
     if (error) {
       if (MISSING.has(error.code)) throw new Error(UNCONFIGURED_MESSAGE);
@@ -102,7 +103,7 @@ export function EntitlementsProvider({ children }: { children: ReactNode }) {
     ++request.current;
     setOwned((prev) => new Set([...prev, slug]));
     setStatus("ready");
-  }, [userId]);
+  }, [userId, profile]);
 
   const release = useCallback(async (slug: string, onReleased?: () => void) => {
     const app = getToolBySlug(slug);

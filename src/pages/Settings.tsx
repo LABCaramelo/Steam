@@ -116,7 +116,7 @@ function SettingsPage({ slug }: { slug: string }) {
             <dt>Nível de acesso</dt>
             <dd>
               <span className="cm-brand-badge" style={{ textTransform: "uppercase" }}>
-                {profile?.role === "admin" ? "Administrador" : "Membro"}
+                {profile?.role === "admin" ? "Administrador" : profile?.role === "beta" ? "Beta" : profile?.role === "student" ? "Aluno" : "Membro"}
               </span>
             </dd>
             <dt>Frase / Bio</dt>

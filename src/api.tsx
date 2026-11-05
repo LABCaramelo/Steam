@@ -76,7 +76,6 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [storedCollections, setCollections] = useState<UserCollection[]>([]);
   // Owned tools join the library once the person's library is known, so a tool never flashes in and out.
-  const isAdmin = profile?.role === "admin";
   const [catalogVersion, setCatalogVersion] = useState(0);
 
   useEffect(() => {
@@ -84,8 +83,8 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const snapshot = useMemo(
-    () => (source && entitlements.status !== "loading" ? registerTools(source, entitlements.owned, isAdmin) : null),
-    [source, entitlements.status, entitlements.owned, isAdmin, catalogVersion],
+    () => (source && entitlements.status !== "loading" ? registerTools(source, entitlements.owned, profile) : null),
+    [source, entitlements.status, entitlements.owned, profile, catalogVersion],
   );
   // Collections keep ids of tools that are not owned yet (or anymore); they are hidden, not forgotten.
   const collections = useMemo(() => {
@@ -136,11 +135,11 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   }, [user, refreshActivities]);
 
   useEffect(() => {
-    syncCustomToolAssets();
-  }, []);
+    void syncCustomToolAssets();
+  }, [user?.id, profile?.role, profile?.access_status]);
 
   useEffect(() => {
-    const onFocus = () => refreshActivities();
+    const onFocus = () => { refreshActivities(); void syncCustomToolAssets(); };
     window.addEventListener("focus", onFocus);
     return () => window.removeEventListener("focus", onFocus);
   }, [refreshActivities]);

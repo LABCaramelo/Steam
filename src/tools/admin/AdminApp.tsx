@@ -663,7 +663,7 @@ export function AdminApp() {
           className={`admin-tab ${tab === "tools" ? "is-active" : ""}`}
           onClick={() => setTab("tools")}
         >
-          Ferramentas &amp; Loja ({tools.filter((t) => t.slug !== "admin").length})
+          Ferramentas &amp; Loja ({tools.length})
         </button>
         <button
           className={`admin-tab ${tab === "seeds" ? "is-active" : ""}`}
@@ -811,26 +811,37 @@ export function AdminApp() {
                         #{t.appid} · {t.slug}
                       </code>
                     </td>
-                    <td>{t.price_cents === 0 ? "Gratuita" : `R$ ${(t.price_cents / 100).toFixed(2)}`}</td>
+                    <td>{t.slug === "admin" ? "Interno" : t.price_cents === 0 ? "Gratuita" : `R$ ${(t.price_cents / 100).toFixed(2)}`}</td>
                     <td>
                       <strong>{t.owners_count}</strong> {t.owners_count === 1 ? "membro" : "membros"}
                     </td>
                     <td>
-                      {t.available ? (
-                        <span className="admin-badge admin-badge--published">● Publicada</span>
-                      ) : (
-                        <span className="admin-badge admin-badge--unreleased">○ Em breve</span>
-                      )}
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                        {t.slug === "admin" ? (
+                          <span className="admin-badge admin-badge--admin">Painel Interno</span>
+                        ) : t.available ? (
+                          <span className="admin-badge admin-badge--published">● Publicada</span>
+                        ) : (
+                          <span className="admin-badge admin-badge--unreleased">○ Em breve</span>
+                        )}
+                        {t.stage === "beta" && (
+                          <span className="admin-badge admin-badge--beta">BETA</span>
+                        )}
+                      </div>
                     </td>
                     <td style={{ textAlign: "center" }}>
-                      <label className="admin-switch" title={t.available ? "Despublicar" : "Publicar"}>
-                        <input
-                          type="checkbox"
-                          checked={t.available}
-                          onChange={() => handleToggleTool(t)}
-                        />
-                        <span className="admin-slider"></span>
-                      </label>
+                      {t.slug === "admin" ? (
+                        <span style={{ fontSize: "11px", opacity: 0.5 }}>Interno</span>
+                      ) : (
+                        <label className="admin-switch" title={t.available ? "Despublicar" : "Publicar"}>
+                          <input
+                            type="checkbox"
+                            checked={t.available}
+                            onChange={() => handleToggleTool(t)}
+                          />
+                          <span className="admin-slider"></span>
+                        </label>
+                      )}
                     </td>
                     <td style={{ textAlign: "right" }}>
                       <button
@@ -1517,6 +1528,7 @@ export function AdminApp() {
             >
               <option value="">Todos os cargos</option>
               <option value="admin">Administradores</option>
+              <option value="beta">Beta testers</option>
               <option value="member">Membros</option>
               <option value="student">Alunos</option>
             </select>
@@ -1583,6 +1595,10 @@ export function AdminApp() {
                     <td>
                       {u.is_admin || u.role === "admin" ? (
                         <span className="admin-badge admin-badge--admin">Administrador</span>
+                      ) : u.role === "beta" ? (
+                        <span className="admin-badge admin-badge--beta">Beta</span>
+                      ) : u.role === "student" ? (
+                        <span className="admin-badge admin-badge--member">Aluno</span>
                       ) : (
                         <span className="admin-badge admin-badge--member">Membro</span>
                       )}
@@ -1918,6 +1934,22 @@ export function AdminApp() {
                 >
                   <option value="true">Publicada (disponível para aquisição)</option>
                   <option value="false">Em breve (bloqueada na vitrine)</option>
+                </select>
+              </div>
+
+              <div className="admin-form-group">
+                <label>Estágio de Liberação</label>
+                <select
+                  value={editingTool.stage || "stable"}
+                  onChange={(e) =>
+                    setEditingTool({
+                      ...editingTool,
+                      stage: e.target.value as "beta" | "stable",
+                    })
+                  }
+                >
+                  <option value="stable">Estável (público)</option>
+                  <option value="beta">Beta (exclusivo para cargo BETA)</option>
                 </select>
               </div>
 
@@ -2282,6 +2314,7 @@ export function AdminApp() {
                   onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
                 >
                   <option value="member">Membro (padrão)</option>
+                  <option value="beta">Beta (acesso a ferramentas em desenvolvimento)</option>
                   <option value="admin">Administrador (acesso ao Painel Admin)</option>
                   <option value="student">Aluno</option>
                 </select>

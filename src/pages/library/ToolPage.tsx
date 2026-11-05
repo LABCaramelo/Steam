@@ -11,9 +11,11 @@ import { formatLastPlayed, formatPlaytime } from "../../format";
 import { getRegisteredTool } from "../../toolCatalog";
 import type { LibraryApp } from "../../types";
 import { usePlayAction } from "./play";
+import { canUseTool, isActiveAdmin } from "../../toolPermissions";
 
 export function ToolDetails({ app }: { app: LibraryApp }) {
   const { isFavorite, toggleFavorite } = useLibrary();
+  const { profile } = useAuth();
   const play = usePlayAction(app);
   const favorite = isFavorite(app.appid);
   const store = app.tool!.store;
@@ -36,7 +38,7 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
           <div className="playbar__stat">
             <span className="playbar__stat-label">Disponibilidade</span>
             <span className="playbar__stat-value">
-              {app.tool?.stage === "beta" ? "Versão Beta · Na sua biblioteca" : "Na sua biblioteca"}
+              {!app.tool?.available && isActiveAdmin(profile) ? "Pré-publicação · Acesso ADMIN" : app.tool?.stage === "beta" ? "Versão Beta · Na sua biblioteca" : "Na sua biblioteca"}
             </span>
           </div>
           <div className="playbar__stat">
@@ -56,7 +58,7 @@ export function ToolDetails({ app }: { app: LibraryApp }) {
           <IconStar size={17} filled={favorite} />
           {favorite ? "Nos favoritos" : "Favoritar"}
         </button>
-        <RemoveToolButton app={app} />
+        {!isActiveAdmin(profile) && <RemoveToolButton app={app} />}
       </div>
       <div className="appdetails__body">
         <div className="appdetails__col appdetails__col--main">
@@ -125,7 +127,7 @@ export function ToolPage() {
   if (!snapshot) return <div className="page-loading">Carregando ferramenta…</div>;
   // Ferramenta do catálogo que a pessoa ainda não adquiriu: a página dela é a da loja.
   if (!tool && getRegisteredTool(Number(appid))) return <Navigate to={`/store/app/${appid}`} replace />;
-  if (tool?.tool?.adminOnly && profile?.role !== "admin") return <Navigate to="/library/home" replace />;
+  if (tool?.tool && !canUseTool(tool.tool, profile)) return <Navigate to={`/store/app/${appid}`} replace />;
   if (!tool?.tool) return <div className="page-empty">Esta ferramenta não está disponível. <Link to="/library/home">Voltar à biblioteca</Link></div>;
   return <ToolWorkspace key={tool.appid} app={tool} />;
 }

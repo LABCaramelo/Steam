@@ -31,6 +31,7 @@ export const adminRepo = {
     if (error) throw new Error(error.message || "Não foi possível carregar ferramentas.");
     return (data ?? []).map((t: any) => ({
       ...t,
+      stage: t.stage === "beta" ? "beta" : "stable",
       owners_count: Number(t.owners_count ?? 0),
       custom_assets: (t.custom_assets && typeof t.custom_assets === "object") ? t.custom_assets : {},
     })) as AdminToolItem[];
@@ -46,13 +47,14 @@ export const adminRepo = {
 
   async updateTool(
     slug: string,
-    params: { name?: string; price_cents?: number; available?: boolean }
+    params: { name?: string; price_cents?: number; available?: boolean; stage?: "beta" | "stable" }
   ): Promise<void> {
     const { error } = await supabase.rpc("admin_update_tool", {
       p_slug: slug,
       p_name: params.name ?? "",
       p_price_cents: params.price_cents ?? 0,
       p_available: params.available ?? false,
+      p_stage: params.stage ?? null,
     });
     if (error) throw new Error(error.message || "Erro ao atualizar dados da ferramenta.");
   },
@@ -117,6 +119,14 @@ export const adminRepo = {
       p_role: role,
     });
     if (error) throw new Error(error.message || "Erro ao alterar cargo do usuário.");
+  },
+
+  async revokeUserTool(userId: string, toolSlug: string): Promise<void> {
+    const { error } = await supabase.rpc("admin_revoke_user_tool", {
+      p_user_id: userId,
+      p_tool_slug: toolSlug,
+    });
+    if (error) throw new Error(error.message || "Erro ao remover acesso à ferramenta.");
   },
 
   async setUserStatus(userId: string, status: string, reason?: string): Promise<void> {

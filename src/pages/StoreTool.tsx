@@ -7,6 +7,7 @@ import { PointerTrail } from "../components/PointerTrail";
 import { useAuth } from "../auth";
 import { useEntitlements } from "../entitlements";
 import { getRegisteredTool, subscribeToolCatalog } from "../toolCatalog";
+import { canUseTool, isActiveAdmin, toolAccessMessage } from "../toolPermissions";
 
 /** Página da ferramenta na loja: o que ela faz, onde ficam os dados e o botão de adquirir. */
 export function StoreToolPage() {
@@ -29,9 +30,11 @@ export function StoreToolPage() {
     };
   }, [app]);
 
-  if (!app?.tool || (app.tool.adminOnly && profile?.role !== "admin")) return <Navigate to="/store" replace />;
+  if (!app?.tool || (app.tool.adminOnly && !isActiveAdmin(profile))) return <Navigate to="/store" replace />;
   const { store, available } = app.tool;
-  const owned = owns(app.tool.slug);
+  const admin = isActiveAdmin(profile);
+  const owned = admin || owns(app.tool.slug);
+  const accessNote = !canUseTool(app.tool, profile) ? toolAccessMessage(app.tool, profile) : admin ? "Acesso completo de administrador." : owned ? "Já está na sua biblioteca." : "Para membros do LAB.";
 
   return (
     <div className="store store-tool">
@@ -67,7 +70,7 @@ export function StoreToolPage() {
           </dl>
           <div className="store-tool__price">
             <OwnedBadge owned={owned} available={available} stage={app.tool.stage} />
-            <span className="store-tool__price-note">{!available ? "Aquisição ainda não liberada." : owned ? "Já está na sua biblioteca." : "Para membros do LAB."}</span>
+            <span className="store-tool__price-note">{accessNote}</span>
           </div>
           <AcquireButton app={app} size="lg" block />
           <p className="store-tool__data">{store.dataNote}</p>

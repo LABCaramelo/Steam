@@ -4,6 +4,8 @@ import { useLibrary } from "../../api";
 import type { LibraryApp } from "../../types";
 import { useUi } from "../../ui";
 import { usePlayAction } from "./play";
+import { useAuth } from "../../auth";
+import { isActiveAdmin } from "../../toolPermissions";
 
 export interface ContextTarget {
   app: LibraryApp;
@@ -17,6 +19,7 @@ export function GameContextMenu({ target, onClose, onRemove }: { target: Context
   const nav = useNavigate();
   const lib = useLibrary();
   const ui = useUi();
+  const { profile } = useAuth();
   const play = usePlayAction(app);
   const ref = useRef<HTMLDivElement>(null);
   const [sub, setSub] = useState(false);
@@ -85,7 +88,7 @@ export function GameContextMenu({ target, onClose, onRemove }: { target: Context
           Procurar arquivos locais
         </button>
       )}
-      {app.tool && <>
+      {app.tool && !isActiveAdmin(profile) && <>
         <div className="menu__sep" />
         <button className="ctxmenu__item tool-remove-trigger" onClick={act(() => onRemove(app))}>Remover da biblioteca…</button>
       </>}

@@ -7,6 +7,7 @@ import { IconChevronRight } from "../components/Icons";
 import { UNCONFIGURED_MESSAGE, useEntitlements } from "../entitlements";
 import { getCatalogApps, subscribeToolCatalog } from "../toolCatalog";
 import type { LibraryApp } from "../types";
+import { isActiveAdmin } from "../toolPermissions";
 
 /**
  * Loja do LAB: todas as ferramentas do catálogo. Só as adquiridas entram na biblioteca.
@@ -15,7 +16,7 @@ export function StorePage() {
   const nav = useNavigate();
   const { owns, status } = useEntitlements();
   const { profile } = useAuth();
-  const isAdmin = profile?.role === "admin";
+  const isAdmin = isActiveAdmin(profile);
   const [catalogVersion, setCatalogVersion] = useState(0);
 
   useEffect(() => {
@@ -33,8 +34,8 @@ export function StorePage() {
   }, [featured.length]);
 
   const cur = featured[slide] || featured[0];
-  const ownedCount = catalog.filter((a) => owns(a.tool!.slug)).length;
-  const allComingSoon = catalog.every((a) => !a.tool!.available);
+  const ownedCount = catalog.filter((a) => isAdmin || owns(a.tool!.slug)).length;
+  const allComingSoon = !isAdmin && catalog.every((a) => !a.tool!.available);
 
   return (
     <div className="store">

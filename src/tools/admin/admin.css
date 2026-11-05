@@ -295,6 +295,12 @@
   border: 1px solid rgba(255, 112, 26, 0.35);
 }
 
+.admin-badge--beta {
+  background: rgba(118, 87, 255, 0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(118, 87, 255, 0.35);
+}
+
 .admin-badge--member {
   background: rgba(255, 255, 255, 0.06);
   color: rgb(var(--cm-fg-muted));

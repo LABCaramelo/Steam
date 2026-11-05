@@ -12,6 +12,7 @@ import type { LibraryApp } from "../../types";
 import { useUi } from "../../ui";
 import { usePlayAction } from "./play";
 import { ToolDetails } from "./ToolPage";
+import { canUseTool } from "../../toolPermissions";
 
 export function AppPage() {
   const { appid } = useParams();
@@ -20,7 +21,8 @@ export function AppPage() {
   const a = app(Number(appid));
   if (!snapshot) return <div className="page-loading">Carregando…</div>;
   if (!a && getRegisteredTool(Number(appid))) return <Navigate to={`/store/app/${appid}`} replace />;
-  if (!a || (a.tool?.adminOnly && profile?.role !== "admin")) return <Navigate to="/library/home" replace />;
+  if (!a) return <Navigate to="/library/home" replace />;
+  if (a.tool && !canUseTool(a.tool, profile)) return <Navigate to={`/store/app/${appid}`} replace />;
   if (a.tool) return <ToolDetails key={a.appid} app={a} />;
   return <AppDetails key={a.appid} app={a} />;
 }
