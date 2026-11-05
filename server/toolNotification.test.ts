@@ -50,6 +50,8 @@ test("formatNewToolMessage avisa explicitamente modo BETA e restrição exclusiv
 
   // 4. Links e chamada para testadores beta
   assert.match(text, /https:\/\/www\.umcaracaramelo\.com\.br\/tools\/kanban/);
+  assert.match(text, /https:\/\/www\.umcaracaramelo\.com\.br\/library\/home/);
+  assert.doesNotMatch(text, /\.html#/);
   assert.match(text, /Organize sua semana com a Rotina Superprodutiva!/);
   assert.match(text, /Usuários Beta: testem sem moderação/i);
 });
@@ -64,6 +66,8 @@ test("formatNewToolMessage formata anúncio padrão para ferramentas em versão 
   assert.match(text, /NOVA FERRAMENTA LIBERADA NO LAB/i);
   assert.doesNotMatch(text, /ACESSO EXCLUSIVO: FERRAMENTA EM MODO BETA/);
   assert.doesNotMatch(text, /apenas para usuários com acesso Beta/i);
+  assert.match(text, /https:\/\/www\.umcaracaramelo\.com\.br\/library\/home/);
+  assert.doesNotMatch(text, /\.html#/);
   assert.match(text, /Bora testar/i);
 });
 
