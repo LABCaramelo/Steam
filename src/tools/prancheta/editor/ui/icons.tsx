@@ -308,6 +308,22 @@ export const IconSliders = make(
   </g>,
 );
 
+export const IconEyeDropper = make(
+  <g fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m14 7 3 3" />
+    <path d="m9.5 11.5-6 6V21h3.5l6-6" />
+    <path d="m12 9 4-4a2.121 2.121 0 0 1 3 3l-4 4" />
+  </g>,
+);
+
+export const IconSparkles = make(
+  <g fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z" />
+    <path d="M19 3v4" />
+    <path d="M21 5h-4" />
+  </g>,
+);
+
 /** Logotipo da Prancheta (botão do menu principal). */
 export function Logo({ size = 24 }: { size?: number }) {
   return (

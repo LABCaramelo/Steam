@@ -60,6 +60,25 @@ const list: Command[] = [
   tool('tool.text', 'Texto', 'TEXT', ['T']),
   tool('tool.pencil', 'Lápis', 'PENCIL', ['Shift+P', 'P']),
   { id: 'tool.image', label: 'Inserir imagem…', keys: ['Ctrl+Shift+K'], run: () => void A.placeImage() },
+  { id: 'tool.eyedropper', label: 'Conta-gotas', keys: ['I'], run: () => void A.triggerEyedropper() },
+  {
+    id: 'image.removeBg',
+    label: 'Remover plano de fundo (IA)',
+    enabled: () => selNodes().some((n) => n.fills?.some((f) => f.type === 'IMAGE')),
+    run: () => {
+      const target = selNodes().find((n) => n.fills?.some((f) => f.type === 'IMAGE'));
+      if (target) void A.removeBackgroundFromNode(target.id, 'replace');
+    },
+  },
+  {
+    id: 'image.depthLayer',
+    label: 'Criar recorte no topo (Efeito Revista)',
+    enabled: () => selNodes().some((n) => n.fills?.some((f) => f.type === 'IMAGE')),
+    run: () => {
+      const target = selNodes().find((n) => n.fills?.some((f) => f.type === 'IMAGE'));
+      if (target) void A.removeBackgroundFromNode(target.id, 'depthLayer');
+    },
+  },
 
   // arquivo
   { id: 'file.new', label: 'Novo arquivo', keys: ['Ctrl+Alt+N'], run: newFile },
@@ -448,6 +467,7 @@ export function contextMenu(): MenuEntry[] {
     item('edit.delete'),
     sep,
     item('component.create'),
+    ...(nodes.some((n) => n.fills?.some((f) => f.type === 'IMAGE')) ? [item('image.removeBg'), item('image.depthLayer')] : []),
     ...(nodes.some((n) => n.type === 'INSTANCE') ? [item('component.detach'), item('component.reset')] : []),
     ...(nodes.length >= 2
       ? [

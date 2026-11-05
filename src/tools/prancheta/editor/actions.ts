@@ -1040,3 +1040,98 @@ export function zoomToSelection() {
   if (r) store.zoomToRect(r);
   else zoomToFit();
 }
+
+// ---------- IA & Ferramentas Visuais ----------
+
+/**
+ * Remove o plano de fundo da imagem do nó usando IA (MediaPipe ImageSegmenter).
+ * Modos:
+ * - 'replace': substitui a imagem original pelo recorte transparente.
+ * - 'depthLayer': duplica a camada com o recorte transparente e move para o topo da pilha
+ *                 (efeito de capa de revista / assunto em frente aos textos).
+ */
+export async function removeBackgroundFromNode(
+  nodeId: string,
+  mode: 'replace' | 'depthLayer' = 'replace',
+  onProgress?: (msg: string) => void,
+) {
+  const doc = store.state.doc;
+  const node = doc.nodes[nodeId];
+  if (!node) return;
+
+  const imgPaint = node.fills?.find((f): f is ImagePaint => f.type === 'IMAGE' && !!f.imageId);
+  if (!imgPaint || !imgPaint.imageId) {
+    store.toast('Nenhuma imagem encontrada na camada selecionada');
+    return;
+  }
+
+  const src = doc.images[imgPaint.imageId];
+  if (!src) {
+    store.toast('Imagem não encontrada');
+    return;
+  }
+
+  try {
+    store.toast('Iniciando recorte de fundo com IA...');
+    const { removeImageBackground } = await import('./canvas/backgroundRemoval');
+    const cutoutUrl = await removeImageBackground(src, onProgress ?? ((msg: string) => store.toast(msg)));
+
+    commit((d) => {
+      const newImgId = addImageToDoc(d, cutoutUrl);
+
+      if (mode === 'replace') {
+        const target = d.nodes[nodeId];
+        if (target && target.fills) {
+          target.fills = target.fills.map((f) =>
+            f.type === 'IMAGE' && f.imageId === imgPaint.imageId ? { ...f, imageId: newImgId } : f,
+          );
+        }
+      } else {
+        const tree = cloneNodeTree(d, nodeId);
+        const dupRoot = tree[0];
+        dupRoot.name = `${node.name || 'Imagem'} (Recorte IA)`;
+        if (dupRoot.fills) {
+          dupRoot.fills = dupRoot.fills.map((f) =>
+            f.type === 'IMAGE' ? { ...f, imageId: newImgId } : f,
+          );
+        }
+        for (const n of tree.slice(1)) d.nodes[n.id] = n;
+        insertNode(d, dupRoot, node.parentId);
+      }
+    });
+
+    store.toast(
+      mode === 'replace'
+        ? 'Plano de fundo removido!'
+        : 'Camada de recorte criada no topo (Efeito Revista)!',
+    );
+  } catch (err: any) {
+    console.error('Falha ao remover fundo:', err);
+    store.toast(`Erro: ${err?.message || 'Falha ao remover fundo com IA'}`);
+  }
+}
+
+/**
+ * Dispara o conta-gotas e aplica a cor na seleção ativa.
+ */
+export async function triggerEyedropper() {
+  const { pickColorWithEyeDropper } = await import('./ui/controls/ColorPicker');
+  const hex = await pickColorWithEyeDropper();
+  if (!hex) return;
+
+  const ids = store.state.selection;
+  if (ids.length > 0) {
+    commit((d) => {
+      for (const id of ids) {
+        const n = d.nodes[id];
+        if (!n) continue;
+        if (!n.fills || n.fills.length === 0) {
+          n.fills = [solid(hex)];
+        } else {
+          n.fills = n.fills.map((f, i) => (i === 0 && f.type === 'SOLID' ? { ...f, color: hex } : f));
+        }
+      }
+    });
+    store.toast(`Cor capturada: ${hex}`);
+  }
+}

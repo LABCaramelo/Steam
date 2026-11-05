@@ -116,6 +116,55 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 .cp-alpha-fill { position: absolute; inset: 0; border-radius: inherit; }
 .cp-slider-knob { position: absolute; top: 50%; height: 14px; width: 14px; border: 2px solid white; box-shadow: 0 0 0 1px #0004; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
 .cp-row { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
+.cp-pipette-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+.cp-pipette-btn:hover {
+  background: rgba(13, 153, 255, 0.18);
+  border-color: #0d99ff;
+  color: #0d99ff;
+}
+.cp-pipette-btn:active {
+  transform: scale(0.95);
+}
+.cp-ai-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 112, 26, 0.3);
+  background: rgba(255, 112, 26, 0.08);
+  color: #ff9b50;
+  transition: all 0.14s ease;
+}
+.cp-ai-btn:hover:not(:disabled) {
+  background: rgba(255, 112, 26, 0.18);
+  border-color: #ff701a;
+  color: #fff;
+}
+.cp-ai-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
 .cp-mode { color: var(--muted); }
 .cp-hex { height: 28px; width: 85px; background: var(--input); border-radius: 5px; padding: 6px; flex: 1; }
 .cp-opacity { width: 50px; }
