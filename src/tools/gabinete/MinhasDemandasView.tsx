@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MagneticButton } from "@caramelo/design-system";
+import { useOptionalToolUser } from "../shared/kit";
 import type { Client, Deliverable, Task, Workspace, WorkspaceMember } from "./types";
 import { IconUser, IconCheckCircle, IconAlertTriangle } from "./Icons";
 
@@ -24,6 +25,8 @@ export const MinhasDemandasView: React.FC<Props> = ({
   onOpenNewTaskModal,
   onToggleTaskComplete,
 }) => {
+  const toolUser = useOptionalToolUser();
+  const firstName = (toolUser?.nickname || toolUser?.name || "Luiz").trim().split(" ")[0] || "Luiz";
   const [selectedMember, setSelectedMember] = useState<string>("Luiz (eu)");
   const [filterPriority, setFilterPriority] = useState<string>("all");
 

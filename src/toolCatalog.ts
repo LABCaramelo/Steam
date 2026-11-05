@@ -659,7 +659,11 @@ export function toolArtUrl(appid: number, kind: ArtKind): string | undefined {
     }
   }
   const assets = getRegisteredTool(appid)?.tool?.assets;
-  return assets?.[kind] ?? assets?.header;
+  const url = assets?.[kind] ?? assets?.header;
+  if (url && url.startsWith("/tools/") && !url.includes("?")) {
+    return `${url}?v=20261105b`;
+  }
+  return url;
 }
 
 /**

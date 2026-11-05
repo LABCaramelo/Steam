@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useOptionalToolUser } from "../shared/kit";
+import { supabase } from "../../supabase";
 
 interface Props {
   sidebarCollapsed: boolean;
@@ -13,6 +15,58 @@ export const GabineteTopbar: React.FC<Props> = ({
   onToggleSidebar,
 }) => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const toolUser = useOptionalToolUser();
+  const [userProfile, setUserProfile] = useState<{ name: string; avatarUrl: string | null } | null>(null);
+  const [imgFailed, setImgFailed] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    async function loadUser() {
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const user = sessionData?.session?.user;
+        if (!user) return;
+
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("name, nickname, avatar_url")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (!alive) return;
+        const name =
+          prof?.nickname?.trim() ||
+          prof?.name?.trim() ||
+          user.user_metadata?.nickname?.trim() ||
+          user.user_metadata?.name?.trim() ||
+          user.email?.split("@")[0] ||
+          "Luiz";
+        const avatarUrl =
+          prof?.avatar_url ||
+          user.user_metadata?.avatar_url ||
+          user.user_metadata?.picture ||
+          null;
+
+        setUserProfile({ name, avatarUrl });
+      } catch {
+        // Fallback to toolUser
+      }
+    }
+
+    loadUser();
+    const { data: authListener } = supabase.auth.onAuthStateChange(() => {
+      loadUser();
+    });
+
+    return () => {
+      alive = false;
+      authListener?.subscription?.unsubscribe();
+    };
+  }, []);
+
+  const displayName = userProfile?.name || toolUser?.nickname || toolUser?.name || "Luiz";
+  const avatarUrl = userProfile?.avatarUrl !== undefined ? userProfile.avatarUrl : (toolUser?.avatarUrl || null);
+  const initial = (displayName.charAt(0) || "L").toUpperCase();
 
   return (
     <header
@@ -61,7 +115,7 @@ export const GabineteTopbar: React.FC<Props> = ({
         </button>
       </div>
 
-      {/* Lado Direito: Notificações & Perfil */}
+      {/* Lado Direito: Notificações & Perfil Oficial do LAB */}
       <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
         {/* Sino de Notificações com Badge "2" */}
         <div style={{ position: "relative" }}>
@@ -98,26 +152,64 @@ export const GabineteTopbar: React.FC<Props> = ({
           </button>
         </div>
 
-        {/* Avatar Verde-Limão com letra "L" e nome "Luiz" */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
-          <div
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: "50%",
-              background: "#c8d44e",
-              color: "#101014",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 800,
-              fontSize: 13,
-            }}
-          >
-            L
-          </div>
-          <span style={{ fontSize: 13, fontWeight: 600, color: "#fff4e8" }}>Luiz</span>
-        </div>
+        {/* Foto e Nome do Usuário Oficial do LAB */}
+        <a
+          href="/profile"
+          target="_top"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 9,
+            cursor: "pointer",
+            textDecoration: "none",
+            color: "inherit",
+            padding: "3px 10px 3px 4px",
+            borderRadius: 9999,
+            transition: "all 0.15s ease",
+            background: "transparent",
+          }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255, 255, 255, 0.06)")}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
+          title={`Conectado como ${displayName} no LAB (ver perfil)`}
+        >
+          {avatarUrl && !imgFailed ? (
+            <img
+              src={avatarUrl}
+              alt={displayName}
+              onError={() => setImgFailed(true)}
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: "50%",
+                objectFit: "cover",
+                border: "1.5px solid rgba(255, 112, 26, 0.45)",
+                display: "block",
+                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.35)",
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: "50%",
+                background: "#c8d44e",
+                color: "#101014",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 800,
+                fontSize: 13,
+                boxShadow: "0 2px 6px rgba(200, 212, 78, 0.25)",
+              }}
+            >
+              {initial}
+            </div>
+          )}
+          <span style={{ fontSize: 13, fontWeight: 700, color: "#fff4e8", letterSpacing: "0.01em" }}>
+            {displayName}
+          </span>
+        </a>
       </div>
     </header>
   );
