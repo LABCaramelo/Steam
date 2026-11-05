@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Copy, Check, X, Share2, Code } from "lucide-react";
+import { CopyButton } from "@caramelo/design-system";
+import { X, Share2 } from "lucide-react";
 import type { TakeRecord } from "../types";
 
 interface ShareModalProps {
@@ -8,36 +8,22 @@ interface ShareModalProps {
 }
 
 export function ShareModal({ take, onClose }: ShareModalProps) {
-  const [copiedLink, setCopiedLink] = useState(false);
-  const [copiedEmbed, setCopiedEmbed] = useState(false);
-
   const shareUrl = `${window.location.origin}/tools/cap?take=${take.id}`;
   const embedCode = `<iframe src="${shareUrl}&embed=1" width="100%" height="480" frameborder="0" allowfullscreen></iframe>`;
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(shareUrl);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2000);
-  };
-
-  const handleCopyEmbed = () => {
-    navigator.clipboard.writeText(embedCode);
-    setCopiedEmbed(true);
-    setTimeout(() => setCopiedEmbed(false), 2000);
-  };
 
   return (
     <div className="cap-modal-backdrop" onClick={onClose}>
       <div className="cap-modal-box" onClick={(e) => e.stopPropagation()}>
         <div className="cap-modal-header">
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Share2 size={18} color="#FF701A" />
+            <Share2 size={18} color="rgb(var(--cm-accent))" />
             <div className="cap-modal-title">Compartilhar Take</div>
           </div>
           <button
             className="cap-btn cap-btn-subtle"
             style={{ padding: 6 }}
             onClick={onClose}
+            aria-label="Fechar modal"
           >
             <X size={16} />
           </button>
@@ -45,7 +31,7 @@ export function ShareModal({ take, onClose }: ShareModalProps) {
 
         {/* Share Link */}
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <label style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,244,232,0.6)" }}>
+          <label style={{ fontSize: 12, fontWeight: 700, color: "rgb(var(--cm-fg-muted))" }}>
             LINK PÚBLICO DO VÍDEO
           </label>
           <div className="cap-copy-input-row">
@@ -55,16 +41,13 @@ export function ShareModal({ take, onClose }: ShareModalProps) {
               value={shareUrl}
               className="cap-input"
             />
-            <button className="cap-btn cap-btn-accent" onClick={handleCopyLink}>
-              {copiedLink ? <Check size={14} /> : <Copy size={14} />}
-              <span>{copiedLink ? "Copiado!" : "Copiar"}</span>
-            </button>
+            <CopyButton value={shareUrl} label="Copiar Link" />
           </div>
         </div>
 
         {/* Embed code */}
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <label style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,244,232,0.6)" }}>
+          <label style={{ fontSize: 12, fontWeight: 700, color: "rgb(var(--cm-fg-muted))" }}>
             CÓDIGO DE EMBED (NOTION, BLOG OU LANDING PAGE)
           </label>
           <div className="cap-copy-input-row">
@@ -74,14 +57,11 @@ export function ShareModal({ take, onClose }: ShareModalProps) {
               value={embedCode}
               className="cap-input"
             />
-            <button className="cap-btn cap-btn-subtle" onClick={handleCopyEmbed}>
-              {copiedEmbed ? <Check size={14} /> : <Code size={14} />}
-              <span>{copiedEmbed ? "Copiado!" : "Copiar Embed"}</span>
-            </button>
+            <CopyButton value={embedCode} label="Copiar Embed" />
           </div>
         </div>
 
-        <div style={{ fontSize: 11, color: "rgba(255,244,232,0.45)", lineHeight: 1.5 }}>
+        <div style={{ fontSize: 12, color: "rgb(var(--cm-fg-dim))", lineHeight: 1.5 }}>
           Seu vídeo foi gravado localmente neste navegador com moldura cinemática.
           Qualquer membro ou cliente que abrir o link terá a experiência visual completa com seus zooms configurados.
         </div>

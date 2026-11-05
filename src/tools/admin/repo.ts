@@ -121,6 +121,14 @@ export const adminRepo = {
     if (error) throw new Error(error.message || "Erro ao alterar cargo do usuário.");
   },
 
+  async grantUserTool(userId: string, toolSlug: string): Promise<void> {
+    const { error } = await supabase.rpc("admin_grant_user_tool", {
+      p_user_id: userId,
+      p_tool_slug: toolSlug,
+    });
+    if (error) throw new Error(error.message || "Erro ao conceder acesso à ferramenta.");
+  },
+
   async revokeUserTool(userId: string, toolSlug: string): Promise<void> {
     const { error } = await supabase.rpc("admin_revoke_user_tool", {
       p_user_id: userId,

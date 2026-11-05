@@ -7,7 +7,7 @@ begin;
 
 -- 1. Registro no Catálogo da Loja
 insert into public.lab_tools (slug, appid, name, available)
-values ('creative-os', 11, 'Creative OS', true)
+values ('creative-os', 12, 'Creative OS', true)
 on conflict (slug) do update set appid = excluded.appid, name = excluded.name, available = excluded.available;
 
 -- 2. Tabela de Workspaces (Estúdios)

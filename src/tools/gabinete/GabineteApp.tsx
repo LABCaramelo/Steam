@@ -5,8 +5,6 @@ import { MinhasDemandasView } from "./MinhasDemandasView";
 import { DashboardView } from "./DashboardView";
 import { ClientesView } from "./ClientesView";
 import { CalendarioView } from "./CalendarioView";
-import { NativoView } from "./NativoView";
-import { BibliotecaView } from "./BibliotecaView";
 import { RedesSociaisView } from "./RedesSociaisView";
 import { VendasView } from "./VendasView";
 import { FormulariosView } from "./FormulariosView";
@@ -20,7 +18,6 @@ import { OnboardingGuide } from "./OnboardingGuide";
 import type { GabineteRepository } from "./repo";
 import type {
   Client,
-  ContentReference,
   Deliverable,
   FinancialEntry,
   Opportunity,
@@ -52,7 +49,6 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
-  const [references, setReferences] = useState<ContentReference[]>([]);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [financialEntries, setFinancialEntries] = useState<FinancialEntry[]>([]);
 
@@ -75,12 +71,11 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
       setWorkspace(currentWs);
 
       if (currentWs) {
-        const [cList, tList, dList, mList, rList, oList, fList] = await Promise.all([
+        const [cList, tList, dList, mList, oList, fList] = await Promise.all([
           repo.getClients(currentWs.id),
           repo.getTasks(currentWs.id),
           repo.getDeliverables(currentWs.id),
           repo.getMembers(currentWs.id),
-          repo.getReferences(currentWs.id),
           repo.getOpportunities(currentWs.id),
           repo.getFinancialEntries(currentWs.id),
         ]);
@@ -89,7 +84,6 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
         setTasks(tList);
         setDeliverables(dList);
         setMembers(mList);
-        setReferences(rList);
         setOpportunities(oList);
         setFinancialEntries(fList);
       }
@@ -205,24 +199,6 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
               workspace={workspace}
               clients={clients}
               deliverables={deliverables}
-              repo={repo}
-              onRefresh={loadAll}
-            />
-          )}
-
-          {activeTab === "nativo" && (
-            <NativoView
-              workspace={workspace}
-              clients={clients}
-              repo={repo}
-              onNavigateToCalendar={() => setActiveTab("calendario")}
-            />
-          )}
-
-          {activeTab === "biblioteca" && (
-            <BibliotecaView
-              workspace={workspace}
-              references={references}
               repo={repo}
               onRefresh={loadAll}
             />

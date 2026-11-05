@@ -48,7 +48,7 @@ export function TimelineBar({
             onClick={onPlayPause}
             title={isPlaying ? "Pausar (Espaço)" : "Reproduzir (Espaço)"}
           >
-            {isPlaying ? <Pause size={14} fill="#101014" /> : <Play size={14} fill="#101014" />}
+            {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" />}
           </button>
 
           <div className="cap-time-display">
@@ -65,7 +65,7 @@ export function TimelineBar({
             onClick={onAddZoom}
             title="Adicionar ponto de zoom cinemático na posição atual"
           >
-            <ZoomIn size={14} color="#25BFFF" />
+            <ZoomIn size={14} color="rgb(var(--cm-info))" />
             <span>Adicionar Zoom Aqui</span>
           </button>
         </div>

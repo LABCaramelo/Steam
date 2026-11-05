@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { MagneticButton } from "@caramelo/design-system";
 import { Download, X, Sparkles, Check, Film, Image as ImageIcon } from "lucide-react";
 import type { TakeRecord } from "../types";
 import { renderExportedVideo, type ExportProgress } from "../utils/mediaRecorder";
@@ -12,14 +13,13 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [progress, setProgress] = useState<ExportProgress | null>(null);
   const [isFinished, setIsFinished] = useState(false);
-  const [format, setFormat] = useState<"mp4" | "webm">("webm");
+  const [format, setFormat] = useState<"webm" | "mp4">("webm");
 
   const handleStartExport = async () => {
     setIsExporting(true);
     setProgress({ currentSec: 0, totalSec: take.duration || 10, percent: 0 });
 
     try {
-      // Create hidden video element to seek and render frames
       const video = document.createElement("video");
       video.src = take.videoUrl;
       video.muted = true;
@@ -38,7 +38,6 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
         (p) => setProgress(p)
       );
 
-      // Trigger automatic download
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -70,7 +69,7 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
       <div className="cap-modal-box" onClick={(e) => e.stopPropagation()}>
         <div className="cap-modal-header">
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Film size={18} color="#FF701A" />
+            <Film size={18} color="rgb(var(--cm-accent))" />
             <div className="cap-modal-title">Exportar Take Cinemático</div>
           </div>
           <button
@@ -78,6 +77,7 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
             style={{ padding: 6 }}
             onClick={onClose}
             disabled={isExporting}
+            aria-label="Fechar modal"
           >
             <X size={16} />
           </button>
@@ -86,7 +86,7 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
         {!isExporting && !isFinished ? (
           <>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#FFF4E8" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "rgb(var(--cm-fg))" }}>
                 Configuração do Render
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -108,11 +108,12 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
             <div
               style={{
                 padding: 12,
-                background: "rgba(255, 244, 232, 0.04)",
-                borderRadius: 8,
+                background: "rgb(var(--cm-surface-2))",
+                borderRadius: "var(--cm-radius-md)",
+                border: "1px solid rgb(var(--cm-line))",
                 fontSize: 12,
-                lineHeight: 1.5,
-                color: "rgba(255, 244, 232, 0.7)",
+                lineHeight: 1.6,
+                color: "rgb(var(--cm-fg-muted))",
               }}
             >
               ✓ Composição de tela com fundo <strong>{take.dressing.background}</strong>
@@ -124,14 +125,16 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
             </div>
 
             <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
-              <button
-                className="cap-btn cap-btn-accent"
-                style={{ flex: 1, padding: "10px 16px" }}
+              <MagneticButton
+                variant="accent"
+                magnetic={0.3}
+                size="md"
                 onClick={handleStartExport}
+                icon={<Download size={15} />}
+                style={{ flex: 1 }}
               >
-                <Download size={15} />
-                <span>Iniciar Renderização & Download</span>
-              </button>
+                Renderizar & Baixar
+              </MagneticButton>
 
               <button
                 className="cap-btn cap-btn-subtle"
@@ -147,10 +150,10 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
           <div style={{ display: "flex", flexDirection: "column", gap: 14, padding: "12px 0" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <Sparkles size={16} color="#FF701A" />
+                <Sparkles size={16} color="rgb(var(--cm-accent))" />
                 <span style={{ fontSize: 13, fontWeight: 700 }}>Renderizando vídeo com zooms...</span>
               </div>
-              <span style={{ fontFamily: "monospace", fontWeight: 700, color: "#FF701A" }}>
+              <span style={{ fontFamily: "monospace", fontWeight: 700, color: "rgb(var(--cm-accent-ink))" }}>
                 {progress?.percent || 0}%
               </span>
             </div>
@@ -162,7 +165,7 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
               />
             </div>
 
-            <div style={{ fontSize: 11, color: "rgba(255,244,232,0.5)", textAlign: "center" }}>
+            <div style={{ fontSize: 12, color: "rgb(var(--cm-fg-dim))", textAlign: "center" }}>
               Gravando frames compostos a 30fps. Por favor, mantenha esta aba aberta.
             </div>
           </div>
@@ -181,8 +184,8 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
                 width: 48,
                 height: 48,
                 borderRadius: "50%",
-                background: "rgba(39, 201, 63, 0.2)",
-                color: "#27C93F",
+                background: "rgb(var(--cm-success-soft))",
+                color: "rgb(var(--cm-success))",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -190,13 +193,20 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
             >
               <Check size={26} />
             </div>
-            <div style={{ fontSize: 15, fontWeight: 800 }}>Download Concluído!</div>
-            <div style={{ fontSize: 12, color: "rgba(255,244,232,0.6)", textAlign: "center" }}>
+            <div style={{ fontSize: 16, fontWeight: 800, color: "rgb(var(--cm-fg))" }}>
+              Download Concluído!
+            </div>
+            <div style={{ fontSize: 12, color: "rgb(var(--cm-fg-muted))", textAlign: "center", maxWidth: 360 }}>
               Seu arquivo de vídeo foi processado com sucesso e transferido para o seu computador.
             </div>
-            <button className="cap-btn cap-btn-subtle" onClick={onClose} style={{ marginTop: 8 }}>
+            <MagneticButton
+              variant="surface"
+              size="sm"
+              onClick={onClose}
+              style={{ marginTop: 8 }}
+            >
               Fechar
-            </button>
+            </MagneticButton>
           </div>
         )}
       </div>

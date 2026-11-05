@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { MagneticButton } from "@caramelo/design-system";
 import {
   Monitor,
   Camera,
@@ -500,7 +501,7 @@ export function RecorderView({
             </button>
           </div>
 
-          <div style={{ width: 1, height: 24, background: "rgba(255, 244, 232, 0.1)" }} />
+          <div style={{ width: 1, height: 24, background: "rgb(var(--cm-line))" }} />
 
           {/* Webcam Toggle */}
           <div className="cap-recorder-option">
@@ -554,7 +555,7 @@ export function RecorderView({
             )}
           </div>
 
-          <div style={{ width: 1, height: 24, background: "rgba(255, 244, 232, 0.1)" }} />
+          <div style={{ width: 1, height: 24, background: "rgb(var(--cm-line))" }} />
 
           {/* Audio & VU Meter */}
           <div className="cap-recorder-option">
@@ -577,17 +578,23 @@ export function RecorderView({
             </div>
           </div>
 
-          <div style={{ width: 1, height: 24, background: "rgba(255, 244, 232, 0.1)" }} />
+          <div style={{ width: 1, height: 24, background: "rgb(var(--cm-line))" }} />
 
-          {/* Master Start Button */}
-          <button
-            className="cap-btn cap-btn-red"
-            style={{ fontWeight: 800, padding: "8px 20px" }}
+          {/* Master Start Button with Magnetic Pull */}
+          <MagneticButton
+            variant="accent"
+            magnetic={0.35}
+            size="md"
             onClick={startRecordingFlow}
+            icon={<Circle size={14} fill="#FFF4E8" />}
+            style={{
+              background: "rgb(var(--cm-danger))",
+              color: "#FFF4E8",
+              fontWeight: 800,
+            }}
           >
-            <Circle size={14} fill="#FFF4E8" />
-            <span>Iniciar Gravação</span>
-          </button>
+            Iniciar Gravação
+          </MagneticButton>
         </div>
       )}
     </div>

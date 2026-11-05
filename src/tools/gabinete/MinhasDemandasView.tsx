@@ -112,29 +112,9 @@ export const MinhasDemandasView: React.FC<Props> = ({
           <MagneticButton
             variant="cream"
             size="md"
-            onClick={() => onNavigate("nativo")}
+            onClick={() => onNavigate("calendario")}
           >
             Criar o mês →
-          </MagneticButton>
-        </div>
-
-        {/* Card 2: Nativo */}
-        <div className="mc-hero-card mc-hero-card--dark cm-surface--spotlight">
-          <div>
-            <span className="mc-hero-card__badge">NOVO</span>
-            <h3 className="mc-hero-card__title">
-              Nativo
-            </h3>
-            <p className="mc-hero-card__desc">
-              Cria posts e carrosséis com inteligência artificial, com a identidade visual do seu cliente ou do zero.
-            </p>
-          </div>
-          <MagneticButton
-            variant="accent"
-            size="md"
-            onClick={() => onNavigate("nativo")}
-          >
-            Abrir ↗
           </MagneticButton>
         </div>
       </div>

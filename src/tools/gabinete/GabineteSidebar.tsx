@@ -5,9 +5,7 @@ import {
   IconClipboard,
   IconDashboard,
   IconUsers,
-  IconBook,
-  IconZap,
-  IconCalendar,
+    IconCalendar,
   IconShare,
   IconBriefcase,
   IconFileText,
@@ -184,41 +182,6 @@ export const GabineteSidebar: React.FC<Props> = ({
         </div>
 
         <div className="mc-sidebar__section-title" style={{ marginTop: 10 }}>02 · CRIAÇÃO</div>
-
-        {/* Biblioteca */}
-        <button
-          className={`mc-nav-item ${activeTab === "biblioteca" ? "is-active" : ""}`}
-          onClick={() => onSelectTab("biblioteca")}
-        >
-          <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon"><IconBook size={16} /></span>
-            <span>Biblioteca</span>
-          </div>
-        </button>
-
-        {/* Nativo (Estúdio IA) */}
-        <button
-          className={`mc-nav-item ${activeTab === "nativo" ? "is-active" : ""}`}
-          onClick={() => onSelectTab("nativo")}
-        >
-          <div className="mc-nav-item__left">
-            <span className="mc-nav-item__icon"><IconZap size={16} /></span>
-            <span>Nativo</span>
-          </div>
-          <span
-            style={{
-              fontSize: 9,
-              fontWeight: 800,
-              background: "rgba(255, 213, 42, 0.16)",
-              color: "#ffd52a",
-              border: "1px solid rgba(255, 213, 42, 0.35)",
-              padding: "1px 5px",
-              borderRadius: 4,
-            }}
-          >
-            NOVO
-          </span>
-        </button>
 
         {/* Calendário */}
         <button

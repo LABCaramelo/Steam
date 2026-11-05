@@ -238,7 +238,7 @@ export const STORIES_APP = tool(STORIES_APP_ID, "Stories Maker", {
 
 export const MONTAGEM_APP_ID = 10;
 export const GABINETE_APP_ID = 11;
-export const CREATIVE_OS_APP_ID = 11;
+export const CREATIVE_OS_APP_ID = 12;
 
 export const MONTAGEM_APP = tool(MONTAGEM_APP_ID, "Montagem", {
   slug: "montagem", available: true, stage: "beta",

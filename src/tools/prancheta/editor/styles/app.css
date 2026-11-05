@@ -116,6 +116,26 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 .cp-alpha-fill { position: absolute; inset: 0; border-radius: inherit; }
 .cp-slider-knob { position: absolute; top: 50%; height: 14px; width: 14px; border: 2px solid white; box-shadow: 0 0 0 1px #0004; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
 .cp-row { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
+.cp-pipette-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+.cp-pipette-btn:hover {
+  background: rgba(13, 153, 255, 0.18);
+  border-color: #0d99ff;
+  color: #0d99ff;
+}
 .cp-mode { color: var(--muted); }
 .cp-hex { height: 28px; width: 85px; background: var(--input); border-radius: 5px; padding: 6px; flex: 1; }
 .cp-opacity { width: 50px; }

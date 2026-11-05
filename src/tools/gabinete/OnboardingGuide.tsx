@@ -91,35 +91,8 @@ export const ONBOARDING_MODULES: TourModule[] = [
     ],
   },
   {
-    id: "m4-nativo-ia",
-    number: "04",
-    title: "Estúdio Nativo IA & Método HEAD",
-    description: "Geração de carrosséis HEAD, roteiros de Reels e direção visual.",
-    tab: "nativo",
-    steps: [
-      {
-        tab: "nativo",
-        target: "[data-tour='nativo-abas']",
-        title: "Formatos Especializados",
-        text: "O Nativo permite alternar entre Carrossel HEAD (Atenção → Retenção → Toque), Roteiro de Reels (em 5 passos) e Prompts de Imagem cinematográfica.",
-      },
-      {
-        tab: "nativo",
-        target: "[data-tour='nativo-form']",
-        title: "Tema & Público-Alvo",
-        text: "Selecione o cliente cadastrado para puxar automaticamente o tom de voz e as restrições da marca. Defina o tema central e o público que quer impactar.",
-      },
-      {
-        tab: "nativo",
-        target: "[data-tour='nativo-gerar']",
-        title: "Envio Direto ao Calendário",
-        text: "Após gerar a prévia com 3 ganchos de impacto e lâminas estruturadas, você pode clicar em '+ Adicionar ao Calendário' com um só clique.",
-      },
-    ],
-  },
-  {
     id: "m5-calendario",
-    number: "05",
+    number: "04",
     title: "Calendário Editorial & Grade Mensal",
     description: "Planejamento mensal de publicações, agendamentos e status.",
     tab: "calendario",
@@ -140,7 +113,7 @@ export const ONBOARDING_MODULES: TourModule[] = [
   },
   {
     id: "m6-portal-cliente",
-    number: "06",
+    number: "05",
     title: "Portal de Aprovação por Link Seguro",
     description: "Zero fricção para o cliente: aprovação e ajustes em 1 clique sem senha.",
     tab: "calendario",
@@ -161,7 +134,7 @@ export const ONBOARDING_MODULES: TourModule[] = [
   },
   {
     id: "m7-redes",
-    number: "07",
+    number: "06",
     title: "Redes Sociais & Conexões Automáticas",
     description: "Integração oficial de Instagram, TikTok e backup no Google Drive.",
     tab: "redes-sociais",
@@ -182,7 +155,7 @@ export const ONBOARDING_MODULES: TourModule[] = [
   },
   {
     id: "m8-vendas",
-    number: "08",
+    number: "07",
     title: "Pipeline Comercial & Vendas",
     description: "Funil de prospecção, qualificação, propostas e novos contratos.",
     tab: "vendas",
@@ -202,29 +175,8 @@ export const ONBOARDING_MODULES: TourModule[] = [
     ],
   },
   {
-    id: "m9-biblioteca",
-    number: "09",
-    title: "Biblioteca de Repertório & Acervo",
-    description: "Ganchos de retenção, copies testadas e referências visuais.",
-    tab: "biblioteca",
-    steps: [
-      {
-        tab: "biblioteca",
-        target: "[data-tour='biblioteca-categorias']",
-        title: "Categorias de Inspiração",
-        text: "Filtre por Copywriting & Ganchos, Direção Visual, Vídeo & Reels ou Estratégia para encontrar referências rápidas durante a criação.",
-      },
-      {
-        tab: "biblioteca",
-        target: "[data-tour='btn-nova-ref']",
-        title: "Alimentando o Acervo",
-        text: "Sempre que encontrar um post viral ou uma estrutura genial, salve aqui com tags e anotações técnicas para você e sua equipe usarem.",
-      },
-    ],
-  },
-  {
     id: "m10-financeiro",
-    number: "10",
+    number: "08",
     title: "Controle Financeiro da Agência",
     description: "Mensalidades recorrentes (MRR), projeção anual e entradas/saídas.",
     tab: "financeiro",
@@ -245,7 +197,7 @@ export const ONBOARDING_MODULES: TourModule[] = [
   },
   {
     id: "m11-formularios",
-    number: "11",
+    number: "09",
     title: "Formulários de Onboarding & Briefings",
     description: "Questionários prontos para enviar a novos clientes.",
     tab: "formularios",
@@ -392,7 +344,7 @@ export const OnboardingGuide: React.FC<Props> = ({ onNavigate }) => {
                 cursor: "pointer",
               }}
             >
-              Abrir Me guie ({completedCount}/11) →
+              Abrir Me guie ({completedCount}/9) →
             </button>
             <button
               onClick={handleDismissBanner}
@@ -412,7 +364,7 @@ export const OnboardingGuide: React.FC<Props> = ({ onNavigate }) => {
         </div>
       )}
 
-      {/* Botão Flutuante 'Me guie (11)' */}
+      {/* Botão Flutuante 'Me guie (9)' */}
       <button
         className="mc-floating-guide"
         onClick={() => setIsModalOpen(true)}
@@ -438,7 +390,7 @@ export const OnboardingGuide: React.FC<Props> = ({ onNavigate }) => {
         }}
       >
         <IconCompass size={17} />
-        <span>Me guie ({completedCount}/11)</span>
+        <span>Me guie ({completedCount}/9)</span>
       </button>
 
       {/* Card Flutuante de Passo Ativo do Tour */}
@@ -570,7 +522,7 @@ export const OnboardingGuide: React.FC<Props> = ({ onNavigate }) => {
                   </h2>
                 </div>
                 <p style={{ margin: "4px 0 0 0", fontSize: 12.5, color: "var(--mc-text-muted)" }}>
-                  Aprenda a operar o estúdio do zero ao avançado em 11 módulos práticos e interativos.
+                  Aprenda a operar o estúdio do zero ao avançado em 9 módulos práticos e interativos.
                 </p>
               </div>
 
@@ -609,7 +561,7 @@ export const OnboardingGuide: React.FC<Props> = ({ onNavigate }) => {
               </div>
             </div>
 
-            {/* Lista dos 11 Módulos */}
+            {/* Lista dos 9 Módulos */}
             <div
               className="mc-modal__body"
               style={{

@@ -5,7 +5,75 @@ import { type HSV, hexToRgb, hsvToRgb, normalizeHex, rgbToHex, rgbToHsv, rgba } 
 import { readFileAsDataURL } from '../../canvas/images';
 import type { GradientPaint, Paint, ScaleMode, SolidPaint } from '../../model/types';
 import { store } from '../../store/store';
-import { IconClose } from '../icons';
+import { IconClose, IconEyeDropper } from '../icons';
+
+/**
+ * Ativa o conta-gotas de tela nativo (EyeDropper API no Chromium/Chrome/Electron)
+ * com fallback para amostragem no canvas da Prancheta.
+ */
+export async function pickColorWithEyeDropper(): Promise<string | null> {
+  // 1. Tenta a API nativa EyeDropper do navegador
+  if (typeof window !== 'undefined' && 'EyeDropper' in window) {
+    try {
+      const eyeDropper = new (window as any).EyeDropper();
+      const res = await eyeDropper.open();
+      if (res?.sRGBHex) {
+        return normalizeHex(res.sRGBHex);
+      }
+    } catch (err: any) {
+      if (err?.name === 'AbortError') return null;
+      console.warn('EyeDropper nativo cancelado ou indisponível:', err);
+    }
+  }
+
+  // 2. Fallback de amostragem direta no canvas da cena
+  return new Promise((resolve) => {
+    const canvas = document.querySelector('canvas') as HTMLCanvasElement | null;
+    if (!canvas) return resolve(null);
+
+    const prevCursor = document.body.style.cursor;
+    document.body.style.cursor = 'crosshair';
+
+    const cleanup = () => {
+      document.body.style.cursor = prevCursor;
+      window.removeEventListener('pointerdown', onDown, true);
+      window.removeEventListener('keydown', onKey, true);
+    };
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        cleanup();
+        resolve(null);
+      }
+    };
+
+    const onDown = (e: PointerEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      cleanup();
+
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.round((e.clientX - rect.left) * (canvas.width / rect.width));
+      const y = Math.round((e.clientY - rect.top) * (canvas.height / rect.height));
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return resolve(null);
+      try {
+        const pixel = ctx.getImageData(x, y, 1, 1).data;
+        const r = pixel[0].toString(16).padStart(2, '0');
+        const g = pixel[1].toString(16).padStart(2, '0');
+        const b = pixel[2].toString(16).padStart(2, '0');
+        resolve(`#${r}${g}${b}`.toUpperCase());
+      } catch (err) {
+        console.warn('Canvas sample error:', err);
+        resolve(null);
+      }
+    };
+
+    window.addEventListener('pointerdown', onDown, { capture: true, once: true });
+    window.addEventListener('keydown', onKey, { capture: true, once: true });
+  });
+}
 import { NumberField } from './NumberField';
 
 const WIDTH = 240;
@@ -62,6 +130,28 @@ function SolidEditor({ paint, onChange, docColors }: SolidEditorProps) {
   const alpha = useDrag((fx, _fy, live) => onChange({ ...paint, opacity: Math.round(fx * 100) / 100 }, live));
   const hueColor = rgbToHex(hsvToRgb({ h: hsv.h, s: 1, v: 1 }));
 
+  const handlePipette = async () => {
+    const hexColor = await pickColorWithEyeDropper();
+    if (!hexColor) return;
+    const normalized = normalizeHex(hexColor);
+    if (normalized) {
+      setHsv(rgbToHsv(hexToRgb(normalized)));
+      setHex(normalized.slice(1));
+      onChange({ ...paint, color: normalized }, false);
+    }
+  };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.key === 'i' || e.key === 'I') && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
+        e.preventDefault();
+        void handlePipette();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [paint, onChange]);
+
   return (
     <div className="cp-solid">
       <div
@@ -83,6 +173,14 @@ function SolidEditor({ paint, onChange, docColors }: SolidEditorProps) {
         </div>
       </div>
       <div className="cp-row">
+        <button
+          type="button"
+          className="cp-pipette-btn"
+          title="Conta-gotas (pressione 'I')"
+          onClick={() => void handlePipette()}
+        >
+          <IconEyeDropper size={15} />
+        </button>
         <span className="cp-mode">Hex</span>
         <input
           className="cp-hex"
@@ -216,9 +314,32 @@ export function PaintPopover({ anchor, paint, onChange, onClose, allowImage = tr
         ) : (
           <span className="pp-title">{title}</span>
         )}
-        <button className="icon-btn" title="Fechar" onClick={onClose}>
-          <IconClose size={24} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          {paint.type !== 'IMAGE' && (
+            <button
+              type="button"
+              className="icon-btn"
+              title="Conta-gotas (pressione 'I')"
+              onClick={async () => {
+                const hexColor = await pickColorWithEyeDropper();
+                if (!hexColor) return;
+                const normalized = normalizeHex(hexColor);
+                if (!normalized) return;
+                if (paint.type === 'SOLID') {
+                  onChange({ ...paint, color: normalized }, false);
+                } else if (paint.type === 'GRADIENT_LINEAR' || paint.type === 'GRADIENT_RADIAL') {
+                  const stops = paint.stops.map((s, i) => (i === 0 ? { ...s, color: normalized } : s));
+                  onChange({ ...paint, stops }, false);
+                }
+              }}
+            >
+              <IconEyeDropper size={18} />
+            </button>
+          )}
+          <button className="icon-btn" title="Fechar" onClick={onClose}>
+            <IconClose size={24} />
         </button>
+        </div>
       </div>
       {paint.type === 'SOLID' ? (
         <SolidEditor paint={paint} onChange={onChange} docColors={docColors} />

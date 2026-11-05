@@ -1,3 +1,4 @@
+import { Isotype, MagneticButton, SpotlightTabs, type TabItem } from "@caramelo/design-system";
 import { Video, Sparkles, FileVideo, Plus, Download, Share2 } from "lucide-react";
 import type { CapMode, TakeRecord } from "../types";
 
@@ -20,65 +21,78 @@ export function TopBar({
   onOpenShare,
   takesCount,
 }: TopBarProps) {
+  const tabItems: TabItem[] = [
+    {
+      id: "recorder",
+      label: "Gravar",
+      icon: <Video size={14} />,
+    },
+    {
+      id: "studio",
+      label: "Estúdio",
+      icon: <Sparkles size={14} />,
+      disabled: !activeTake,
+    },
+    {
+      id: "library",
+      label: `Takes (${takesCount})`,
+      icon: <FileVideo size={14} />,
+    },
+  ];
+
   return (
     <header className="cap-topbar">
       <div className="cap-brand">
-        <div className="cap-logo-badge">C</div>
+        <div className="cap-logo-badge" title="Cap — Screen Studio do LAB">
+          <Isotype variant="spectrum" size={22} decorative interactive />
+        </div>
         <div className="cap-brand-meta">
           <div className="cap-brand-title">Cap · LAB</div>
           <div className="cap-brand-tag">Screen Studio & Loom</div>
         </div>
       </div>
 
-      <nav className="cap-mode-tabs">
-        <button
-          className={`cap-mode-tab ${mode === "recorder" ? "active" : ""}`}
-          onClick={() => setMode("recorder")}
-          title="Modo de Gravação de Tela & Câmera"
-        >
-          <Video size={15} className="tab-icon" />
-          <span>Gravar</span>
-        </button>
-
-        <button
-          className={`cap-mode-tab ${mode === "studio" ? "active" : ""}`}
-          onClick={() => setMode("studio")}
-          disabled={!activeTake}
-          title="Estúdio de Molduras, Zooms e Cores"
-        >
-          <Sparkles size={15} className="tab-icon" />
-          <span>Estúdio</span>
-        </button>
-
-        <button
-          className={`cap-mode-tab ${mode === "library" ? "active" : ""}`}
-          onClick={() => setMode("library")}
-          title="Meus Takes Gravados"
-        >
-          <FileVideo size={15} className="tab-icon" />
-          <span>Takes ({takesCount})</span>
-        </button>
+      <nav aria-label="Navegação do Cap">
+        <SpotlightTabs
+          ariaLabel="Modo de Trabalho"
+          variant="pill"
+          value={mode}
+          onValueChange={(id) => setMode(id as CapMode)}
+          items={tabItems}
+        />
       </nav>
 
       <div className="cap-topbar-actions">
         {mode === "studio" && activeTake && (
           <>
-            <button className="cap-btn cap-btn-subtle" onClick={onOpenShare}>
-              <Share2 size={14} />
-              <span>Compartilhar</span>
-            </button>
-            <button className="cap-btn cap-btn-accent" onClick={onOpenExport}>
-              <Download size={14} />
-              <span>Exportar</span>
-            </button>
+            <MagneticButton
+              variant="surface"
+              size="sm"
+              onClick={onOpenShare}
+              icon={<Share2 size={13} />}
+            >
+              Compartilhar
+            </MagneticButton>
+            <MagneticButton
+              variant="accent"
+              size="sm"
+              onClick={onOpenExport}
+              icon={<Download size={13} />}
+            >
+              Exportar
+            </MagneticButton>
           </>
         )}
 
         {mode !== "recorder" && (
-          <button className="cap-btn cap-btn-subtle" onClick={onNewTake}>
-            <Plus size={14} />
-            <span>Novo Take</span>
-          </button>
+          <MagneticButton
+            variant="surface"
+            size="sm"
+            onClick={onNewTake}
+            icon={<Plus size={13} />}
+          >
+            Novo Take
+          </MagneticButton>
         )}
       </div>
     </header>

@@ -1,3 +1,4 @@
+import { Isotype, MagneticButton } from "@caramelo/design-system";
 import { Play, Download, Share2, Trash2, Video, Sparkles } from "lucide-react";
 import type { TakeRecord } from "../types";
 
@@ -45,41 +46,51 @@ export function LibraryDrawer({
           alignItems: "center",
           justifyContent: "center",
           gap: 16,
-          color: "rgba(255, 244, 232, 0.6)",
+          color: "rgb(var(--cm-fg-muted))",
+          padding: 24,
         }}
       >
         <div
           style={{
-            width: 56,
-            height: 56,
-            borderRadius: "50%",
-            background: "rgba(255, 112, 26, 0.15)",
+            width: 64,
+            height: 64,
+            borderRadius: "var(--cm-radius-xl)",
+            background: "rgb(var(--cm-surface-2))",
+            border: "1px solid rgb(var(--cm-line))",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#FF701A",
+            boxShadow: "0 4px 16px rgb(var(--cm-accent) / 0.15)",
           }}
         >
-          <Video size={28} />
+          <Isotype variant="spectrum" size={36} decorative interactive />
         </div>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 16, fontWeight: 800, color: "#FFF4E8" }}>
+        <div style={{ textAlign: "center", maxWidth: 400 }}>
+          <div style={{ fontSize: 18, fontWeight: 800, color: "rgb(var(--cm-fg))" }}>
             Nenhum take gravado ainda
           </div>
-          <div style={{ fontSize: 13, marginTop: 4 }}>
-            Grave uma nova apresentação ou explore a demonstração interativa do LAB.
+          <div style={{ fontSize: 13, marginTop: 6, color: "rgb(var(--cm-fg-muted))", lineHeight: 1.5 }}>
+            Grave uma nova apresentação com câmera e tela, ou explore a demonstração interativa com moldura cinemática.
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
-          <button className="cap-btn cap-btn-accent" onClick={onNewRecording}>
-            <Video size={14} />
-            <span>Gravar Primeiro Take</span>
-          </button>
-          <button className="cap-btn cap-btn-subtle" onClick={onLoadDemo}>
-            <Sparkles size={14} />
-            <span>Carregar Demonstração</span>
-          </button>
+        <div style={{ display: "flex", gap: 12, marginTop: 10 }}>
+          <MagneticButton
+            variant="accent"
+            size="md"
+            onClick={onNewRecording}
+            icon={<Video size={14} />}
+          >
+            Gravar Primeiro Take
+          </MagneticButton>
+          <MagneticButton
+            variant="surface"
+            size="md"
+            onClick={onLoadDemo}
+            icon={<Sparkles size={14} />}
+          >
+            Carregar Demonstração
+          </MagneticButton>
         </div>
       </div>
     );
@@ -104,10 +115,10 @@ export function LibraryDrawer({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  background: "#141418",
+                  background: "rgb(var(--cm-surface-2))",
                 }}
               >
-                <Video size={32} color="rgba(255,244,232,0.2)" />
+                <Video size={32} color="rgb(var(--cm-fg-dim))" />
               </div>
             )}
             <div className="cap-take-duration-badge">
@@ -132,7 +143,7 @@ export function LibraryDrawer({
                 style={{ flex: 1, padding: "6px 8px" }}
                 onClick={() => onSelectTake(take)}
               >
-                <Play size={13} fill="#101014" />
+                <Play size={13} fill="currentColor" />
                 <span>Abrir</span>
               </button>
               <button
@@ -153,7 +164,7 @@ export function LibraryDrawer({
               </button>
               <button
                 className="cap-btn cap-btn-subtle"
-                style={{ padding: "6px 10px", color: "#FF3D8D" }}
+                style={{ padding: "6px 10px", color: "rgb(var(--cm-danger))" }}
                 onClick={() => onDeleteTake(take.id)}
                 title="Excluir take"
               >

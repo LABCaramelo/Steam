@@ -39,8 +39,8 @@ export const DashboardView: React.FC<Props> = ({
           </p>
         </div>
 
-        <button className="mc-btn mc-btn--acid" onClick={() => onNavigate("nativo")}>
-          Criar Conteúdo com IA
+        <button className="mc-btn mc-btn--acid" onClick={() => onNavigate("calendario")}>
+          Novo Conteúdo
         </button>
       </div>
 

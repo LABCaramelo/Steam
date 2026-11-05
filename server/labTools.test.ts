@@ -18,7 +18,24 @@ const BRUNO = "00000000-0000-4000-8000-00000000000b";
 const CLARA = "00000000-0000-4000-8000-00000000000c"; // signed up, never confirmed the WhatsApp group
 const ADMIN = "00000000-0000-4000-8000-0000000000ad";
 const PREVIOUS_OWNER = "00000000-0000-4000-8000-00000000000e";
-const TOOL_SLUGS = ["prompt-library", "kanban", "prancheta", "automation", "academy", "claquete", "comunidade", "gravador", "montagem", "logomotion", "voicestudio", "caderno"];
+const TOOL_SLUGS = [
+  "prompt-library",
+  "kanban",
+  "prancheta",
+  "automation",
+  "academy",
+  "claquete",
+  "comunidade",
+  "admin",
+  "gravador",
+  "montagem",
+  "gabinete",
+  "stories",
+  "logomotion",
+  "cap",
+  "voicestudio",
+  "caderno",
+];
 
 const SUPABASE_STUB = `
   create role anon nologin;

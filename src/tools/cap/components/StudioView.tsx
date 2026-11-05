@@ -245,13 +245,13 @@ export function StudioView({ take, onUpdateTake }: StudioViewProps) {
           {/* Smart Zooms Cinemáticos */}
           <div className="cap-rail-section">
             <div className="cap-rail-title" style={{ justifyContent: "space-between" }}>
-              <div style={{ display: "flex", alignContent: "center", gap: 6 }}>
-                <ZoomIn size={13} color="#25BFFF" />
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <ZoomIn size={14} color="rgb(var(--cm-info))" />
                 <span>Zooms Cinemáticos</span>
               </div>
               <button
                 className="cap-btn cap-btn-subtle"
-                style={{ fontSize: 10, padding: "3px 8px" }}
+                style={{ fontSize: 11, padding: "3px 8px" }}
                 onClick={handleAddZoomAtCurrentTime}
               >
                 + Zoom
@@ -259,7 +259,7 @@ export function StudioView({ take, onUpdateTake }: StudioViewProps) {
             </div>
 
             {keyframes.length === 0 ? (
-              <div style={{ fontSize: 11, color: "rgba(255, 244, 232, 0.4)", lineHeight: 1.5 }}>
+              <div style={{ fontSize: 12, color: "rgb(var(--cm-fg-muted))", lineHeight: 1.5 }}>
                 Nenhum zoom configurado. Clique em "+ Zoom" para aproximar em um ponto do seu vídeo.
               </div>
             ) : (
@@ -291,7 +291,7 @@ export function StudioView({ take, onUpdateTake }: StudioViewProps) {
 
                       <button
                         className="cap-btn cap-btn-subtle"
-                        style={{ padding: "6px 8px", color: "#FF3D8D" }}
+                        style={{ padding: "6px 8px", color: "rgb(var(--cm-danger))" }}
                         onClick={() => handleDeleteZoom(kf.id)}
                         title="Remover zoom"
                       >

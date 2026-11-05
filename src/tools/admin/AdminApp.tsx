@@ -17,7 +17,7 @@ import type {
   ToolCustomAssets,
 } from "./types";
 import { updateCustomToolAssets, updateDynamicToolMeta } from "../../toolCatalog";
-import type { AdminTab } from "./AdminOverview";
+import { AdminOverview, type AdminTab } from "./AdminOverview";
 import "./admin.css";
 
 
@@ -114,6 +114,10 @@ export function AdminApp() {
 
   // Modais de edição
   const [editingTool, setEditingTool] = useState<AdminToolItem | null>(null);
+  const [toolFilter, setToolFilter] = useState<"all" | "published" | "unreleased" | "beta" | "stable">("all");
+  const [toolSearch, setToolSearch] = useState("");
+  const [selectedGrantToolSlug, setSelectedGrantToolSlug] = useState("");
+  const [grantingTool, setGrantingTool] = useState(false);
 
   // Notificação no WhatsApp do LAB
   const [notifyModalTool, setNotifyModalTool] = useState<AdminToolItem | null>(null);
@@ -454,6 +458,43 @@ export function AdminApp() {
   };
 
   // Alternar disponibilidade de ferramenta (Publicar / Despublicar)
+  const handleToggleStage = async (tool: AdminToolItem) => {
+    const nextStage = tool.stage === "beta" ? "stable" : "beta";
+    try {
+      await adminRepo.updateTool(tool.slug, {
+        name: tool.name,
+        price_cents: tool.price_cents,
+        available: tool.available,
+        stage: nextStage,
+      });
+      setTools((prev) =>
+        prev.map((it) => (it.slug === tool.slug ? { ...it, stage: nextStage } : it))
+      );
+      toast(`${tool.name} agora está em estágio ${nextStage.toUpperCase()}.`, "success");
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Erro ao alterar estágio.", "error");
+    }
+  };
+
+  const handleGrantToolToUser = async () => {
+    if (!editingUser || !selectedGrantToolSlug) return;
+    setGrantingTool(true);
+    try {
+      await adminRepo.grantUserTool(editingUser.id, selectedGrantToolSlug);
+      const updatedTools = [...(editingUser.tools_owned || []), selectedGrantToolSlug];
+      setEditingUser({ ...editingUser, tools_owned: updatedTools });
+      setUsers((prev) =>
+        prev.map((u) => (u.id === editingUser.id ? { ...u, tools_owned: updatedTools, tools_count: updatedTools.length } : u))
+      );
+      toast(`Acesso a ${selectedGrantToolSlug} concedido a ${editingUser.name}.`, "success");
+      setSelectedGrantToolSlug("");
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Erro ao conceder ferramenta.", "error");
+    } finally {
+      setGrantingTool(false);
+    }
+  };
+
   const handleToggleTool = async (tool: AdminToolItem) => {
     const nextState = !tool.available;
     setTools((prev) =>
@@ -633,15 +674,36 @@ export function AdminApp() {
     <div className="admin-shell">
       <header className="admin-header">
         <div className="admin-header__title-group">
-          <span className="admin-header__eyebrow">UM CARA CARAMELO / CONTROLE DO LAB</span>
-          <h1 className="admin-header__title">Administração<span>.</span></h1>
+          <span className="admin-header__eyebrow">01 / CENTRO DE COMANDO · GOVERNANÇA INTEGRAL</span>
+          <h1 className="admin-header__title">Administração do LAB</h1>
           <p className="admin-header__desc">
-            Cuide de quem entra, do que vai ao ar e de quem pode acessar.
+            Métricas em tempo real, catálogo de ferramentas, regras canônicas de acesso e membros da comunidade.
           </p>
         </div>
-        <div className="admin-header__actions">
-          <button className="admin-btn admin-btn--ghost" onClick={() => loadData()} disabled={loading}>
-            {loading ? "Carregando…" : "Atualizar dados"}
+        <div className="admin-header__cockpit">
+          <span className="admin-status-pill">
+            <span className="admin-status-dot"></span>
+            LAB ONLINE
+          </span>
+          <button
+            type="button"
+            className="admin-btn admin-btn--ghost admin-btn--sm"
+            onClick={() => loadData()}
+            disabled={loading}
+            title="Recarregar dados do painel"
+          >
+            <span className={loading ? "admin-spin" : ""}>🔄</span> Atualizar
+          </button>
+          <button
+            type="button"
+            className="admin-btn admin-btn--primary admin-btn--sm"
+            onClick={() => {
+              const first = tools.find((t) => t.available && t.slug !== "admin") || tools[0];
+              if (first) openNotifyModal(first);
+            }}
+            title="Enviar comunicado oficial para o grupo de WhatsApp"
+          >
+            📢 Avisar Grupo
           </button>
         </div>
       </header>
@@ -650,37 +712,46 @@ export function AdminApp() {
 
       <nav className="admin-tabs" aria-label="Navegação do painel">
         <button
+          type="button"
           className={`admin-tab ${tab === "dashboard" ? "is-active" : ""}`}
           onClick={() => setTab("dashboard")}
         >
-          Dashboard
+          ⚡ Visão Geral
         </button>
         <button
+          type="button"
           className={`admin-tab ${tab === "tools" ? "is-active" : ""}`}
           onClick={() => setTab("tools")}
         >
-          Ferramentas &amp; Loja ({tools.length})
+          🛠️ Ferramentas &amp; Loja
+          <span className="admin-tab__badge">{tools.length}</span>
         </button>
         <button
+          type="button"
+          className={`admin-tab ${tab === "users" ? "is-active" : ""}`}
+          onClick={() => setTab("users")}
+        >
+          👥 Membros &amp; Contas
+          <span className="admin-tab__badge">{stats?.total_users ?? users.length}</span>
+        </button>
+        <button
+          type="button"
+          className={`admin-tab ${tab === "achievements" ? "is-active" : ""}`}
+          onClick={() => setTab("achievements")}
+        >
+          🏆 Conquistas
+          <span className="admin-tab__badge">{achievements.length}</span>
+        </button>
+        <button
+          type="button"
           className={`admin-tab ${tab === "seeds" ? "is-active" : ""}`}
           onClick={() => {
             setTab("seeds");
             if (!seedStats) loadSeedData(seedRange);
           }}
         >
-          Seeds &amp; Proveniência ({seedPublications.length || "v1"})
-        </button>
-        <button
-          className={`admin-tab ${tab === "achievements" ? "is-active" : ""}`}
-          onClick={() => setTab("achievements")}
-        >
-          Conquistas ({achievements.length})
-        </button>
-        <button
-          className={`admin-tab ${tab === "users" ? "is-active" : ""}`}
-          onClick={() => setTab("users")}
-        >
-          Membros ({stats?.total_users ?? users.length})
+          🌐 Seeds &amp; Proveniência
+          <span className="admin-tab__badge">{seedPublications.length || "v1"}</span>
         </button>
       </nav>
 
@@ -688,85 +759,13 @@ export function AdminApp() {
           ABA 1: DASHBOARD
          ========================================================================= */}
       {tab === "dashboard" && stats && (
-        <section>
-          <div className="admin-stats-grid">
-            <div className="admin-stat-card">
-              <div className="admin-stat-card__icon">
-                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              </div>
-              <div className="admin-stat-card__val">{stats.total_users}</div>
-              <div className="admin-stat-card__label">Usuários Cadastrados</div>
-              <div className="admin-stat-card__sub">
-                {stats.active_users} ativos · {stats.pending_users} pendentes · {stats.blocked_users} bloqueados
-              </div>
-            </div>
-
-            <div className="admin-stat-card">
-              <div className="admin-stat-card__icon">
-                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              </div>
-              <div className="admin-stat-card__val">{stats.admin_users}</div>
-              <div className="admin-stat-card__label">Administradores</div>
-              <div className="admin-stat-card__sub">Com permissão total de governança</div>
-            </div>
-
-            <div className="admin-stat-card">
-              <div className="admin-stat-card__icon">
-                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
-              </div>
-              <div className="admin-stat-card__val">{stats.published_tools}</div>
-              <div className="admin-stat-card__label">Ferramentas Publicadas</div>
-              <div className="admin-stat-card__sub">
-                {stats.unreleased_tools} em breve · Total de {stats.total_tools} ferramentas
-              </div>
-            </div>
-
-            <div className="admin-stat-card">
-              <div className="admin-stat-card__icon">
-                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-              </div>
-              <div className="admin-stat-card__val">{achievements.length}</div>
-              <div className="admin-stat-card__label">Conquistas Disponíveis</div>
-              <div className="admin-stat-card__sub">
-                {achievements.reduce((s, a) => s + a.unlocked_count, 0)} concedidas no total
-              </div>
-            </div>
-
-            <div className="admin-stat-card">
-              <div className="admin-stat-card__icon">
-                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
-              </div>
-              <div className="admin-stat-card__val">{stats.total_acquisitions}</div>
-              <div className="admin-stat-card__label">Aquisições na Biblioteca</div>
-              <div className="admin-stat-card__sub">Total de instalações por membros</div>
-            </div>
-
-            <div className="admin-stat-card">
-              <div className="admin-stat-card__icon">
-                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              </div>
-              <div className="admin-stat-card__val">{stats.whatsapp_verified}</div>
-              <div className="admin-stat-card__label">WhatsApp Confirmados</div>
-              <div className="admin-stat-card__sub">Membros verificados na comunidade</div>
-            </div>
-          </div>
-
-          <div className="admin-section">
-            <div className="admin-section__head">
-              <div>
-                <h2 className="admin-section__title">Status da Vitrine da Loja</h2>
-                <p className="admin-section__subtitle">
-                  {stats.published_tools === 0
-                    ? "A Loja está atualmente em modo de pré-lançamento. Todas as ferramentas aparecem como 'Em breve'."
-                    : `${stats.published_tools} ferramenta(s) estão liberadas para aquisição imediata.`}
-                </p>
-              </div>
-              <button className="admin-btn admin-btn--primary" onClick={() => setTab("tools")}>
-                Gerenciar Publicações
-              </button>
-            </div>
-          </div>
-        </section>
+        <AdminOverview
+          stats={stats}
+          tools={tools}
+          achievements={achievements}
+          navigate={(t) => setTab(t)}
+          onOpenNotify={(tool) => openNotifyModal(tool)}
+        />
       )}
 
       {/* =========================================================================
@@ -776,11 +775,72 @@ export function AdminApp() {
         <section className="admin-section">
           <div className="admin-section__head">
             <div>
+              <span className="admin-kicker">CATÁLOGO &amp; VITRINE</span>
               <h2 className="admin-section__title">Ferramentas do LAB</h2>
               <p className="admin-section__subtitle">
-                Ative ou desative a publicação de qualquer ferramenta na Loja com um clique.
+                Ative ou desative publicações na Loja e alterne estágios Beta/Estável com 1 clique.
               </p>
             </div>
+            <button
+              type="button"
+              className="admin-btn admin-btn--primary admin-btn--sm"
+              onClick={() => {
+                const first = tools.find((t) => t.available && t.slug !== "admin") || tools[0];
+                if (first) openNotifyModal(first);
+              }}
+              title="Avisar a comunidade sobre ferramenta"
+            >
+              📢 Avisar no Grupo
+            </button>
+          </div>
+
+          {/* Filtros em Pílulas */}
+          <div className="admin-pill-filter-bar">
+            <button
+              type="button"
+              className={`admin-pill-filter ${toolFilter === "all" ? "is-active" : ""}`}
+              onClick={() => setToolFilter("all")}
+            >
+              Todas <span className="admin-pill-filter__count">{tools.length}</span>
+            </button>
+            <button
+              type="button"
+              className={`admin-pill-filter ${toolFilter === "published" ? "is-active" : ""}`}
+              onClick={() => setToolFilter("published")}
+            >
+              ● Publicadas <span className="admin-pill-filter__count">{tools.filter((t) => t.available).length}</span>
+            </button>
+            <button
+              type="button"
+              className={`admin-pill-filter ${toolFilter === "unreleased" ? "is-active" : ""}`}
+              onClick={() => setToolFilter("unreleased")}
+            >
+              ○ Em breve <span className="admin-pill-filter__count">{tools.filter((t) => !t.available).length}</span>
+            </button>
+            <button
+              type="button"
+              className={`admin-pill-filter ${toolFilter === "beta" ? "is-active" : ""}`}
+              onClick={() => setToolFilter("beta")}
+            >
+              ⚡ Beta <span className="admin-pill-filter__count">{tools.filter((t) => t.stage === "beta").length}</span>
+            </button>
+            <button
+              type="button"
+              className={`admin-pill-filter ${toolFilter === "stable" ? "is-active" : ""}`}
+              onClick={() => setToolFilter("stable")}
+            >
+              ● Estáveis <span className="admin-pill-filter__count">{tools.filter((t) => t.stage !== "beta").length}</span>
+            </button>
+          </div>
+
+          <div className="admin-filter-bar" style={{ marginBottom: 16 }}>
+            <input
+              type="search"
+              className="admin-search-input"
+              placeholder="Buscar ferramenta por nome ou identificador (slug)…"
+              value={toolSearch}
+              onChange={(e) => setToolSearch(e.target.value)}
+            />
           </div>
 
           <div className="admin-table-wrap">
@@ -789,6 +849,7 @@ export function AdminApp() {
                 <tr>
                   <th>Ferramenta</th>
                   <th>AppID / Slug</th>
+                  <th>Estágio</th>
                   <th>Preço</th>
                   <th>Membros com Acesso</th>
                   <th>Status na Loja</th>
@@ -797,74 +858,102 @@ export function AdminApp() {
                 </tr>
               </thead>
               <tbody>
-                {tools.map((t) => (
-                  <tr key={t.slug}>
-                    <td>
-                      <strong style={{ color: "rgb(var(--cm-fg))" }}>{t.name}</strong>
-                    </td>
-                    <td>
-                      <code style={{ fontSize: "11px", opacity: 0.8 }}>
-                        #{t.appid} · {t.slug}
-                      </code>
-                    </td>
-                    <td>{t.slug === "admin" ? "Interno" : t.price_cents === 0 ? "Gratuita" : `R$ ${(t.price_cents / 100).toFixed(2)}`}</td>
-                    <td>
-                      <strong>{t.owners_count}</strong> {t.owners_count === 1 ? "membro" : "membros"}
-                    </td>
-                    <td>
-                      <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                {tools
+                  .filter((t) => {
+                    if (toolSearch.trim()) {
+                      const q = toolSearch.toLowerCase();
+                      if (!t.name.toLowerCase().includes(q) && !t.slug.toLowerCase().includes(q)) {
+                        return false;
+                      }
+                    }
+                    if (toolFilter === "published") return t.available;
+                    if (toolFilter === "unreleased") return !t.available;
+                    if (toolFilter === "beta") return t.stage === "beta";
+                    if (toolFilter === "stable") return t.stage !== "beta";
+                    return true;
+                  })
+                  .map((t) => (
+                    <tr key={t.slug}>
+                      <td>
+                        <strong style={{ color: "rgb(var(--cm-fg))" }}>{t.name}</strong>
+                      </td>
+                      <td>
+                        <code style={{ fontSize: "11px", opacity: 0.8 }}>
+                          #{t.appid} · {t.slug}
+                        </code>
+                      </td>
+                      <td>
                         {t.slug === "admin" ? (
-                          <span className="admin-badge admin-badge--admin">Painel Interno</span>
-                        ) : t.available ? (
-                          <span className="admin-badge admin-badge--published">● Publicada</span>
+                          <span style={{ fontSize: "11px", opacity: 0.5 }}>Interno</span>
                         ) : (
-                          <span className="admin-badge admin-badge--unreleased">○ Em breve</span>
+                          <button
+                            type="button"
+                            className={`admin-stage-badge admin-stage-badge--${t.stage === "beta" ? "beta" : "stable"}`}
+                            title={`Estágio atual: ${t.stage?.toUpperCase() || "STABLE"}. Clique para alternar para ${t.stage === "beta" ? "ESTÁVEL" : "BETA"}`}
+                            onClick={() => handleToggleStage(t)}
+                          >
+                            {t.stage === "beta" ? "⚡ BETA" : "● ESTÁVEL"}
+                          </button>
                         )}
-                        {t.stage === "beta" && (
-                          <span className="admin-badge admin-badge--beta">BETA</span>
+                      </td>
+                      <td>{t.slug === "admin" ? "Interno" : t.price_cents === 0 ? "Gratuita" : `R$ ${(t.price_cents / 100).toFixed(2)}`}</td>
+                      <td>
+                        <strong>{t.owners_count}</strong> {t.owners_count === 1 ? "membro" : "membros"}
+                      </td>
+                      <td>
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                          {t.slug === "admin" ? (
+                            <span className="admin-badge admin-badge--admin">Painel Interno</span>
+                          ) : t.available ? (
+                            <span className="admin-badge admin-badge--published">● Publicada</span>
+                          ) : (
+                            <span className="admin-badge admin-badge--unreleased">○ Em breve</span>
+                          )}
+                        </div>
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        {t.slug === "admin" ? (
+                          <span style={{ fontSize: "11px", opacity: 0.5 }}>Interno</span>
+                        ) : (
+                          <label className="admin-switch" title={t.available ? "Despublicar ferramenta" : "Publicar ferramenta"}>
+                            <input
+                              type="checkbox"
+                              checked={t.available}
+                              onChange={() => handleToggleTool(t)}
+                            />
+                            <span className="admin-slider"></span>
+                          </label>
                         )}
-                      </div>
-                    </td>
-                    <td style={{ textAlign: "center" }}>
-                      {t.slug === "admin" ? (
-                        <span style={{ fontSize: "11px", opacity: 0.5 }}>Interno</span>
-                      ) : (
-                        <label className="admin-switch" title={t.available ? "Despublicar" : "Publicar"}>
-                          <input
-                            type="checkbox"
-                            checked={t.available}
-                            onChange={() => handleToggleTool(t)}
-                          />
-                          <span className="admin-slider"></span>
-                        </label>
-                      )}
-                    </td>
-                    <td style={{ textAlign: "right" }}>
-                      <button
-                        className="admin-btn admin-btn--secondary admin-btn--sm"
-                        style={{ marginRight: 6 }}
-                        onClick={() => openNotifyModal(t)}
-                        title="Avisar lançamento desta ferramenta no grupo do WhatsApp"
-                      >
-                        📢 Avisar
-                      </button>
-                      <button
-                        className="admin-btn admin-btn--secondary admin-btn--sm"
-                        style={{ marginRight: 6 }}
-                        onClick={() => openBannersModal(t)}
-                        title="Modificar banners e artes visuais"
-                      >
-                        🎨 Banners
-                      </button>
-                      <button
-                        className="admin-btn admin-btn--ghost admin-btn--sm"
-                        onClick={() => setEditingTool({ ...t })}
-                      >
-                        Configurar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td style={{ textAlign: "right" }}>
+                        <button
+                          type="button"
+                          className="admin-btn admin-btn--secondary admin-btn--sm"
+                          style={{ marginRight: 6 }}
+                          onClick={() => openNotifyModal(t)}
+                          title="Avisar lançamento desta ferramenta no grupo do WhatsApp"
+                        >
+                          📢 Avisar
+                        </button>
+                        <button
+                          type="button"
+                          className="admin-btn admin-btn--secondary admin-btn--sm"
+                          style={{ marginRight: 6 }}
+                          onClick={() => openBannersModal(t)}
+                          title="Modificar banners e artes visuais"
+                        >
+                          🎨 Banners
+                        </button>
+                        <button
+                          type="button"
+                          className="admin-btn admin-btn--ghost admin-btn--sm"
+                          onClick={() => setEditingTool({ ...t })}
+                        >
+                          Configurar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -1502,11 +1591,65 @@ export function AdminApp() {
         <section className="admin-section">
           <div className="admin-section__head">
             <div>
+              <span className="admin-kicker">GOVERNANÇA &amp; MEMBROS</span>
               <h2 className="admin-section__title">Membros e Contas</h2>
               <p className="admin-section__subtitle">
-                Visualize informações detalhadas, gerencie cargos, conceda conquistas e controle acessos.
+                Administre permissões, conceda ou revogue ferramentas e audite acessos em tempo real.
               </p>
             </div>
+          </div>
+
+          {/* Pílulas de Filtro Rápido */}
+          <div className="admin-pill-filter-bar">
+            <button
+              type="button"
+              className={`admin-pill-filter ${!roleFilter && !statusFilter ? "is-active" : ""}`}
+              onClick={() => { setRoleFilter(""); setStatusFilter(""); }}
+            >
+              Todos <span className="admin-pill-filter__count">{users.length}</span>
+            </button>
+            <button
+              type="button"
+              className={`admin-pill-filter ${roleFilter === "admin" ? "is-active" : ""}`}
+              onClick={() => setRoleFilter(roleFilter === "admin" ? "" : "admin")}
+            >
+              👑 Admins <span className="admin-pill-filter__count">{users.filter((u) => u.is_admin || u.role === "admin").length}</span>
+            </button>
+            <button
+              type="button"
+              className={`admin-pill-filter ${roleFilter === "beta" ? "is-active" : ""}`}
+              onClick={() => setRoleFilter(roleFilter === "beta" ? "" : "beta")}
+            >
+              ⚡ Beta <span className="admin-pill-filter__count">{users.filter((u) => u.role === "beta").length}</span>
+            </button>
+            <button
+              type="button"
+              className={`admin-pill-filter ${roleFilter === "member" ? "is-active" : ""}`}
+              onClick={() => setRoleFilter(roleFilter === "member" ? "" : "member")}
+            >
+              👤 Membros <span className="admin-pill-filter__count">{users.filter((u) => u.role === "member" || !u.role).length}</span>
+            </button>
+            <button
+              type="button"
+              className={`admin-pill-filter ${statusFilter === "active" ? "is-active" : ""}`}
+              onClick={() => setStatusFilter(statusFilter === "active" ? "" : "active")}
+            >
+              ● Ativos <span className="admin-pill-filter__count">{users.filter((u) => u.access_status === "active").length}</span>
+            </button>
+            <button
+              type="button"
+              className={`admin-pill-filter ${statusFilter === "pending" ? "is-active" : ""}`}
+              onClick={() => setStatusFilter(statusFilter === "pending" ? "" : "pending")}
+            >
+              ⏳ Pendentes <span className="admin-pill-filter__count">{users.filter((u) => u.access_status === "pending").length}</span>
+            </button>
+            <button
+              type="button"
+              className={`admin-pill-filter ${statusFilter === "blocked" ? "is-active" : ""}`}
+              onClick={() => setStatusFilter(statusFilter === "blocked" ? "" : "blocked")}
+            >
+              🚫 Bloqueados <span className="admin-pill-filter__count">{users.filter((u) => u.access_status === "blocked").length}</span>
+            </button>
           </div>
 
           <div className="admin-filter-bar">
@@ -2401,6 +2544,37 @@ export function AdminApp() {
                 ) : (
                   <p style={{ fontSize: "12px", opacity: 0.5, margin: "6px 0 0" }}>Nenhuma ferramenta adquirida por este membro.</p>
                 )}
+
+                {/* Bloco para Conceder Nova Ferramenta */}
+                <div style={{ marginTop: "16px", borderTop: "1px dashed rgba(255, 255, 255, 0.12)", paddingTop: "14px" }}>
+                  <label style={{ fontSize: "12px", fontWeight: "700", display: "block", marginBottom: "6px" }}>
+                    Conceder Nova Ferramenta ao Membro
+                  </label>
+                  <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                    <select
+                      value={selectedGrantToolSlug}
+                      onChange={(e) => setSelectedGrantToolSlug(e.target.value)}
+                      style={{ flex: 1, padding: "8px 10px", fontSize: "12.5px" }}
+                    >
+                      <option value="">Selecione uma ferramenta para conceder…</option>
+                      {tools
+                        .filter((t) => !editingUser.tools_owned?.includes(t.slug) && t.slug !== "admin")
+                        .map((t) => (
+                          <option key={t.slug} value={t.slug}>
+                            {t.name} ({t.slug})
+                          </option>
+                        ))}
+                    </select>
+                    <button
+                      type="button"
+                      className="admin-btn admin-btn--primary admin-btn--sm"
+                      disabled={!selectedGrantToolSlug || grantingTool}
+                      onClick={handleGrantToolToUser}
+                    >
+                      {grantingTool ? "Concedendo…" : "+ Conceder"}
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <div className="admin-modal__actions">
