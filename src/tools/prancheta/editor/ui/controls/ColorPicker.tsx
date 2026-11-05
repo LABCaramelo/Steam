@@ -150,7 +150,6 @@ interface PaintPopoverProps {
 export function PaintPopover({ anchor, paint, onChange, onClose, allowImage = true, docColors, title = 'Preenchimento' }: PaintPopoverProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [top, setTop] = useState(anchor.top - 8);
-  const [isRemovingBg, setIsRemovingBg] = useState(false);
 
   useLayoutEffect(() => {
     const h = ref.current?.offsetHeight ?? 0;
