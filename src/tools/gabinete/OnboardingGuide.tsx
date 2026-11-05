@@ -28,7 +28,7 @@ export const ONBOARDING_MODULES: TourModule[] = [
     steps: [
       {
         tab: "minhas-tarefas",
-        target: "[data-tour='hero-gabinete-ia']",
+        target: "[data-tour='counters-demandas']",
         title: "Visão Geral das Demandas",
         text: "Aqui fica o seu cockpit de execução diária. Você acompanha demandas atrasadas, tarefas para hoje e o que vence nos próximos 7 dias.",
         tip: "Mantenha as demandas sempre atualizadas marcando o checkbox de conclusão à medida que finaliza.",

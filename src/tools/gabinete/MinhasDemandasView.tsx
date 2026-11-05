@@ -21,7 +21,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
   deliverables,
   clients,
   members,
-  onNavigate,
+  onNavigate: _onNavigate,
   onOpenNewTaskModal,
   onToggleTaskComplete,
 }) => {
@@ -96,31 +96,8 @@ export const MinhasDemandasView: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Cards de Destaque: Gabinete IA & Nativo */}
-      <div className="mc-featured-cards">
-        {/* Card 1: Gabinete IA */}
-        <div className="mc-hero-card mc-hero-card--acid cm-surface--spotlight" data-tour="hero-gabinete-ia">
-          <div>
-            <span className="mc-hero-card__badge">JÁ LIBERADO</span>
-            <h3 className="mc-hero-card__title">
-              Gabinete IA
-            </h3>
-            <p className="mc-hero-card__desc">
-              Cria o planejamento do mês, os roteiros e os cards do seu cliente em poucos minutos.
-            </p>
-          </div>
-          <MagneticButton
-            variant="cream"
-            size="md"
-            onClick={() => onNavigate("calendario")}
-          >
-            Criar o mês →
-          </MagneticButton>
-        </div>
-      </div>
-
       {/* Contadores de Tarefas */}
-      <div className="mc-counters">
+      <div className="mc-counters" data-tour="counters-demandas">
         <div className="mc-counter-card cm-surface--spotlight">
           <span className="mc-counter-card__number mc-counter-card__number--danger">
             {overdueTasks.length}
