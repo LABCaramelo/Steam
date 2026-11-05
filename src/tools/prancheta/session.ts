@@ -97,10 +97,13 @@ export class PranchetaSession {
         if (this.disposed) return false;
         this.info = updated;
         this.saved = next.fingerprint;
-        renderDocumentThumbnail(next.document).then((thumb) => {
+        renderDocumentThumbnail(next.document).then(async (thumb) => {
           if (thumb && !this.disposed) {
             this.info = { ...this.info, thumbnail: thumb };
-            this.repo.saveThumbnail?.(this.id, thumb).catch(() => {});
+            const updatedInfo = await this.repo.saveThumbnail?.(this.id, thumb);
+            if (updatedInfo && !this.disposed) {
+              this.info = updatedInfo;
+            }
           }
         }).catch(() => {});
       } catch (error) {
@@ -113,6 +116,25 @@ export class PranchetaSession {
     if (this.disposed) return false;
     this.publish(this.dirty ? "dirty" : "saved", this.dirty ? "Alterações por salvar" : "Salvo no LAB");
     return true;
+  }
+
+  async forceSave(): Promise<boolean> {
+    if (this.disposed) return false;
+    this.publish("saving", "Salvando…");
+    try {
+      const latest = await this.repo.getFile(this.id);
+      this.info = latest;
+      const next = this.snapshot();
+      const updated = await this.repo.saveFile(this.id, next.document, latest.updated_at);
+      if (this.disposed) return false;
+      this.info = updated;
+      this.saved = next.fingerprint;
+      this.publish("saved", "Salvo no LAB");
+      return true;
+    } catch (e) {
+      this.publish("error", e instanceof Error ? e.message : "Não foi possível salvar.");
+      return false;
+    }
   }
 
   dispose() {

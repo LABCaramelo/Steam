@@ -15,7 +15,7 @@ export interface PranchetaRepo {
   getFile(id: string): Promise<PranchetaFile>;
   createFile(document: DocumentData, thumbnail?: string | null): Promise<PranchetaFile>;
   saveFile(id: string, document: DocumentData, expectedUpdatedAt: string, thumbnail?: string | null): Promise<PranchetaFileInfo>;
-  saveThumbnail?(id: string, thumbnail: string): Promise<void>;
+  saveThumbnail?(id: string, thumbnail: string): Promise<PranchetaFileInfo | null | void>;
   deleteFile(id: string, expectedUpdatedAt: string): Promise<void>;
 }
 
@@ -76,13 +76,26 @@ export function createSupabasePranchetaRepo(userId: string): PranchetaRepo {
         .eq("user_id", userId).eq("id", id).eq("updated_at", expectedUpdatedAt)
         .select(META).maybeSingle();
       if (error) throw new Error(error.message);
-      if (!data) throw new PranchetaConflictError();
+      if (!data) {
+        // Tenta recuperar caso a alteração no updated_at tenha sido causada pela miniatura em segundo plano
+        const current = await supabase.from("prancheta_files").select(`${META}, document`)
+          .eq("user_id", userId).eq("id", id).maybeSingle();
+        if (current?.data) {
+          const retry = await supabase.from("prancheta_files").update(documentPayload(document, thumbnail ?? current.data.thumbnail))
+            .eq("user_id", userId).eq("id", id).eq("updated_at", current.data.updated_at)
+            .select(META).maybeSingle();
+          if (retry?.data) return retry.data as PranchetaFileInfo;
+        }
+        throw new PranchetaConflictError();
+      }
       return data as PranchetaFileInfo;
     },
     async saveThumbnail(id, thumbnail) {
-      const { error } = await supabase.from("prancheta_files").update({ thumbnail })
-        .eq("user_id", userId).eq("id", id);
+      const { data, error } = await supabase.from("prancheta_files").update({ thumbnail })
+        .eq("user_id", userId).eq("id", id)
+        .select(META).maybeSingle();
       if (error) console.warn("Failed to update thumbnail in database:", error.message);
+      return (data ?? null) as PranchetaFileInfo | null;
     },
     async deleteFile(id, expectedUpdatedAt) {
       const { data, error } = await supabase.from("prancheta_files").delete()
