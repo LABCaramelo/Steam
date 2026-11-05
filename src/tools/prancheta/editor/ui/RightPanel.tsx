@@ -6,6 +6,7 @@ import { item, sep, type MenuEntry } from '../commands';
 import { WEIGHT_NAMES, ensureFontFace, fontDef } from '../fonts';
 import { FontPicker } from './FontPicker';
 import { EffectPicker, AddEffectMenu } from './EffectPicker';
+import { GlassPopover } from './GlassPopover';
 import { type ExportFormat, type ExportSetting, exportNodes, exportPrefs } from '../io/export';
 import { TYPE_LABELS, solid } from '../model/defaults';
 import { applyAutoLayout, getPage } from '../model/document';
@@ -975,7 +976,23 @@ const defaultEffect = (type: EffectType = 'DROP_SHADOW'): Effect => {
     case 'TEXTURE':
       return { type, visible: true, color: '#ffffff', opacity: 0.3, x: 0, y: 0, radius: 4, spread: 0 };
     case 'GLASS':
-      return { type, visible: true, color: '#ffffff', opacity: 0.2, x: 0, y: 4, radius: 14, spread: 1 };
+      return {
+        type,
+        visible: true,
+        color: '#ffffff',
+        opacity: 0.2,
+        x: 0,
+        y: 4,
+        radius: 4,
+        spread: 20,
+        lightAngle: -45,
+        lightIntensity: 80,
+        refraction: 80,
+        depth: 20,
+        dispersion: 50,
+        frost: 4,
+        splay: 0,
+      };
     case 'SHADER':
       return { type, visible: true, color: '#FF701A', opacity: 0.4, x: 0, y: 0, radius: 8, spread: 0 };
     default:
@@ -985,6 +1002,7 @@ const defaultEffect = (type: EffectType = 'DROP_SHADOW'): Effect => {
 
 function EffectsSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
   const [pop, setPop] = useState<{ index: number; rect: DOMRect } | null>(null);
+  const [glassPop, setGlassPop] = useState<{ index: number; rect: DOMRect } | null>(null);
   const all = nodes.map((n) => n.effects);
   const uniform = all.every((e) => same(e, all[0]));
   const effects = uniform ? all[0] : null;
@@ -992,11 +1010,20 @@ function EffectsSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
     A.editNodes(ids, (n) => (n.effects = fn(structuredClone(n.effects))), !live);
   const set = (i: number, patch: Partial<Effect>, live = false) => editEffects((l) => ((l[i] = { ...l[i], ...patch }), l), live);
 
+  const handleAddEffect = (t: EffectType) => {
+    if (t === 'GLASS') {
+      A.editNodes(ids, (n) => {
+        n.fills = n.fills.map((f) => (f.opacity >= 0.8 ? { ...f, opacity: 0.2 } : f));
+      });
+    }
+    editEffects((l) => (uniform ? [...l, defaultEffect(t)] : [defaultEffect(t)]));
+  };
+
   return (
     <Section
       title="Efeitos"
       actions={
-        <AddEffectMenu onSelect={(t) => editEffects((l) => (uniform ? [...l, defaultEffect(t)] : [defaultEffect(t)]))}>
+        <AddEffectMenu onSelect={handleAddEffect}>
           <IconButton title="Adicionar efeito" onClick={() => {}}>
             <I.IconPlus />
           </IconButton>
@@ -1011,8 +1038,29 @@ function EffectsSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
             <div className="paint-row">
               <EffectPicker
                 value={e.type}
-                onChange={(newType) => set(i, defaultEffect(newType))}
+                onChange={(newType) => {
+                  if (newType === 'GLASS') {
+                    A.editNodes(ids, (n) => {
+                      n.fills = n.fills.map((f) => (f.opacity >= 0.8 ? { ...f, opacity: 0.2 } : f));
+                    });
+                  }
+                  set(i, defaultEffect(newType));
+                }}
               />
+              {e.type === 'GLASS' && (
+                <IconButton
+                  title="Abrir Inspetor de Vidro (Figma 1:1)"
+                  onClick={(ev) =>
+                    setGlassPop(
+                      glassPop?.index === i
+                        ? null
+                        : { index: i, rect: (ev.currentTarget as HTMLElement).getBoundingClientRect() }
+                    )
+                  }
+                >
+                  <I.IconSliders size={16} />
+                </IconButton>
+              )}
               <IconButton title={e.visible ? 'Ocultar' : 'Mostrar'} onClick={() => set(i, { visible: !e.visible })}>
                 {e.visible ? <I.IconEye /> : <I.IconEyeOff />}
               </IconButton>
@@ -1020,6 +1068,7 @@ function EffectsSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
                 title="Remover"
                 onClick={() => {
                   setPop(null);
+                  if (glassPop?.index === i) setGlassPop(null);
                   editEffects((l) => l.filter((_, j) => j !== i));
                 }}
               >
@@ -1084,9 +1133,88 @@ function EffectsSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
 
             {e.type === 'GLASS' && (
               <>
+                <button
+                  type="button"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    background: 'rgba(13, 153, 255, 0.12)',
+                    border: '1px solid rgba(13, 153, 255, 0.35)',
+                    borderRadius: 6,
+                    padding: '6px 10px',
+                    color: '#60b8ff',
+                    fontSize: 11,
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    width: '100%',
+                    marginBottom: 4,
+                  }}
+                  onClick={(ev) =>
+                    setGlassPop(
+                      glassPop?.index === i
+                        ? null
+                        : { index: i, rect: (ev.currentTarget as HTMLElement).getBoundingClientRect() }
+                    )
+                  }
+                >
+                  <I.IconSliders size={14} />
+                  <span>Inspetor de Vidro (Figma 1:1)</span>
+                </button>
                 <div className="rp-grid">
-                  <NumberField label="D" title="Desfoque de fundo" value={e.radius} min={0} onChange={(v, live) => set(i, { radius: v }, live)} />
-                  <NumberField label="Bisel" title="Reflexo da borda" value={e.spread} min={0} max={10} onChange={(v, live) => set(i, { spread: v }, live)} />
+                  <NumberField
+                    label="Luz"
+                    title="Ângulo da luz em graus"
+                    value={e.lightAngle ?? -45}
+                    suffix="°"
+                    onChange={(v, live) => set(i, { lightAngle: v }, live)}
+                  />
+                  <NumberField
+                    label="Int."
+                    title="Intensidade da luz"
+                    value={e.lightIntensity ?? 80}
+                    suffix="%"
+                    min={0}
+                    max={100}
+                    onChange={(v, live) => set(i, { lightIntensity: v }, live)}
+                  />
+                </div>
+                <div className="rp-grid">
+                  <NumberField
+                    label="Refr."
+                    title="Refração da luz"
+                    value={e.refraction ?? 80}
+                    min={0}
+                    max={100}
+                    onChange={(v, live) => set(i, { refraction: v }, live)}
+                  />
+                  <NumberField
+                    label="Prof."
+                    title="Profundidade / Bisel"
+                    value={e.depth ?? 20}
+                    min={0}
+                    max={100}
+                    onChange={(v, live) => set(i, { depth: v }, live)}
+                  />
+                </div>
+                <div className="rp-grid">
+                  <NumberField
+                    label="Gelo"
+                    title="Gelo / Desfoque de fundo"
+                    value={e.frost ?? (e.radius || 4)}
+                    min={0}
+                    max={100}
+                    onChange={(v, live) => set(i, { frost: v, radius: v }, live)}
+                  />
+                  <NumberField
+                    label="Disp."
+                    title="Dispersão cromática"
+                    value={e.dispersion ?? 50}
+                    min={0}
+                    max={100}
+                    onChange={(v, live) => set(i, { dispersion: v }, live)}
+                  />
                 </div>
                 <div className="paint-row">
                   <Swatch paint={solid(e.color, e.opacity)} onClick={(rect) => setPop(pop?.index === i ? null : { index: i, rect })} />
@@ -1157,6 +1285,14 @@ function EffectsSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
           docColors={docColors()}
           onClose={() => setPop(null)}
           onChange={(p, live) => p.type === 'SOLID' && set(pop.index, { color: p.color, opacity: p.opacity }, live)}
+        />
+      )}
+      {glassPop && effects?.[glassPop.index] && (
+        <GlassPopover
+          anchor={glassPop.rect}
+          effect={effects[glassPop.index]}
+          onChange={(patch, live) => set(glassPop.index, patch, live)}
+          onClose={() => setGlassPop(null)}
         />
       )}
     </Section>
