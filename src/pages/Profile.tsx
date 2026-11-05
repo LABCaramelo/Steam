@@ -69,6 +69,16 @@ export function ProfilePage() {
                   @{profile.nickname}
                 </span>
               )}
+              {profile?.role === "admin" && (
+                <span className="cm-brand-badge" style={{ fontSize: "10px", letterSpacing: "0.06em", background: "rgba(255, 112, 26, 0.15)", color: "#FF701A", border: "1px solid rgba(255, 112, 26, 0.35)" }}>
+                  ADMIN
+                </span>
+              )}
+              {profile?.role === "beta" && (
+                <span className="cm-brand-badge" style={{ fontSize: "10px", letterSpacing: "0.06em", background: "rgba(118, 87, 255, 0.15)", color: "#a78bfa", border: "1px solid rgba(118, 87, 255, 0.35)" }}>
+                  BETA TESTER
+                </span>
+              )}
             </div>
 
             <div className="profile__status" style={{ color: STATUS_COLOR[ui.status] }}>
