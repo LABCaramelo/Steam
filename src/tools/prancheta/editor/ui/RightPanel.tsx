@@ -3,7 +3,8 @@ import * as A from '../actions';
 import { rgba } from '../canvas/color';
 import { fitTextBox } from '../canvas/shapes';
 import { item, sep, type MenuEntry } from '../commands';
-import { FONTS, WEIGHT_NAMES, ensureFontFace, fontDef } from '../fonts';
+import { WEIGHT_NAMES, ensureFontFace, fontDef } from '../fonts';
+import { FontPicker } from './FontPicker';
 import { type ExportFormat, type ExportSetting, exportNodes, exportPrefs } from '../io/export';
 import { TYPE_LABELS, solid } from '../model/defaults';
 import { applyAutoLayout, getPage } from '../model/document';
@@ -693,11 +694,10 @@ function TextSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
   return (
     <Section title="Tipografia">
       <div className="rp-row">
-        <select
-          className="select grow"
+        <FontPicker
           value={family.value ?? ''}
-          onChange={(e) => {
-            const fam = e.target.value;
+          mixed={family.mixed}
+          onChange={(fam) => {
             const avail = fontDef(fam)?.weights ?? [400];
             A.editNodes(ids, (n) => {
               n.fontFamily = fam;
@@ -706,14 +706,7 @@ function TextSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
             });
             refitWhenLoaded(fam, weight.value ?? 400);
           }}
-        >
-          {family.mixed && <option value="">Misto</option>}
-          {FONTS.map((f) => (
-            <option key={f.family} value={f.family} style={{ fontFamily: f.family }}>
-              {f.family}
-            </option>
-          ))}
-        </select>
+        />
       </div>
       <div className="rp-grid">
         <select

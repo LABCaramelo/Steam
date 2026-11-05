@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FONTS, ensureFont, fontDef, type FontDef } from '../fonts';
+import { FONTS, ensureFont, type FontDef } from '../fonts';
 import * as I from './icons';
 import './FontPicker.css';
 

@@ -2,13 +2,21 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "cleanUrls": true,
-  "trailingSlash": false,
   "functions": {
     "api/trama.ts": { "maxDuration": 60 },
     "api/trama-hook.ts": { "maxDuration": 60 }
   },
   "redirects": [
+    {
+      "source": "/admin",
+      "destination": "/tools/admin",
+      "permanent": false
+    },
+    {
+      "source": "/admin/",
+      "destination": "/tools/admin",
+      "permanent": false
+    },
     {
       "source": "/prompts",
       "destination": "/tools/prompt-library",

@@ -120,6 +120,11 @@ function siteRoutes(): Plugin {
     const url = new URL(req.url ?? "/", "http://localhost");
     const page = url.pathname;
 
+    if (/^\/admin\/?$/.test(page)) {
+      res.statusCode = 308;
+      res.setHeader("Location", "/tools/admin");
+      return res.end();
+    }
     if (/^\/(?:caderno|appflowy|flowy)\/?$/.test(page)) {
       res.statusCode = 308;
       res.setHeader("Location", "/tools/caderno");
