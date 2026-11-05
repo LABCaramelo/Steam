@@ -502,7 +502,7 @@ export const supabaseGabinete: GabineteRepository = {
       status: data.status || "todo",
       priority: data.priority || "medium",
       due_date: data.due_date || new Date().toISOString().slice(0, 10),
-      assignee_name: data.assignee_name || "Luiz (eu)",
+      assignee_name: data.assignee_name || "Luiz",
       checklist: data.checklist || [],
       position: 0,
       created_at: new Date().toISOString(),

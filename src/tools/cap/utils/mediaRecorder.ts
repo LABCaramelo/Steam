@@ -178,7 +178,7 @@ export async function renderExportedVideo(
   trimStart: number,
   trimEnd: number,
   onProgress?: (progress: ExportProgress) => void,
-  format: "webm" | "mp4" = "webm"
+  format?: "webm" | "mp4"
 ): Promise<Blob> {
   const vRatio =
     videoElement.videoWidth && videoElement.videoHeight

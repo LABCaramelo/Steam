@@ -27,19 +27,34 @@ export const MinhasDemandasView: React.FC<Props> = ({
 }) => {
   const toolUser = useOptionalToolUser();
   const firstName = (toolUser?.nickname || toolUser?.name || "Luiz").trim().split(" ")[0] || "Luiz";
-  const [selectedMember, setSelectedMember] = useState<string>("Luiz (eu)");
+  const [selectedMember, setSelectedMember] = useState<string>("all");
   const [filterPriority, setFilterPriority] = useState<string>("all");
 
   const todayStr = new Date().toISOString().slice(0, 10);
 
+  // Filtro por responsável
+  const isTaskAssignedToMember = (t: Task, memberName: string) => {
+    if (memberName === "all") return true;
+    if (t.assignee_name === memberName) return true;
+    if (
+      memberName.toLowerCase().startsWith("luiz") &&
+      (!t.assignee_name || t.assignee_name === "Luiz (eu)" || t.assignee_name.toLowerCase().startsWith("luiz"))
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const memberTasks = tasks.filter((t) => isTaskAssignedToMember(t, selectedMember));
+
   // Contadores
-  const overdueTasks = tasks.filter((t) => t.status !== "done" && t.due_date && t.due_date < todayStr);
-  const todayTasks = tasks.filter((t) => t.status !== "done" && t.due_date === todayStr);
+  const overdueTasks = memberTasks.filter((t) => t.status !== "done" && t.due_date && t.due_date < todayStr);
+  const todayTasks = memberTasks.filter((t) => t.status !== "done" && t.due_date === todayStr);
   const next7DaysStr = new Date(Date.now() + 86400000 * 7).toISOString().slice(0, 10);
-  const next7DaysTasks = tasks.filter(
+  const next7DaysTasks = memberTasks.filter(
     (t) => t.status !== "done" && t.due_date && t.due_date > todayStr && t.due_date <= next7DaysStr
   );
-  const allOpenTasks = tasks.filter((t) => t.status !== "done" && !t.is_archived);
+  const allOpenTasks = memberTasks.filter((t) => t.status !== "done" && !t.is_archived);
 
   const filteredTasks = allOpenTasks.filter((t) => {
     if (filterPriority !== "all" && t.priority !== filterPriority) return false;
@@ -74,14 +89,19 @@ export const MinhasDemandasView: React.FC<Props> = ({
               onChange={(e) => setSelectedMember(e.target.value)}
               style={{ padding: "6px 10px", fontSize: 12.5 }}
             >
-              <option value="Luiz (eu)">Luiz (eu)</option>
-              {members
-                .filter((m) => m.name !== "Luiz (eu)")
-                .map((m) => (
+              <option value="all">Toda a equipe</option>
+              {members.map((m) => {
+                const isYou =
+                  m.role === "owner" ||
+                  m.member_type === "adm_master" ||
+                  (toolUser?.name && m.name.toLowerCase() === toolUser.name.toLowerCase()) ||
+                  m.name.toLowerCase().startsWith("luiz");
+                return (
                   <option key={m.id} value={m.name}>
-                    {m.name}
+                    {m.name}{isYou ? " (você)" : ""}
                   </option>
-                ))}
+                );
+              })}
             </select>
           </div>
 
@@ -267,7 +287,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
                     )}
 
                     <span style={{ fontSize: 12, color: "var(--mc-text-muted)", display: "inline-flex", alignItems: "center", gap: 5 }}>
-                      <IconUser size={13} /> {t.assignee_name || "Luiz"}
+                      <IconUser size={13} /> {t.assignee_name === "Luiz (eu)" ? "Luiz" : (t.assignee_name || "Luiz")}
                     </span>
                   </div>
                 </div>
