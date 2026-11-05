@@ -47,7 +47,15 @@ export interface GradientPaint {
 
 export type Paint = SolidPaint | ImagePaint | GradientPaint;
 
-export type EffectType = 'DROP_SHADOW' | 'INNER_SHADOW' | 'LAYER_BLUR';
+export type EffectType =
+  | 'INNER_SHADOW'
+  | 'DROP_SHADOW'
+  | 'LAYER_BLUR'
+  | 'BACKGROUND_BLUR'
+  | 'NOISE'
+  | 'TEXTURE'
+  | 'GLASS'
+  | 'SHADER';
 
 export interface Effect {
   type: EffectType;

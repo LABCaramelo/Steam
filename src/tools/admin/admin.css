@@ -363,6 +363,35 @@
   gap: 4px;
 }
 
+.admin-chip--tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 5px 2px 7px;
+}
+
+.admin-chip__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgb(var(--cm-fg-muted));
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.admin-chip__remove:hover {
+  background: rgba(231, 76, 60, 0.4);
+  color: #ff6b6b;
+}
+
 .admin-chip {
   font-size: 11px;
   background: rgb(var(--cm-surface-2));

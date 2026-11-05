@@ -158,9 +158,6 @@ export const GabineteApp: React.FC<Props> = ({ repo }) => {
         <GabineteTopbar
           sidebarCollapsed={sidebarCollapsed}
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-          onOpenVideoTutorials={() => setActiveTab("biblioteca")}
-          onOpenQuickNotes={() => setTaskModalOpen(true)}
-          onOpenSettings={() => setActiveTab("equipe")}
         />
 
         {/* Onboarding & Guia de Funcionalidades */}

@@ -129,7 +129,7 @@ export function AdminApp() {
   const [uploadingKind, setUploadingKind] = useState<string | null>(null);
   const [editingUser, setEditingUser] = useState<AdminUserItem | null>(null);
   const [saving, setSaving] = useState(false);
-  const [revokeTarget, setRevokeTarget] = useState<{ userId: string; slug: string } | null>(null);
+  const [revokeTarget, setRevokeTarget] = useState<{ userId: string; slug: string; userName?: string; toolName?: string } | null>(null);
   const [revokingTool, setRevokingTool] = useState(false);
 
   // Exclusão de Membro e Cadastro
@@ -585,10 +585,8 @@ export function AdminApp() {
     }
   };
 
-  // Excluir membro e cadastro definitivo
+  // Revogar acesso de membro a uma ferramenta específica
   const handleRevokeUserTool = async () => {
-    void revokeTarget;
-    void revokingTool;
     if (!revokeTarget || revokingTool) return;
     const target = revokeTarget;
     setRevokingTool(true);
@@ -600,9 +598,9 @@ export function AdminApp() {
         return { ...user, tools_owned: owned, tools_count: owned.length };
       };
       setUsers((previous) => previous.map(removeAcquisition));
-      setEditingUser((previous) => previous ? removeAcquisition(previous) : null);
+      setEditingUser((previous) => (previous ? removeAcquisition(previous) : null));
       setRevokeTarget(null);
-      toast("Aquisição removida. Os dados da ferramenta foram preservados.", "success");
+      toast("Aquisição removida com sucesso. Os dados da ferramenta foram preservados.", "success");
       await loadData();
     } catch (err) {
       toast(err instanceof Error ? err.message : "Erro ao remover acesso.", "error");
@@ -610,8 +608,6 @@ export function AdminApp() {
       setRevokingTool(false);
     }
   };
-
-  void handleRevokeUserTool;
 
   // Excluir membro e cadastro definitivo
   const handleDeleteUser = async () => {
@@ -1616,8 +1612,16 @@ export function AdminApp() {
                       {u.tools_owned.length > 0 ? (
                         <div className="admin-chip-list">
                           {u.tools_owned.map((slug) => (
-                            <span key={slug} className="admin-chip">
-                              {slug}
+                            <span key={slug} className="admin-chip admin-chip--tool" title={`Ferramenta: ${slug}`}>
+                              <span>{slug}</span>
+                              <button
+                                type="button"
+                                className="admin-chip__remove"
+                                title={`Remover acesso de ${u.name} a ${slug}`}
+                                onClick={() => setRevokeTarget({ userId: u.id, userName: u.name, slug, toolName: slug })}
+                              >
+                                ×
+                              </button>
                             </span>
                           ))}
                         </div>
@@ -2348,6 +2352,42 @@ export function AdminApp() {
                 </div>
               )}
 
+              <div className="admin-form-group" style={{ marginTop: "18px", borderTop: "1px solid rgba(255, 255, 255, 0.1)", paddingTop: "14px" }}>
+                <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span>Ferramentas Adquiridas ({editingUser.tools_owned?.length || 0})</span>
+                  <small style={{ opacity: 0.6, fontSize: "11px", fontWeight: "normal" }}>Remova o acesso individual por ferramenta</small>
+                </label>
+                {editingUser.tools_owned && editingUser.tools_owned.length > 0 ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "10px" }}>
+                    {editingUser.tools_owned.map((slug) => (
+                      <div
+                        key={slug}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "8px 12px",
+                          background: "rgba(255, 255, 255, 0.04)",
+                          border: "1px solid rgba(255, 255, 255, 0.1)",
+                          borderRadius: "8px",
+                        }}
+                      >
+                        <span style={{ fontWeight: 600, fontSize: "13px" }}>{slug}</span>
+                        <button
+                          type="button"
+                          className="admin-btn admin-btn--danger admin-btn--sm"
+                          onClick={() => setRevokeTarget({ userId: editingUser.id, userName: editingUser.name, slug, toolName: slug })}
+                        >
+                          Revogar Acesso
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ fontSize: "12px", opacity: 0.5, margin: "6px 0 0" }}>Nenhuma ferramenta adquirida por este membro.</p>
+                )}
+              </div>
+
               <div className="admin-modal__actions">
                 <button
                   type="button"
@@ -2503,6 +2543,65 @@ export function AdminApp() {
                 }
               >
                 {deletingUser ? "Excluindo…" : "Sim, Excluir Definitivamente"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL: CONFIRMAÇÃO PARA REVOGAR ACESSO À FERRAMENTA
+         ========================================================================= */}
+      {revokeTarget && (
+        <div className="admin-modal-backdrop" onClick={() => !revokingTool && setRevokeTarget(null)}>
+          <div className="admin-modal admin-modal--danger" onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+              <span style={{ fontSize: "28px" }}>🔒</span>
+              <div>
+                <h2 className="admin-modal__title" style={{ color: "#ff6b6b", margin: 0 }}>
+                  Revogar Acesso à Ferramenta
+                </h2>
+                <p className="admin-modal__desc" style={{ margin: "4px 0 0" }}>
+                  Remoção de posse de ferramenta de membro
+                </p>
+              </div>
+            </div>
+
+            <div
+              style={{
+                background: "rgba(255, 255, 255, 0.03)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                borderRadius: "8px",
+                padding: "12px 16px",
+                margin: "16px 0",
+                fontSize: "13px",
+                lineHeight: "1.6",
+              }}
+            >
+              <div><strong>Membro:</strong> {revokeTarget.userName || "Usuário"}</div>
+              <div><strong>Ferramenta:</strong> {revokeTarget.toolName || revokeTarget.slug}</div>
+            </div>
+
+            <p style={{ fontSize: "13px", color: "rgba(255, 244, 232, 0.8)", lineHeight: "1.5" }}>
+              A ferramenta será imediatamente retirada da biblioteca do usuário. Os arquivos e configurações locais ficam preservados no banco caso o acesso seja concedido novamente no futuro.
+            </p>
+
+            <div className="admin-modal__actions" style={{ marginTop: "20px" }}>
+              <button
+                type="button"
+                className="admin-btn admin-btn--ghost"
+                onClick={() => setRevokeTarget(null)}
+                disabled={revokingTool}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="admin-btn admin-btn--danger"
+                onClick={handleRevokeUserTool}
+                disabled={revokingTool}
+              >
+                {revokingTool ? "Revogando…" : "Confirmar Revogação"}
               </button>
             </div>
           </div>

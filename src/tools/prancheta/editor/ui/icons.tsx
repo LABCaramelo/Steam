@@ -2,31 +2,30 @@ import type { ReactNode, SVGProps } from 'react';
 
 type IconProps = SVGProps<SVGSVGElement> & { size?: number };
 
-function make(paths: ReactNode, viewBox = '0 0 24 24') {
+function make(children: ReactNode) {
   return function Icon({ size = 24, ...rest }: IconProps) {
     return (
       <svg
         width={size}
         height={size}
-        viewBox={viewBox}
+        viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={1}
+        strokeWidth={1.25}
         strokeLinecap="round"
         strokeLinejoin="round"
         aria-hidden="true"
         {...rest}
       >
-        {paths}
+        {children}
       </svg>
     );
   };
 }
 
-// ferramentas
 export const IconMove = make(<path d="M7.5 5.5v12.2l3.3-3.2 2.3 5 2-.9-2.3-5h4.6z" fill="currentColor" stroke="none" />);
 export const IconHand = make(
-  <path d="M9 11.5V6.8a1.2 1.2 0 0 1 2.4 0v4.2-5.6a1.2 1.2 0 0 1 2.4 0V11V6.6a1.2 1.2 0 0 1 2.4 0v5.2-3.4a1.2 1.2 0 0 1 2.3 0v5.8c0 3.3-2.3 5.8-5.6 5.8h-.6c-1.8 0-3-.7-4.1-2l-3-3.8a1.2 1.2 0 0 1 1.8-1.6L9 14.5z" />,
+  <path d="M18 11V6a2 2 0 0 0-4 0v4M14 10V4a2 2 0 0 0-4 0v7M10 10.5V5a2 2 0 1 0-4 0v9c0 4 3 6.5 7 6.5s7-2.5 7-6.5V9a2 2 0 1 0-4 0v2" />,
 );
 export const IconFrame = make(<path d="M8.5 4.5v15M15.5 4.5v15M4.5 8.5h15M4.5 15.5h15" />);
 export const IconRect = make(<rect x="5.5" y="5.5" width="13" height="13" rx="0.5" />);
@@ -35,28 +34,27 @@ export const IconLine = make(<path d="M5.5 18.5 18.5 5.5" />);
 export const IconArrow = make(<path d="M5.5 18.5 18.5 5.5M11 5.5h7.5V13" />);
 export const IconPolygon = make(<path d="M12 5.5 19 18.5H5z" />);
 export const IconStar = make(
-  <path d="m12 4.8 2.2 4.6 5 .6-3.7 3.5.9 5-4.4-2.5-4.4 2.5.9-5L4.8 10l5-.6z" />,
+  <path d="m12 4.5 2.3 4.7 5.2.8-3.7 3.6.9 5.2-4.7-2.5-4.7 2.5.9-5.2-3.7-3.6 5.2-.8z" />,
 );
 export const IconPencil = make(<path d="M15.5 5.5 18.5 8.5 9 18l-4 1 1-4zM13.5 7.5l3 3" />);
 export const IconText = make(<path d="M6.5 7V5.5h11V7M12 5.5v13M9.5 18.5h5" />);
 export const IconImage = make(
   <>
-    <rect x="4.5" y="5.5" width="15" height="13" rx="1" />
-    <circle cx="9" cy="10" r="1.5" />
-    <path d="m4.5 16 4-4 3 3 3-3 5 5" />
+    <rect x="5.5" y="5.5" width="13" height="13" rx="0.5" />
+    <circle cx="9" cy="9.5" r="1.5" />
+    <path d="m6 16.5 4-4 3 3 2-2 3 3" />
   </>,
 );
 export const IconVector = make(
   <>
-    <path d="M6 18c1-6 4-9 12-12" />
-    <circle cx="6" cy="18" r="1.5" />
-    <circle cx="18" cy="6" r="1.5" />
+    <rect x="5.5" y="5.5" width="13" height="13" rx="0.5" />
+    <circle cx="8" cy="8" r="1" fill="currentColor" />
+    <circle cx="16" cy="16" r="1" fill="currentColor" />
+    <path d="M8 8c0 4 8 4 8 8" />
   </>,
 );
 export const IconGroup = make(<rect x="5.5" y="5.5" width="13" height="13" rx="0.5" strokeDasharray="2 2" />);
 export const IconPage = make(<path d="M7.5 4.5h6l3 3v12h-9zM13.5 4.5v3h3" />);
-
-// interface
 export const IconChevronDown = make(<path d="m8 10.5 4 4 4-4" />);
 export const IconChevronRight = make(<path d="m10.5 8 4 4-4 4" />);
 export const IconArrowLeft = make(<path d="M19 12H5M11 18l-6-6 6-6" strokeWidth={1.5} />);
@@ -66,73 +64,72 @@ export const IconPlus = make(<path d="M12 6.5v11M6.5 12h11" />);
 export const IconMinus = make(<path d="M6.5 12h11" />);
 export const IconAutoLayoutH = make(
   <>
-    <rect x="4" y="6" width="6" height="12" rx="1" />
-    <rect x="14" y="6" width="6" height="12" rx="1" />
+    <rect x="5.5" y="5.5" width="5.5" height="13" rx="0.5" />
+    <rect x="13" y="5.5" width="5.5" height="13" rx="0.5" />
   </>,
 );
 export const IconAutoLayoutV = make(
   <>
-    <rect x="6" y="4" width="12" height="6" rx="1" />
-    <rect x="6" y="14" width="12" height="6" rx="1" />
+    <rect x="5.5" y="5.5" width="13" height="5.5" rx="0.5" />
+    <rect x="5.5" y="13" width="13" height="5.5" rx="0.5" />
   </>,
 );
 export const IconCheck = make(<path d="m7 12.5 3.2 3L17 8.5" />);
 export const IconClose = make(<path d="m7.5 7.5 9 9M16.5 7.5l-9 9" />);
 export const IconEye = make(
   <>
-    <path d="M4 12s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5z" />
-    <circle cx="12" cy="12" r="2.2" />
+    <path d="M4.5 12s3-5.5 7.5-5.5S19.5 12 19.5 12s-3 5.5-7.5 5.5S4.5 12 4.5 12z" />
+    <circle cx="12" cy="12" r="2.5" />
   </>,
 );
 export const IconEyeOff = make(
   <>
-    <path d="M4 12s3-5 8-5c1.4 0 2.6.4 3.6 1M20 12s-3 5-8 5c-1.4 0-2.6-.4-3.6-1" />
-    <path d="m5.5 18.5 13-13" />
+    <path d="m5 5 14 14M9.5 9.8A6.8 6.8 0 0 0 4.5 12s3 5.5 7.5 5.5c1.8 0 3.3-.6 4.5-1.5M14.5 14.2a2.5 2.5 0 0 1-3.7-3.7" />
   </>,
 );
 export const IconLock = make(
   <>
-    <rect x="7.5" y="11.5" width="9" height="7" rx="1" />
-    <path d="M9.5 11.5V9a2.5 2.5 0 0 1 5 0v2.5" />
+    <rect x="6.5" y="10.5" width="11" height="8" rx="1" />
+    <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
   </>,
 );
 export const IconUnlock = make(
   <>
-    <rect x="7.5" y="11.5" width="9" height="7" rx="1" />
-    <path d="M9.5 11.5V9a2.5 2.5 0 0 1 4.8-1" />
+    <rect x="6.5" y="10.5" width="11" height="8" rx="1" />
+    <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0" />
   </>,
 );
 export const IconLink = make(
-  <path d="M10.5 13.5a3 3 0 0 0 4.2 0l2.6-2.6a3 3 0 0 0-4.2-4.2l-.8.8M13.5 10.5a3 3 0 0 0-4.2 0l-2.6 2.6a3 3 0 0 0 4.2 4.2l.8-.8" />,
+  <path d="M10 13a4 4 0 0 0 5.7 0l2.8-2.8a4 4 0 0 0-5.6-5.7l-1.4 1.4M14 11a4 4 0 0 0-5.7 0L5.5 13.8a4 4 0 0 0 5.6 5.7l1.4-1.4" />,
 );
 export const IconUnlink = make(
-  <path d="M14.7 13.5l2.6-2.6a3 3 0 0 0-4.2-4.2l-.8.8M9.3 10.5l-2.6 2.6a3 3 0 0 0 4.2 4.2l.8-.8M7 7l10 10" />,
+  <>
+    <path d="m5 5 14 14" />
+    <path d="M10 13a4 4 0 0 0 5.7 0l2.8-2.8a4 4 0 0 0-5.6-5.7l-1.4 1.4M14 11a4 4 0 0 0-5.7 0L5.5 13.8a4 4 0 0 0 5.6 5.7l1.4-1.4" />
+  </>,
 );
 export const IconRotate = make(<path d="M17.5 12a5.5 5.5 0 1 1-1.6-3.9M16.5 4.8v3.6h-3.6" />);
 export const IconFlipH = make(
   <>
-    <path d="M12 4.5v15" strokeDasharray="1.5 1.5" />
-    <path d="M9.5 7.5v9l-4.5-4.5zM14.5 7.5v9l4.5-4.5z" />
+    <path d="M12 4.5v15M6.5 7.5l-2 4.5 2 4.5zM17.5 7.5l2 4.5-2 4.5z" />
   </>,
 );
 export const IconFlipV = make(
   <>
-    <path d="M4.5 12h15" strokeDasharray="1.5 1.5" />
-    <path d="M7.5 9.5h9L12 5zM7.5 14.5h9L12 19z" />
+    <path d="M4.5 12h15M7.5 6.5l4.5-2 4.5 2zM7.5 17.5l4.5 2 4.5-2z" />
   </>,
 );
 export const IconRotate90 = make(
   <>
-    <path d="M7.5 9.5h9v9h-9z" />
-    <path d="M10 5.5h3.5a4 4 0 0 1 4 4M15.6 7.6l1.9 1.9 1.9-1.9" />
+    <path d="M18.5 12a6.5 6.5 0 1 1-1.9-4.6" />
+    <path d="M18.5 6v3.5H15" />
   </>,
 );
 export const IconCorner = make(<path d="M6.5 17.5V11a4.5 4.5 0 0 1 4.5-4.5h6.5" />);
 export const IconOpacity = make(
   <>
     <circle cx="12" cy="12" r="6.5" />
-    <path d="M12 5.5v13" />
-    <path d="M12 5.5a6.5 6.5 0 0 1 0 13z" fill="currentColor" stroke="none" opacity="0.35" />
+    <path d="M12 5.5v13a6.5 6.5 0 0 0 0-13z" fill="currentColor" />
   </>,
 );
 export const IconClip = make(<path d="M8.5 4.5v11h11M4.5 8.5h11v11" />);
@@ -215,6 +212,87 @@ export const IconExclude = make(
   </>,
 );
 export const IconPen = make(<path d="m12 4 4 4-8 10-4 1 1-4L12 4zM10 6l3 3" />);
+
+// ---------- Ícones Oficiais de Efeitos (8 Modos) ----------
+export const IconInnerShadow = make(
+  <g>
+    <rect x="4" y="4" width="16" height="16" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+    <path d="M5.5 5.5h13a1 1 0 0 1 1 1v3h-10a1 1 0 0 0-1 1v7h-3v-12z" fill="currentColor" opacity="0.6" stroke="none" />
+  </g>,
+);
+
+export const IconDropShadow = make(
+  <g>
+    <rect x="4" y="4" width="13" height="13" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+    <path d="M7.5 19.5h9a3 3 0 0 0 3-3v-9" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+  </g>,
+);
+
+export const IconLayerBlur = make(
+  <g fill="currentColor">
+    <circle cx="8" cy="8" r="1.5" opacity="0.3" />
+    <circle cx="12" cy="8" r="1.8" opacity="0.6" />
+    <circle cx="16" cy="8" r="1.5" opacity="0.3" />
+    <circle cx="8" cy="12" r="1.8" opacity="0.6" />
+    <circle cx="12" cy="12" r="2.5" />
+    <circle cx="16" cy="12" r="1.8" opacity="0.6" />
+    <circle cx="8" cy="16" r="1.5" opacity="0.3" />
+    <circle cx="12" cy="16" r="1.8" opacity="0.6" />
+    <circle cx="16" cy="16" r="1.5" opacity="0.3" />
+  </g>,
+);
+
+export const IconBackgroundBlur = make(
+  <g>
+    <rect x="3.5" y="3.5" width="17" height="17" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeDasharray="2.5 2" />
+    <rect x="7" y="7" width="10" height="10" rx="1.5" fill="currentColor" opacity="0.25" stroke="currentColor" strokeWidth="1.5" />
+  </g>,
+);
+
+export const IconNoise = make(
+  <g fill="currentColor">
+    <circle cx="6" cy="6" r="1" />
+    <circle cx="11" cy="5" r="0.8" opacity="0.7" />
+    <circle cx="17" cy="7" r="1.1" />
+    <circle cx="8" cy="10" r="0.9" opacity="0.8" />
+    <circle cx="14" cy="11" r="1.2" />
+    <circle cx="19" cy="12" r="0.8" opacity="0.6" />
+    <circle cx="5" cy="15" r="1.1" />
+    <circle cx="10" cy="16" r="0.7" opacity="0.7" />
+    <circle cx="15" cy="17" r="1" />
+    <circle cx="18" cy="18" r="0.8" opacity="0.5" />
+  </g>,
+);
+
+export const IconTexture = make(
+  <g fill="currentColor">
+    <circle cx="6" cy="6" r="1.2" />
+    <circle cx="12" cy="6" r="1.2" />
+    <circle cx="18" cy="6" r="1.2" />
+    <circle cx="6" cy="12" r="1.2" />
+    <circle cx="12" cy="12" r="1.8" />
+    <circle cx="18" cy="12" r="1.2" />
+    <circle cx="6" cy="18" r="1.2" />
+    <circle cx="12" cy="18" r="1.2" />
+    <circle cx="18" cy="18" r="1.2" />
+  </g>,
+);
+
+export const IconGlass = make(
+  <g>
+    <circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+    <path d="M8 9.5a5.5 5.5 0 0 1 7.5 0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    <circle cx="14" cy="14" r="1.5" fill="currentColor" opacity="0.6" />
+  </g>,
+);
+
+export const IconShader = make(
+  <g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+    <path d="M4.5 8c2.5-2 5-2 7.5 0s5 2 7.5 0" />
+    <path d="M4.5 12c2.5-2 5-2 7.5 0s5 2 7.5 0" />
+    <path d="M4.5 16c2.5-2 5-2 7.5 0s5 2 7.5 0" />
+  </g>,
+);
 
 /** Logotipo da Prancheta (botão do menu principal). */
 export function Logo({ size = 24 }: { size?: number }) {
