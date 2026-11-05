@@ -354,7 +354,7 @@ export const ClientsView: React.FC<Props> = ({
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {shares.map((share) => {
-                    const portalUrl = `${window.location.origin}/tools/creative-os/index.html?portal=${share.token}`;
+                    const portalUrl = `${window.location.origin}/tools/gabinete?portal=${share.token}`;
                     return (
                       <div
                         key={share.id}

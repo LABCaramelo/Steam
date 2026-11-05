@@ -26,7 +26,7 @@ insert into public.lab_tools (slug, appid, name, available, stage) values
 on conflict (slug) do nothing;
 
 create or replace function public.is_lab_admin() returns boolean
-language sql stable security definer set search_path = public, pg_temp as $$
+language sql stable security definer set search_path = public, pg_temp as $$$
   select auth.uid() is not null
     and coalesce(auth.jwt()->>'is_anonymous', 'false') <> 'true'
     and exists (
@@ -59,15 +59,21 @@ create or replace function public.has_tool(p_slug text) returns boolean
 language sql stable security definer set search_path = public, pg_temp as $$
   select auth.uid() is not null
     and coalesce(auth.jwt()->>'is_anonymous', 'false') <> 'true'
-    and exists (
-      select 1 from public.lab_tools t where t.slug = p_slug and (
-        public.is_lab_admin() or (
-          t.slug <> 'admin' and t.available and public.lab_member()
+    and (
+      public.is_lab_admin()
+      or exists (
+        select 1 from public.lab_tools t
+        where (t.slug = p_slug or (p_slug = 'creative-os' and t.slug = 'gabinete'))
+          and t.slug <> 'admin'
+          and t.available
+          and public.lab_member()
           and (t.stage = 'stable' or exists (
             select 1 from public.profiles p where p.id = auth.uid() and p.role::text = 'beta'
           ))
-          and exists (select 1 from public.user_tools u where u.user_id = auth.uid() and u.tool_slug = t.slug)
-        )
+          and (
+            exists (select 1 from public.user_tools u where u.user_id = auth.uid() and u.tool_slug = t.slug)
+            or (t.slug = 'gabinete' and exists (select 1 from public.user_tools u where u.user_id = auth.uid() and u.tool_slug = 'creative-os'))
+          )
       )
     );
 $$;

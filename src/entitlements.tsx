@@ -4,7 +4,7 @@ import { supabase } from "./supabase";
 import { getToolBySlug } from "./toolCatalog";
 import { clearToolLocalData, publishToolRelease, subscribeToolReleases } from "./toolLifecycle";
 import { assertToolReleaseConfirmed, toolReleaseFailure } from "./toolRelease";
-import { canUseTool, toolAccessMessage } from "./toolPermissions";
+import { canUseTool, isActiveAdmin, toolAccessMessage } from "./toolPermissions";
 
 /**
  * Tools in the signed-in person's library (public.user_tools). The store reads it to show
@@ -127,8 +127,15 @@ export function EntitlementsProvider({ children }: { children: ReactNode }) {
   }, [userId]);
 
   const value = useMemo<EntitlementsState>(
-    () => ({ status, owned, owns: (slug) => owned.has(slug) || (slug === "gabinete" && owned.has("creative-os")) || (slug === "creative-os" && owned.has("gabinete")), acquire, release, refresh: () => setTick((n) => n + 1) }),
-    [status, owned, acquire, release],
+    () => ({
+      status,
+      owned,
+      owns: (slug) => isActiveAdmin(profile) || owned.has(slug) || (slug === "gabinete" && owned.has("creative-os")) || (slug === "creative-os" && owned.has("gabinete")),
+      acquire,
+      release,
+      refresh: () => setTick((n) => n + 1),
+    }),
+    [status, owned, acquire, release, profile],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

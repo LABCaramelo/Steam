@@ -20,7 +20,17 @@ export const isEmbedded = () => new URLSearchParams(location.search).get("embed"
 
 const THEME_KEY = "caramelo-theme";
 
+export function cleanToolUrl() {
+  if (typeof window === "undefined" || !window.location) return;
+  const path = window.location.pathname;
+  if (path.endsWith("/index.html")) {
+    const clean = path.replace(/\/index\.html$/, "") || "/";
+    window.history.replaceState(null, "", clean + window.location.search + window.location.hash);
+  }
+}
+
 export function installThemeSync() {
+  cleanToolUrl();
   const root = document.documentElement;
   const apply = (value: string | null) => {
     if (value === "light" || value === "dark") root.setAttribute("data-caramelo-theme", value);
@@ -184,13 +194,17 @@ export function ToolGate({ tool, children, allowAnonymous }: { tool: ToolInfo; c
       if (expiresAt <= Date.now()) { signedOut(); return; }
       if (!result) { setState({ kind: "error", message: "Não foi possível abrir a ferramenta agora." }); return; }
       const [{ data, error }, profRes, adminRes, legacyAdminRes] = result;
-      const admin = (!adminRes.error && adminRes.data === true) || (!legacyAdminRes.error && legacyAdminRes.data === true);
-      if (error) setState(MISSING.has(error.code) ? { kind: "unconfigured" } : { kind: "error", message: "Não foi possível abrir a ferramenta agora." });
-      else if (tool.slug === "admin" && adminRes.error && legacyAdminRes.error) setState(MISSING.has(adminRes.error.code) && MISSING.has(legacyAdminRes.error.code) ? { kind: "unconfigured" } : { kind: "error", message: "Não foi possível conferir seu acesso de administrador." });
-      else if (data !== true || (tool.slug === "admin" && !admin)) setState({ kind: "locked" });
-      else {
+      const admin = (!adminRes.error && adminRes.data === true) || (!legacyAdminRes.error && legacyAdminRes.data === true) || profRes?.data?.role === "admin";
+      if (admin) {
         readyToken = session.access_token;
-        setState({ kind: "ready", user: toUser(verified, admin, profRes?.error ? null : profRes?.data) });
+        setState({ kind: "ready", user: toUser(verified, true, profRes?.error ? null : profRes?.data) });
+      } else if (error) {
+        setState(MISSING.has(error.code) ? { kind: "unconfigured" } : { kind: "error", message: "Não foi possível abrir a ferramenta agora." });
+      } else if (data !== true || tool.slug === "admin") {
+        setState({ kind: "locked" });
+      } else {
+        readyToken = session.access_token;
+        setState({ kind: "ready", user: toUser(verified, false, profRes?.error ? null : profRes?.data) });
       }
     };
     const refresh = () => {

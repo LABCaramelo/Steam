@@ -12,15 +12,17 @@ import type { LibraryApp } from "../../types";
 import { useUi } from "../../ui";
 import { usePlayAction } from "./play";
 import { ToolDetails } from "./ToolPage";
-import { canUseTool } from "../../toolPermissions";
+import { canUseTool, isActiveAdmin } from "../../toolPermissions";
 
 export function AppPage() {
   const { appid } = useParams();
   const { app, snapshot } = useLibrary();
   const { profile } = useAuth();
-  const a = app(Number(appid));
+  const admin = isActiveAdmin(profile);
+  const registered = getRegisteredTool(Number(appid));
+  const a = app(Number(appid)) ?? (admin && registered ? registered : undefined);
   if (!snapshot) return <div className="page-loading">Carregando…</div>;
-  if (!a && getRegisteredTool(Number(appid))) return <Navigate to={`/store/app/${appid}`} replace />;
+  if (!admin && !a && registered) return <Navigate to={`/store/app/${appid}`} replace />;
   if (!a) return <Navigate to="/library/home" replace />;
   if (a.tool && !canUseTool(a.tool, profile)) return <Navigate to={`/store/app/${appid}`} replace />;
   if (a.tool) return <ToolDetails key={a.appid} app={a} />;

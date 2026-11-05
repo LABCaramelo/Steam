@@ -2,6 +2,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "cleanUrls": true,
+  "trailingSlash": false,
   "functions": {
     "api/trama.ts": { "maxDuration": 60 },
     "api/trama-hook.ts": { "maxDuration": 60 }
@@ -20,6 +22,11 @@
     {
       "source": "/caderno",
       "destination": "/tools/caderno",
+      "permanent": true
+    },
+    {
+      "source": "/tools/:slug/index.html",
+      "destination": "/tools/:slug",
       "permanent": true
     },
     {

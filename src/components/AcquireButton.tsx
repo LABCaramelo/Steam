@@ -71,7 +71,7 @@ export function AcquireButton({ app, size = "md", block }: { app: LibraryApp; si
 export function OwnedBadge({ owned, available, stage }: { owned: boolean; available: boolean; stage?: "beta" | "stable" }) {
   const { profile } = useAuth();
   const admin = isActiveAdmin(profile);
-  if (!available) return <span className="store-badge store-badge--soon">{admin ? "Pré-publicação · ADMIN" : "Em breve"}</span>;
+  if (!available) return <span className="store-badge store-badge--soon">{admin ? "Liberada · ADMIN" : "Em breve"}</span>;
   return (
     <span className="store-badges">
       {stage === "beta" && <span className="store-badge store-badge--beta">Beta</span>}

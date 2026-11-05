@@ -122,11 +122,13 @@ export function ToolPage() {
   const { appid } = useParams();
   const { app, snapshot } = useLibrary();
   const { profile } = useAuth();
-  const tool = app(Number(appid));
+  const admin = isActiveAdmin(profile);
+  const registered = getRegisteredTool(Number(appid));
+  const tool = app(Number(appid)) ?? (admin && registered ? registered : undefined);
 
   if (!snapshot) return <div className="page-loading">Carregando ferramenta…</div>;
   // Ferramenta do catálogo que a pessoa ainda não adquiriu: a página dela é a da loja.
-  if (!tool && getRegisteredTool(Number(appid))) return <Navigate to={`/store/app/${appid}`} replace />;
+  if (!admin && !tool && registered) return <Navigate to={`/store/app/${appid}`} replace />;
   if (tool?.tool && !canUseTool(tool.tool, profile)) return <Navigate to={`/store/app/${appid}`} replace />;
   if (!tool?.tool) return <div className="page-empty">Esta ferramenta não está disponível. <Link to="/library/home">Voltar à biblioteca</Link></div>;
   return <ToolWorkspace key={tool.appid} app={tool} />;
