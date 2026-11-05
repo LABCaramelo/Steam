@@ -22,9 +22,39 @@ const tools = [
   { slug: 'cap', name: 'Cap', number: '16', accent: '#FF701A', category: 'AUDIOVISUAL / SCREEN & LOOM', lines: ['Menos tela crua.', 'Mais cinema.'] },
   { slug: 'voicestudio', name: 'Voice Studio', number: '17', accent: '#FF701A', category: 'ÁUDIO / LOCUÇÃO & IA', lines: ['Do texto à voz autoral.', 'Sem sotaque de robô.'] },
   { slug: 'caderno', name: 'Caderno', number: '18', accent: '#FF701A', category: 'SEGUNDO CÉREBRO & BASES', lines: ['Do pensamento solto', 'ao sistema estruturado.'] },
+  { slug: 'stories', name: 'Stories Maker', number: '14', accent: '#FF701A', category: 'SOCIAL MEDIA / STORIES', lines: ['Menos posts genéricos.', 'Mais presença visual.'] },
 ];
 
 const motif = (slug, color) => {
+  if (slug === 'stories') {
+    return `<g transform="translate(50, 15)">
+      <rect x="70" y="20" width="160" height="280" rx="22" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".2" stroke-width="3"/>
+      <rect x="78" y="28" width="144" height="264" rx="16" fill="#101014"/>
+      <line x1="88" y1="36" x2="120" y2="36" stroke="#FFF4E8" stroke-width="2" stroke-linecap="round"/>
+      <line x1="126" y1="36" x2="158" y2="36" stroke="#FFF4E8" stroke-opacity=".3" stroke-width="2" stroke-linecap="round"/>
+      <line x1="164" y1="36" x2="196" y2="36" stroke="#FFF4E8" stroke-opacity=".3" stroke-width="2" stroke-linecap="round"/>
+      <line x1="202" y1="36" x2="214" y2="36" stroke="#FFF4E8" stroke-opacity=".3" stroke-width="2" stroke-linecap="round"/>
+      <rect x="90" y="52" width="60" height="14" rx="7" fill="${color}" fill-opacity=".2"/>
+      <circle cx="98" cy="59" r="3.5" fill="${color}"/>
+      <text x="106" y="62" fill="${color}" font-size="7" font-weight="900">STORIES</text>
+      <rect x="90" y="80" width="105" height="12" rx="3" fill="#FFF4E8"/>
+      <rect x="90" y="96" width="85" height="12" rx="3" fill="#FFF4E8"/>
+      <rect x="90" y="112" width="95" height="12" rx="3" fill="${color}"/>
+      <rect x="90" y="145" width="120" height="42" rx="12" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="1.5"/>
+      <text x="150" y="159" fill="#FFF4E8" font-size="7" font-weight="800" text-anchor="middle">Nível de foco hoje:</text>
+      <rect x="100" y="167" width="100" height="10" rx="5" fill="#101014"/>
+      <rect x="100" y="167" width="70" height="10" rx="5" fill="${color}"/>
+      <circle cx="170" cy="172" r="7" fill="#FFF"/>
+      <rect x="105" y="200" width="90" height="20" rx="10" fill="${color}"/>
+      <text x="150" y="213" fill="#101014" font-size="8" font-weight="900" text-anchor="middle">🔗 VER SISTEMA</text>
+      <circle cx="100" cy="272" r="9" fill="#25BFFF" fill-opacity=".2"/>
+      <circle cx="100" cy="272" r="4" fill="#25BFFF"/>
+      <rect x="116" y="264" width="70" height="16" rx="8" fill="#FFF4E8" fill-opacity=".15"/>
+      <text x="151" y="275" fill="#FFF4E8" font-size="7" font-weight="700" text-anchor="middle">Salvar Imagem</text>
+      <circle cx="202" cy="272" r="9" fill="#FF701A" fill-opacity=".2"/>
+      <circle cx="202" cy="272" r="4" fill="#FF701A"/>
+    </g>`;
+  }
   if (slug === 'voicestudio') {
     return `<g transform="translate(10, 20)">
       <rect x="30" y="30" width="380" height="240" rx="14" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="3"/>
@@ -32,7 +62,7 @@ const motif = (slug, color) => {
       <circle cx="68" cy="61" r="5" fill="#FF3D8D"/>
       <text x="80" y="65" fill="#FFF4E8" font-size="10" font-weight="900" letter-spacing="1">REC ON</text>
       <rect x="260" y="50" width="130" height="22" rx="6" fill="#101014" stroke="${color}" stroke-opacity=".5" stroke-width="1.5"/>
-      <text x="325" y="65" fill="${color}" font-size="10" font-weight="800" text-anchor="middle">646 IDIOMAS &bull; IA</text>
+      <text x="325" y="65" fill="${color}" font-size="10" font-weight="800" text-anchor="middle">646 IDIOMAS &#8226; IA</text>
       <!-- Microfone Central de Estdio -->
       <g transform="translate(85, 90)">
         <rect x="0" y="0" width="48" height="84" rx="24" fill="#101014" stroke="${color}" stroke-width="3.5"/>
@@ -63,7 +93,7 @@ const motif = (slug, color) => {
       <path d="M155 100 A 45 45 0 0 1 155 164" fill="none" stroke="#25BFFF" stroke-width="2" stroke-linecap="round" stroke-opacity=".5"/>
       <rect x="180" y="195" width="200" height="18" rx="6" fill="#101014" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="1.5"/>
       <rect x="180" y="195" width="138" height="18" rx="6" fill="${color}" fill-opacity=".3"/>
-      <text x="280" y="208" fill="#FFF4E8" font-size="9" font-weight="800" text-anchor="middle">VOICE CLONE &bull; 99.4% SIMILARIDADE</text>
+      <text x="280" y="208" fill="#FFF4E8" font-size="9" font-weight="800" text-anchor="middle">VOICE CLONE &#8226; 99.4% SIMILARIDADE</text>
     </g>`;
   }
   if (slug === 'cap') {

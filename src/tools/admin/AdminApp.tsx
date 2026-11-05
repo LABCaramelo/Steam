@@ -17,6 +17,7 @@ import type {
   ToolCustomAssets,
 } from "./types";
 import { updateCustomToolAssets, updateDynamicToolMeta } from "../../toolCatalog";
+import type { AdminTab } from "./AdminOverview";
 import "./admin.css";
 
 
@@ -81,7 +82,7 @@ const BANNER_SPECS: Record<
 
 export function AdminApp() {
   const toast = useToast();
-  const [tab, setTab] = useState<"dashboard" | "tools" | "seeds" | "achievements" | "users">("dashboard");
+  const [tab, setTab] = useState<AdminTab>("dashboard");
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [tools, setTools] = useState<AdminToolItem[]>([]);
   const [users, setUsers] = useState<AdminUserItem[]>([]);
@@ -128,6 +129,8 @@ export function AdminApp() {
   const [uploadingKind, setUploadingKind] = useState<string | null>(null);
   const [editingUser, setEditingUser] = useState<AdminUserItem | null>(null);
   const [saving, setSaving] = useState(false);
+  const [revokeTarget, setRevokeTarget] = useState<{ userId: string; slug: string } | null>(null);
+  const [revokingTool, setRevokingTool] = useState(false);
 
   // Exclusão de Membro e Cadastro
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -490,11 +493,13 @@ export function AdminApp() {
         name: editingTool.name,
         price_cents: editingTool.price_cents,
         available: editingTool.available,
+        stage: editingTool.stage,
       });
       updateDynamicToolMeta(editingTool.appid, {
         name: editingTool.name,
         price_cents: editingTool.price_cents,
         available: editingTool.available,
+        stage: editingTool.stage,
       });
       toast("Ferramenta atualizada com sucesso.", "info");
       setEditingTool(null);
@@ -581,6 +586,34 @@ export function AdminApp() {
   };
 
   // Excluir membro e cadastro definitivo
+  const handleRevokeUserTool = async () => {
+    void revokeTarget;
+    void revokingTool;
+    if (!revokeTarget || revokingTool) return;
+    const target = revokeTarget;
+    setRevokingTool(true);
+    try {
+      await adminRepo.revokeUserTool(target.userId, target.slug);
+      const removeAcquisition = (user: AdminUserItem): AdminUserItem => {
+        if (user.id !== target.userId) return user;
+        const owned = user.tools_owned.filter((slug) => slug !== target.slug);
+        return { ...user, tools_owned: owned, tools_count: owned.length };
+      };
+      setUsers((previous) => previous.map(removeAcquisition));
+      setEditingUser((previous) => previous ? removeAcquisition(previous) : null);
+      setRevokeTarget(null);
+      toast("Aquisição removida. Os dados da ferramenta foram preservados.", "success");
+      await loadData();
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Erro ao remover acesso.", "error");
+    } finally {
+      setRevokingTool(false);
+    }
+  };
+
+  void handleRevokeUserTool;
+
+  // Excluir membro e cadastro definitivo
   const handleDeleteUser = async () => {
     if (!userToDelete) return;
     setDeletingUser(true);
@@ -604,10 +637,10 @@ export function AdminApp() {
     <div className="admin-shell">
       <header className="admin-header">
         <div className="admin-header__title-group">
-          <span className="admin-header__eyebrow">SISTEMA // LAB</span>
-          <h1 className="admin-header__title">Administração do LAB</h1>
+          <span className="admin-header__eyebrow">UM CARA CARAMELO / CONTROLE DO LAB</span>
+          <h1 className="admin-header__title">Administração<span>.</span></h1>
           <p className="admin-header__desc">
-            Painel central de governança, métricas em tempo real, catálogo de ferramentas, conquistas e membros.
+            Cuide de quem entra, do que vai ao ar e de quem pode acessar.
           </p>
         </div>
         <div className="admin-header__actions">
