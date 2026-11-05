@@ -13,7 +13,7 @@ import {
 } from './canvas/geometry';
 import { deepestFrameAt } from './canvas/hitTest';
 import { imageSize, readFileAsDataURL } from './canvas/images';
-import { fitTextBox, flattenPath } from './canvas/shapes';
+import { fitTextBox, flattenPath, layoutText } from './canvas/shapes';
 import { createNode, createPage, DEFAULT_SHAPE_FILL, solid, uid } from './model/defaults';
 import {
   ancestors,
@@ -701,6 +701,10 @@ export function setNodeSize(doc: DocumentData, n: SceneNode, w: number | null, h
   if (n.type === 'TEXT') {
     if (h !== null) n.textAutoResize = 'NONE';
     else if (n.textAutoResize === 'WIDTH_AND_HEIGHT') n.textAutoResize = 'HEIGHT';
+    if (n.textAutoResize === 'HEIGHT') {
+      n.width = nw;
+      nh = layoutText(n).height;
+    }
   }
   n.width = nw;
   n.height = nh;

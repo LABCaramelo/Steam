@@ -122,15 +122,21 @@ export function StudioView({ take, onUpdateTake }: StudioViewProps) {
               <Maximize2 size={13} />
               <span>Proporção de Tela</span>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
-              {(["16:9", "9:16", "1:1"] as AspectRatio[]).map((ar) => (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 6 }}>
+              {[
+                { id: "16:9", label: "16:9 Paisagem" },
+                { id: "fit", label: "Auto (Original)" },
+                { id: "9:16", label: "9:16 Vertical" },
+                { id: "1:1", label: "1:1 Feed" },
+                { id: "4:3", label: "4:3 Clássico" },
+              ].map(({ id, label }) => (
                 <button
-                  key={ar}
-                  className={`cap-btn ${dressing.aspectRatio === ar ? "cap-btn-accent" : "cap-btn-subtle"}`}
-                  style={{ fontSize: 11, padding: "6px 0" }}
-                  onClick={() => updateDressing({ aspectRatio: ar })}
+                  key={id}
+                  className={`cap-btn ${dressing.aspectRatio === id ? "cap-btn-accent" : "cap-btn-subtle"}`}
+                  style={{ fontSize: 11, padding: "7px 6px" }}
+                  onClick={() => updateDressing({ aspectRatio: id as AspectRatio })}
                 >
-                  {ar === "16:9" ? "16:9 Paisagem" : ar === "9:16" ? "9:16 Vertical" : "1:1 Feed"}
+                  {label}
                 </button>
               ))}
             </div>
@@ -168,6 +174,29 @@ export function StudioView({ take, onUpdateTake }: StudioViewProps) {
             <div className="cap-rail-title">
               <Layers size={13} />
               <span>Moldura & Respiro</span>
+            </div>
+
+            {/* Enquadramento do Vídeo na Janela */}
+            <div className="cap-slider-group">
+              <div className="cap-slider-meta">
+                <span>Enquadramento do Vídeo</span>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                <button
+                  className={`cap-btn ${(dressing.videoFit || "cover") === "cover" ? "cap-btn-accent" : "cap-btn-subtle"}`}
+                  style={{ fontSize: 11, padding: "6px 8px" }}
+                  onClick={() => updateDressing({ videoFit: "cover" })}
+                >
+                  Preencher Janela
+                </button>
+                <button
+                  className={`cap-btn ${dressing.videoFit === "contain" ? "cap-btn-accent" : "cap-btn-subtle"}`}
+                  style={{ fontSize: 11, padding: "6px 8px" }}
+                  onClick={() => updateDressing({ videoFit: "contain" })}
+                >
+                  Ajustar (Conter)
+                </button>
+              </div>
             </div>
 
             {/* Padding Slider */}

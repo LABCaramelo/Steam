@@ -34,6 +34,7 @@ export type BackgroundPreset =
 export type WindowShadow = "none" | "subtle" | "deep" | "glowCaramel" | "glowCyan";
 export type WindowChrome = "none" | "macos" | "minimal" | "glass";
 export type AspectRatio = "16:9" | "9:16" | "1:1" | "4:3" | "fit";
+export type VideoFit = "cover" | "contain";
 
 export interface CanvasDressing {
   background: BackgroundPreset;
@@ -44,6 +45,7 @@ export interface CanvasDressing {
   windowChrome: WindowChrome;
   windowTitle: string;
   aspectRatio: AspectRatio;
+  videoFit?: VideoFit;
 }
 
 export interface ZoomKeyframe {

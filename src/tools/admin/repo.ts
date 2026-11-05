@@ -287,7 +287,7 @@ export const adminRepo = {
   },
 
   async notifyToolInWhatsApp(
-    tool: { slug: string; name?: string; customNote?: string },
+    tool: { slug: string; name?: string; stage?: string; customNote?: string },
     preview = false
   ): Promise<{ success?: boolean; preview?: boolean; message: string; tool?: any }> {
     const { data: sessionData } = await supabase.auth.getSession();
@@ -303,6 +303,7 @@ export const adminRepo = {
       body: JSON.stringify({
         slug: tool.slug,
         name: tool.name,
+        stage: tool.stage,
         customNote: tool.customNote,
         preview,
       }),

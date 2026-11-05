@@ -179,9 +179,46 @@ export async function renderExportedVideo(
   trimEnd: number,
   onProgress?: (progress: ExportProgress) => void
 ): Promise<Blob> {
+  const vRatio =
+    videoElement.videoWidth && videoElement.videoHeight
+      ? videoElement.videoWidth / videoElement.videoHeight
+      : 16 / 9;
+
+  let canvasW = 1920;
+  let canvasH = 1080;
+
+  switch (dressing.aspectRatio) {
+    case "9:16":
+      canvasW = 1080;
+      canvasH = 1920;
+      break;
+    case "1:1":
+      canvasW = 1080;
+      canvasH = 1080;
+      break;
+    case "4:3":
+      canvasW = 1440;
+      canvasH = 1080;
+      break;
+    case "fit":
+      if (vRatio >= 1) {
+        canvasW = 1920;
+        canvasH = Math.round(1920 / vRatio);
+      } else {
+        canvasH = 1920;
+        canvasW = Math.round(1920 * vRatio);
+      }
+      break;
+    case "16:9":
+    default:
+      canvasW = 1920;
+      canvasH = 1080;
+      break;
+  }
+
   const canvas = document.createElement("canvas");
-  canvas.width = 1920;
-  canvas.height = 1080;
+  canvas.width = canvasW;
+  canvas.height = canvasH;
   const ctx = canvas.getContext("2d")!;
 
   const totalDuration = trimEnd - trimStart;
@@ -226,13 +263,25 @@ export async function renderExportedVideo(
     videoElement.currentTime = trimStart;
     videoElement.pause();
 
-    const chromeH = dressing.windowChrome === "macos" ? 38 : 0;
-    const padding = dressing.padding * 1.5; // Scale for 1080p canvas
+    const chromeH = dressing.windowChrome === "macos" ? 38 : dressing.windowChrome === "minimal" ? 26 : 0;
+    const padding = dressing.padding * (canvasW / 960); // Proportional scale
 
-    const innerW = canvas.width - padding * 2;
-    const innerH = canvas.height - padding * 2 - chromeH;
-    const innerX = padding;
-    const innerY = padding + chromeH;
+    const maxWinW = Math.max(100, canvasW - padding * 2);
+    const maxWinH = Math.max(80, canvasH - padding * 2);
+
+    let innerW = maxWinW;
+    let innerViewportH = innerW / vRatio;
+    let innerH = innerViewportH + chromeH;
+
+    if (innerH > maxWinH) {
+      innerH = maxWinH;
+      innerViewportH = Math.max(40, innerH - chromeH);
+      innerW = innerViewportH * vRatio;
+    }
+
+    const innerX = (canvasW - innerW) / 2;
+    const windowTopY = (canvasH - innerH) / 2;
+    const innerY = windowTopY + chromeH;
 
     recorder.start();
     videoElement.play();
@@ -279,27 +328,27 @@ export async function renderExportedVideo(
       ctx.beginPath();
       ctx.roundRect(
         innerX,
-        padding,
+        windowTopY,
         innerW,
-        innerH + chromeH,
-        dressing.borderRadius * 1.5
+        innerH,
+        dressing.borderRadius * (canvasW / 960)
       );
       ctx.fill();
       ctx.restore();
 
       // 3. Draw Window Chrome
       if (dressing.windowChrome === "macos") {
-        drawWindowChrome(ctx, innerX, padding, innerW, dressing.windowTitle);
+        drawWindowChrome(ctx, innerX, windowTopY, innerW, dressing.windowTitle);
       }
 
       // 4. Draw Video with Zoom & Pan Clipping
       ctx.save();
       ctx.beginPath();
-      const r = dressing.borderRadius * 1.5;
+      const r = dressing.borderRadius * (canvasW / 960);
       if (dressing.windowChrome === "macos") {
-        ctx.roundRect(innerX, innerY, innerW, innerH, [0, 0, r, r]);
+        ctx.roundRect(innerX, innerY, innerW, innerViewportH, [0, 0, r, r]);
       } else {
-        ctx.roundRect(innerX, innerY, innerW, innerH, r);
+        ctx.roundRect(innerX, innerY, innerW, innerViewportH, r);
       }
       ctx.clip();
 
@@ -308,9 +357,9 @@ export async function renderExportedVideo(
 
       // Draw zoomed video
       const vW = innerW * scale;
-      const vH = innerH * scale;
+      const vH = innerViewportH * scale;
       const offsetX = innerX - (focusX * scale - 0.5) * innerW;
-      const offsetY = innerY - (focusY * scale - 0.5) * innerH;
+      const offsetY = innerY - (focusY * scale - 0.5) * innerViewportH;
 
       ctx.drawImage(videoElement, offsetX, offsetY, vW, vH);
       ctx.restore();

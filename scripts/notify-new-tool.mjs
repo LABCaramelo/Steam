@@ -1,8 +1,8 @@
 // Dispara aviso de nova ferramenta publicada para o grupo oficial do LAB via WhatsApp/UAZAPI.
 // Uso:
 //   node scripts/notify-new-tool.mjs --list
-//   node scripts/notify-new-tool.mjs --slug trama --dry-run
-//   node --env-file=.env scripts/notify-new-tool.mjs --slug trama
+//   node scripts/notify-new-tool.mjs --slug kanban --stage beta --dry-run
+//   node --env-file=.env scripts/notify-new-tool.mjs --slug kanban --stage beta
 //   node --env-file=.env scripts/notify-new-tool.mjs --slug gabinete --note "Atualizado com novos templates!"
 
 import {
@@ -38,30 +38,33 @@ if (isList) {
   console.log("🛠️ FERRAMENTAS DO LAB DISPONÍVEIS PARA NOTIFICAÇÃO");
   console.log("==================================================================\n");
   for (const [slug, t] of Object.entries(KNOWN_LAB_TOOLS)) {
-    console.log(`• [${slug}] ${t.name} (${t.category}) — ${t.tagline || t.description}`);
+    const stageBadge = t.stage ? ` [${t.stage.toUpperCase()}]` : "";
+    console.log(`• [${slug}] ${t.name}${stageBadge} (${t.category}) — ${t.tagline || t.description}`);
   }
   console.log("\nPara disparar o aviso de uma ferramenta:");
-  console.log("  node --env-file=.env scripts/notify-new-tool.mjs --slug trama");
+  console.log("  node --env-file=.env scripts/notify-new-tool.mjs --slug kanban --stage beta");
   process.exit(0);
 }
 
 const slugArg = getArgValue("--slug");
+const stageArg = getArgValue("--stage");
 const noteArg = getArgValue("--note");
 const groupArg = getArgValue("--group");
 
 if (!slugArg) {
   console.error("❌ Informe a ferramenta via --slug [slug] ou use --list para ver as ferramentas.");
-  console.error("Exemplo: node --env-file=.env scripts/notify-new-tool.mjs --slug trama");
+  console.error("Exemplo: node --env-file=.env scripts/notify-new-tool.mjs --slug kanban --stage beta");
   process.exit(1);
 }
 
 const tool = buildToolNotificationData({
   slug: slugArg,
+  stage: stageArg || undefined,
   customNote: noteArg || undefined,
 });
 
 console.log("==================================================================");
-console.log(`🐕 AVISO DE FERRAMENTA NO LAB: ${tool.name.toUpperCase()} (${tool.slug})`);
+console.log(`🐕 AVISO DE FERRAMENTA NO LAB: ${tool.name.toUpperCase()} (${tool.slug}) [${tool.stage.toUpperCase()}]`);
 console.log("==================================================================\n");
 
 const formattedMessage = formatNewToolMessage(tool);

@@ -427,7 +427,10 @@ export function AdminApp() {
     setNotifyPreviewText("");
     setLoadingNotifyPreview(true);
     try {
-      const res = await adminRepo.notifyToolInWhatsApp({ slug: tool.slug, name: tool.name }, true);
+      const res = await adminRepo.notifyToolInWhatsApp(
+        { slug: tool.slug, name: tool.name, stage: tool.stage },
+        true
+      );
       setNotifyPreviewText(res.message);
     } catch (err) {
       toast(err instanceof Error ? err.message : "Erro ao gerar prévia da notificação.", "error");
@@ -444,6 +447,7 @@ export function AdminApp() {
         {
           slug: notifyModalTool.slug,
           name: notifyModalTool.name,
+          stage: notifyModalTool.stage,
           customNote: notifyCustomNote,
         },
         false
@@ -456,6 +460,28 @@ export function AdminApp() {
       setSendingNotification(false);
     }
   };
+
+  // Atualiza a prévia dinamicamente ao digitar um recado adicional
+  useEffect(() => {
+    if (!notifyModalTool) return;
+    const timer = window.setTimeout(async () => {
+      try {
+        const res = await adminRepo.notifyToolInWhatsApp(
+          {
+            slug: notifyModalTool.slug,
+            name: notifyModalTool.name,
+            stage: notifyModalTool.stage,
+            customNote: notifyCustomNote,
+          },
+          true
+        );
+        setNotifyPreviewText(res.message);
+      } catch {
+        // Ignora erro transitório em digitação
+      }
+    }, 280);
+    return () => window.clearTimeout(timer);
+  }, [notifyModalTool?.slug, notifyModalTool?.stage, notifyCustomNote]);
 
   // Alternar disponibilidade de ferramenta (Publicar / Despublicar)
   const handleToggleStage = async (tool: AdminToolItem) => {
@@ -514,7 +540,7 @@ export function AdminApp() {
 
       // Ao publicar uma nova ferramenta, abre a notificação para avisar o grupo no WhatsApp
       if (nextState) {
-        openNotifyModal(tool);
+        openNotifyModal({ ...tool, available: nextState });
       }
     } catch (err) {
       setTools((prev) =>
@@ -2159,14 +2185,22 @@ export function AdminApp() {
           <div className="admin-modal" style={{ maxWidth: 580 }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
               <div>
-                <span className="admin-header__eyebrow" style={{ fontSize: 10, color: "var(--cm-brand, #FF701A)" }}>
-                  WHATSAPP DO LAB · AVISO OFICIAL
+                <span
+                  className="admin-header__eyebrow"
+                  style={{
+                    fontSize: 10,
+                    color: notifyModalTool.stage === "beta" ? "#A78BFA" : "var(--cm-brand, #FF701A)",
+                  }}
+                >
+                  WHATSAPP DO LAB · {notifyModalTool.stage === "beta" ? "🧪 AVISO DE FERRAMENTA BETA" : "AVISO OFICIAL"}
                 </span>
                 <h2 className="admin-modal__title" style={{ margin: "4px 0" }}>
-                  Avisar no Grupo: {notifyModalTool.name}
+                  Avisar no Grupo: {notifyModalTool.name} {notifyModalTool.stage === "beta" ? "(Modo Beta)" : ""}
                 </h2>
                 <p className="admin-modal__desc" style={{ margin: 0, fontSize: 12 }}>
-                  Dispare uma mensagem oficial no grupo do WhatsApp anunciando a nova ferramenta liberada na plataforma.
+                  {notifyModalTool.stage === "beta"
+                    ? "Esta ferramenta está em estágio BETA. O aviso oficial informará ao grupo que o lançamento é em modo beta e exclusivo para usuários beta do LAB."
+                    : "Dispare uma mensagem oficial no grupo do WhatsApp anunciando a nova ferramenta liberada na plataforma."}
                 </p>
               </div>
               <button
@@ -2180,6 +2214,26 @@ export function AdminApp() {
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {notifyModalTool.stage === "beta" && (
+                <div
+                  style={{
+                    background: "rgba(167, 139, 250, 0.12)",
+                    border: "1px solid rgba(167, 139, 250, 0.35)",
+                    borderRadius: 8,
+                    padding: "10px 14px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    fontSize: 12,
+                    color: "#DDD6FE",
+                  }}
+                >
+                  <span style={{ fontSize: 18 }}>🧪</span>
+                  <span>
+                    <strong>Ferramenta em Modo Beta:</strong> A mensagem avisa ao grupo que ferramentas em modo beta são liberadas apenas para usuários beta do LAB.
+                  </span>
+                </div>
+              )}
               <div className="admin-form-group">
                 <label style={{ fontSize: 12, fontWeight: 600 }}>
                   Recado adicional do Luiz (opcional):

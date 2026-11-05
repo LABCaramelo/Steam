@@ -8,6 +8,7 @@ export const DEFAULT_DRESSING: CanvasDressing = {
   windowChrome: "macos",
   windowTitle: "lab.caramelo/visao-geral",
   aspectRatio: "16:9",
+  videoFit: "cover",
 };
 
 export const INITIAL_ZOOM_KEYFRAMES: ZoomKeyframe[] = [

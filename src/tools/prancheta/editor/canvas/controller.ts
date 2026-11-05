@@ -27,7 +27,7 @@ import {
   snapTargets,
   type SelectionFrame,
 } from './hitTest';
-import { fitTextBox, layoutText } from './shapes';
+import { fitTextBox, layoutText, lineHeightPx } from './shapes';
 import { type Guide, snapPoint, snapRect } from './snapping';
 import { duplicateNodes } from '../actions';
 import { createNode } from '../model/defaults';
@@ -976,8 +976,12 @@ export class CanvasController {
       n.height = Math.abs(dy);
     }
     if (n.type === 'TEXT') {
+      const isBox = Math.abs(dy) > lineHeightPx(n) * 1.5;
+      n.textAutoResize = isBox ? 'NONE' : 'HEIGHT';
       n.width = Math.max(n.width, 1);
-      fitTextBox(n);
+      if (n.textAutoResize === 'HEIGHT') {
+        fitTextBox(n);
+      }
     }
     this.store.emit();
   }

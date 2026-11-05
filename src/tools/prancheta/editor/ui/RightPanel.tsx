@@ -770,7 +770,12 @@ function TextSection({ nodes, ids }: { nodes: SceneNode[]; ids: string[] }) {
               key={r.mode}
               title={r.title}
               active={resize === r.mode}
-              onClick={() => A.editNodes(ids, (n) => (n.textAutoResize = r.mode))}
+              onClick={() =>
+                A.editNodes(ids, (n) => {
+                  n.textAutoResize = r.mode;
+                  fitTextBox(n);
+                })
+              }
             >
               {r.icon}
             </IconButton>

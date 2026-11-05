@@ -183,7 +183,8 @@ export function CanvasView({ className = '' }: CanvasViewProps) {
       letterSpacing: textNode.letterSpacing ?? 0,
       textAlign: textNode.textAlign === 'CENTER' ? 'center' : textNode.textAlign === 'RIGHT' ? 'right' : 'left',
       whiteSpace: textNode.textAutoResize === 'WIDTH_AND_HEIGHT' ? 'pre' : 'pre-wrap',
-      overflowWrap: 'normal',
+      overflowWrap: textNode.textAutoResize === 'WIDTH_AND_HEIGHT' ? 'normal' : 'break-word',
+      wordBreak: textNode.textAutoResize === 'WIDTH_AND_HEIGHT' ? 'normal' : 'break-word',
       opacity: textNode.opacity,
       zIndex: 2,
     };

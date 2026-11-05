@@ -3,6 +3,7 @@
  *
  * Formata e dispara aviso no grupo oficial do LAB Caramelo sempre que
  * uma nova ferramenta for publicada ou adicionada à plataforma.
+ * Dá tratamento especial e explícito para ferramentas em modo BETA.
  */
 
 export interface ToolFeatureItem {
@@ -18,7 +19,7 @@ export interface ToolNotificationData {
   headline?: string;
   description?: string;
   features?: Array<ToolFeatureItem | string>;
-  stage?: string; // ex: "beta", "novo", etc.
+  stage?: string; // ex: "beta", "stable", etc.
   publicPage?: string;
   customNote?: string;
 }
@@ -75,7 +76,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
       { title: "Conexões e APIs", text: "Configure webhooks e APIs HTTP com credenciais protegidas." },
       { title: "Execuções e Replay", text: "Acompanhe saídas de cada etapa, histórico e replay em tempo real." },
     ],
-    publicPage: "/tools/automation/index.html",
+    publicPage: "/tools/automation",
   },
   prancheta: {
     slug: "prancheta",
@@ -118,12 +119,13 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
       { title: "Calendário Editorial", text: "Grade mensal de publicações, agendamentos e formatos (Reels, Carrossel, Stories)." },
       { title: "Aprovação por Link Seguro", text: "Compartilhamento com clientes via token sem login para aprovação com 1 clique." },
     ],
-    publicPage: "/tools/gabinete/index.html",
+    publicPage: "/tools/gabinete",
   },
   claquete: {
     slug: "claquete",
     name: "Claquete",
     category: "Cinema & Vídeo IA",
+    stage: "beta",
     tagline: "Do roteiro ao corte final num só canvas com IA cinematográfica.",
     description: "Plataforma de cinema e vídeo com IA: canvas infinito, roteiro, set 3D e editor de vídeo multi-trilha.",
     features: [
@@ -165,6 +167,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
     slug: "kanban",
     name: "Kanban",
     category: "Organização",
+    stage: "beta",
     tagline: "Uma semana inteira em um só quadro com a Rotina Superprodutiva.",
     description: "Quadros, listas e cartões para organizar a rotina, com o template Rotina Superprodutiva pronto para usar.",
     features: [
@@ -178,6 +181,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
     slug: "academy",
     name: "Academy",
     category: "Formação",
+    stage: "beta",
     tagline: "Aprenda no ritmo de quem cria: aulas práticas do LAB.",
     description: "Aulas criadas pelo LAB: assista, marque o progresso, favorite, anote e converse com a turma.",
     features: [
@@ -190,6 +194,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
     slug: "comunidade",
     name: "Comunidade",
     category: "Comunicação",
+    stage: "beta",
     tagline: "Canais de texto e salas de voz em tempo real entre membros do LAB.",
     description: "Canais de texto, voz em tempo real, compartilhamento de tela e conexão direta entre membros do LAB.",
     features: [
@@ -202,6 +207,7 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
     slug: "prompt-library",
     name: "Biblioteca de Prompts",
     category: "Referências",
+    stage: "stable",
     tagline: "Menos página em branco. Mais ideias em ação.",
     description: "Encontre, organize e copie prompts para criar com inteligência artificial.",
     features: [
@@ -229,7 +235,7 @@ export function buildToolNotificationData(
     headline: input.headline || known.headline || "",
     description: input.description || known.description || "",
     features: input.features || known.features || [],
-    stage: input.stage || known.stage || "",
+    stage: input.stage || known.stage || "stable",
     publicPage: input.publicPage || known.publicPage || `/tools/${input.slug}`,
     customNote: input.customNote || "",
   };
@@ -237,17 +243,31 @@ export function buildToolNotificationData(
 
 /**
  * Formata a mensagem de anúncio da ferramenta com voz Caramelo para envio no WhatsApp.
+ * Se a ferramenta estiver em modo BETA, inclui destaque enfático e aviso
+ * obrigatório de que ferramentas em modo beta são exclusivas para usuários beta.
  */
 export function formatNewToolMessage(
   tool: ToolNotificationData,
   options: { baseUrl?: string } = {}
 ): string {
   const baseUrl = options.baseUrl || "https://www.umcaracaramelo.com.br";
+  const isBeta = tool.stage?.toLowerCase() === "beta";
   const stageBadge = tool.stage ? ` [${tool.stage.toUpperCase()}]` : "";
   const categoryBadge = tool.category ? ` (${tool.category})` : "";
 
-  const header = `🐕⚡ *NOVA FERRAMENTA LIBERADA NO LAB!*${stageBadge}\n\n` +
-    `Acabamos de subir uma nova ferramenta para a plataforma: *${tool.name}*${categoryBadge}! 🛠️✨`;
+  let header = "";
+  if (isBeta) {
+    header = `🐕⚡🧪 *NOVA FERRAMENTA EM MODO BETA LIBERADA NO LAB!* [BETA]\n\n` +
+      `Acabamos de publicar uma nova ferramenta na plataforma: *${tool.name}*${categoryBadge}! 🛠️✨\n\n` +
+      `⚠️ *ACESSO EXCLUSIVO: FERRAMENTA EM MODO BETA*\n` +
+      `Esta ferramenta foi lançada em *modo BETA* (fase experimental). ` +
+      `As ferramentas em modo beta são liberadas *apenas para usuários com acesso Beta no LAB*.\n\n` +
+      `• *Se você é usuário Beta*: seu acesso já está liberado para testar e validar em primeira mão!\n` +
+      `• *Demais membros do LAB:* a ferramenta está em testes e refinamento junto aos usuários beta, e em breve será liberada em versão estável para toda a comunidade.`;
+  } else {
+    header = `🐕⚡ *NOVA FERRAMENTA LIBERADA NO LAB!*${stageBadge}\n\n` +
+      `Acabamos de subir uma nova ferramenta para a plataforma: *${tool.name}*${categoryBadge}! 🛠️✨`;
+  }
 
   let taglineBlock = "";
   if (tool.tagline && tool.tagline.trim()) {
@@ -261,22 +281,31 @@ export function formatNewToolMessage(
 
   let featuresBlock = "";
   if (Array.isArray(tool.features) && tool.features.length > 0) {
+    const titlePrefix = isBeta ? "O que os usuários beta vão encontrar nela" : "O que você pode fazer com ela";
     const lines = tool.features.slice(0, 4).map((f) => {
       if (typeof f === "string") return `• ${f}`;
       const title = f.title ? `*${f.title}:* ` : "";
       return `• ${title}${f.text || ""}`;
     });
-    featuresBlock = `\n\n📦 *O que você pode fazer com ela:*\n` + lines.join("\n");
+    featuresBlock = `\n\n📦 *${titlePrefix}:*\n` + lines.join("\n");
   }
 
   const pagePath = tool.publicPage || `/tools/${tool.slug}`;
   const directLink = `${baseUrl}${pagePath.startsWith("/") ? "" : "/"}${pagePath}`;
   const storeLink = `${baseUrl}/app.html#/store`;
 
-  const footer = `\n\n👉 *Acesse agora no LAB e coloque a mão na massa:*\n` +
-    `🔗 ${directLink}\n` +
-    `🏪 Ou confira na Loja do LAB: ${storeLink}\n\n` +
-    `💬 *Bora testar! Quem for usando, manda o feedback, dúvidas e o que você criou aqui no grupo!* 🚀☕`;
+  let footer = "";
+  if (isBeta) {
+    footer = `\n\n👉 *Se você tem acesso Beta, acesse agora no LAB para testar:*\n` +
+      `🔗 ${directLink}\n` +
+      `🏪 Ou confira na Loja do LAB: ${storeLink}\n\n` +
+      `💬 *Usuários Beta: testem sem moderação e mandem todas as dúvidas, impressões e bugs aqui no grupo para lapidarmos juntos!* 🚀☕`;
+  } else {
+    footer = `\n\n👉 *Acesse agora no LAB e coloque a mão na massa:*\n` +
+      `🔗 ${directLink}\n` +
+      `🏪 Ou confira na Loja do LAB: ${storeLink}\n\n` +
+      `💬 *Bora testar! Quem for usando, manda o feedback, dúvidas e o que você criou aqui no grupo!* 🚀☕`;
+  }
 
   return `${header}${taglineBlock}${noteBlock}${featuresBlock}${footer}`;
 }

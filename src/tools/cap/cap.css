@@ -198,18 +198,21 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 24px;
+  padding: 20px 24px;
   align-items: center;
   justify-content: center;
   position: relative;
+  min-height: 0;
+  overflow: hidden;
   background: radial-gradient(circle at 50% 20%, rgb(var(--cm-accent) / 0.05) 0%, transparent 65%), rgb(var(--cm-stage));
 }
 
 .cap-recorder-stage {
   position: relative;
   width: 100%;
-  max-width: 960px;
-  height: 540px;
+  max-width: min(calc(100% - 32px), calc((100vh - 190px) * (16 / 9)), 1600px);
+  max-height: calc(100vh - 190px);
+  aspect-ratio: 16 / 9;
   background: rgb(var(--cm-surface-1));
   border-radius: var(--cm-radius-xl);
   border: 1px solid rgb(var(--cm-line));
@@ -218,6 +221,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: max-width var(--cm-dur-base) var(--cm-ease-out), max-height var(--cm-dur-base) var(--cm-ease-out);
 }
 
 .cap-recorder-placeholder {
@@ -452,6 +456,8 @@
   position: relative;
   overflow: hidden;
   background: rgb(var(--cm-stage));
+  min-height: 0;
+  min-width: 0;
 }
 
 .cap-canvas-card {
@@ -461,7 +467,7 @@
   justify-content: center;
   box-shadow: 0 25px 60px rgb(0 0 0 / 0.7);
   overflow: hidden;
-  transition: transform var(--cm-dur-base) var(--cm-ease-out), box-shadow var(--cm-dur-base) var(--cm-ease-out);
+  transition: width var(--cm-dur-quick) var(--cm-ease-out), height var(--cm-dur-quick) var(--cm-ease-out), box-shadow var(--cm-dur-base) var(--cm-ease-out);
 }
 
 /* Background Presets */
@@ -559,7 +565,7 @@
 .cap-stage-video {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   background: #000;
   transform-origin: center center;
   transition: transform var(--cm-dur-smooth) var(--cm-ease-out);

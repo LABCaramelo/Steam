@@ -5,7 +5,7 @@ import {
   buildToolNotificationData,
   formatNewToolMessage,
 } from "../server/toolNotification.ts";
-import { requireUser, rpcHeaders, ToolAccessError } from "../server/toolAccess.ts";
+import { requireUser, rpcHeaders, ToolAccessError, type AuthenticatedRequest } from "../server/toolAccess.ts";
 
 export const config = { maxDuration: 30 };
 
@@ -50,14 +50,15 @@ export default async function handler(req: Req, res: ServerResponse): Promise<vo
   const webhookSecret = process.env.UAZAPI_WEBHOOK_SECRET || process.env.ADMIN_SECRET || "";
   const headerSecret = (req.headers["x-admin-secret"] || req.headers["x-webhook-secret"] || "").toString();
   const hasSecretAuth = Boolean(webhookSecret && headerSecret === webhookSecret);
+  let userAccess: AuthenticatedRequest | undefined;
 
   if (!hasSecretAuth) {
     try {
-      const access = await requireUser(req);
+      userAccess = await requireUser(req);
       // Valida se o usuário tem privilégio de administrador chamando admin_get_stats no Supabase
-      const checkRes = await fetch(`${access.supabaseUrl}/rest/v1/rpc/admin_get_stats`, {
+      const checkRes = await fetch(`${userAccess.supabaseUrl}/rest/v1/rpc/admin_get_stats`, {
         method: "POST",
-        headers: rpcHeaders(access),
+        headers: rpcHeaders(userAccess),
         signal: AbortSignal.timeout(10_000),
       });
 
@@ -83,6 +84,29 @@ export default async function handler(req: Req, res: ServerResponse): Promise<vo
       return reply(res, 400, { error: "O campo 'slug' da ferramenta é obrigatório." });
     }
 
+    let stage = typeof body.stage === "string" && body.stage.trim() ? body.stage.trim() : undefined;
+
+    // Se o estágio não foi informado explicitamente, busca o estágio real na tabela lab_tools
+    if (!stage && userAccess) {
+      try {
+        const toolRes = await fetch(
+          `${userAccess.supabaseUrl}/rest/v1/lab_tools?slug=eq.${encodeURIComponent(slug)}&select=slug,name,stage`,
+          {
+            headers: rpcHeaders(userAccess),
+            signal: AbortSignal.timeout(5_000),
+          }
+        );
+        if (toolRes.ok) {
+          const list = (await toolRes.json()) as Array<{ slug: string; name: string; stage?: string }>;
+          if (Array.isArray(list) && list[0]?.stage) {
+            stage = list[0].stage;
+          }
+        }
+      } catch {
+        // Fallback para catálogo local
+      }
+    }
+
     const toolInput = {
       slug,
       name: typeof body.name === "string" ? body.name : undefined,
@@ -90,7 +114,7 @@ export default async function handler(req: Req, res: ServerResponse): Promise<vo
       tagline: typeof body.tagline === "string" ? body.tagline : undefined,
       description: typeof body.description === "string" ? body.description : undefined,
       customNote: typeof body.customNote === "string" ? body.customNote : undefined,
-      stage: typeof body.stage === "string" ? body.stage : undefined,
+      stage,
     };
 
     // Modo preview (não envia, apenas devolve o texto formatado)
@@ -118,6 +142,7 @@ export default async function handler(req: Req, res: ServerResponse): Promise<vo
       action: "tool_notification_sent",
       tool: result.tool.name,
       slug: result.tool.slug,
+      stage: result.tool.stage,
       message: result.message,
     });
   } catch (err) {

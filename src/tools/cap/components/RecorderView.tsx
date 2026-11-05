@@ -67,17 +67,27 @@ export function RecorderView({
   const recordedChunksRef = useRef<BlobPart[]>([]);
   const timerIntervalRef = useRef<any>(null);
 
+  // Screen video native aspect ratio
+  const [streamAspectRatio, setStreamAspectRatio] = useState<number | null>(null);
+
   // Sync screen video element whenever screenStream changes
   useEffect(() => {
     const video = screenVideoRef.current;
     if (video && screenStream) {
       video.srcObject = screenStream;
+      const updateRatio = () => {
+        if (video.videoWidth && video.videoHeight) {
+          setStreamAspectRatio(video.videoWidth / video.videoHeight);
+        }
+      };
       video.onloadedmetadata = () => {
+        updateRatio();
         video.play().catch((e) => console.warn("Video play error:", e));
       };
       video.play().catch((e) => console.warn("Video play error:", e));
     } else if (video && !screenStream) {
       video.srcObject = null;
+      setStreamAspectRatio(null);
     }
   }, [screenStream]);
 
@@ -369,6 +379,8 @@ export function RecorderView({
     return `${m}:${s}`;
   };
 
+  const stageRatio = streamAspectRatio || 16 / 9;
+
   return (
     <div className="cap-recorder">
       {/* 3-2-1 Countdown Overlay */}
@@ -382,7 +394,17 @@ export function RecorderView({
       )}
 
       {/* Main Preview Stage */}
-      <div className="cap-recorder-stage" ref={stageRef}>
+      <div
+        className="cap-recorder-stage"
+        ref={stageRef}
+        style={{
+          aspectRatio: `${stageRatio}`,
+          maxWidth: `min(calc(100% - 32px), calc((100vh - 190px) * ${stageRatio}), 1600px)`,
+          maxHeight: "calc(100vh - 190px)",
+          height: `min(calc(100vh - 190px), calc((100vw - 64px) / ${stageRatio}))`,
+          width: "100%",
+        }}
+      >
         {/* Screen video element is ALWAYS mounted to guarantee srcObject binds immediately */}
         <video
           ref={screenVideoRef}
@@ -390,14 +412,20 @@ export function RecorderView({
           playsInline
           muted
           className="cap-screen-video"
-          style={{
-            display: screenStream ? "block" : "none",
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-            backgroundColor: "#000",
-          }}
-        />
+              style={{
+                display: screenStream ? "block" : "none",
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                backgroundColor: "#000",
+              }}
+              onLoadedMetadata={() => {
+                const v = screenVideoRef.current;
+                if (v && v.videoWidth && v.videoHeight) {
+                  setStreamAspectRatio(v.videoWidth / v.videoHeight);
+                }
+              }}
+            />
 
         {/* Placeholder shown only when no screen stream has been chosen */}
         {!screenStream && (

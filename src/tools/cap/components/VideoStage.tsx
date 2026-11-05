@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import type { CanvasDressing, ZoomKeyframe } from "../types";
 import { getInterpolatedZoom } from "../utils/mediaRecorder";
 
@@ -24,12 +24,64 @@ export function VideoStage({
   onCanvasClick,
 }: VideoStageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [containerSize, setContainerSize] = useState<{ width: number; height: number }>({
+    width: 0,
+    height: 0,
+  });
+  const [videoRatio, setVideoRatio] = useState<number>(16 / 9);
 
   useEffect(() => {
     if (videoRef.current && videoUrl) {
       videoRef.current.load();
     }
   }, [videoUrl, videoRef]);
+
+  // Sync video native ratio if already available
+  useEffect(() => {
+    const v = videoRef.current;
+    if (v && v.videoWidth && v.videoHeight) {
+      setVideoRatio(v.videoWidth / v.videoHeight);
+    }
+  }, [videoUrl, videoRef]);
+
+  // Dynamically observe stage wrapper size to fill available screen
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const measure = () => {
+      const rect = el.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        setContainerSize({ width: rect.width, height: rect.height });
+      }
+    };
+
+    measure();
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          setContainerSize({ width, height });
+        }
+      }
+    });
+
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  const handleLoadedMetadataInternal = () => {
+    const v = videoRef.current;
+    if (v && v.videoWidth && v.videoHeight) {
+      setVideoRatio(v.videoWidth / v.videoHeight);
+    }
+    onLoadedMetadata();
+  };
 
   // Compute live interpolated zoom & pan transform based on currentTime
   const { scale, focusX, focusY } = getInterpolatedZoom(keyframes, currentTime);
@@ -38,22 +90,59 @@ export function VideoStage({
   const transX = (0.5 - focusX) * 100 * (scale - 1);
   const transY = (0.5 - focusY) * 100 * (scale - 1);
 
-  // Aspect ratio styling
-  const getAspectRatioStyle = () => {
+  // Canvas target aspect ratio
+  const getCanvasRatio = () => {
     switch (dressing.aspectRatio) {
       case "9:16":
-        return { width: 360, height: 640 };
+        return 9 / 16;
       case "1:1":
-        return { width: 560, height: 560 };
+        return 1;
       case "4:3":
-        return { width: 680, height: 510 };
+        return 4 / 3;
+      case "fit":
+        return videoRatio || 16 / 9;
       case "16:9":
       default:
-        return { width: 840, height: 472 };
+        return 16 / 9;
     }
   };
 
-  const cardDims = getAspectRatioStyle();
+  const canvasRatio = getCanvasRatio();
+
+  // Responsive dimensions inside container with comfortable margins
+  const availW = Math.max(320, (containerSize.width || 920) - 56);
+  const availH = Math.max(220, (containerSize.height || 600) - 56);
+
+  let cardW = availW;
+  let cardH = cardW / canvasRatio;
+  if (cardH > availH) {
+    cardH = availH;
+    cardW = cardH * canvasRatio;
+  }
+
+  // Window chrome height
+  const chromeH =
+    dressing.windowChrome === "macos" ? 34 : dressing.windowChrome === "minimal" ? 24 : 0;
+
+  // Scale padding proportionally relative to base 840px canvas
+  const scaleFactor = Math.min(1.4, Math.max(0.55, cardW / 840));
+  const effectivePadding = Math.round(dressing.padding * scaleFactor);
+
+  const maxWinW = Math.max(80, cardW - effectivePadding * 2);
+  const maxWinH = Math.max(80, cardH - effectivePadding * 2);
+
+  // Inner window dimensions preserving the native video aspect ratio
+  // Window total height = innerViewportH + chromeH
+  // innerViewportH = winW / videoRatio
+  let winW = maxWinW;
+  let winViewportH = winW / videoRatio;
+  let winH = winViewportH + chromeH;
+
+  if (winH > maxWinH) {
+    winH = maxWinH;
+    winViewportH = Math.max(40, winH - chromeH);
+    winW = winViewportH * videoRatio;
+  }
 
   const handleStageClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!onCanvasClick) return;
@@ -63,26 +152,31 @@ export function VideoStage({
     onCanvasClick(x, y);
   };
 
+  const videoFitMode = dressing.videoFit || "cover";
+
   return (
     <div className="cap-studio-stage-wrap" ref={containerRef}>
-      {/* Outer Card with Background Preset & Aspect Ratio */}
+      {/* Outer Card with Background Preset & Responsive Aspect Ratio */}
       <div
         className={`cap-canvas-card bg-${dressing.background}`}
         style={{
-          width: cardDims.width,
-          height: cardDims.height,
-          padding: dressing.padding,
+          width: Math.round(cardW),
+          height: Math.round(cardH),
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: effectivePadding,
+          boxSizing: "border-box",
         }}
       >
-        {/* Inner Window with Chrome, Border Radius, and Drop Shadow */}
+        {/* Inner Window with Chrome, Border Radius, Drop Shadow, matching video aspect ratio */}
         <div
           className={`cap-inner-window shadow-${dressing.shadow}`}
           style={{
-            width: "100%",
-            height: "100%",
-            borderRadius: dressing.borderRadius,
+            width: Math.round(winW),
+            height: Math.round(winH),
+            borderRadius: Math.round(dressing.borderRadius * scaleFactor),
           }}
-          onClick={handleStageClick}
         >
           {/* macOS Chrome Header */}
           {dressing.windowChrome === "macos" && (
@@ -99,17 +193,31 @@ export function VideoStage({
           )}
 
           {/* Video Viewport applying dynamic zoom transform */}
-          <div className="cap-video-viewport">
+          <div
+            className="cap-video-viewport"
+            onClick={handleStageClick}
+            style={{
+              flex: 1,
+              width: "100%",
+              height: `calc(100% - ${chromeH}px)`,
+              position: "relative",
+              overflow: "hidden",
+              cursor: "crosshair",
+            }}
+          >
             <video
               ref={videoRef}
               src={videoUrl}
               playsInline
               className="cap-stage-video"
               style={{
+                width: "100%",
+                height: "100%",
+                objectFit: videoFitMode,
                 transform: `scale(${scale}) translate(${transX}%, ${transY}%)`,
               }}
               onTimeUpdate={(e) => onTimeUpdate(e.currentTarget.currentTime)}
-              onLoadedMetadata={onLoadedMetadata}
+              onLoadedMetadata={handleLoadedMetadataInternal}
             />
 
             {/* Smart Zoom indicator badge when zoomed */}
@@ -126,6 +234,7 @@ export function VideoStage({
                   fontWeight: 900,
                   color: "#101014",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
+                  pointerEvents: "none",
                 }}
               >
                 ZOOM {scale.toFixed(1)}X

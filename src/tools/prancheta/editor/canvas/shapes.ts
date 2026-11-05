@@ -173,12 +173,98 @@ export function applyTextStyle(ctx: CanvasRenderingContext2D, n: SceneNode) {
   (ctx as unknown as { letterSpacing: string }).letterSpacing = `${n.letterSpacing ?? 0}px`;
 }
 
+/**
+ * Quebra um parágrafo de texto em linhas respeitando o limite maxW da caixa.
+ * Quebra primeiro em espaços entre palavras e, caso uma palavra ou termo contínuo
+ * seja maior que a largura disponível, quebra por caractere (break-word / break-all).
+ */
+function wrapParagraph(para: string, maxW: number, measure: (s: string) => number): TextLine[] {
+  if (!para) return [{ text: '', width: 0 }];
+
+  const lines: TextLine[] = [];
+  const tokens = para.split(/(\s+)/);
+  let currentLine = '';
+
+  const pushLine = (text: string) => {
+    lines.push({ text, width: measure(text) });
+  };
+
+  const breakLongWord = (word: string, startPrefix = ''): string => {
+    let rem = word;
+    let prefix = startPrefix;
+    while (rem.length > 0) {
+      if (measure(prefix + rem) <= maxW + 0.01) {
+        return prefix + rem;
+      }
+
+      let fitLen = 0;
+      let low = 1;
+      let high = rem.length;
+      while (low <= high) {
+        const mid = (low + high) >> 1;
+        if (measure(prefix + rem.slice(0, mid)) <= maxW + 0.01) {
+          fitLen = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      if (fitLen === 0 && prefix) {
+        pushLine(prefix.trimEnd());
+        prefix = '';
+        continue;
+      }
+
+      const take = Math.max(1, fitLen);
+      const chunk = prefix + rem.slice(0, take);
+      pushLine(chunk.trimEnd());
+      rem = rem.slice(take);
+      prefix = '';
+    }
+    return '';
+  };
+
+  for (const tok of tokens) {
+    if (!tok) continue;
+
+    if (/^\s+$/.test(tok)) {
+      if (currentLine) {
+        currentLine += tok;
+      }
+      continue;
+    }
+
+    const cand = currentLine ? currentLine + tok : tok;
+    if (measure(cand.trimEnd()) <= maxW + 0.01) {
+      currentLine = cand;
+    } else {
+      if (currentLine.trim()) {
+        pushLine(currentLine.trimEnd());
+        currentLine = '';
+      }
+
+      if (measure(tok) <= maxW + 0.01) {
+        currentLine = tok;
+      } else {
+        currentLine = breakLongWord(tok);
+      }
+    }
+  }
+
+  if (currentLine) {
+    pushLine(currentLine.trimEnd());
+  }
+
+  return lines.length > 0 ? lines : [{ text: '', width: 0 }];
+}
+
 export function layoutText(n: SceneNode): TextLayout {
   const ctx = measureCtx();
   applyTextStyle(ctx, n);
   const lh = lineHeightPx(n);
   const wrap = n.textAutoResize !== 'WIDTH_AND_HEIGHT';
-  const maxW = n.width;
+  const maxW = Math.max(1, n.width || 1);
   const lines: TextLine[] = [];
   const measure = (s: string) => ctx.measureText(s).width;
   for (const para of (n.text ?? '').split('\n')) {
@@ -186,18 +272,7 @@ export function layoutText(n: SceneNode): TextLayout {
       lines.push({ text: para, width: measure(para) });
       continue;
     }
-    const tokens = para.split(/(\s+)/);
-    let line = '';
-    for (const tok of tokens) {
-      if (!tok) continue;
-      const cand = line + tok;
-      if (line.trim() && measure(cand.trimEnd()) > maxW + 0.01) {
-        const t = line.trimEnd();
-        lines.push({ text: t, width: measure(t) });
-        line = tok.trimStart();
-      } else line = cand;
-    }
-    lines.push({ text: line, width: measure(line) });
+    lines.push(...wrapParagraph(para, maxW, measure));
   }
   const width = wrap ? maxW : Math.max(1, ...lines.map((l) => l.width));
   return { lines, lineHeight: lh, width, height: Math.max(lh, lines.length * lh) };
