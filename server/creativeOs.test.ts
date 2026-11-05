@@ -73,7 +73,7 @@ describe("Creative OS — Catálogo, Aquisição e Workspaces", () => {
       );
       return res[0];
     });
-    assert.deepEqual(tool, { slug: "creative-os", appid: 11, available: true });
+    assert.deepEqual(tool, { slug: "creative-os", appid: 12, available: true });
 
     // Alice adquire o Creative OS
     await as(ALICE, (tx) => tx.query("select public.acquire_tool('creative-os')"));
