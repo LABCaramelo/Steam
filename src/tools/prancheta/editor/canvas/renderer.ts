@@ -68,12 +68,33 @@ function drawNodeContents(ctx: CanvasRenderingContext2D, dc: DrawContext, n: Sce
     else if (e.type === 'BACKGROUND_BLUR') drawBackgroundBlurBase(ctx, dc, n, path, e);
   }
 
+  // Renderiza o desfoque real do que está atrás do nó (backdrop blur)
+  for (const e of effects) {
+    if (e.type === 'GLASS') {
+      const frost = e.frost ?? (e.radius || 4);
+      const refraction = e.refraction ?? 80;
+      drawBackdropBlur(ctx, dc, n, path, frost, refraction);
+    } else if (e.type === 'BACKGROUND_BLUR') {
+      drawBackdropBlur(ctx, dc, n, path, e.radius || 16, 0);
+    }
+  }
+
   if (n.type === 'TEXT') {
     if (dc.skipTextId !== n.id) {
       for (const f of n.fills) if (f.visible && f.type === 'SOLID') drawTextGlyphs(ctx, n, rgba(f.color, f.opacity));
     }
   } else if (!isOpenPath(n)) {
-    for (const f of n.fills) if (f.visible) paintFill(ctx, dc, n, path, f);
+    const hasGlass = effects.some((e) => e.type === 'GLASS');
+    for (const f of n.fills) {
+      if (!f.visible) continue;
+      // Se houver efeito Vidro ativo e preenchimento for opaco, modula para 20%
+      // para que a refração e desfoque do fundo fiquem visíveis imediatamente!
+      if (hasGlass && f.opacity > 0.35) {
+        paintFill(ctx, dc, n, path, { ...f, opacity: 0.2 });
+      } else {
+        paintFill(ctx, dc, n, path, f);
+      }
+    }
   }
 
   for (const e of effects) {
@@ -253,37 +274,174 @@ function getTexturePattern(): CanvasPattern | null {
   return texturePatternCache;
 }
 
+let backdropScratchCanvas: HTMLCanvasElement | null = null;
+function getBackdropScratchCanvas(): HTMLCanvasElement | null {
+  if (typeof document === 'undefined') return null;
+  if (!backdropScratchCanvas) {
+    backdropScratchCanvas = document.createElement('canvas');
+  }
+  return backdropScratchCanvas;
+}
+
+/** Captura e desfoca o plano de fundo exatamente atrás da geometria do nó */
+function drawBackdropBlur(
+  ctx: CanvasRenderingContext2D,
+  dc: DrawContext,
+  n: SceneNode,
+  path: Path2D,
+  blurRadius: number,
+  refraction: number = 0,
+) {
+  const mainCanvas = ctx.canvas;
+  if (!mainCanvas || mainCanvas.width <= 0 || mainCanvas.height <= 0) return;
+
+  try {
+    const m = ctx.getTransform();
+    // 4 cantos do nó projetados em coordenadas do canvas de destino
+    const p0 = m.transformPoint(new DOMPoint(0, 0));
+    const p1 = m.transformPoint(new DOMPoint(n.width, 0));
+    const p2 = m.transformPoint(new DOMPoint(n.width, n.height));
+    const p3 = m.transformPoint(new DOMPoint(0, n.height));
+
+    const pad = Math.ceil(Math.max(16, blurRadius * 2.5 * dc.pxScale));
+    const minX = Math.max(0, Math.floor(Math.min(p0.x, p1.x, p2.x, p3.x) - pad));
+    const minY = Math.max(0, Math.floor(Math.min(p0.y, p1.y, p2.y, p3.y) - pad));
+    const maxX = Math.min(mainCanvas.width, Math.ceil(Math.max(p0.x, p1.x, p2.x, p3.x) + pad));
+    const maxY = Math.min(mainCanvas.height, Math.ceil(Math.max(p0.y, p1.y, p2.y, p3.y) + pad));
+    const cropW = maxX - minX;
+    const cropH = maxY - minY;
+
+    if (cropW <= 2 || cropH <= 2) return;
+
+    const bCanvas = getBackdropScratchCanvas();
+    if (!bCanvas) return;
+    if (bCanvas.width < cropW || bCanvas.height < cropH) {
+      bCanvas.width = Math.max(bCanvas.width, cropW);
+      bCanvas.height = Math.max(bCanvas.height, cropH);
+    }
+    const bCtx = bCanvas.getContext('2d');
+    if (!bCtx) return;
+
+    bCtx.clearRect(0, 0, cropW, cropH);
+    bCtx.drawImage(mainCanvas, minX, minY, cropW, cropH, 0, 0, cropW, cropH);
+
+    ctx.save();
+    ctx.clip(path);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    const bPixels = Math.max(1, blurRadius * dc.pxScale * 0.8);
+    ctx.filter = `blur(${bPixels}px)`;
+
+    if (refraction > 0) {
+      const scale = 1 + (refraction / 100) * 0.05;
+      const cx = (minX + maxX) / 2;
+      const cy = (minY + maxY) / 2;
+      ctx.translate(cx, cy);
+      ctx.scale(scale, scale);
+      ctx.translate(-cx, -cy);
+    }
+
+    ctx.drawImage(bCanvas, 0, 0, cropW, cropH, minX, minY, cropW, cropH);
+    ctx.restore();
+  } catch {
+    // Fallback gracioso caso CORS impeça leitura direta do canvas
+    ctx.save();
+    ctx.clip(path);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.fill(path);
+    ctx.restore();
+  }
+}
+
 function drawBackgroundBlurBase(ctx: CanvasRenderingContext2D, _dc: DrawContext, _n: SceneNode, path: Path2D, e: Effect) {
   ctx.save();
-  ctx.fillStyle = rgba(e.color || '#ffffff', Math.min(0.25, e.opacity || 0.1));
+  ctx.fillStyle = rgba(e.color || '#ffffff', Math.min(0.2, e.opacity || 0.1));
   ctx.fill(path);
   ctx.restore();
 }
 
 function drawGlassBase(ctx: CanvasRenderingContext2D, dc: DrawContext, _n: SceneNode, path: Path2D, e: Effect) {
+  const depth = (e.depth ?? (e.spread ? e.spread * 2 : 20)) / 100;
+  const intensity = (e.lightIntensity ?? 80) / 100;
+  const angleRad = ((e.lightAngle ?? -45) * Math.PI) / 180;
+  const lx = Math.cos(angleRad);
+  const ly = Math.sin(angleRad);
+
   ctx.save();
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
-  ctx.shadowBlur = Math.max(6, (e.radius || 12) * dc.pxScale);
-  ctx.shadowOffsetY = Math.max(2, 4 * dc.pxScale);
-  ctx.fillStyle = rgba(e.color || '#ffffff', (e.opacity || 0.15) * 0.7);
+  // Sombra ambiente de contato projetada no sentido oposto à luz
+  ctx.shadowColor = `rgba(0, 0, 0, ${0.28 * Math.max(0.3, intensity)})`;
+  ctx.shadowBlur = Math.max(6, (8 + depth * 22) * dc.pxScale);
+  ctx.shadowOffsetX = -lx * Math.max(2, 5 * depth * dc.pxScale);
+  ctx.shadowOffsetY = -ly * Math.max(2, 5 * depth * dc.pxScale);
+  ctx.fillStyle = rgba(e.color || '#ffffff', 0.01);
   ctx.fill(path);
   ctx.restore();
 }
 
-function drawGlassOverlay(ctx: CanvasRenderingContext2D, dc: DrawContext, n: SceneNode, path: Path2D, _e: Effect) {
+function drawGlassOverlay(ctx: CanvasRenderingContext2D, dc: DrawContext, n: SceneNode, path: Path2D, e: Effect) {
+  const angle = e.lightAngle ?? -45;
+  const intensity = (e.lightIntensity ?? 80) / 100;
+  const depth = (e.depth ?? (e.spread ? e.spread * 2 : 20)) / 100;
+  const dispersion = (e.dispersion ?? 50) / 100;
+  const splay = (e.splay ?? 0) / 100;
+
+  const rad = (angle * Math.PI) / 180;
+  const lx = Math.cos(rad);
+  const ly = Math.sin(rad);
+
+  const cx = n.width / 2;
+  const cy = n.height / 2;
+  const dist = Math.max(n.width, n.height) / 2;
+
   ctx.save();
   ctx.clip(path);
-  const grad = ctx.createLinearGradient(0, 0, n.width, n.height);
-  grad.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
-  grad.addColorStop(0.3, 'rgba(255, 255, 255, 0.05)');
-  grad.addColorStop(0.7, 'rgba(255, 255, 255, 0.02)');
-  grad.addColorStop(1, 'rgba(255, 255, 255, 0.2)');
+
+  // 1. Brilho especular de superfície orientado pelo vetor da luz
+  const x0 = cx + lx * dist;
+  const y0 = cy + ly * dist;
+  const x1 = cx - lx * dist;
+  const y1 = cy - ly * dist;
+  const grad = ctx.createLinearGradient(x0, y0, x1, y1);
+
+  const sheen = intensity * 0.45;
+  grad.addColorStop(0, `rgba(255, 255, 255, ${sheen})`);
+  grad.addColorStop(0.25 + splay * 0.15, `rgba(255, 255, 255, ${sheen * 0.25})`);
+  grad.addColorStop(0.7 - splay * 0.15, 'rgba(255, 255, 255, 0.01)');
+  grad.addColorStop(1, `rgba(0, 0, 0, ${sheen * 0.2})`);
+
   ctx.fillStyle = grad;
   ctx.fill(path);
 
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-  ctx.lineWidth = Math.max(1, 1.25 * dc.pxScale);
+  // 2. Dispersão cromática (prismática) na borda se dispersion > 0
+  if (dispersion > 0) {
+    const dispOffset = Math.max(0.75, 1.5 * dc.pxScale * dispersion);
+    // Franja Ciano na direção da luz
+    ctx.save();
+    ctx.translate(lx * dispOffset, ly * dispOffset);
+    ctx.strokeStyle = `rgba(37, 191, 255, ${0.35 * dispersion * intensity})`;
+    ctx.lineWidth = Math.max(1, 1.2 * dc.pxScale);
+    ctx.stroke(path);
+    ctx.restore();
+
+    // Franja Magenta no lado oposto
+    ctx.save();
+    ctx.translate(-lx * dispOffset, -ly * dispOffset);
+    ctx.strokeStyle = `rgba(255, 61, 141, ${0.35 * dispersion * intensity})`;
+    ctx.lineWidth = Math.max(1, 1.2 * dc.pxScale);
+    ctx.stroke(path);
+    ctx.restore();
+  }
+
+  // 3. Bisel de reflexo especular na borda (facing light)
+  const strokeGrad = ctx.createLinearGradient(x0, y0, x1, y1);
+  strokeGrad.addColorStop(0, `rgba(255, 255, 255, ${Math.min(1, intensity * 0.95)})`);
+  strokeGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.2)');
+  strokeGrad.addColorStop(1, `rgba(255, 255, 255, ${Math.min(0.3, intensity * 0.15)})`);
+
+  ctx.strokeStyle = strokeGrad;
+  ctx.lineWidth = Math.max(1, (1 + depth * 3) * dc.pxScale);
   ctx.stroke(path);
+
   ctx.restore();
 }
 

@@ -1,0 +1,237 @@
+/* ==========================================================================
+   GLASS POPOVER — Inspetor do Efeito Vidro (Figma 1:1)
+   Um Cara Caramelo — Laboratório de Interação
+   ========================================================================== */
+
+.glass-popover {
+  position: fixed;
+  z-index: 1350;
+  width: 280px;
+  background: #18181c;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: var(--font-body, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  color: #fff4e8;
+  animation: gpFadeIn 0.12s ease-out;
+  user-select: none;
+}
+
+@keyframes gpFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.glass-popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glass-popover-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.glass-popover-close {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glass-popover-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Seção Luz */
+.glass-light-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.glass-light-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  width: 32px;
+}
+
+.glass-light-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  position: relative;
+  cursor: crosshair;
+  background: #101014;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.glass-light-pin {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+  pointer-events: none;
+}
+
+.glass-light-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.glass-mini-input {
+  display: flex;
+  align-items: center;
+  background: #101014;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 0 8px;
+  height: 24px;
+}
+
+.glass-mini-input:focus-within {
+  border-color: #0c8ce9;
+}
+
+.glass-mini-input input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 11px;
+  font-family: inherit;
+  text-align: right;
+}
+
+.glass-mini-input span {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-left: 2px;
+}
+
+/* Sliders */
+.glass-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.glass-slider-row {
+  display: grid;
+  grid-template-columns: 82px 1fr 44px;
+  align-items: center;
+  gap: 8px;
+}
+
+.glass-slider-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
+}
+
+.glass-slider-track {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+  cursor: pointer;
+}
+
+.glass-slider-track::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.glass-slider-track::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+}
+
+.glass-slider-track::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.glass-slider-input {
+  width: 100%;
+  height: 24px;
+  background: #101014;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 11px;
+  font-family: inherit;
+  text-align: center;
+  outline: none;
+}
+
+.glass-slider-input:focus {
+  border-color: #0c8ce9;
+}
+
+/* Rodapé / Tint */
+.glass-tint-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glass-tint-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+}

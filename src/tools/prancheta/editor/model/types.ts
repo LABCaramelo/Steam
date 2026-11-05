@@ -66,6 +66,14 @@ export interface Effect {
   y: number;
   radius: number;
   spread: number;
+  /** Propriedades do efeito Vidro (idêntico ao Figma) */
+  lightAngle?: number;
+  lightIntensity?: number;
+  refraction?: number;
+  depth?: number;
+  dispersion?: number;
+  frost?: number;
+  splay?: number;
 }
 
 export type StrokeAlign = 'CENTER' | 'INSIDE' | 'OUTSIDE';

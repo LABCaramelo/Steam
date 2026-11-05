@@ -13,6 +13,7 @@ function element(doc: DocumentData, id: string): HTMLImageElement | null {
   let img = cache.get(id);
   if (!img || img.src !== src) {
     img = new Image();
+    img.crossOrigin = 'anonymous';
     img.onload = () => onLoad?.();
     img.src = src;
     cache.set(id, img);
