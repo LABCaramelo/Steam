@@ -1,6 +1,5 @@
 import type { DocumentData } from "./editor/model/types";
 import { compactDocument } from "./editor/io/persist";
-import { renderDocumentThumbnail } from "./editor/io/export";
 import { store } from "./editor/store/store";
 import { PranchetaConflictError, type PranchetaFile, type PranchetaFileInfo, type PranchetaRepo } from "./repo";
 
@@ -97,15 +96,6 @@ export class PranchetaSession {
         if (this.disposed) return false;
         this.info = updated;
         this.saved = next.fingerprint;
-        renderDocumentThumbnail(next.document).then(async (thumb) => {
-          if (thumb && !this.disposed) {
-            this.info = { ...this.info, thumbnail: thumb };
-            const updatedInfo = await this.repo.saveThumbnail?.(this.id, thumb);
-            if (updatedInfo && !this.disposed) {
-              this.info = updatedInfo;
-            }
-          }
-        }).catch(() => {});
       } catch (error) {
         this.queued = null;
         this.publish(error instanceof PranchetaConflictError ? "conflict" : "error",

@@ -190,6 +190,15 @@ function Workspace({ repo }: { repo: PranchetaRepo }) {
     if (mounted.current && generation === epoch.current) { setError(""); install(loaded); }
   });
   const close = () => run(async () => {
+    const active = current.current;
+    if (active) {
+      try {
+        const thumb = await renderDocumentThumbnail(store.state.doc);
+        if (thumb) await repo.saveThumbnail?.(active.id, thumb);
+      } catch {
+        // não trava o fechamento
+      }
+    }
     current.current?.dispose();
     current.current = null;
     releaseBinding.current?.();
