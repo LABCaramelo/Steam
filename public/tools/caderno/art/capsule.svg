@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" fill="none">
+  <rect width="600" height="900" fill="#101014"/>
+  <defs>
+    <radialGradient id="cadernoGlow" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#FF701A" stop-opacity="0.32"/>
+      <stop offset="50%" stop-color="#7657FF" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#101014" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#cadernoGlow)"/>
+
+  <!-- Subtle Blueprint / Grid Lines -->
+  <g opacity="0.12" stroke="#FFF4E8" stroke-width="1">
+    <line x1="60" y1="0" x2="60" y2="900"/>
+    <line x1="180" y1="0" x2="180" y2="900"/>
+    <line x1="300" y1="0" x2="300" y2="900"/>
+    <line x1="420" y1="0" x2="420" y2="900"/>
+    <line x1="540" y1="0" x2="540" y2="900"/>
+    <line x1="0" y1="150" x2="600" y2="150"/>
+    <line x1="0" y1="300" x2="600" y2="300"/>
+    <line x1="0" y1="450" x2="600" y2="450"/>
+    <line x1="0" y1="600" x2="600" y2="600"/>
+    <line x1="0" y1="750" x2="600" y2="750"/>
+  </g>
+
+  <!-- Central Graphic: Stack of Pages & Data Views (Movement = Camadas se separam) -->
+  <g transform="translate(130, 160)">
+    <!-- Layer 3: Database / Kanban (Electric Sky) -->
+    <rect x="70" y="50" width="240" height="320" rx="20" fill="#25BFFF" opacity="0.25" transform="rotate(-7 190 210)"/>
+    
+    <!-- Layer 2: Blocks / Document (Hot Pink / Violet) -->
+    <rect x="50" y="30" width="240" height="320" rx="20" fill="#7657FF" opacity="0.3" transform="rotate(5 170 190)"/>
+
+    <!-- Layer 1: Main Caderno Document Surface -->
+    <rect x="40" y="15" width="260" height="340" rx="22" fill="#181820" stroke="#FF701A" stroke-width="3"/>
+    
+    <!-- Binder holes on the left spine -->
+    <circle cx="65" cy="65" r="7" fill="#FF701A"/>
+    <circle cx="65" cy="185" r="7" fill="#25BFFF"/>
+    <circle cx="65" cy="305" r="7" fill="#FF3D8D"/>
+    <line x1="85" y1="20" x2="85" y2="350" stroke="#252530" stroke-width="2"/>
+
+    <!-- Document Content simulation -->
+    <!-- Page title -->
+    <rect x="105" y="55" width="160" height="18" rx="5" fill="#FFF4E8"/>
+    <rect x="105" y="85" width="80" height="8" rx="4" fill="#FF701A"/>
+
+    <!-- Checkboxes -->
+    <rect x="105" y="115" width="16" height="16" rx="4" stroke="#25BFFF" stroke-width="2" fill="#14141A"/>
+    <path d="M109 123L113 127L118 119" stroke="#25BFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="130" y="119" width="120" height="8" rx="4" fill="#FFF4E8" opacity="0.8"/>
+
+    <rect x="105" y="145" width="16" height="16" rx="4" stroke="#404050" stroke-width="2" fill="#14141A"/>
+    <rect x="130" y="149" width="95" height="8" rx="4" fill="#FFF4E8" opacity="0.5"/>
+
+    <!-- Callout Box -->
+    <rect x="105" y="180" width="170" height="48" rx="10" fill="#20202C" stroke="#7657FF" stroke-width="1.5"/>
+    <circle cx="123" cy="204" r="10" fill="#7657FF" opacity="0.3"/>
+    <text x="123" y="208" text-anchor="middle" fill="#7657FF" font-size="12">💡</text>
+    <rect x="142" y="196" width="115" height="6" rx="3" fill="#FFF4E8" opacity="0.9"/>
+    <rect x="142" y="208" width="75" height="6" rx="3" fill="#FFF4E8" opacity="0.5"/>
+
+    <!-- Mini Database grid -->
+    <rect x="105" y="245" width="170" height="80" rx="8" fill="#14141A" stroke="#303040" stroke-width="1.5"/>
+    <line x1="105" y1="268" x2="275" y2="268" stroke="#303040" stroke-width="1"/>
+    <line x1="160" y1="245" x2="160" y2="325" stroke="#303040" stroke-width="1"/>
+    <line x1="215" y1="245" x2="215" y2="325" stroke="#303040" stroke-width="1"/>
+
+    <!-- Tags in table -->
+    <rect x="115" y="278" width="35" height="10" rx="5" fill="#FF701A"/>
+    <rect x="170" y="278" width="35" height="10" rx="5" fill="#25BFFF"/>
+    <rect x="225" y="278" width="35" height="10" rx="5" fill="#FFD52A"/>
+
+    <rect x="115" y="298" width="30" height="10" rx="5" fill="#7657FF"/>
+    <rect x="170" y="298" width="38" height="10" rx="5" fill="#FF3D8D"/>
+    <rect x="225" y="298" width="28" height="10" rx="5" fill="#25BFFF"/>
+
+    <!-- Floating Slash Badge -->
+    <circle cx="280" cy="330" r="26" fill="#FF701A" filter="drop-shadow(0 4px 12px rgba(255,112,26,0.5))"/>
+    <text x="280" y="340" text-anchor="middle" fill="#101014" font-family="monospace" font-size="28" font-weight="900">/</text>
+  </g>
+
+  <!-- Typography -->
+  <text x="300" y="615" text-anchor="middle" fill="#FFF4E8" font-family="system-ui, -apple-system, sans-serif" font-size="46" font-weight="900" letter-spacing="-1">CADERNO</text>
+  <text x="300" y="655" text-anchor="middle" fill="#FF701A" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" letter-spacing="4">SEGUNDO CÉREBRO &amp; BASES</text>
+  <text x="300" y="695" text-anchor="middle" fill="#FFF4E8" opacity="0.65" font-family="system-ui, -apple-system, sans-serif" font-size="15">Open Workspace inspirado no AppFlowy</text>
+
+  <!-- Bottom Badge -->
+  <rect x="195" y="750" width="210" height="40" rx="20" fill="#FF701A"/>
+  <text x="300" y="775" text-anchor="middle" fill="#101014" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="800" letter-spacing="1">LAB CARAMELO</text>
+</svg>

@@ -13,7 +13,17 @@
       "permanent": true
     },
     {
-      "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|trama|academy|claquete|comunidade|admin|gravador|montagem|creative-os|gabinete)/index.html",
+      "source": "/appflowy",
+      "destination": "/tools/caderno",
+      "permanent": true
+    },
+    {
+      "source": "/caderno",
+      "destination": "/tools/caderno",
+      "permanent": true
+    },
+    {
+      "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|trama|academy|claquete|comunidade|admin|gravador|montagem|creative-os|gabinete|stories|logomotion|cap|voicestudio|caderno)/index.html",
       "destination": "/tools/:slug",
       "permanent": true
     },
@@ -69,11 +79,11 @@
       "destination": "/aula-head/index.html"
     },
     {
-      "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|trama|academy|claquete|comunidade|admin|gravador|montagem|creative-os|gabinete)",
+      "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|trama|academy|claquete|comunidade|admin|gravador|montagem|creative-os|gabinete|stories|logomotion|cap|voicestudio|caderno)",
       "destination": "/tools/:slug/index.html"
     },
     {
-      "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|trama|academy|claquete|comunidade|admin|gravador|montagem|creative-os|gabinete)/",
+      "source": "/tools/:slug(prompt-library|kanban|prancheta|automation|trama|academy|claquete|comunidade|admin|gravador|montagem|creative-os|gabinete|stories|logomotion|cap|voicestudio|caderno)/",
       "destination": "/tools/:slug/index.html"
     },
     {

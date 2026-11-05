@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900" role="img" aria-labelledby="title desc"><title id="title">Cap — Um Cara Caramelo</title><desc id="desc">AUDIOVISUAL / SCREEN &amp; LOOM. Menos tela crua. Mais cinema.</desc><defs><pattern id="dots" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#FFF4E8" opacity=".07"/></pattern></defs><rect width="600" height="900" fill="#101014"/><rect width="600" height="900" fill="url(#dots)"/><path d="M456 0H600V900H570Z" fill="#FF701A" fill-opacity=".1"/><path d="M44 245H555" stroke="#FFF4E8" stroke-opacity=".18"/><g font-family="Arial,Helvetica,sans-serif"><text x="44" y="70" fill="#FF701A" font-size="11" font-weight="700" letter-spacing="3">LAB / 16</text><text x="40" y="172" fill="#FFF4E8" font-size="72" font-weight="900" letter-spacing="-3">Cap<tspan fill="#FF701A">.</tspan></text><text x="44" y="222" fill="#FFF4E8" fill-opacity=".6" font-size="11" letter-spacing="2">AUDIOVISUAL / SCREEN &amp; LOOM</text><g transform="translate(55 340) scale(1.03)"><g transform="translate(10, 20)">
+      <rect x="30" y="30" width="380" height="240" rx="14" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="3"/>
+      <circle cx="52" cy="50" r="5" fill="#FF3D8D"/>
+      <circle cx="68" cy="50" r="5" fill="#FFD52A"/>
+      <circle cx="84" cy="50" r="5" fill="#25BFFF"/>
+      <rect x="106" y="44" width="130" height="12" rx="6" fill="#FFF4E8" fill-opacity=".12"/>
+      <rect x="45" y="70" width="350" height="185" rx="8" fill="#101014"/>
+      <circle cx="205" cy="145" r="38" fill="none" stroke="#FF701A" stroke-width="2.5" stroke-dasharray="6 4"/>
+      <circle cx="205" cy="145" r="5" fill="#FF701A"/>
+      <rect x="175" y="192" width="60" height="18" rx="6" fill="#FF701A"/>
+      <text x="205" y="205" fill="#101014" font-size="10" font-weight="900" text-anchor="middle">ZOOM 2X</text>
+      <circle cx="335" cy="205" r="30" fill="#18181D" stroke="#FF701A" stroke-width="3.5"/>
+      <circle cx="335" cy="198" r="11" fill="#FFF4E8" fill-opacity=".85"/>
+      <path d="M318 224c0-9 7-14 17-14s17 5 17 14" fill="#FFF4E8" fill-opacity=".85"/>
+      <rect x="55" y="80" width="68" height="20" rx="10" fill="#FF3D8D" fill-opacity=".2"/>
+      <circle cx="66" cy="90" r="4" fill="#FF3D8D"/>
+      <text x="91" y="94" fill="#FFF4E8" font-size="9" font-weight="900" text-anchor="middle">REC 4K</text>
+    </g></g><text x="44" y="790" fill="#FFF4E8" font-size="31" font-weight="800" letter-spacing="-.7">Menos tela crua.</text><text x="44" y="830" fill="#FF701A" font-size="31" font-weight="800" letter-spacing="-.7">Mais cinema.</text><text x="44" y="875" fill="#FFF4E8" fill-opacity=".38" font-size="9" font-weight="700" letter-spacing="2">UM CARA CARAMELO®</text></g></svg>

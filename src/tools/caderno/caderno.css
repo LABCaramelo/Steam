@@ -1,0 +1,2044 @@
+/* ==========================================================================
+   CADERNO — APPFLOWY OPEN WORKSPACE NO LAB (CARAMELO V1 2026)
+   ========================================================================== */
+
+:root {
+  --cad-bg: #101014;
+  --cad-surface-1: #16161E;
+  --cad-surface-2: #1C1C26;
+  --cad-surface-3: #242432;
+  --cad-border: #2A2A3A;
+  --cad-border-subtle: #1F1F2B;
+  --cad-text: #FFF4E8;
+  --cad-text-muted: rgba(255, 244, 232, 0.65);
+  --cad-text-dim: rgba(255, 244, 232, 0.4);
+  --cad-caramel: #FF701A;
+  --cad-caramel-hover: #ff853a;
+  --cad-sky: #25BFFF;
+  --cad-pink: #FF3D8D;
+  --cad-violet: #7657FF;
+  --cad-yellow: #FFD52A;
+  --cad-sidebar-width: 280px;
+}
+
+[data-caramelo-theme="light"] {
+  --cad-bg: #FFF4E8;
+  --cad-surface-1: #F5EAE0;
+  --cad-surface-2: #EADFD4;
+  --cad-surface-3: #DFD4C8;
+  --cad-border: #D0C4B8;
+  --cad-border-subtle: #E2D6CB;
+  --cad-text: #101014;
+  --cad-text-muted: rgba(16, 16, 20, 0.7);
+  --cad-text-dim: rgba(16, 16, 20, 0.45);
+}
+
+body.caderno-body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--cad-bg);
+  color: var(--cad-text);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  user-select: text;
+}
+
+/* Container Principal */
+.caderno-app-root {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: var(--cad-bg);
+}
+
+/* ==========================================================================
+   SIDEBAR
+   ========================================================================== */
+
+.caderno-sidebar {
+  width: var(--cad-sidebar-width);
+  height: 100vh;
+  background-color: var(--cad-surface-1);
+  border-right: 1px solid var(--cad-border-subtle);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+}
+
+.caderno-sidebar.is-closed {
+  width: 0;
+  transform: translateX(-100%);
+  border-right: none;
+  overflow: hidden;
+}
+
+.caderno-sidebar-header {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--cad-border-subtle);
+}
+
+.caderno-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.caderno-brand-badge {
+  background-color: var(--cad-caramel);
+  color: #101014;
+  font-weight: 900;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.caderno-brand-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.caderno-brand-name {
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  color: var(--cad-text);
+}
+
+.caderno-brand-sub {
+  font-size: 11px;
+  color: var(--cad-text-dim);
+}
+
+.caderno-sidebar-quick-actions {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-bottom: 1px solid var(--cad-border-subtle);
+}
+
+.caderno-sidebar-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 7px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--cad-text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.caderno-sidebar-action-btn:hover {
+  background-color: var(--cad-surface-2);
+  color: var(--cad-text);
+  border-color: var(--cad-border);
+}
+
+.caderno-kbd {
+  font-family: monospace;
+  font-size: 10px;
+  padding: 2px 5px;
+  background-color: var(--cad-surface-3);
+  border: 1px solid var(--cad-border);
+  border-radius: 4px;
+  color: var(--cad-text-dim);
+}
+
+.caderno-sidebar-create-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.caderno-btn-create-page,
+.caderno-btn-create-db {
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--cad-border);
+  background-color: var(--cad-surface-2);
+  color: var(--cad-text);
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.caderno-btn-create-page:hover {
+  border-color: var(--cad-caramel);
+  color: var(--cad-caramel);
+}
+
+.caderno-btn-create-db:hover {
+  border-color: var(--cad-sky);
+  color: var(--cad-sky);
+}
+
+/* Árvore de Páginas */
+.caderno-sidebar-tree-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 6px;
+}
+
+.caderno-tree-section {
+  margin-bottom: 16px;
+}
+
+.caderno-tree-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 12px 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--cad-text-dim);
+}
+
+.caderno-tree-count {
+  background: var(--cad-surface-3);
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-size: 9px;
+}
+
+.caderno-tree-node {
+  display: flex;
+  flex-direction: column;
+}
+
+.caderno-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--cad-text-muted);
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: background-color 0.12s ease;
+}
+
+.caderno-tree-row:hover {
+  background-color: var(--cad-surface-2);
+  color: var(--cad-text);
+}
+
+.caderno-tree-row.is-active {
+  background-color: var(--cad-surface-3);
+  color: var(--cad-caramel);
+  font-weight: 600;
+}
+
+.caderno-tree-expand {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-dim);
+  font-size: 8px;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.caderno-tree-expand.is-expanded {
+  transform: rotate(90deg);
+}
+
+.caderno-tree-expand-placeholder {
+  width: 14px;
+}
+
+.caderno-tree-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.caderno-tree-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.caderno-tree-actions {
+  display: none;
+  align-items: center;
+  gap: 2px;
+}
+
+.caderno-tree-row:hover .caderno-tree-actions {
+  display: flex;
+}
+
+.caderno-btn-icon-ghost {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-dim);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.caderno-btn-icon-ghost:hover {
+  background: var(--cad-surface-3);
+  color: var(--cad-text);
+}
+
+.caderno-btn-icon-ghost.is-fav {
+  color: var(--cad-yellow);
+}
+
+.caderno-btn-icon-ghost.is-danger:hover {
+  color: var(--cad-pink);
+}
+
+/* Rodapé da Sidebar */
+.caderno-sidebar-footer {
+  padding: 10px 14px;
+  border-top: 1px solid var(--cad-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--cad-surface-1);
+}
+
+.caderno-sidebar-footer-btn {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.caderno-sidebar-footer-btn:hover {
+  background-color: var(--cad-surface-2);
+  color: var(--cad-text);
+}
+
+.caderno-trash-badge {
+  background: var(--cad-pink);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 10px;
+}
+
+.caderno-sidebar-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--cad-text-dim);
+}
+
+.caderno-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #2ECC71;
+}
+
+/* ==========================================================================
+   MAIN WORKSPACE & TOPBAR
+   ========================================================================== */
+
+.caderno-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--cad-bg);
+  position: relative;
+}
+
+.caderno-topbar {
+  height: 48px;
+  border-bottom: 1px solid var(--cad-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background-color: var(--cad-bg);
+  flex-shrink: 0;
+  z-index: 50;
+}
+
+.caderno-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.caderno-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--cad-text-muted);
+}
+
+.caderno-breadcrumb-root {
+  font-weight: 700;
+  color: var(--cad-caramel);
+}
+
+.caderno-breadcrumb-segment {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.caderno-breadcrumb-sep {
+  color: var(--cad-text-dim);
+}
+
+.caderno-breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.caderno-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.caderno-btn-icon-subtle {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--cad-text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.12s ease;
+}
+
+.caderno-btn-icon-subtle:hover {
+  background-color: var(--cad-surface-2);
+  border-color: var(--cad-border);
+  color: var(--cad-text);
+}
+
+.caderno-btn-icon-subtle.is-fav {
+  color: var(--cad-yellow);
+}
+
+.caderno-btn-pill-subtle {
+  background: var(--cad-surface-2);
+  border: 1px solid var(--cad-border);
+  color: var(--cad-text);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.caderno-btn-pill-subtle:hover {
+  border-color: var(--cad-sky);
+  color: var(--cad-sky);
+}
+
+.caderno-btn-subtle {
+  background: transparent;
+  border: 1px solid var(--cad-border-subtle);
+  color: var(--cad-text-muted);
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.caderno-btn-subtle:hover {
+  background: var(--cad-surface-2);
+  border-color: var(--cad-border);
+  color: var(--cad-text);
+}
+
+.caderno-btn-primary {
+  background: var(--cad-caramel);
+  color: #101014;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.caderno-btn-primary:hover {
+  background: var(--cad-caramel-hover);
+}
+
+.caderno-topbar-sep {
+  width: 1px;
+  height: 18px;
+  background-color: var(--cad-border-subtle);
+}
+
+.caderno-topbar-save-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--cad-text-dim);
+}
+
+.caderno-save-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #2ECC71;
+}
+
+/* ==========================================================================
+   DOCUMENT EDITOR
+   ========================================================================== */
+
+.caderno-editor-scroll {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.caderno-page-cover {
+  width: 100%;
+  height: 190px;
+  position: relative;
+  flex-shrink: 0;
+  transition: height 0.2s ease;
+}
+
+.caderno-cover-hover-controls {
+  position: absolute;
+  bottom: 12px;
+  right: 24px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.caderno-page-cover:hover .caderno-cover-hover-controls {
+  opacity: 1;
+}
+
+.caderno-cover-ctl-btn {
+  background: rgba(16, 16, 20, 0.75);
+  backdrop-filter: blur(8px);
+  color: #FFF4E8;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.caderno-cover-ctl-btn:hover {
+  background: #101014;
+  border-color: var(--cad-caramel);
+}
+
+.caderno-cover-placeholder {
+  height: 32px;
+  position: relative;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.caderno-cover-placeholder:hover {
+  opacity: 1;
+}
+
+.caderno-add-cover-btn,
+.caderno-add-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-dim);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.caderno-add-cover-btn:hover,
+.caderno-add-icon-btn:hover {
+  color: var(--cad-caramel);
+}
+
+.caderno-editor-content {
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 32px 160px;
+  box-sizing: border-box;
+}
+
+.caderno-page-header-meta {
+  margin-bottom: 12px;
+}
+
+.caderno-page-icon-btn {
+  font-size: 52px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: transform 0.15s ease;
+}
+
+.caderno-page-icon-btn:hover {
+  transform: scale(1.1);
+}
+
+.caderno-page-title-wrap {
+  margin-bottom: 24px;
+}
+
+.caderno-page-title-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--cad-text);
+  font-size: 40px;
+  font-weight: 900;
+  font-family: inherit;
+  resize: none;
+  line-height: 1.15;
+  box-sizing: border-box;
+}
+
+.caderno-page-title-input::placeholder {
+  color: var(--cad-text-dim);
+}
+
+/* ==========================================================================
+   BLOCKS
+   ========================================================================== */
+
+.caderno-blocks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.caderno-block-row {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  border-radius: 6px;
+  padding: 3px 0;
+  margin-left: -32px;
+  padding-left: 32px;
+}
+
+.caderno-block-handle-container {
+  position: absolute;
+  left: 4px;
+  top: 5px;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.caderno-block-row:hover .caderno-block-handle-container,
+.caderno-block-row.is-active .caderno-block-handle-container {
+  opacity: 1;
+}
+
+.caderno-block-handle {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-dim);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.caderno-block-handle:hover {
+  background: var(--cad-surface-2);
+  color: var(--cad-text);
+}
+
+.caderno-block-menu {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  background-color: var(--cad-surface-2);
+  border: 1px solid var(--cad-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 6px;
+  width: 190px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+}
+
+.caderno-block-menu-header {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--cad-text-dim);
+  padding: 4px 8px;
+}
+
+.caderno-block-menu button {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-muted);
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.caderno-block-menu button:hover {
+  background-color: var(--cad-surface-3);
+  color: var(--cad-text);
+}
+
+.caderno-block-menu button.is-danger:hover {
+  color: var(--cad-pink);
+}
+
+.caderno-block-menu-sep {
+  height: 1px;
+  background-color: var(--cad-border);
+  margin: 4px 0;
+}
+
+.caderno-block-body {
+  flex: 1;
+  width: 100%;
+}
+
+.caderno-block-body textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--cad-text);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.6;
+  resize: none;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.caderno-block-body textarea::placeholder {
+  color: var(--cad-text-dim);
+}
+
+/* Tipos Específicos de Bloco */
+.caderno-block-h1 textarea {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-top: 18px;
+}
+
+.caderno-block-h2 textarea {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 14px;
+  color: var(--cad-caramel);
+}
+
+.caderno-block-h3 textarea {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-top: 10px;
+}
+
+.caderno-block-todo {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.caderno-checkbox-btn {
+  background: transparent;
+  border: none;
+  padding: 4px 0 0 0;
+  cursor: pointer;
+}
+
+.caderno-checkbox-box {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--cad-border);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #101014;
+  background-color: var(--cad-surface-1);
+  transition: all 0.15s ease;
+}
+
+.caderno-checkbox-box.is-checked {
+  background-color: var(--cad-caramel);
+  border-color: var(--cad-caramel);
+  font-weight: 900;
+}
+
+.caderno-block-todo.is-checked textarea {
+  text-decoration: line-through;
+  color: var(--cad-text-dim);
+}
+
+.caderno-block-bullet,
+.caderno-block-numbered {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.caderno-bullet-bullet,
+.caderno-numbered-num {
+  color: var(--cad-caramel);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.6;
+  flex-shrink: 0;
+}
+
+.caderno-block-quote {
+  display: flex;
+  gap: 14px;
+  padding: 6px 0;
+}
+
+.caderno-quote-bar {
+  width: 4px;
+  background-color: var(--cad-caramel);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.caderno-block-quote textarea {
+  font-style: italic;
+  font-size: 16px;
+  color: var(--cad-text);
+}
+
+.caderno-block-callout {
+  border: 1px solid var(--cad-border);
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.caderno-callout-icon-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.caderno-callout-icon {
+  font-size: 20px;
+}
+
+.caderno-callout-type-select {
+  background: var(--cad-surface-2);
+  border: 1px solid var(--cad-border);
+  color: var(--cad-text-muted);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.caderno-block-toggle {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.caderno-toggle-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.caderno-toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-dim);
+  font-size: 10px;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.caderno-toggle-btn.is-expanded {
+  transform: rotate(90deg);
+}
+
+.caderno-toggle-content {
+  padding-left: 26px;
+  margin-top: 6px;
+}
+
+.caderno-toggle-inner-text {
+  width: 100%;
+  background: var(--cad-surface-1);
+  border: 1px dashed var(--cad-border);
+  border-radius: 6px;
+  padding: 10px;
+  color: var(--cad-text-muted);
+  font-family: inherit;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* Código */
+.caderno-block-code {
+  background-color: var(--cad-surface-1);
+  border: 1px solid var(--cad-border);
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.caderno-code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background-color: var(--cad-surface-2);
+  border-bottom: 1px solid var(--cad-border-subtle);
+}
+
+.caderno-code-lang {
+  background: transparent;
+  border: none;
+  color: var(--cad-caramel);
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.caderno-code-copy {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-dim);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.caderno-code-copy:hover {
+  color: var(--cad-text);
+}
+
+.caderno-code-area {
+  padding: 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px !important;
+  line-height: 1.5;
+  color: #A0FFA0 !important;
+  background: transparent;
+}
+
+.caderno-block-divider hr {
+  border: none;
+  height: 1px;
+  background-color: var(--cad-border);
+  margin: 14px 0;
+}
+
+/* Tabela Inline */
+.caderno-block-table-wrapper {
+  overflow-x: auto;
+  margin: 8px 0;
+  width: 100%;
+}
+
+.caderno-table {
+  border-collapse: collapse;
+  width: 100%;
+  background-color: var(--cad-surface-1);
+  border: 1px solid var(--cad-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.caderno-table th,
+.caderno-table td {
+  border: 1px solid var(--cad-border-subtle);
+  padding: 6px 10px;
+}
+
+.caderno-table th {
+  background-color: var(--cad-surface-2);
+}
+
+.caderno-table th input,
+.caderno-table td input {
+  background: transparent;
+  border: none;
+  color: var(--cad-text);
+  font-family: inherit;
+  font-size: 13px;
+  width: 100%;
+  outline: none;
+}
+
+.caderno-table th input {
+  font-weight: 700;
+  color: var(--cad-caramel);
+}
+
+.caderno-table-action-col {
+  width: 28px;
+  text-align: center;
+}
+
+.caderno-tbl-add-btn {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-dim);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.caderno-tbl-add-row {
+  margin-top: 6px;
+  background: transparent;
+  border: 1px dashed var(--cad-border);
+  color: var(--cad-text-dim);
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.caderno-tbl-add-row:hover {
+  border-color: var(--cad-caramel);
+  color: var(--cad-caramel);
+}
+
+.caderno-add-block-bottom {
+  margin-top: 24px;
+  padding: 12px 16px;
+  background: transparent;
+  border: 1px dashed var(--cad-border);
+  border-radius: 8px;
+  color: var(--cad-text-dim);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.caderno-add-block-bottom:hover {
+  border-color: var(--cad-caramel);
+  color: var(--cad-caramel);
+}
+
+/* ==========================================================================
+   SLASH COMMAND MENU
+   ========================================================================== */
+
+.caderno-slash-menu {
+  width: 300px;
+  max-height: 380px;
+  background-color: var(--cad-surface-1);
+  border: 1px solid var(--cad-border);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.caderno-slash-header {
+  padding: 10px 14px;
+  background-color: var(--cad-surface-2);
+  border-bottom: 1px solid var(--cad-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--cad-text-dim);
+}
+
+.caderno-slash-list {
+  padding: 6px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.caderno-slash-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: var(--cad-text);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.1s ease;
+}
+
+.caderno-slash-item.is-selected,
+.caderno-slash-item:hover {
+  background-color: var(--cad-surface-3);
+}
+
+.caderno-slash-icon {
+  width: 28px;
+  height: 28px;
+  background-color: var(--cad-surface-2);
+  border: 1px solid var(--cad-border);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--cad-caramel);
+  flex-shrink: 0;
+}
+
+.caderno-slash-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.caderno-slash-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.caderno-slash-desc {
+  font-size: 11px;
+  color: var(--cad-text-dim);
+}
+
+.caderno-slash-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--cad-text-dim);
+  font-size: 13px;
+}
+
+/* ==========================================================================
+   DATABASE VIEW (TABLE, KANBAN, GALLERY)
+   ========================================================================== */
+
+.caderno-db-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.caderno-db-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--cad-border-subtle);
+}
+
+.caderno-db-views {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.caderno-db-view-tab {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--cad-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.caderno-db-view-tab.is-active {
+  background-color: var(--cad-surface-2);
+  border-color: var(--cad-border);
+  color: var(--cad-caramel);
+}
+
+.caderno-db-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.caderno-db-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--cad-surface-2);
+  border: 1px solid var(--cad-border);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.caderno-db-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--cad-text);
+  font-size: 12px;
+  width: 120px;
+}
+
+.caderno-db-search-clear {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-dim);
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.caderno-db-filter-select {
+  background: var(--cad-surface-2);
+  border: 1px solid var(--cad-border);
+  color: var(--cad-text);
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+
+/* Database Table */
+.caderno-db-table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--cad-border);
+  border-radius: 8px;
+  background-color: var(--cad-surface-1);
+}
+
+.caderno-db-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.caderno-db-table th {
+  background-color: var(--cad-surface-2);
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  border-bottom: 1px solid var(--cad-border);
+  border-right: 1px solid var(--cad-border-subtle);
+  color: var(--cad-text-muted);
+}
+
+.caderno-db-th-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.caderno-db-th-type {
+  font-size: 9px;
+  color: var(--cad-text-dim);
+  text-transform: uppercase;
+}
+
+.caderno-db-table td {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--cad-border-subtle);
+  border-right: 1px solid var(--cad-border-subtle);
+  font-size: 13px;
+}
+
+.caderno-db-row-index {
+  color: var(--cad-text-dim);
+  font-size: 11px;
+}
+
+.caderno-db-cell-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--cad-text);
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.caderno-db-status-badge {
+  border: 1px solid;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.caderno-db-priority-badge {
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.caderno-btn-icon-danger {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-dim);
+  cursor: pointer;
+}
+
+.caderno-btn-icon-danger:hover {
+  color: var(--cad-pink);
+}
+
+.caderno-db-table-add-row {
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--cad-border-subtle);
+  color: var(--cad-text-dim);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  padding-left: 16px;
+}
+
+.caderno-db-table-add-row:hover {
+  color: var(--cad-caramel);
+  background-color: var(--cad-surface-2);
+}
+
+/* Database Board / Kanban */
+.caderno-db-board {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 24px;
+}
+
+.caderno-board-column {
+  width: 270px;
+  flex-shrink: 0;
+  background-color: var(--cad-surface-1);
+  border: 1px solid var(--cad-border-subtle);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.caderno-board-col-header {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--cad-border-subtle);
+}
+
+.caderno-board-col-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.caderno-board-col-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.caderno-board-col-name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.caderno-board-col-count {
+  font-size: 10px;
+  background: var(--cad-surface-2);
+  padding: 1px 6px;
+  border-radius: 8px;
+  color: var(--cad-text-dim);
+}
+
+.caderno-board-cards {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.caderno-board-card {
+  background-color: var(--cad-surface-2);
+  border: 1px solid var(--cad-border);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.caderno-board-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.caderno-board-card-title-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--cad-text);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  width: 100%;
+}
+
+.caderno-btn-card-del {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-dim);
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.caderno-btn-card-del:hover {
+  color: var(--cad-pink);
+}
+
+.caderno-board-card-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.caderno-card-priority-pill {
+  font-size: 10px;
+  font-weight: 800;
+  border: 1px solid;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+.caderno-card-due-pill,
+.caderno-card-assignee-pill {
+  font-size: 10px;
+  color: var(--cad-text-dim);
+}
+
+.caderno-board-card-footer {
+  border-top: 1px solid var(--cad-border-subtle);
+  padding-top: 6px;
+}
+
+.caderno-card-move-select {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--cad-text-dim);
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.caderno-board-add-card-btn {
+  padding: 8px;
+  background: transparent;
+  border: 1px dashed var(--cad-border);
+  border-radius: 6px;
+  color: var(--cad-text-dim);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.caderno-board-add-card-btn:hover {
+  border-color: var(--cad-caramel);
+  color: var(--cad-caramel);
+}
+
+/* Database Gallery */
+.caderno-db-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.caderno-gallery-card {
+  background-color: var(--cad-surface-1);
+  border: 1px solid var(--cad-border);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.caderno-gallery-card-banner {
+  height: 80px;
+  background: linear-gradient(135deg, var(--cad-surface-2) 0%, var(--cad-surface-3) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.caderno-gallery-banner-icon {
+  font-size: 28px;
+}
+
+.caderno-gallery-card-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.caderno-gallery-title-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--cad-text);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+}
+
+.caderno-gallery-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.caderno-gallery-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.caderno-gallery-add-card {
+  height: 140px;
+  border: 1px dashed var(--cad-border);
+  background: transparent;
+  border-radius: 10px;
+  color: var(--cad-text-dim);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.caderno-gallery-add-card:hover {
+  border-color: var(--cad-caramel);
+  color: var(--cad-caramel);
+}
+
+/* ==========================================================================
+   MODAIS (COVER, ICON, PALETTE, EXPORT, TEMPLATES)
+   ========================================================================== */
+
+.caderno-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+/* Cover Picker */
+.caderno-cover-picker,
+.caderno-icon-picker,
+.caderno-templates-modal,
+.caderno-export-modal,
+.caderno-trash-modal {
+  width: 100%;
+  max-width: 620px;
+  background-color: var(--cad-surface-1);
+  border: 1px solid var(--cad-border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.caderno-cover-header,
+.caderno-icon-header,
+.caderno-templates-header,
+.caderno-export-header,
+.caderno-trash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.caderno-cover-header h3,
+.caderno-icon-header h3,
+.caderno-templates-header h3,
+.caderno-export-header h3,
+.caderno-trash-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--cad-caramel);
+}
+
+.caderno-btn-ghost {
+  background: transparent;
+  border: none;
+  color: var(--cad-text-dim);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.caderno-btn-ghost:hover {
+  color: var(--cad-text);
+}
+
+.caderno-cover-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.caderno-cover-card {
+  height: 70px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  padding: 8px;
+  text-align: left;
+  transition: transform 0.12s ease;
+}
+
+.caderno-cover-card:hover {
+  transform: scale(1.03);
+  border-color: #FFF;
+}
+
+.caderno-cover-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #FFF;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Icon Picker */
+.caderno-icon-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.caderno-icon-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cad-text-dim);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.caderno-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+  gap: 6px;
+}
+
+.caderno-icon-btn {
+  font-size: 20px;
+  background: var(--cad-surface-2);
+  border: 1px solid var(--cad-border);
+  border-radius: 6px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.caderno-icon-btn:hover {
+  transform: scale(1.15);
+  background: var(--cad-surface-3);
+  border-color: var(--cad-caramel);
+}
+
+/* Command Palette (Ctrl+K) */
+.caderno-cmd-palette {
+  width: 100%;
+  max-width: 580px;
+  background-color: var(--cad-surface-1);
+  border: 1px solid var(--cad-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.8);
+}
+
+.caderno-cmd-input-wrap {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--cad-border-subtle);
+  background-color: var(--cad-surface-2);
+}
+
+.caderno-cmd-search-icon {
+  font-size: 16px;
+}
+
+.caderno-cmd-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--cad-text);
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.caderno-cmd-list {
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.caderno-cmd-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--cad-text);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.1s ease;
+}
+
+.caderno-cmd-item.is-selected,
+.caderno-cmd-item:hover {
+  background-color: var(--cad-surface-3);
+}
+
+.caderno-cmd-item-icon {
+  font-size: 20px;
+}
+
+.caderno-cmd-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.caderno-cmd-item-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.caderno-cmd-item-snippet {
+  font-size: 11px;
+  color: var(--cad-text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.caderno-cmd-item-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background-color: var(--cad-surface-2);
+  border: 1px solid var(--cad-border);
+  color: var(--cad-sky);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.caderno-cmd-empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--cad-text-dim);
+  font-size: 13px;
+}
+
+/* Templates Modal */
+.caderno-templates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.caderno-template-card {
+  background-color: var(--cad-surface-2);
+  border: 1px solid var(--cad-border);
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.caderno-template-card:hover {
+  border-color: var(--cad-caramel);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.caderno-template-card-icon {
+  font-size: 32px;
+}
+
+.caderno-template-card-info h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cad-text);
+}
+
+.caderno-template-card-info p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--cad-text-muted);
+  line-height: 1.4;
+}
+
+.caderno-template-badge {
+  align-self: flex-start;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--cad-caramel);
+  background-color: rgba(255, 112, 26, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.caderno-template-card.is-blank {
+  border-style: dashed;
+}
+
+/* Export Modal */
+.caderno-export-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.caderno-export-option-card {
+  background-color: var(--cad-surface-2);
+  border: 1px solid var(--cad-border);
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.caderno-export-option-card h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.caderno-export-option-card p {
+  margin: 0;
+  font-size: 11px;
+  color: var(--cad-text-dim);
+  line-height: 1.4;
+}
+
+.caderno-export-btn-group {
+  display: flex;
+  gap: 6px;
+}
+
+.caderno-export-preview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.caderno-export-preview-title {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--cad-text-dim);
+}
+
+.caderno-export-preview {
+  background-color: var(--cad-surface-2);
+  border: 1px solid var(--cad-border);
+  border-radius: 6px;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 11px;
+  max-height: 160px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  color: var(--cad-text-muted);
+  margin: 0;
+}
+
+/* Trash Modal */
+.caderno-trash-list {
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.caderno-trash-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: var(--cad-surface-2);
+  border-radius: 6px;
+}
+
+.caderno-trash-name {
+  flex: 1;
+  margin-left: 8px;
+  font-size: 13px;
+}
+
+.caderno-btn-danger {
+  background: var(--cad-pink);
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   PRINT MEDIA
+   ========================================================================== */
+
+@media print {
+  .caderno-sidebar,
+  .caderno-topbar,
+  .caderno-block-handle-container,
+  .caderno-add-block-bottom,
+  .caderno-cover-placeholder,
+  .caderno-cover-hover-controls,
+  .caderno-db-toolbar {
+    display: none !important;
+  }
+
+  body.caderno-body,
+  .caderno-app-root,
+  .caderno-main,
+  .caderno-editor-scroll {
+    overflow: visible !important;
+    height: auto !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .caderno-editor-content {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .caderno-page-title-input {
+    color: #000 !important;
+  }
+
+  .caderno-block-body textarea {
+    color: #000 !important;
+  }
+}

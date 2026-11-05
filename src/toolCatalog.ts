@@ -208,6 +208,32 @@ export const CLAQUETE_APP = tool(CLAQUETE_APP_ID, "Claquete", {
 
 export const ADMIN_APP_ID = 8;
 export const GRAVADOR_APP_ID = 9;
+export const STORIES_APP_ID = 14;
+
+export const STORIES_APP = tool(STORIES_APP_ID, "Stories Maker", {
+  slug: "stories",
+  available: true,
+  launchPath: `/library/app/${STORIES_APP_ID}/open`,
+  publicPage: "/tools/stories",
+  description: "Crie stories para o Instagram em imagem e vídeo, com tipografia, paletas personalizadas, templates de diagramação e widgets nativos.",
+  assets: art("/tools/stories/art"),
+  store: {
+    tagline: "Stories autênticos e profissionais no formato nativo 9:16.",
+    eyebrow: "SOCIAL MEDIA / INSTAGRAM STORIES",
+    headline: "Menos posts genéricos.\nMais presença visual.",
+    features: [
+      { title: "Identidade Visual Salva", text: "Guarde suas cores de marca, fontes próprias e templates para reaproveitar sempre." },
+      { title: "Widgets Interativos Nativos", text: "Caixas de perguntas, enquetes, sliders com emoji, contagem regressiva e links." },
+      { title: "Diagramação & Templates", text: "Layouts prontos e possibilidade de salvar suas próprias criações." },
+      { title: "Exportação em Imagem e Vídeo", text: "Exporte em 1080x1920 para publicação direta no Instagram." },
+    ],
+    steps: ["Escolha um template ou comece do zero.", "Aplique suas cores e fontes da marca.", "Insira textos, enquetes e figurinhas.", "Exporte em imagem ou vídeo 9:16."],
+    about: [["Formato", "Editor Mobile First"], ["Proporção", "9:16 (1080x1920)"], ["Exportação", "PNG, JPG e Vídeo MP4/WebM"]],
+    dataNote: "Seus kits de marca e templates ficam salvos no navegador para acesso contínuo.",
+    category: "Social Media",
+  },
+});
+
 export const MONTAGEM_APP_ID = 10;
 export const GABINETE_APP_ID = 11;
 export const CREATIVE_OS_APP_ID = 11;
@@ -332,7 +358,154 @@ export const GABINETE_APP = tool(GABINETE_APP_ID, "Gabinete", {
   },
 });
 
+export const LOGOMOTION_APP_ID = 15;
+
+export const LOGOMOTION_APP = tool(LOGOMOTION_APP_ID, "Logo Motion", {
+  slug: "logomotion",
+  available: false,
+  stage: "beta",
+  launchPath: `/library/app/${LOGOMOTION_APP_ID}/open`,
+  publicPage: "/tools/logomotion",
+  description: "Crie vídeos verticais virais para a sua marca com Logo Match Cut e animações Pulse 3D sincadas no beat, sem After Effects.",
+  assets: art("/tools/logomotion/art"),
+  store: {
+    tagline: "Logo Match Cut e Pulse 3D com cortes sincados no beat em 1 clique.",
+    eyebrow: "MOTION DESIGN / BRANDING / LAB CARAMELO",
+    headline: "Do logo estático\nao corte viral.",
+    features: [
+      { title: "Logo Match Cut (Showcase)", text: "28 cortes dinâmicos entre mockups realistas (rock, vidro, tote bag, cartões, celular), grid de construção e contrastes." },
+      { title: "Pulse 3D Beat-Sync", text: "Extrusão tridimensional, zooms cinemáticos e pulsos reativos ao ritmo da música." },
+      { title: "Timeline Inteligente & Detecção de Batida", text: "Detecção automática de picos e transições sincronizadas ao áudio com Web Audio API." },
+      { title: "Render & Exportação 9:16", text: "Download direto em MP4/WebM a 1080x1920 pronto para Reels, TikTok e Product Hunt." },
+    ],
+    steps: [
+      "Faça upload do seu logo em PNG ou SVG com remoção automática de fundo.",
+      "Escolha o estúdio: Match Cut ou Pulse 3D e personalize as cores da sua marca.",
+      "Selecione uma trilha ou envie seu áudio para sincronizar no beat.",
+      "Pré-visualize na timeline e baixe o vídeo vertical pronto para publicar."
+    ],
+    about: [
+      ["Formato", "Estúdio de Motion Design 9:16"],
+      ["Estúdios", "Match Cut & Pulse 3D"],
+      ["Resolução", "1080 x 1920 (Vertical)"],
+      ["Exportação", "Vídeo MP4 / WebM"],
+      ["Áudio", "Trilhas sincadas & upload próprio"],
+    ],
+    dataNote: "Seus logos, projetos e preferências ficam salvos no seu navegador para uso contínuo no LAB.",
+    category: "Motion Design",
+  },
+});
+
 export const CREATIVE_OS_APP = GABINETE_APP;
+
+export const CAP_APP_ID = 16;
+export const VOICESTUDIO_APP_ID = 17;
+
+export const VOICESTUDIO_APP = tool(VOICESTUDIO_APP_ID, "Voice Studio", {
+  slug: "voicestudio",
+  available: false,
+  stage: "beta",
+  launchPath: `/library/app/${VOICESTUDIO_APP_ID}/open`,
+  publicPage: "/tools/voicestudio",
+  description: "Estúdio de voz, clonagem vocal, síntese TTS autoral, dublagem multilíngue e ditado inteligente com IA no ecossistema LAB.",
+  assets: art("/tools/voicestudio/art"),
+  store: {
+    tagline: "Clonagem de voz, locução cinematográfica e dublagem com IA.",
+    eyebrow: "ÁUDIO & VOZ COM IA / SÍNTESE VOCAL / LAB CARAMELO",
+    headline: "Do texto à voz autoral.\nSem sotaque de robô.",
+    features: [
+      { title: "Clonagem & Biometria Vocal", text: "Grave uma amostra ou envie um áudio e capture a impressão digital vocal com similaridade de até 99%." },
+      { title: "Locução com Múltiplos Personagens", text: "Escreva roteiros para vários locutores e insira pausas, ênfases e respirações com 1 clique." },
+      { title: "Dublagem & Sincronia de Vídeo", text: "Importe vídeos, transcreva o áudio original, traduza para mais de 600 idiomas e sincronize com ducking." },
+      { title: "Ditado Contínuo & Rack de Masterização", text: "Fale pensando em voz alta com transcrição em tempo real, filtro anti-clichê, EQ 3 bandas, de-esser e LUFS." },
+    ],
+    steps: [
+      "Abra o Voice Studio e selecione o estúdio de Locução, Clonagem ou Dublagem.",
+      "Grave sua amostra vocal ou digite seu roteiro com marcadores de intenção.",
+      "Ajuste os parâmetros de timbre, aplique os efeitos de estúdio e exporte em WAV ou MP3."
+    ],
+    about: [
+      ["Formato", "Estúdio de Voz & Síntese Vocal"],
+      ["Versão", "Beta Oficial LAB"],
+      ["Motores", "Web Audio, Local Engine, 646 Idiomas"],
+      ["Exportação", "WAV, MP3, WebM, SRT e TXT"],
+    ],
+    dataNote: "Seus clones de voz, amostras e projetos ficam salvos de forma privada no seu navegador via IndexedDB. Suporte opcional a servidores locais ou APIs.",
+    category: "Audiovisual",
+  },
+});
+
+export const CAP_APP = tool(CAP_APP_ID, "Cap", {
+  slug: "cap",
+  available: true,
+  stage: "beta",
+  launchPath: `/library/app/${CAP_APP_ID}/open`,
+  publicPage: "/tools/cap",
+  description: "Gravação cinemática de tela, câmera e zooms inteligentes no estilo Screen Studio e Loom, com molduras elegantes e exportação instantânea.",
+  assets: art("/tools/cap/art"),
+  store: {
+    tagline: "Do pitch rápido ao vídeo cinemático de produto em segundos.",
+    eyebrow: "AUDIOVISUAL / SCREEN STUDIO & LOOM / BETA",
+    headline: "Menos tela crua.\nMais cinema.",
+    features: [
+      { title: "Câmera & Tela em Alta Fidelidade", text: "Capture tela cheia, janela ou aba do navegador com bolha de webcam ajustável e áudio nítido com medidor em tempo real." },
+      { title: "Smart Zoom & Foco Automático", text: "Aproxime suavemente em pontos de interesse (1.3x a 2.5x) com curvas de animação cinemáticas estilo Screen Studio." },
+      { title: "Molduras Elegantes & Fundos", text: "Transforme qualquer gravação com cantos arredondados, sombras profundas, chrome estilo macOS e gradientes da paleta Caramelo." },
+      { title: "Edição Rápida & Compartilhamento", text: "Apare início e fim na timeline, exporte em MP4/WebM de alta taxa de quadros ou compartilhe links e embeds em 1 clique." },
+    ],
+    steps: [
+      "Abra o Cap e escolha a tela e a posição da sua câmera.",
+      "Inicie a gravação com contagem regressiva e faça sua apresentação.",
+      "No estúdio, escolha o fundo, ajuste os zooms cinemáticos e exporte ou compartilhe seu Take."
+    ],
+    about: [
+      ["Formato", "Gravador Cinemático de Tela & Loom"],
+      ["Versão", "Beta Oficial LAB"],
+      ["Zooms", "Keyframes cinemáticos suaves"],
+      ["Exportação", "MP4, WebM e Frames em PNG"],
+    ],
+    dataNote: "Seus Takes e gravações ficam salvos no navegador de forma privada em IndexedDB. Sem necessidade de servidores de terceiros ou assinaturas externas.",
+    category: "Audiovisual",
+  },
+});
+
+export const CADERNO_APP_ID = 18;
+
+export const CADERNO_APP = tool(CADERNO_APP_ID, "Caderno", {
+  slug: "caderno",
+  available: false,
+  stage: "beta",
+  launchPath: `/library/app/${CADERNO_APP_ID}/open`,
+  publicPage: "/tools/caderno",
+  description: "Workspace em blocos e bases de dados inspirado no AppFlowy: segundo cérebro, comandos rápidos (/), tabelas relacionais, quadros Kanban e templates com o DNA Caramelo.",
+  assets: art("/tools/caderno/art"),
+  store: {
+    tagline: "Documentos em blocos, bases de dados e segundo cérebro no LAB.",
+    eyebrow: "NOTION & APPFLOWY OPEN WORKSPACE / SEGUNDO CÉREBRO",
+    headline: "Do pensamento solto\nao sistema estruturado.",
+    features: [
+      { title: "Editor em Blocos & Slash Commands (/)", text: "Escreva com fluidez: títulos de impacto, to-dos com checkbox, callouts temáticos, blocos de código com cópia, citações e toggles retráteis." },
+      { title: "Bases de Dados Multi-View", text: "Organize projetos e ideias em Tabela (Grid), Quadro (Kanban) ou Galeria, com propriedades de status, prioridade, prazos e tags." },
+      { title: "Hierarquia Infinita de Páginas", text: "Árvore de documentos aninhados, favoritos rápidos, capas personalizadas, ícones e busca global instantânea com Ctrl+K." },
+      { title: "Templates Canônicos do LAB", text: "Comece em segundos com o Segundo Cérebro do Head, Dossiê de Conteúdo (Método HEAD), Wiki de Marca e Sprint de Projetos." },
+    ],
+    steps: [
+      "Adquira o Caderno e acesse seu workspace privativo pelo LAB.",
+      "Crie uma nova página ou comece por um dos templates canônicos do Caramelo.",
+      "Escreva usando comandos de barra (/), monte bases relacionais e organize seu conhecimento.",
+      "Exporte em Markdown ou JSON a qualquer momento: controle total sobre seus dados."
+    ],
+    about: [
+      ["Formato", "Workspace em Blocos & Bases de Dados"],
+      ["Inspiração", "AppFlowy (Open Source Notion Alternative)"],
+      ["Visualizações", "Documento, Tabela Grid, Quadro Kanban, Galeria"],
+      ["Exportação", "Markdown (.md), JSON e Impressão"],
+      ["Privacidade", "Local-first com persistência offline"],
+    ],
+    dataNote: "Seus cadernos, páginas, bases de dados e preferências ficam gravados no seu navegador com persistência offline e sincronização na sua conta do LAB.",
+    category: "Produtividade",
+  },
+});
 
 export const TOOL_CATALOG: readonly LibraryApp[] = [
   PROMPT_LIBRARY_APP,
@@ -346,6 +519,11 @@ export const TOOL_CATALOG: readonly LibraryApp[] = [
   KANBAN_APP,
   PRANCHETA_APP,
   AUTOMATION_APP,
+  STORIES_APP,
+  LOGOMOTION_APP,
+  CAP_APP,
+  VOICESTUDIO_APP,
+  CADERNO_APP,
 ];
 
 export interface DynamicToolMeta {

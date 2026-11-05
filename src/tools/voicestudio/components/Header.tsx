@@ -1,0 +1,128 @@
+import type { StudioTab, EngineConfig } from "../types";
+
+interface HeaderProps {
+  activeTab: StudioTab;
+  onTabChange: (tab: StudioTab) => void;
+  engineConfig: EngineConfig;
+  onOpenEngineSettings: () => void;
+  onToggleTakesDrawer: () => void;
+  takesCount: number;
+}
+
+const TABS: { id: StudioTab; label: string; icon: string; badge?: string }[] = [
+  { id: "tts", label: "Locução & TTS", icon: "🎙️" },
+  { id: "cloning", label: "Clonagem Vocal", icon: "🧬" },
+  { id: "designer", label: "Design de Voz", icon: "🎛️" },
+  { id: "dubbing", label: "Dublagem de Vídeo", icon: "🎬", badge: "646 langs" },
+  { id: "dictation", label: "Ditado & Copy", icon: "⚡" },
+  { id: "batch", label: "Narrador em Lote", icon: "📚" },
+  { id: "fx", label: "Rack FX & Master", icon: "🎚️" },
+];
+
+export function Header({
+  activeTab,
+  onTabChange,
+  engineConfig,
+  onOpenEngineSettings,
+  onToggleTakesDrawer,
+  takesCount,
+}: HeaderProps) {
+  const getEngineBadge = () => {
+    switch (engineConfig.activeEngine) {
+      case "local_server":
+        return {
+          label: "Local Server",
+          status: engineConfig.localServerStatus === "connected" ? "connected" : "idle",
+          icon: "💻",
+        };
+      case "elevenlabs":
+        return {
+          label: "ElevenLabs API",
+          status: engineConfig.elevenLabsApiKey ? "connected" : "idle",
+          icon: "⚡",
+        };
+      case "openai":
+        return {
+          label: "OpenAI TTS",
+          status: engineConfig.openAiApiKey ? "connected" : "idle",
+          icon: "🧠",
+        };
+      case "procedural":
+        return {
+          label: "Web Audio Procedural",
+          status: "connected",
+          icon: "🎛️",
+        };
+      default:
+        return {
+          label: "Web Speech Nativo",
+          status: "connected",
+          icon: "🔊",
+        };
+    }
+  };
+
+  const engineInfo = getEngineBadge();
+
+  return (
+    <header className="vs-header">
+      <div className="vs-header__brand">
+        <div className="vs-header__logo">
+          <div className="vs-header__icon-pill">
+            <span className="vs-header__icon">🎙️</span>
+          </div>
+          <div>
+            <div className="vs-header__title-row">
+              <span className="vs-header__name">VOICE STUDIO</span>
+              <span className="vs-header__tag">LAB / 17</span>
+            </div>
+            <p className="vs-header__tagline">Locução, clonagem vocal & dublagem com IA</p>
+          </div>
+        </div>
+
+        <div className="vs-header__controls">
+          <button
+            type="button"
+            className={`vs-engine-pill vs-engine-pill--${engineInfo.status}`}
+            onClick={onOpenEngineSettings}
+            title="Configurar motor de síntese, servidor local ou chaves de API"
+          >
+            <span className="vs-engine-pill__dot" />
+            <span className="vs-engine-pill__icon">{engineInfo.icon}</span>
+            <span className="vs-engine-pill__label">{engineInfo.label}</span>
+          </button>
+
+          <button
+            type="button"
+            className="vs-takes-trigger"
+            onClick={onToggleTakesDrawer}
+            title="Ver histórico de áudios e gravações"
+          >
+            <span>🎧 Takes</span>
+            {takesCount > 0 && <span className="vs-takes-count">{takesCount}</span>}
+          </button>
+        </div>
+      </div>
+
+      <nav className="vs-nav" aria-label="Abas do Voice Studio">
+        <div className="vs-nav__scroll">
+          {TABS.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                className={`vs-tab-btn ${isActive ? "vs-tab-btn--active" : ""}`}
+                onClick={() => onTabChange(tab.id)}
+              >
+                <span className="vs-tab-btn__icon">{tab.icon}</span>
+                <span className="vs-tab-btn__label">{tab.label}</span>
+                {tab.badge && <span className="vs-tab-btn__badge">{tab.badge}</span>}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+    </header>
+  );
+}

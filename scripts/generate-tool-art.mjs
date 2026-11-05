@@ -19,9 +19,73 @@ const tools = [
   { slug: 'claquete', name: 'Claquete', number: '06', accent: '#FFD52A', category: 'CINEMA / VÍDEO & IA', lines: ['Do roteiro', 'ao corte final.'] },
   { slug: 'comunidade', name: 'Comunidade', number: '07', accent: '#7657FF', category: 'COMUNICAÇÃO / LAB', lines: ['Voz, canais', 'e conexões.'] },
   { slug: 'creative-os', name: 'Creative OS', number: '11', accent: '#FF701A', category: 'OPERAÇÕES & ESTRATÉGIA', lines: ['Menos ferramenta.', 'Mais sistema.'] },
+  { slug: 'cap', name: 'Cap', number: '16', accent: '#FF701A', category: 'AUDIOVISUAL / SCREEN & LOOM', lines: ['Menos tela crua.', 'Mais cinema.'] },
+  { slug: 'voicestudio', name: 'Voice Studio', number: '17', accent: '#FF701A', category: 'ÁUDIO / LOCUÇÃO & IA', lines: ['Do texto à voz autoral.', 'Sem sotaque de robô.'] },
+  { slug: 'caderno', name: 'Caderno', number: '18', accent: '#FF701A', category: 'SEGUNDO CÉREBRO & BASES', lines: ['Do pensamento solto', 'ao sistema estruturado.'] },
 ];
 
 const motif = (slug, color) => {
+  if (slug === 'voicestudio') {
+    return `<g transform="translate(10, 20)">
+      <rect x="30" y="30" width="380" height="240" rx="14" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="3"/>
+      <rect x="55" y="50" width="85" height="22" rx="11" fill="#FF3D8D" fill-opacity=".2"/>
+      <circle cx="68" cy="61" r="5" fill="#FF3D8D"/>
+      <text x="80" y="65" fill="#FFF4E8" font-size="10" font-weight="900" letter-spacing="1">REC ON</text>
+      <rect x="260" y="50" width="130" height="22" rx="6" fill="#101014" stroke="${color}" stroke-opacity=".5" stroke-width="1.5"/>
+      <text x="325" y="65" fill="${color}" font-size="10" font-weight="800" text-anchor="middle">646 IDIOMAS &bull; IA</text>
+      <!-- Microfone Central de Estdio -->
+      <g transform="translate(85, 90)">
+        <rect x="0" y="0" width="48" height="84" rx="24" fill="#101014" stroke="${color}" stroke-width="3.5"/>
+        <line x1="10" y1="24" x2="38" y2="24" stroke="#FFF4E8" stroke-opacity=".4" stroke-width="2"/>
+        <line x1="8" y1="36" x2="40" y2="36" stroke="#FFF4E8" stroke-opacity=".4" stroke-width="2"/>
+        <line x1="10" y1="48" x2="38" y2="48" stroke="#FFF4E8" stroke-opacity=".4" stroke-width="2"/>
+        <path d="M-10 40 C-10 74 58 74 58 40" fill="none" stroke="#FFF4E8" stroke-width="3" stroke-linecap="round"/>
+        <line x1="24" y1="74" x2="24" y2="105" stroke="#FFF4E8" stroke-width="4"/>
+        <line x1="4" y1="105" x2="44" y2="105" stroke="#FFF4E8" stroke-width="4" stroke-linecap="round"/>
+      </g>
+      <!-- Barras de Espectro Vocal e Equalizao -->
+      <g transform="translate(180, 105)">
+        <rect x="0" y="40" width="8" height="40" rx="4" fill="${color}" fill-opacity=".7"/>
+        <rect x="14" y="20" width="8" height="60" rx="4" fill="${color}"/>
+        <rect x="28" y="5" width="8" height="75" rx="4" fill="#25BFFF"/>
+        <rect x="42" y="25" width="8" height="55" rx="4" fill="#25BFFF"/>
+        <rect x="56" y="10" width="8" height="70" rx="4" fill="#FFD52A"/>
+        <rect x="70" y="35" width="8" height="45" rx="4" fill="${color}"/>
+        <rect x="84" y="18" width="8" height="62" rx="4" fill="${color}"/>
+        <rect x="98" y="45" width="8" height="35" rx="4" fill="#25BFFF"/>
+        <rect x="112" y="28" width="8" height="52" rx="4" fill="${color}"/>
+        <rect x="126" y="50" width="8" height="30" rx="4" fill="#FFD52A"/>
+        <rect x="140" y="38" width="8" height="42" rx="4" fill="${color}"/>
+        <rect x="154" y="58" width="8" height="22" rx="4" fill="#FFF4E8" fill-opacity=".4"/>
+      </g>
+      <!-- Ondas Sonoras Radiais -->
+      <path d="M145 110 A 30 30 0 0 1 145 154" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-opacity=".7"/>
+      <path d="M155 100 A 45 45 0 0 1 155 164" fill="none" stroke="#25BFFF" stroke-width="2" stroke-linecap="round" stroke-opacity=".5"/>
+      <rect x="180" y="195" width="200" height="18" rx="6" fill="#101014" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="1.5"/>
+      <rect x="180" y="195" width="138" height="18" rx="6" fill="${color}" fill-opacity=".3"/>
+      <text x="280" y="208" fill="#FFF4E8" font-size="9" font-weight="800" text-anchor="middle">VOICE CLONE &bull; 99.4% SIMILARIDADE</text>
+    </g>`;
+  }
+  if (slug === 'cap') {
+    return `<g transform="translate(10, 20)">
+      <rect x="30" y="30" width="380" height="240" rx="14" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="3"/>
+      <circle cx="52" cy="50" r="5" fill="#FF3D8D"/>
+      <circle cx="68" cy="50" r="5" fill="#FFD52A"/>
+      <circle cx="84" cy="50" r="5" fill="#25BFFF"/>
+      <rect x="106" y="44" width="130" height="12" rx="6" fill="#FFF4E8" fill-opacity=".12"/>
+      <rect x="45" y="70" width="350" height="185" rx="8" fill="#101014"/>
+      <circle cx="205" cy="145" r="38" fill="none" stroke="${color}" stroke-width="2.5" stroke-dasharray="6 4"/>
+      <circle cx="205" cy="145" r="5" fill="${color}"/>
+      <rect x="175" y="192" width="60" height="18" rx="6" fill="${color}"/>
+      <text x="205" y="205" fill="#101014" font-size="10" font-weight="900" text-anchor="middle">ZOOM 2X</text>
+      <circle cx="335" cy="205" r="30" fill="#18181D" stroke="${color}" stroke-width="3.5"/>
+      <circle cx="335" cy="198" r="11" fill="#FFF4E8" fill-opacity=".85"/>
+      <path d="M318 224c0-9 7-14 17-14s17 5 17 14" fill="#FFF4E8" fill-opacity=".85"/>
+      <rect x="55" y="80" width="68" height="20" rx="10" fill="#FF3D8D" fill-opacity=".2"/>
+      <circle cx="66" cy="90" r="4" fill="#FF3D8D"/>
+      <text x="91" y="94" fill="#FFF4E8" font-size="9" font-weight="900" text-anchor="middle">REC 4K</text>
+    </g>`;
+  }
   if (slug === 'creative-os') {
     return `<g transform="translate(10, 15)">
       <rect x="25" y="30" width="390" height="250" rx="16" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="3"/>

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" fill="none">
+  <rect width="600" height="900" fill="#101014"/>
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FF701A" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#7657FF" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#101014" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#glow)"/>
+  
+  <!-- Motion Grid Lines -->
+  <g opacity="0.15" stroke="#FFF4E8" stroke-width="1">
+    <line x1="60" y1="0" x2="60" y2="900"/>
+    <line x1="180" y1="0" x2="180" y2="900"/>
+    <line x1="300" y1="0" x2="300" y2="900"/>
+    <line x1="420" y1="0" x2="420" y2="900"/>
+    <line x1="540" y1="0" x2="540" y2="900"/>
+    <line x1="0" y1="150" x2="600" y2="150"/>
+    <line x1="0" y1="300" x2="600" y2="300"/>
+    <line x1="0" y1="450" x2="600" y2="450"/>
+    <line x1="0" y1="600" x2="600" y2="600"/>
+    <line x1="0" y1="750" x2="600" y2="750"/>
+  </g>
+
+  <!-- Central Graphic: Kinetic Cut Stack -->
+  <g transform="translate(150, 220)">
+    <!-- Layer 3 -->
+    <rect x="50" y="40" width="220" height="280" rx="20" fill="#25BFFF" opacity="0.3" transform="rotate(-8 160 180)"/>
+    <!-- Layer 2 -->
+    <rect x="40" y="20" width="220" height="280" rx="20" fill="#FF3D8D" opacity="0.4" transform="rotate(6 150 160)"/>
+    <!-- Layer 1 -->
+    <rect x="40" y="10" width="220" height="280" rx="20" fill="#181820" stroke="#FF701A" stroke-width="3"/>
+    
+    <!-- Cut Icon -->
+    <path d="M110 110L210 170L110 230V110Z" fill="#FF701A"/>
+    <circle cx="210" cy="170" r="14" fill="#FFF4E8"/>
+  </g>
+
+  <!-- Typography -->
+  <text x="300" y="620" text-anchor="middle" fill="#FFF4E8" font-family="system-ui, -apple-system, sans-serif" font-size="44" font-weight="900" letter-spacing="-1">LOGO MOTION</text>
+  <text x="300" y="660" text-anchor="middle" fill="#FF701A" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700" letter-spacing="4">MATCH CUT &amp; PULSE 3D</text>
+  <text x="300" y="705" text-anchor="middle" fill="#FFF4E8" opacity="0.6" font-family="system-ui, -apple-system, sans-serif" font-size="15">Vídeos verticais de marca em 1 clique</text>
+
+  <!-- Bottom Badge -->
+  <rect x="210" y="760" width="180" height="38" rx="19" fill="#FF701A"/>
+  <text x="300" y="784" text-anchor="middle" fill="#101014" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="800" letter-spacing="1">LAB CARAMELO</text>
+</svg>

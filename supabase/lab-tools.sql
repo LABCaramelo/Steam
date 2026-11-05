@@ -82,7 +82,9 @@ insert into public.lab_tools (slug, appid, name, available) values
   ('claquete', 6, 'Claquete', false),
   ('comunidade', 7, 'Comunidade', false),
   ('gravador', 9, 'No Ar', true),
-  ('montagem', 10, 'Montagem', true)
+  ('montagem', 10, 'Montagem', true),
+  ('caderno', 18, 'Caderno', false),
+  ('voicestudio', 17, 'Voice Studio', false)
 on conflict (slug) do update set appid = excluded.appid, name = excluded.name, available = excluded.available;
 
 create table if not exists public.user_tools (
