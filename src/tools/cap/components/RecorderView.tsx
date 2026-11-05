@@ -66,6 +66,9 @@ export function RecorderView({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<BlobPart[]>([]);
   const timerIntervalRef = useRef<any>(null);
+  const recordingStartTimeRef = useRef<number>(0);
+  const pausedAccumulatorRef = useRef<number>(0);
+  const pauseStartTimeRef = useRef<number>(0);
 
   // Screen video native aspect ratio
   const [streamAspectRatio, setStreamAspectRatio] = useState<number | null>(null);
@@ -305,7 +308,14 @@ export function RecorderView({
     recorder.onstop = () => {
       micStream?.getTracks().forEach((t) => t.stop());
 
-      const finalDuration = Math.max(1, recordedSecondsRef.current);
+      let totalElapsed = 0;
+      if (recordingStartTimeRef.current > 0) {
+        const rawElapsed = Date.now() - recordingStartTimeRef.current - pausedAccumulatorRef.current;
+        totalElapsed = Math.max(1, Math.round((rawElapsed / 1000) * 10) / 10);
+      } else {
+        totalElapsed = Math.max(1, recordedSecondsRef.current);
+      }
+      const finalDuration = totalElapsed;
       const blob = new Blob(recordedChunksRef.current, { type: "video/webm" });
       const videoUrl = URL.createObjectURL(blob);
 
@@ -339,6 +349,10 @@ export function RecorderView({
       onTakeFinished(newTake);
     };
 
+    recordingStartTimeRef.current = Date.now();
+    pausedAccumulatorRef.current = 0;
+    pauseStartTimeRef.current = 0;
+
     recorder.start(1000);
     setIsRecording(true);
     setIsPaused(false);
@@ -352,6 +366,10 @@ export function RecorderView({
   const handlePauseResume = () => {
     if (!mediaRecorderRef.current) return;
     if (isPaused) {
+      if (pauseStartTimeRef.current > 0) {
+        pausedAccumulatorRef.current += Date.now() - pauseStartTimeRef.current;
+        pauseStartTimeRef.current = 0;
+      }
       mediaRecorderRef.current.resume();
       setIsPaused(false);
       timerIntervalRef.current = setInterval(() => {
@@ -359,6 +377,7 @@ export function RecorderView({
         setRecordedSeconds(recordedSecondsRef.current);
       }, 1000);
     } else {
+      pauseStartTimeRef.current = Date.now();
       mediaRecorderRef.current.pause();
       setIsPaused(true);
       clearInterval(timerIntervalRef.current);

@@ -11,6 +11,9 @@ interface VideoStageProps {
   onTimeUpdate: (time: number) => void;
   onLoadedMetadata: () => void;
   onCanvasClick?: (xPercent: number, yPercent: number) => void;
+  onPlay?: () => void;
+  onPause?: () => void;
+  onEnded?: () => void;
 }
 
 export function VideoStage({
@@ -22,6 +25,9 @@ export function VideoStage({
   onTimeUpdate,
   onLoadedMetadata,
   onCanvasClick,
+  onPlay,
+  onPause,
+  onEnded,
 }: VideoStageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState<{ width: number; height: number }>({
@@ -218,6 +224,9 @@ export function VideoStage({
               }}
               onTimeUpdate={(e) => onTimeUpdate(e.currentTarget.currentTime)}
               onLoadedMetadata={handleLoadedMetadataInternal}
+              onPlay={onPlay}
+              onPause={onPause}
+              onEnded={onEnded}
             />
 
             {/* Smart Zoom indicator badge when zoomed */}

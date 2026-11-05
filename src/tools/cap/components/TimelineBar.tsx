@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import { Play, Pause, ZoomIn } from "lucide-react";
 import type { ZoomKeyframe } from "../types";
 
@@ -20,8 +21,13 @@ export function TimelineBar({
   onSeek,
   onAddZoom,
 }: TimelineBarProps) {
+  const [isScrubbing, setIsScrubbing] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  // Safe formatting that never produces Infinity:NaN
   const formatTime = (sec: number) => {
-    const s = Math.max(0, Math.floor(sec));
+    if (!Number.isFinite(sec) || isNaN(sec) || sec < 0) return "00:00";
+    const s = Math.floor(sec);
     const m = Math.floor(s / 60)
       .toString()
       .padStart(2, "0");
@@ -29,14 +35,46 @@ export function TimelineBar({
     return `${m}:${rem}`;
   };
 
-  const handleTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    onSeek(percent * duration);
+  // Safe duration guaranteed to be a finite, positive number
+  const safeDuration =
+    Number.isFinite(duration) && duration > 0 && duration !== Infinity ? duration : 10;
+  const safeCurrentTime =
+    Number.isFinite(currentTime) && currentTime >= 0 ? Math.min(safeDuration, currentTime) : 0;
+  const playheadPercent = Math.max(0, Math.min(100, (safeCurrentTime / safeDuration) * 100));
+
+  // Scrubbing logic
+  const seekFromClientX = (clientX: number) => {
+    if (!trackRef.current) return;
+    const rect = trackRef.current.getBoundingClientRect();
+    if (rect.width <= 0) return;
+    const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    onSeek(ratio * safeDuration);
   };
 
-  const safeDuration = duration > 0 ? duration : 1;
-  const playheadPercent = (currentTime / safeDuration) * 100;
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsScrubbing(true);
+    seekFromClientX(e.clientX);
+  };
+
+  useEffect(() => {
+    if (!isScrubbing) return;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      seekFromClientX(e.clientX);
+    };
+
+    const handlePointerUp = () => {
+      setIsScrubbing(false);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+    };
+  }, [isScrubbing, safeDuration]);
 
   return (
     <div className="cap-timeline-bar">
@@ -52,9 +90,9 @@ export function TimelineBar({
           </button>
 
           <div className="cap-time-display">
-            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(safeCurrentTime)}</span>
             <span style={{ opacity: 0.4, margin: "0 4px" }}>/</span>
-            <span style={{ opacity: 0.6 }}>{formatTime(duration)}</span>
+            <span style={{ opacity: 0.6 }}>{formatTime(safeDuration)}</span>
           </div>
         </div>
 
@@ -71,8 +109,12 @@ export function TimelineBar({
         </div>
       </div>
 
-      {/* Interactive Timeline Track */}
-      <div className="cap-timeline-track-wrap" onClick={handleTrackClick}>
+      {/* Interactive Timeline Track with Live Dragging / Scrubbing */}
+      <div
+        className="cap-timeline-track-wrap"
+        ref={trackRef}
+        onPointerDown={handlePointerDown}
+      >
         {/* Progress fill */}
         <div
           className="cap-timeline-progress-fill"
@@ -81,8 +123,8 @@ export function TimelineBar({
 
         {/* Zoom Keyframe Markers */}
         {keyframes.map((kf) => {
-          const leftPercent = (kf.time / safeDuration) * 100;
-          const widthPercent = (kf.duration / safeDuration) * 100;
+          const leftPercent = Math.max(0, Math.min(100, (kf.time / safeDuration) * 100));
+          const widthPercent = Math.max(2, Math.min(100 - leftPercent, (kf.duration / safeDuration) * 100));
 
           return (
             <div
@@ -90,7 +132,7 @@ export function TimelineBar({
               className="cap-timeline-zoom-marker"
               style={{
                 left: `${leftPercent}%`,
-                width: `${Math.max(2, widthPercent)}%`,
+                width: `${widthPercent}%`,
               }}
               title={`${kf.label || "Zoom"} (${kf.scale}x)`}
               onClick={(e) => {

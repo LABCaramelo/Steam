@@ -19,15 +19,61 @@ export function StudioView({ take, onUpdateTake }: StudioViewProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(take.duration || 10);
+  const [duration, setDuration] = useState(() => {
+    if (take.duration && Number.isFinite(take.duration) && take.duration > 0) {
+      return take.duration;
+    }
+    return 10;
+  });
 
   const dressing = take.dressing;
   const keyframes = take.zoomKeyframes || [];
 
-  // Sync duration when metadata loads
+  // Sync duration whenever take changes
+  useEffect(() => {
+    if (take.duration && Number.isFinite(take.duration) && take.duration > 0) {
+      setDuration(take.duration);
+    }
+  }, [take.id, take.duration]);
+
+  // Sync duration when metadata loads (and fix Chromium WebM Infinity duration)
   const handleLoadedMetadata = () => {
-    if (videoRef.current && videoRef.current.duration) {
-      setDuration(videoRef.current.duration);
+    const v = videoRef.current;
+    if (!v) return;
+
+    if (Number.isFinite(v.duration) && v.duration > 0 && v.duration !== Infinity) {
+      setDuration(v.duration);
+      if (!take.duration || Math.abs(take.duration - v.duration) > 0.5) {
+        onUpdateTake({ duration: v.duration });
+      }
+    } else if (v.duration === Infinity) {
+      // Fix Chromium WebM Infinity duration bug:
+      // Seeking to 1e101 forces Chromium to read the EBML clusters and calculate actual duration
+      const initialTime = v.currentTime;
+      const onSeeked = () => {
+        v.removeEventListener("seeked", onSeeked);
+        if (Number.isFinite(v.duration) && v.duration > 0 && v.duration !== Infinity) {
+          setDuration(v.duration);
+          onUpdateTake({ duration: v.duration });
+        } else if (take.duration && Number.isFinite(take.duration) && take.duration > 0) {
+          setDuration(take.duration);
+        }
+        v.currentTime = Math.min(initialTime, (Number.isFinite(v.duration) ? v.duration : initialTime));
+      };
+
+      v.addEventListener("seeked", onSeeked);
+      v.currentTime = 1e101;
+    } else if (take.duration && Number.isFinite(take.duration) && take.duration > 0) {
+      setDuration(take.duration);
+    }
+  };
+
+  const handlePlay = () => setIsPlaying(true);
+  const handlePause = () => setIsPlaying(false);
+  const handleEnded = () => {
+    setIsPlaying(false);
+    if (videoRef.current) {
+      setCurrentTime(duration);
     }
   };
 
@@ -37,7 +83,12 @@ export function StudioView({ take, onUpdateTake }: StudioViewProps) {
       videoRef.current.pause();
       setIsPlaying(false);
     } else {
-      videoRef.current.play();
+      // If at or near the end, restart from beginning
+      if (currentTime >= duration - 0.1) {
+        videoRef.current.currentTime = 0;
+        setCurrentTime(0);
+      }
+      videoRef.current.play().catch((e) => console.warn("Video play error:", e));
       setIsPlaying(true);
     }
   };
@@ -52,12 +103,14 @@ export function StudioView({ take, onUpdateTake }: StudioViewProps) {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isPlaying]);
+  }, [isPlaying, currentTime, duration]);
 
   const handleSeek = (time: number) => {
+    if (!Number.isFinite(time) || isNaN(time)) return;
+    const clamped = Math.max(0, Math.min(duration, time));
     if (videoRef.current) {
-      videoRef.current.currentTime = time;
-      setCurrentTime(time);
+      videoRef.current.currentTime = clamped;
+      setCurrentTime(clamped);
     }
   };
 
@@ -66,10 +119,12 @@ export function StudioView({ take, onUpdateTake }: StudioViewProps) {
   };
 
   const handleAddZoomAtCurrentTime = () => {
+    const remainingTime = Math.max(0.5, duration - currentTime);
+    const zoomDuration = Math.min(3.0, remainingTime);
     const newKf: ZoomKeyframe = {
       id: `zoom-${Date.now()}`,
-      time: Math.max(0, currentTime - 0.2),
-      duration: 3.0,
+      time: Math.max(0, Math.min(duration - 0.5, currentTime - 0.2)),
+      duration: Math.max(0.8, zoomDuration),
       scale: 1.6,
       focusX: 0.5,
       focusY: 0.5,
@@ -112,6 +167,9 @@ export function StudioView({ take, onUpdateTake }: StudioViewProps) {
           onTimeUpdate={(t) => setCurrentTime(t)}
           onLoadedMetadata={handleLoadedMetadata}
           onCanvasClick={handleCanvasClick}
+          onPlay={handlePlay}
+          onPause={handlePause}
+          onEnded={handleEnded}
         />
 
         {/* Right Rail: Studio Styling Controls */}
