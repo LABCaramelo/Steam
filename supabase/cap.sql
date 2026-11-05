@@ -3,7 +3,7 @@
 -- Gravações, configurações e vídeos ficam no navegador (IndexedDB) de forma isolada e privada por conta.
 begin;
 insert into public.lab_tools (slug, appid, name, available)
-values ('cap', 16, 'Cap', true)
+values ('cap', 16, 'Cap', false)
 on conflict (slug) do update set appid=excluded.appid, name=excluded.name;
 
 create or replace function public.release_tool(p_slug text) returns jsonb

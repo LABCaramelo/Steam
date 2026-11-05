@@ -437,7 +437,7 @@ export const VOICESTUDIO_APP = tool(VOICESTUDIO_APP_ID, "Voice Studio", {
 
 export const CAP_APP = tool(CAP_APP_ID, "Cap", {
   slug: "cap",
-  available: true,
+  available: false,
   stage: "beta",
   launchPath: `/library/app/${CAP_APP_ID}/open`,
   publicPage: "/tools/cap",
