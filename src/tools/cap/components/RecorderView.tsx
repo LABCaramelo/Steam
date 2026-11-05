@@ -108,6 +108,14 @@ export function RecorderView({
     }
   }, [webcamStream, webcamSettings.enabled]);
 
+  // Clean up media tracks when unmounting to prevent camera / screen capture leaks
+  useEffect(() => {
+    return () => {
+      screenStream?.getTracks().forEach((t) => t.stop());
+      webcamStream?.getTracks().forEach((t) => t.stop());
+    };
+  }, [screenStream, webcamStream]);
+
   // Setup Web Audio Analyser for Mic VU meter
   useEffect(() => {
     let animId: number;
@@ -172,12 +180,19 @@ export function RecorderView({
         screenVideoRef.current.play().catch(() => {});
       }
 
-      stream.getVideoTracks()[0].onended = () => {
-        setScreenStream(null);
-        if (screenVideoRef.current) {
-          screenVideoRef.current.srcObject = null;
-        }
-      };
+      const videoTrack = stream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.onended = () => {
+          setScreenStream(null);
+          if (screenVideoRef.current) {
+            screenVideoRef.current.srcObject = null;
+          }
+          // If recording was active, conclude cleanly
+          if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+            handleStopRecording();
+          }
+        };
+      }
 
       return stream;
     } catch (err) {
@@ -307,6 +322,10 @@ export function RecorderView({
 
     recorder.onstop = () => {
       micStream?.getTracks().forEach((t) => t.stop());
+      activeScreenStream.getTracks().forEach((t) => t.stop());
+      webcamStream?.getTracks().forEach((t) => t.stop());
+      setScreenStream(null);
+      setWebcamStream(null);
 
       let totalElapsed = 0;
       if (recordingStartTimeRef.current > 0) {

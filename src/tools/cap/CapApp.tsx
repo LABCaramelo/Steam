@@ -20,12 +20,25 @@ export function CapApp() {
   const [showExportModal, setShowExportModal] = useState(false);
   const [isGeneratingDemo, setIsGeneratingDemo] = useState(false);
 
-  // Load saved takes from IndexedDB on startup
+  // Load saved takes from IndexedDB on startup (and support ?take=<id> query param)
   useEffect(() => {
     async function load() {
       try {
         const stored = await getAllTakes();
         setTakes(stored);
+
+        // Check if a specific take was requested in the URL
+        const params = new URLSearchParams(window.location.search);
+        const requestedId = params.get("take");
+        if (requestedId) {
+          const matched = stored.find((t) => t.id === requestedId);
+          if (matched) {
+            setActiveTake(matched);
+            setMode("studio");
+            return;
+          }
+        }
+
         if (stored.length > 0 && !activeTake) {
           setActiveTake(stored[0]);
         }
@@ -61,6 +74,10 @@ export function CapApp() {
 
   const handleDeleteTake = async (id: string) => {
     try {
+      const target = takes.find((t) => t.id === id);
+      if (target?.videoUrl && target.videoUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(target.videoUrl);
+      }
       await deleteTake(id);
       setTakes((prev) => prev.filter((t) => t.id !== id));
       if (activeTake?.id === id) {

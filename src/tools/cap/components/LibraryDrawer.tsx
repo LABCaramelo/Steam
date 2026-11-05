@@ -20,6 +20,7 @@ export function LibraryDrawer({
   onLoadDemo,
 }: LibraryDrawerProps) {
   const formatDuration = (sec: number) => {
+    if (!Number.isFinite(sec) || isNaN(sec) || sec < 0) return "0:00";
     const s = Math.round(sec);
     const m = Math.floor(s / 60);
     const rem = (s % 60).toString().padStart(2, "0");
@@ -27,9 +28,10 @@ export function LibraryDrawer({
   };
 
   const handleDownloadDirect = (take: TakeRecord) => {
-    if (!take.videoUrl) return;
+    const url = take.videoUrl || (take.blob ? URL.createObjectURL(take.blob) : null);
+    if (!url) return;
     const a = document.createElement("a");
-    a.href = take.videoUrl;
+    a.href = url;
     a.download = `${take.title.toLowerCase().replace(/[^a-z0-9]/g, "-")}.webm`;
     document.body.appendChild(a);
     a.click();

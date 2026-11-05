@@ -177,7 +177,8 @@ export async function renderExportedVideo(
   keyframes: ZoomKeyframe[],
   trimStart: number,
   trimEnd: number,
-  onProgress?: (progress: ExportProgress) => void
+  onProgress?: (progress: ExportProgress) => void,
+  format: "webm" | "mp4" = "webm"
 ): Promise<Blob> {
   const vRatio =
     videoElement.videoWidth && videoElement.videoHeight
@@ -221,7 +222,7 @@ export async function renderExportedVideo(
   canvas.height = canvasH;
   const ctx = canvas.getContext("2d")!;
 
-  const totalDuration = trimEnd - trimStart;
+  const totalDuration = Math.max(0.5, trimEnd - trimStart);
   const stream = canvas.captureStream(30);
 
   // Capture audio from video element if available
@@ -240,9 +241,14 @@ export async function renderExportedVideo(
     // If audio extraction is not supported/restricted, keep video stream
   }
 
-  const mimeType = MediaRecorder.isTypeSupported("video/mp4")
-    ? "video/mp4"
-    : "video/webm; codecs=vp9";
+  let mimeType = "video/webm; codecs=vp9";
+  if (format === "mp4" && MediaRecorder.isTypeSupported("video/mp4")) {
+    mimeType = "video/mp4";
+  } else if (MediaRecorder.isTypeSupported("video/webm; codecs=vp9")) {
+    mimeType = "video/webm; codecs=vp9";
+  } else if (MediaRecorder.isTypeSupported("video/webm")) {
+    mimeType = "video/webm";
+  }
 
   const recorder = new MediaRecorder(combinedStream, {
     mimeType,
@@ -255,10 +261,22 @@ export async function renderExportedVideo(
   };
 
   return new Promise((resolve, reject) => {
+    let checkInterval: any = null;
+    let watchdogTimeout: any = null;
+
+    const cleanup = () => {
+      if (checkInterval) clearInterval(checkInterval);
+      if (watchdogTimeout) clearTimeout(watchdogTimeout);
+    };
+
     recorder.onstop = () => {
+      cleanup();
       resolve(new Blob(chunks, { type: mimeType }));
     };
-    recorder.onerror = (err) => reject(err);
+    recorder.onerror = (err) => {
+      cleanup();
+      reject(err);
+    };
 
     videoElement.currentTime = trimStart;
     videoElement.pause();
@@ -284,14 +302,25 @@ export async function renderExportedVideo(
     const innerY = windowTopY + chromeH;
 
     recorder.start();
-    videoElement.play();
+    videoElement.play().catch((e) => console.warn("Export playback warning:", e));
 
-    const checkInterval = setInterval(() => {
+    // Watchdog: ensures render stops even if media stalls
+    watchdogTimeout = setTimeout(() => {
+      cleanup();
+      videoElement.pause();
+      if (recorder.state !== "inactive") {
+        recorder.stop();
+      }
+    }, (totalDuration * 2 + 10) * 1000);
+
+    checkInterval = setInterval(() => {
       const cur = videoElement.currentTime;
       if (cur >= trimEnd || videoElement.ended) {
-        clearInterval(checkInterval);
+        cleanup();
         videoElement.pause();
-        recorder.stop();
+        if (recorder.state !== "inactive") {
+          recorder.stop();
+        }
         return;
       }
 

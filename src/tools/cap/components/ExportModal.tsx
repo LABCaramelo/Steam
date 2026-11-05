@@ -25,8 +25,17 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
       video.muted = true;
       video.playsInline = true;
 
-      await new Promise((res) => {
-        video.onloadeddata = res;
+      await new Promise<void>((resolve, reject) => {
+        if (video.readyState >= 2) {
+          resolve();
+          return;
+        }
+        video.onloadeddata = () => resolve();
+        video.onerror = () => reject(new Error("Falha ao carregar o vídeo para renderização."));
+        setTimeout(() => {
+          if (video.readyState >= 1) resolve();
+          else reject(new Error("Tempo limite excedido ao carregar mídia."));
+        }, 10000);
       });
 
       const blob = await renderExportedVideo(
@@ -35,7 +44,8 @@ export function ExportModal({ take, onClose }: ExportModalProps) {
         take.zoomKeyframes || [],
         take.trimStart || 0,
         take.trimEnd || take.duration || 10,
-        (p) => setProgress(p)
+        (p) => setProgress(p),
+        format
       );
 
       const url = URL.createObjectURL(blob);
