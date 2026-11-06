@@ -71,7 +71,8 @@ test("formatNewPromptsMessage usa lista condensada quando há mais de 6 prompts"
   // No modo condensado não inclui link individual por item
   assert.doesNotMatch(msg, /prompt=prompt-1/);
   // Mas sempre inclui link geral da biblioteca no rodapé
-  assert.match(msg, /tools\/prompt-library\/index\.html/);
+  assert.match(msg, /library\/home/);
+  assert.doesNotMatch(msg, /\.html/);
 });
 
 test("formatNewPromptsMessage respeita baseUrl customizado", () => {
@@ -79,7 +80,9 @@ test("formatNewPromptsMessage respeita baseUrl customizado", () => {
     baseUrl: "https://staging.umcaracaramelo.com.br",
   });
 
-  assert.match(msg, /https:\/\/staging\.umcaracaramelo\.com\.br\/tools\/prompt-library\/index\.html\?prompt=offline-footer/);
+  assert.match(msg, /https:\/\/staging\.umcaracaramelo\.com\.br\/tools\/prompt-library\?prompt=offline-footer/);
+  assert.match(msg, /https:\/\/staging\.umcaracaramelo\.com\.br\/library\/home/);
+  assert.doesNotMatch(msg, /\.html/);
 });
 
 test("getUazapiNotificationConfig remove barras extras da URL", () => {
