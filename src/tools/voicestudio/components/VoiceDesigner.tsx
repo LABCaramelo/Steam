@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { VoicePreset, AudioTake } from "../types";
 import { synthesizeProceduralSpeech } from "../utils/audioEngine";
+import { Sliders, User, Play, Save } from "lucide-react";
 
 interface VoiceDesignerProps {
   onAddVoice: (voice: VoicePreset) => void;
@@ -82,7 +83,10 @@ export function VoiceDesigner({ onAddVoice, onAddTake }: VoiceDesignerProps) {
     <div className="vs-designer">
       <div className="vs-banner">
         <div className="vs-banner__text">
-          <h3>🎛️ Design de Voz Paramétrico (Voice Modeling)</h3>
+          <h3>
+            <Sliders size={16} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+            Design de Voz Paramétrico (Voice Modeling)
+          </h3>
           <p>
             Modele novas personalidades vocais a partir de variáveis acústicas e psicológicas.
             Sem necessidade de amostras prévias: defina timbre, arquétipo, formantes e cadência.
@@ -229,7 +233,7 @@ export function VoiceDesigner({ onAddVoice, onAddTake }: VoiceDesignerProps) {
           <div className="vs-preview-box">
             <div className="vs-archetype-card">
               <div className="vs-archetype-icon">
-                {gender === "masculino" ? "👨‍🔬" : gender === "feminino" ? "👩‍🔬" : "🧑‍🔬"}
+                <User size={18} strokeWidth={1.5} />
               </div>
               <div className="vs-archetype-meta">
                 <h5>{name || "Voz Paramétrica"}</h5>
@@ -252,7 +256,16 @@ export function VoiceDesigner({ onAddVoice, onAddTake }: VoiceDesignerProps) {
               disabled={isSynthesizing}
               onClick={handleTestVoice}
             >
-              <span>{isSynthesizing ? "Renderizando..." : "▶ Testar Voz Agora"}</span>
+              <span>
+                {isSynthesizing ? (
+                  "Renderizando..."
+                ) : (
+                  <>
+                    <Play size={13} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                    Testar Voz Agora
+                  </>
+                )}
+              </span>
             </button>
 
             <button
@@ -260,7 +273,10 @@ export function VoiceDesigner({ onAddVoice, onAddTake }: VoiceDesignerProps) {
               className="vs-btn vs-btn--primary"
               onClick={handleSaveToLibrary}
             >
-              <span>💾 Adicionar à Biblioteca de Vozes</span>
+              <span>
+                <Save size={14} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                Adicionar à Biblioteca de Vozes
+              </span>
             </button>
           </div>
         </div>

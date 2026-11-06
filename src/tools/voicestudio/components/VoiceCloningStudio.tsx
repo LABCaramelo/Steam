@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import type { VoicePreset, AudioTake } from "../types";
 import { getAudioContext, decodeAudioBlob, synthesizeProceduralSpeech } from "../utils/audioEngine";
 import { extractAcousticBiometrics } from "../utils/voiceCloning";
+import { Mic, Square, Folder, CheckCircle2, Dna, Volume2, Save, User, Play, Trash2 } from "lucide-react";
 
 interface VoiceCloningStudioProps {
   voices: VoicePreset[];
@@ -244,7 +245,10 @@ export function VoiceCloningStudio({
       {/* Top Banner */}
       <div className="vs-banner">
         <div className="vs-banner__text">
-          <h3>🧬 Clonagem & Biometria Vocal de Alta Fidelidade</h3>
+          <h3>
+            <Dna size={16} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+            Clonagem &amp; Biometria Vocal de Alta Fidelidade
+          </h3>
           <p>
             Capture a assinatura vocal com apenas 15 a 60 segundos de áudio. Nossa extração biométrica
             identifica tom fundamental, formantes F1/F2 e dinâmica acústica.
@@ -268,7 +272,10 @@ export function VoiceCloningStudio({
                   className="vs-btn vs-btn--danger vs-btn--pulse"
                   onClick={handleStopRecord}
                 >
-                  <span>⏹ Parar Gravação ({recordDuration}s)</span>
+                  <span>
+                    <Square size={13} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                    Parar Gravação ({recordDuration}s)
+                  </span>
                 </button>
               ) : (
                 <button
@@ -276,14 +283,20 @@ export function VoiceCloningStudio({
                   className="vs-btn vs-btn--primary"
                   onClick={handleStartRecord}
                 >
-                  <span>🎙️ Gravar do Microfone</span>
+                  <span>
+                    <Mic size={14} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                    Gravar do Microfone
+                  </span>
                 </button>
               )}
 
               <span className="vs-divider-text">ou envie um arquivo</span>
 
               <label className="vs-file-btn">
-                <span>📁 Upload de Áudio (WAV/MP3)</span>
+                <span>
+                  <Folder size={14} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                  Upload de Áudio (WAV/MP3)
+                </span>
                 <input
                   type="file"
                   accept="audio/*"
@@ -303,7 +316,10 @@ export function VoiceCloningStudio({
           {/* Biometrics results */}
           {analyzedProfile && (
             <div className="vs-biometrics-card">
-              <h5>Análise Biométrica Concluída ✓</h5>
+              <h5>
+                <CheckCircle2 size={14} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle", color: "rgb(var(--cm-accent))" }} />
+                Análise Biométrica Concluída
+              </h5>
               <div className="vs-biometrics-grid">
                 <div className="vs-bio-stat">
                   <span className="vs-bio-label">Frequência (F0)</span>
@@ -435,7 +451,16 @@ export function VoiceCloningStudio({
               disabled={!analyzedProfile || isTestingVoice}
               onClick={handleTestCloneVoice}
             >
-              <span>{isTestingVoice ? "Reproduzindo..." : "🔊 Testar Voz com IA"}</span>
+              <span>
+                {isTestingVoice ? (
+                  "Reproduzindo..."
+                ) : (
+                  <>
+                    <Volume2 size={14} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                    Testar Voz com IA
+                  </>
+                )}
+              </span>
             </button>
 
             <button
@@ -444,7 +469,10 @@ export function VoiceCloningStudio({
               disabled={!analyzedProfile || !cloneName.trim()}
               onClick={handleSaveClone}
             >
-              <span>💾 Salvar Voz na Minha Biblioteca</span>
+              <span>
+                <Save size={14} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                Salvar Voz na Minha Biblioteca
+              </span>
             </button>
           </div>
         </div>
@@ -464,7 +492,7 @@ export function VoiceCloningStudio({
                   className="vs-voice-card__avatar"
                   style={{ background: voice.avatarBg }}
                 >
-                  {voice.gender === "masculino" ? "👨" : "👩"}
+                  <User size={14} strokeWidth={1.5} />
                 </div>
                 <div className="vs-voice-card__identity">
                   <span className="vs-voice-card__name">{voice.name}</span>
@@ -502,7 +530,8 @@ export function VoiceCloningStudio({
                     new Audio(res.url).play();
                   }}
                 >
-                  ▶ Ouvir Demonstração
+                  <Play size={12} strokeWidth={1.5} style={{ marginRight: 5, verticalAlign: "middle" }} />
+                  Ouvir Demonstração
                 </button>
 
                 {voice.category !== "canonical" && (
@@ -512,7 +541,7 @@ export function VoiceCloningStudio({
                     title="Excluir este clone"
                     onClick={() => onDeleteVoice(voice.id)}
                   >
-                    🗑
+                    <Trash2 size={13} strokeWidth={1.5} />
                   </button>
                 )}
               </div>

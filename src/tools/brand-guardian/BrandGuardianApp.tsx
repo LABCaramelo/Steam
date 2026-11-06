@@ -55,6 +55,7 @@ import type {
   CompleteBrandData,
   ColorHarmonyType,
   BrandGuardFinding,
+  BrandAssetItem,
 } from "./types";
 import "./brand-guardian.css";
 
@@ -102,6 +103,31 @@ export function BrandGuardianApp() {
 
   // Motion Playground State
   const [motionPlaying, setMotionPlaying] = useState(false);
+
+  // Asset Upload State
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadingAsset, setIsUploadingAsset] = useState(false);
+  const [selectedAssetKind, setSelectedAssetKind] = useState<BrandAssetItem["kind"]>("logo");
+
+  const handleAssetFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !activeBrand) return;
+    setIsUploadingAsset(true);
+    try {
+      const newAsset = await brandGuardianRepo.uploadAsset(file, activeBrand.id, selectedAssetKind);
+      const updated = [...(brandData?.assets || []), newAsset];
+      setBrandData({
+        ...brandData!,
+        assets: updated,
+      });
+      showToast(`Ativo "${file.name}" carregado com sucesso!`, "success");
+    } catch (err: any) {
+      showToast(`Falha no upload do ativo: ${err?.message || "Erro desconhecido"}`, "error");
+    } finally {
+      setIsUploadingAsset(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   // Carrega Marcas Inicialmente
   useEffect(() => {
@@ -1191,17 +1217,77 @@ export function BrandGuardianApp() {
             <FolderKanban size={18} color="#FF701A" />
             Biblioteca de Ativos da Marca (Brand Assets)
           </div>
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <select
+              value={selectedAssetKind}
+              onChange={(e) => setSelectedAssetKind(e.target.value as any)}
+              style={{ padding: "6px 10px", fontSize: 12, background: "var(--bg-tertiary)", color: "var(--text-main)", border: "1px solid var(--border-subtle)", borderRadius: 6 }}
+            >
+              <option value="logo">Logotipo</option>
+              <option value="image">Imagem</option>
+              <option value="vector">Vetor / Ilustração</option>
+              <option value="font">Fonte</option>
+              <option value="pdf">Documento PDF</option>
+              <option value="icon">Ícone</option>
+            </select>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleAssetFileUpload}
+              style={{ display: "none" }}
+            />
+            <button
+              className="bg-btn bg-btn--primary"
+              disabled={isUploadingAsset}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload size={14} /> {isUploadingAsset ? "Enviando..." : "Enviar Ativo"}
+            </button>
+          </div>
         </div>
 
         <div className="bg-grid-3">
           {brandData!.assets.map((ast) => (
-            <div key={ast.id} className="bg-card" style={{ background: "var(--bg-tertiary)" }}>
-              <div style={{ fontWeight: 700, fontSize: 13 }}>{ast.name}</div>
-              <div style={{ fontSize: 11, color: "var(--text-dim)", margin: "4px 0" }}>{ast.mimeType} · {(ast.fileSize / 1024).toFixed(1)} KB</div>
-              <div style={{ marginTop: 10 }}>
-                <span style={{ fontSize: 10, background: "rgba(37, 191, 255, 0.2)", color: "#25BFFF", padding: "2px 6px", borderRadius: 4 }}>
-                  {ast.approvalStatus}
-                </span>
+            <div key={ast.id} className="bg-card" style={{ background: "var(--bg-tertiary)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div>
+                {ast.url && (ast.kind === "logo" || ast.kind === "image" || ast.kind === "vector") && (
+                  <div style={{ height: 100, background: "var(--bg-secondary)", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 10, overflow: "hidden" }}>
+                    <img src={ast.url} alt={ast.name} style={{ maxHeight: "80%", maxWidth: "80%", objectFit: "contain" }} onError={(e) => (e.currentTarget.style.display = "none")} />
+                  </div>
+                )}
+                <div style={{ fontWeight: 700, fontSize: 13, wordBreak: "break-all" }}>{ast.name}</div>
+                <div style={{ fontSize: 11, color: "var(--text-dim)", margin: "4px 0" }}>{ast.mimeType || ast.kind} · {(ast.fileSize / 1024).toFixed(1)} KB</div>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 6 }}>
+                  <span style={{ fontSize: 10, background: "rgba(37, 191, 255, 0.2)", color: "#25BFFF", padding: "2px 6px", borderRadius: 4 }}>
+                    {ast.approvalStatus}
+                  </span>
+                  <span style={{ fontSize: 10, background: "var(--bg-secondary)", color: "var(--text-dim)", padding: "2px 6px", borderRadius: 4 }}>
+                    {ast.kind}
+                  </span>
+                </div>
+              </div>
+              <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
+                <button
+                  className="bg-btn bg-btn--ghost"
+                  style={{ fontSize: 11, padding: "4px 8px", flex: 1 }}
+                  onClick={() => {
+                    navigator.clipboard.writeText(ast.url);
+                    showToast("URL copiada!", "success");
+                  }}
+                >
+                  <Copy size={12} /> Copiar URL
+                </button>
+                {ast.url && (
+                  <a
+                    href={ast.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="bg-btn bg-btn--ghost"
+                    style={{ fontSize: 11, padding: "4px 8px" }}
+                  >
+                    <ExternalLink size={12} />
+                  </a>
+                )}
               </div>
             </div>
           ))}
@@ -1235,29 +1321,228 @@ export function BrandGuardianApp() {
 
   function renderBrandbookSection() {
     return (
-      <div className="bg-card">
-        <div className="bg-card__header">
-          <div className="bg-card__title">
-            <FileText size={18} color="#FF701A" />
-            Brandbook Dinâmico Navegável
+      <div className="bg-card" style={{ background: "var(--bg-secondary)" }}>
+        <div className="bg-card__header" style={{ borderBottom: "1px solid var(--border-subtle)", paddingBottom: 16 }}>
+          <div>
+            <div className="bg-card__title" style={{ fontSize: 18 }}>
+              <FileText size={20} color="#FF701A" />
+              Brandbook Oficial — 18 Seções Canônicas
+            </div>
+            <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>
+              Manual Vivo de Identidade e Design System de {activeBrand?.name}
+            </div>
           </div>
           <button
-            className="bg-btn bg-btn--ghost"
+            className="bg-btn bg-btn--primary"
             onClick={() => {
               window.print();
             }}
           >
-            <Download size={14} /> Imprimir / Exportar PDF
+            <Download size={14} /> Imprimir / Exportar Brandbook PDF
           </button>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {brandData!.brandbookSections.map((sec) => (
-            <div key={sec.id} style={{ borderBottom: "1px solid var(--border-subtle)", paddingBottom: 16 }}>
-              <h3 style={{ fontSize: 16, fontWeight: 800, color: "#FF701A" }}>{sec.title}</h3>
-              <p style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 4 }}>{sec.content}</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 32, marginTop: 24 }}>
+          {/* Seção 01: Apresentação da Marca */}
+          <div className="bg-card" style={{ background: "var(--bg-tertiary)" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, color: "#FF701A" }}>01. Apresentação da Marca & Propósito</h3>
+            <p style={{ fontSize: 13, color: "var(--text-main)", marginTop: 8 }}>
+              {brandData!.foundations.tradeName} — {brandData!.foundations.slogan}
+            </p>
+            <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 6, lineHeight: 1.6 }}>
+              {brandData!.foundations.mission || brandData!.foundations.positioning}
+            </p>
+          </div>
+
+          {/* Seção 02: Conceito e Posicionamento */}
+          <div className="bg-card" style={{ background: "var(--bg-tertiary)" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, color: "#FF701A" }}>02. Conceito e Posicionamento Estratégico</h3>
+            <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 6, lineHeight: 1.6 }}>
+              {brandData!.foundations.positioning}
+            </p>
+            <div style={{ marginTop: 10, fontSize: 12, color: "var(--text-dim)" }}>
+              <strong>Personas & Público:</strong> {brandData!.foundations.personas}
             </div>
-          ))}
+          </div>
+
+          {/* Seção 03: Personalidade e Tom de Voz */}
+          <div className="bg-card" style={{ background: "var(--bg-tertiary)" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, color: "#FF701A" }}>03. Personalidade e Tom de Voz</h3>
+            <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 6, lineHeight: 1.6 }}>
+              {brandData!.foundations.toneOfVoice}
+            </p>
+            {brandData!.foundations.wordsToAvoid && brandData!.foundations.wordsToAvoid.length > 0 && (
+              <div style={{ marginTop: 10 }}>
+                <span style={{ fontSize: 11, color: "#FF3D8D", fontWeight: 700 }}>Termos a Evitar (Anti-Clichê): </span>
+                {brandData!.foundations.wordsToAvoid.map((w, idx) => (
+                  <span key={idx} style={{ fontSize: 11, background: "rgba(255, 61, 141, 0.15)", color: "#FF3D8D", padding: "2px 6px", borderRadius: 4, marginRight: 6 }}>
+                    {w}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Seção 04: Logotipos e Variantes */}
+          <div className="bg-card" style={{ background: "var(--bg-tertiary)" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, color: "#FF701A" }}>04. Logotipos e Variantes Oficiais</h3>
+            <div className="bg-grid-2" style={{ marginTop: 12 }}>
+              {brandData!.logos.map((logo) => (
+                <div key={logo.id} style={{ background: "var(--bg-secondary)", padding: 12, borderRadius: 6 }}>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>{logo.label}</div>
+                  <div style={{ fontSize: 11, color: "var(--text-dim)", margin: "4px 0" }}>Tamanho mín: {logo.minSizePx}px · Zona de proteção: {Math.round(logo.safeZoneRatio * 100)}%</div>
+                  <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 6 }}>{logo.notes}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Seção 05 & 06: Área de Proteção e Regras de Uso */}
+          <div className="bg-card" style={{ background: "var(--bg-tertiary)" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, color: "#FF701A" }}>05 & 06. Área de Proteção, Escala e Regras de Uso</h3>
+            <div className="bg-grid-2" style={{ marginTop: 12 }}>
+              <div>
+                <strong style={{ fontSize: 12, color: "#25BFFF" }}>✓ Diretrizes Recomendadas (DO):</strong>
+                <ul style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 6, paddingLeft: 18 }}>
+                  {brandData!.logos[0]?.doRules?.map((r, i) => <li key={i}>{r}</li>) || <li>Manter contraste com o fundo</li>}
+                </ul>
+              </div>
+              <div>
+                <strong style={{ fontSize: 12, color: "#FF3D8D" }}>✕ Proibições Estritas (DON'T):</strong>
+                <ul style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 6, paddingLeft: 18 }}>
+                  {brandData!.logos[0]?.dontRules?.map((r, i) => <li key={i}>{r}</li>) || <li>Não distorcer proporções</li>}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Seção 07: Paleta de Cores */}
+          <div className="bg-card" style={{ background: "var(--bg-tertiary)" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, color: "#FF701A" }}>07. Paleta Cromática Oficial</h3>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12, marginTop: 12 }}>
+              {brandData!.colors.map((c) => (
+                <div key={c.id} style={{ background: "var(--bg-secondary)", borderRadius: 6, overflow: "hidden" }}>
+                  <div style={{ height: 60, background: c.hex }} />
+                  <div style={{ padding: 10 }}>
+                    <div style={{ fontWeight: 700, fontSize: 12 }}>{c.name}</div>
+                    <div style={{ fontSize: 11, fontFamily: "monospace", color: "#FF701A" }}>{c.hex}</div>
+                    <div style={{ fontSize: 10, color: "var(--text-dim)", marginTop: 4 }}>Papel: {c.role}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Seção 08: Tipografia */}
+          <div className="bg-card" style={{ background: "var(--bg-tertiary)" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, color: "#FF701A" }}>08. Sistema Tipográfico Oficial</h3>
+            <div className="bg-grid-2" style={{ marginTop: 12 }}>
+              <div style={{ background: "var(--bg-secondary)", padding: 12, borderRadius: 6 }}>
+                <div style={{ fontSize: 11, textTransform: "uppercase", color: "var(--text-dim)" }}>Display / Títulos</div>
+                <div style={{ fontSize: 18, fontWeight: 900, fontFamily: brandData!.typography.displayFamily, marginTop: 6 }}>
+                  {brandData!.typography.displayFamily}
+                </div>
+                <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>Voz de cartaz, impacto e autoridade.</p>
+              </div>
+              <div style={{ background: "var(--bg-secondary)", padding: 12, borderRadius: 6 }}>
+                <div style={{ fontSize: 11, textTransform: "uppercase", color: "var(--text-dim)" }}>Corpo de Texto (Sans)</div>
+                <div style={{ fontSize: 15, fontFamily: brandData!.typography.bodyFamily, marginTop: 6 }}>
+                  {brandData!.typography.bodyFamily}
+                </div>
+                <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>Leitura fluida, ergonomia e interface.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Seção 09 a 14: Elementos, Fotografia, Ilustração & Motion */}
+          <div className="bg-card" style={{ background: "var(--bg-tertiary)" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, color: "#FF701A" }}>09 a 14. Elementos Visuais, Direção de Arte e Motion</h3>
+            <div className="bg-grid-2" style={{ marginTop: 12 }}>
+              <div>
+                <strong style={{ fontSize: 12 }}>Direção Fotográfica & Iluminação:</strong>
+                <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4, lineHeight: 1.5 }}>
+                  {brandData!.character.lightingPhilosophy || "Luz de recorte quente dourada combinada a ambiente frio/cianeto."}
+                </p>
+              </div>
+              <div>
+                <strong style={{ fontSize: 12 }}>Linguagem de Movimento (Motion):</strong>
+                <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4, lineHeight: 1.5 }}>
+                  Stillness = Camadas alinhadas. Movement = Camadas se separam. Duração canônica de 240ms a 380ms.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Seção 15: Aplicações */}
+          <div className="bg-card" style={{ background: "var(--bg-tertiary)" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, color: "#FF701A" }}>15. Aplicações Homologadas</h3>
+            <div className="bg-grid-2" style={{ marginTop: 12 }}>
+              {brandData!.applications.map((app) => (
+                <div key={app.id} style={{ background: "var(--bg-secondary)", padding: 10, borderRadius: 6 }}>
+                  <div style={{ fontWeight: 700, fontSize: 12 }}>{app.title}</div>
+                  <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>{app.notes}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Seção 16 & 17: Acessibilidade WCAG & Design Tokens */}
+          <div className="bg-card" style={{ background: "var(--bg-tertiary)" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, color: "#FF701A" }}>16 & 17. Acessibilidade WCAG 2.2 e Design Tokens DTCG</h3>
+            <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 6, lineHeight: 1.5 }}>
+              Total de {brandData!.tokens.length} tokens registrados sob o padrão W3C Design Tokens Community Group (DTCG 2025.10).
+              Todas as decisões de texto primário atendem ao critério de contraste mínimo WCAG 2.2 AA (4.5:1).
+            </p>
+          </div>
+
+          {/* Seção 18: Downloads e Recursos */}
+          <div className="bg-card" style={{ background: "var(--bg-tertiary)" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, color: "#FF701A" }}>18. Downloads & Pacotes de Exportação</h3>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 12 }}>
+              <button
+                className="bg-btn bg-btn--outline"
+                onClick={() => {
+                  const blob = new Blob([exportToDtcgJson(brandData!.tokens)], { type: "application/json" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `${activeBrand?.slug || "brand"}-tokens.json`;
+                  a.click();
+                  showToast("DTCG Tokens baixados!", "success");
+                }}
+              >
+                <Download size={12} /> DTCG Tokens JSON
+              </button>
+              <button
+                className="bg-btn bg-btn--outline"
+                onClick={() => {
+                  const blob = new Blob([exportToCssCustomProperties(brandData!.tokens)], { type: "text/css" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `${activeBrand?.slug || "brand"}-tokens.css`;
+                  a.click();
+                  showToast("CSS Custom Properties baixadas!", "success");
+                }}
+              >
+                <Download size={12} /> Variáveis CSS
+              </button>
+              <button
+                className="bg-btn bg-btn--outline"
+                onClick={() => {
+                  const blob = new Blob([exportToTailwindConfig(brandData!.tokens)], { type: "text/javascript" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `tailwind.${activeBrand?.slug || "brand"}.js`;
+                  a.click();
+                  showToast("Tailwind Config baixado!", "success");
+                }}
+              >
+                <Download size={12} /> Tailwind Config
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
