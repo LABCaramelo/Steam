@@ -29,11 +29,11 @@ export function guidesFor(r: Rect, targets: Rect[], allowX = true, allowY = true
     if (allowX)
       for (const tv of xs(t))
         if (xs(r).some((v) => Math.abs(v - tv) < eps))
-          out.push({ x1: tv, y1: Math.min(r.y, t.y), x2: tv, y2: Math.max(r.y + r.height, t.y + t.height) });
+          out.push({ x1: tv, y1: Math.min(r.y, t.y) - 32, x2: tv, y2: Math.max(r.y + r.height, t.y + t.height) + 32 });
     if (allowY)
       for (const tv of ys(t))
         if (ys(r).some((v) => Math.abs(v - tv) < eps))
-          out.push({ x1: Math.min(r.x, t.x), y1: tv, x2: Math.max(r.x + r.width, t.x + t.width), y2: tv });
+          out.push({ x1: Math.min(r.x, t.x) - 32, y1: tv, x2: Math.max(r.x + r.width, t.x + t.width) + 32, y2: tv });
   }
   return out;
 }
@@ -52,9 +52,9 @@ export function snapPoint(p: Pt, targets: Rect[], threshold: number, allowX = tr
   const guides: Guide[] = [];
   for (const t of targets) {
     if (allowX && dx !== 0 && xs(t).some((v) => Math.abs(v - q.x) < 0.01))
-      guides.push({ x1: q.x, y1: Math.min(q.y, t.y), x2: q.x, y2: Math.max(q.y, t.y + t.height) });
+      guides.push({ x1: q.x, y1: Math.min(q.y, t.y) - 32, x2: q.x, y2: Math.max(q.y, t.y + t.height) + 32 });
     if (allowY && dy !== 0 && ys(t).some((v) => Math.abs(v - q.y) < 0.01))
-      guides.push({ x1: Math.min(q.x, t.x), y1: q.y, x2: Math.max(q.x, t.x + t.width), y2: q.y });
+      guides.push({ x1: Math.min(q.x, t.x) - 32, y1: q.y, x2: Math.max(q.x, t.x + t.width) + 32, y2: q.y });
   }
   return { point: q, guides };
 }

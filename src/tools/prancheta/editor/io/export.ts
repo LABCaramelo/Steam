@@ -9,6 +9,10 @@ import {
   parentWorldMatrix,
   sortByPaintOrder,
   topLevelIds,
+  CAROUSEL_SLIDE_HEIGHT,
+  CAROUSEL_SLIDE_WIDTH,
+  getCarouselPages,
+  isCarouselNode,
 } from '../model/document';
 import type { DocumentData, Effect, SceneNode, SolidPaint } from '../model/types';
 import { store } from '../store/store';
@@ -396,3 +400,191 @@ export async function renderDocumentThumbnail(doc: DocumentData, maxSize = 320):
   return canvas.toDataURL('image/png');
 }
 
+
+// ---------- Geração de ZIP (Zero Dependência) & Exportação de Carrossel ----------
+
+function makeCrc32Table(): Uint32Array {
+  const table = new Uint32Array(256);
+  for (let i = 0; i < 256; i++) {
+    let c = i;
+    for (let k = 0; k < 8; k++) {
+      c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+    }
+    table[i] = c >>> 0;
+  }
+  return table;
+}
+
+const CRC_TABLE = makeCrc32Table();
+
+function crc32(buf: Uint8Array): number {
+  let c = 0xffffffff;
+  for (let i = 0; i < buf.length; i++) {
+    c = CRC_TABLE[(c ^ buf[i]) & 0xff] ^ (c >>> 8);
+  }
+  return (c ^ 0xffffffff) >>> 0;
+}
+
+/** Cria um arquivo ZIP no formato STORE (sem compressão pesada) nativamente no browser. */
+export function createZipBlob(files: { name: string; data: Uint8Array }[]): Blob {
+  const enc = new TextEncoder();
+  const fileEntries: {
+    nameBytes: Uint8Array;
+    crc: number;
+    size: number;
+    offset: number;
+    data: Uint8Array;
+  }[] = [];
+
+  let offset = 0;
+  const parts: Uint8Array[] = [];
+
+  for (const f of files) {
+    const nameBytes = enc.encode(f.name);
+    const crc = crc32(f.data);
+    const size = f.data.length;
+    const localHeader = new Uint8Array(30 + nameBytes.length);
+    const view = new DataView(localHeader.buffer);
+
+    view.setUint32(0, 0x04034b50, true);
+    view.setUint16(4, 20, true);
+    view.setUint16(6, 0x0800, true); // UTF-8
+    view.setUint16(8, 0, true);      // STORE
+    view.setUint16(10, 0, true);
+    view.setUint16(12, 0, true);
+    view.setUint32(14, crc, true);
+    view.setUint32(18, size, true);
+    view.setUint32(22, size, true);
+    view.setUint16(26, nameBytes.length, true);
+    view.setUint16(28, 0, true);
+    localHeader.set(nameBytes, 30);
+
+    fileEntries.push({ nameBytes, crc, size, offset, data: f.data });
+    parts.push(localHeader);
+    parts.push(f.data);
+
+    offset += localHeader.length + size;
+  }
+
+  const centralDirStart = offset;
+  let centralDirSize = 0;
+
+  for (const entry of fileEntries) {
+    const cdHeader = new Uint8Array(46 + entry.nameBytes.length);
+    const view = new DataView(cdHeader.buffer);
+
+    view.setUint32(0, 0x02014b50, true);
+    view.setUint16(4, 20, true);
+    view.setUint16(6, 20, true);
+    view.setUint16(8, 0x0800, true);
+    view.setUint16(10, 0, true);
+    view.setUint16(12, 0, true);
+    view.setUint16(14, 0, true);
+    view.setUint32(16, entry.crc, true);
+    view.setUint32(20, entry.size, true);
+    view.setUint32(24, entry.size, true);
+    view.setUint16(28, entry.nameBytes.length, true);
+    view.setUint16(30, 0, true);
+    view.setUint16(32, 0, true);
+    view.setUint16(34, 0, true);
+    view.setUint16(36, 0, true);
+    view.setUint32(38, 0, true);
+    view.setUint32(42, entry.offset, true);
+    cdHeader.set(entry.nameBytes, 46);
+
+    parts.push(cdHeader);
+    centralDirSize += cdHeader.length;
+    offset += cdHeader.length;
+  }
+
+  const eocd = new Uint8Array(22);
+  const eocdView = new DataView(eocd.buffer);
+  eocdView.setUint32(0, 0x06054b50, true);
+  eocdView.setUint16(4, 0, true);
+  eocdView.setUint16(6, 0, true);
+  eocdView.setUint16(8, fileEntries.length, true);
+  eocdView.setUint16(10, fileEntries.length, true);
+  eocdView.setUint32(12, centralDirSize, true);
+  eocdView.setUint32(16, centralDirStart, true);
+  eocdView.setUint16(20, 0, true);
+  parts.push(eocd);
+
+  return new Blob(parts, { type: 'application/zip' });
+}
+
+/**
+ * Exporta cada lâmina/slide de um frame de Carrossel de uma única vez.
+ * Cada fatia tem 1080×1440 (com escala opcional 1x, 2x...).
+ * Se asZip for true, baixa tudo compactado num único arquivo .zip.
+ */
+export async function exportCarouselSlices(nodeId: string, setting: ExportSetting, asZip = true) {
+  const doc = store.state.doc;
+  const node = doc.nodes[nodeId];
+  if (!node || node.type !== 'FRAME' || !isCarouselNode(node)) {
+    store.toast('Selecione um frame de carrossel para exportar');
+    return;
+  }
+
+  const pages = getCarouselPages(node);
+  if (pages <= 0) {
+    store.toast('Frame não configurado como carrossel');
+    return;
+  }
+
+  store.toast(`Renderizando ${pages} lâminas do carrossel...`);
+
+  const format = setting.format === 'SVG' ? 'PNG' : setting.format;
+  const isJpg = format === 'JPG';
+  const fullCanvas = await renderToCanvas([nodeId], setting.scale, isJpg ? '#FFFFFF' : undefined);
+  if (!fullCanvas) {
+    store.toast('Falha ao renderizar carrossel');
+    return;
+  }
+
+  const scale = Math.min(setting.scale, fullCanvas.width / Math.max(node.width, 1));
+  const slideW = Math.round(CAROUSEL_SLIDE_WIDTH * scale);
+  const slideH = Math.round((node.height || CAROUSEL_SLIDE_HEIGHT) * scale);
+  const mime = isJpg ? 'image/jpeg' : 'image/png';
+  const quality = isJpg ? 0.92 : undefined;
+  const ext = format.toLowerCase();
+  const baseName = safeFileName(node.name) || 'Carrossel';
+
+  const files: { name: string; data: Uint8Array }[] = [];
+
+  for (let i = 0; i < pages; i++) {
+    const slideCanvas = document.createElement('canvas');
+    slideCanvas.width = slideW;
+    slideCanvas.height = slideH;
+    const sctx = slideCanvas.getContext('2d');
+    if (!sctx) continue;
+
+    if (isJpg) {
+      sctx.fillStyle = '#FFFFFF';
+      sctx.fillRect(0, 0, slideW, slideH);
+    }
+
+    const sx = Math.round(i * CAROUSEL_SLIDE_WIDTH * scale);
+    sctx.drawImage(fullCanvas, sx, 0, slideW, slideH, 0, 0, slideW, slideH);
+
+    const blob = await canvasToBlob(slideCanvas, mime, quality);
+    if (!blob) continue;
+
+    const pad = String(i + 1).padStart(2, '0');
+    const fileName = `${pad} - ${baseName} - Slide ${i + 1}.${ext}`;
+
+    if (asZip) {
+      const buf = await blob.arrayBuffer();
+      files.push({ name: fileName, data: new Uint8Array(buf) });
+    } else {
+      downloadBlob(blob, fileName);
+    }
+  }
+
+  if (asZip && files.length > 0) {
+    const zipBlob = createZipBlob(files);
+    downloadBlob(zipBlob, `${baseName} (Carrossel ${pages} slides).zip`);
+    store.toast(`Carrossel exportado: ${pages} slides baixados em .zip!`);
+  } else if (!asZip) {
+    store.toast(`Carrossel exportado: ${pages} slides baixados separadamente!`);
+  }
+}

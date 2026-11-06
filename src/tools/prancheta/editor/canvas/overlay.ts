@@ -1,7 +1,14 @@
-import { type Pt, fmtNum } from './geometry';
+import { type Pt, applyMat, fmtNum } from './geometry';
 import { LABEL_FONT, frameLabels, getSelectionFrame } from './hitTest';
 import type { OverlayState } from './controller';
-import { worldCorners } from '../model/document';
+import {
+  CAROUSEL_SLIDE_WIDTH,
+  getPage,
+  getCarouselPages,
+  isCarouselNode,
+  worldCorners,
+  worldMatrix,
+} from '../model/document';
 import type { EditorState } from '../store/store';
 
 export const BLUE = '#0D99FF';
@@ -64,6 +71,75 @@ export function drawOverlay(
     ctx.textAlign = 'left';
     ctx.fillText(l.text, 0, -6);
     ctx.restore();
+  }
+
+  // guias e divisores visíveis do Carrossel Instagram
+  const activePage = getPage(doc, s.pageId);
+  if (activePage) {
+    for (const id of activePage.children) {
+      const n = doc.nodes[id];
+      if (!n || n.type !== 'FRAME' || !n.visible) continue;
+      const m = worldMatrix(doc, id);
+      const isSelected = s.selection.includes(n.id);
+
+      // Divisores verticais de páginas do carrossel
+      if (isCarouselNode(n)) {
+        const pages = getCarouselPages(n);
+        if (pages > 1) {
+          ctx.save();
+          ctx.strokeStyle = isSelected ? 'rgba(37, 191, 255, 0.9)' : 'rgba(37, 191, 255, 0.5)';
+          ctx.lineWidth = isSelected ? 1.5 : 1;
+          ctx.setLineDash([6, 4]);
+
+          for (let i = 1; i < pages; i++) {
+            const top = toScreen(applyMat(m, { x: i * CAROUSEL_SLIDE_WIDTH, y: 0 }));
+            const btm = toScreen(applyMat(m, { x: i * CAROUSEL_SLIDE_WIDTH, y: n.height }));
+            ctx.beginPath();
+            ctx.moveTo(Math.round(top.x) + 0.5, Math.round(top.y));
+            ctx.lineTo(Math.round(btm.x) + 0.5, Math.round(btm.y));
+            ctx.stroke();
+          }
+          ctx.restore();
+
+          // Badges das páginas do carrossel
+          for (let i = 0; i < pages; i++) {
+            const p0 = toScreen(applyMat(m, { x: i * CAROUSEL_SLIDE_WIDTH, y: 0 }));
+            const p1 = toScreen(applyMat(m, { x: (i + 1) * CAROUSEL_SLIDE_WIDTH, y: 0 }));
+            const cx = (p0.x + p1.x) / 2;
+            const cy = Math.min(p0.y, p1.y);
+            const label = i === 0 ? '1 • Capa' : i === pages - 1 ? `${i + 1} • CTA Final` : `Slide ${i + 1}`;
+            const pillBg = isSelected ? '#25BFFF' : 'rgba(16, 16, 20, 0.85)';
+            pill(ctx, label, cx, cy - 20, pillBg);
+          }
+        }
+      }
+
+      // Linhas guias personalizadas do nó
+      if (n.guides && n.guides.length > 0) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 112, 26, 0.75)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        for (const g of n.guides) {
+          if (g.axis === 'x') {
+            const p1 = toScreen(applyMat(m, { x: g.offset, y: 0 }));
+            const p2 = toScreen(applyMat(m, { x: g.offset, y: n.height }));
+            ctx.beginPath();
+            ctx.moveTo(Math.round(p1.x) + 0.5, Math.round(p1.y));
+            ctx.lineTo(Math.round(p2.x) + 0.5, Math.round(p2.y));
+            ctx.stroke();
+          } else {
+            const p1 = toScreen(applyMat(m, { x: 0, y: g.offset }));
+            const p2 = toScreen(applyMat(m, { x: n.width, y: g.offset }));
+            ctx.beginPath();
+            ctx.moveTo(Math.round(p1.x), Math.round(p1.y) + 0.5);
+            ctx.lineTo(Math.round(p2.x), Math.round(p2.y) + 0.5);
+            ctx.stroke();
+          }
+        }
+        ctx.restore();
+      }
+    }
   }
 
   // contorno do nó sob o mouse

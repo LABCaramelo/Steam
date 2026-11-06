@@ -1063,3 +1063,120 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 @media (max-width: 520px) { .left-panel { display: none; } .header-divider { display: none; } .app-header > .icon-btn { display: none; } .file-name { max-width: 48vw; } }
 
 .pr-editor-beta-tag { font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--cm-accent, 255 112 26)); background: rgb(var(--cm-accent, 255 112 26) / 0.12); border: 1px solid rgb(var(--cm-accent, 255 112 26) / 0.35); border-radius: 999px; padding: 1px 6px; display: inline-flex; align-items: center; line-height: 1.4; }
+
+/* Carousel Controls & Badges (Caramelo V1 2026) */
+.carousel-card {
+  background: rgba(255, 112, 26, 0.08);
+  border: 1px solid rgba(255, 112, 26, 0.28);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 4px 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.carousel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.carousel-title {
+  font-weight: 650;
+  font-size: 12px;
+  color: #FF701A;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.carousel-badge {
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(255, 112, 26, 0.2);
+  color: #FFF4E8;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.carousel-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 5px 8px;
+}
+
+.carousel-stepper-btn {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFF4E8;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.carousel-stepper-btn:hover:not(:disabled) {
+  background: #FF701A;
+  color: #FFF;
+}
+
+.carousel-stepper-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.carousel-stepper-info {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.carousel-stepper-pages {
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFF4E8;
+}
+
+.carousel-stepper-dim {
+  font-size: 10px;
+  color: #999;
+}
+
+.carousel-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.carousel-chip {
+  padding: 3px 8px;
+  font-size: 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #FFF4E8;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.carousel-chip:hover {
+  background: rgba(255, 112, 26, 0.2);
+  border-color: rgba(255, 112, 26, 0.4);
+}
+
+.carousel-chip.active {
+  background: #FF701A;
+  color: #FFFFFF;
+  border-color: #FF701A;
+  font-weight: 600;
+}

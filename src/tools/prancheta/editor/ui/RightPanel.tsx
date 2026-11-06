@@ -7,9 +7,9 @@ import { WEIGHT_NAMES, ensureFontFace, fontDef } from '../fonts';
 import { FontPicker } from './FontPicker';
 import { EffectPicker, AddEffectMenu } from './EffectPicker';
 import { GlassPopover } from './GlassPopover';
-import { type ExportFormat, type ExportSetting, exportNodes, exportPrefs } from '../io/export';
+import { type ExportFormat, type ExportSetting, exportCarouselSlices, exportNodes, exportPrefs } from '../io/export';
 import { TYPE_LABELS, solid } from '../model/defaults';
-import { applyAutoLayout, getPage } from '../model/document';
+import { applyAutoLayout, getCarouselPages, getPage, isCarouselNode } from '../model/document';
 import type { BooleanOperationType, Effect, EffectType, Paint, SceneNode, StrokeAlign, TextAutoResize } from '../model/types';
 import { store, useEditor } from '../store/store';
 import { PaintPopover } from './controls/ColorPicker';
@@ -188,7 +188,7 @@ function PageSection() {
 }
 
 function FramePresets() {
-  const [open, setOpen] = useState<Record<string, boolean>>({ Celular: true, Desktop: true });
+  const [open, setOpen] = useState<Record<string, boolean>>({ 'Carrossel Instagram (1080×1440)': true, Celular: true, Desktop: true });
   return (
     <div className="presets">
       {A.FRAME_PRESETS.map((g) => (
@@ -212,6 +212,105 @@ function FramePresets() {
   );
 }
 
+
+function CarouselSection({ node }: { node: SceneNode }) {
+  if (node.type !== 'FRAME') return null;
+  const isCar = isCarouselNode(node);
+  const pages = getCarouselPages(node);
+
+  if (!isCar) {
+    return (
+      <Section title="Carrossel Instagram">
+        <button
+          className="btn secondary full"
+          style={{ fontSize: 11, gap: 6 }}
+          onClick={() => A.toggleCarouselMode(node.id)}
+        >
+          <I.IconFrame size={14} />
+          Converter em Carrossel (1080×1440)
+        </button>
+      </Section>
+    );
+  }
+
+  const PRESET_PAGES = [2, 3, 4, 5, 6, 7, 8, 10];
+
+  return (
+    <Section title="Carrossel Instagram">
+      <div className="carousel-card">
+        <div className="carousel-head">
+          <span className="carousel-title">
+            <I.IconFrame size={14} />
+            {pages} Slides
+          </span>
+          <span className="carousel-badge">{node.width}×{node.height}</span>
+        </div>
+
+        <div className="carousel-stepper">
+          <button
+            className="carousel-stepper-btn"
+            title="Remover página"
+            disabled={pages <= 1}
+            onClick={() => A.removeCarouselPage(node.id)}
+          >
+            <I.IconMinus size={14} />
+          </button>
+          <div className="carousel-stepper-info">
+            <span className="carousel-stepper-pages">{pages} {pages === 1 ? 'slide' : 'slides'}</span>
+            <span className="carousel-stepper-dim">1080×1440 cada</span>
+          </div>
+          <button
+            className="carousel-stepper-btn"
+            title="Adicionar página"
+            disabled={pages >= 20}
+            onClick={() => A.addCarouselPage(node.id)}
+          >
+            <I.IconPlus size={14} />
+          </button>
+        </div>
+
+        <div className="carousel-chips">
+          {PRESET_PAGES.map((p) => (
+            <button
+              key={p}
+              className={`carousel-chip ${pages === p ? 'active' : ''}`}
+              onClick={() => A.setCarouselPages(node.id, p)}
+            >
+              {p} slides
+            </button>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
+          <button
+            className="btn primary full"
+            style={{ background: '#FF701A', color: '#FFF', fontSize: 11, fontWeight: 600, gap: 6 }}
+            onClick={() => void exportCarouselSlices(node.id, exportPrefs, true)}
+          >
+            <I.IconExport size={14} />
+            Exportar {pages} Slides (.ZIP)
+          </button>
+          <button
+            className="btn secondary full"
+            style={{ fontSize: 11 }}
+            onClick={() => void exportCarouselSlices(node.id, exportPrefs, false)}
+          >
+            Baixar slides separados
+          </button>
+        </div>
+
+        <button
+          className="btn ghost full"
+          style={{ fontSize: 10, color: 'var(--muted)', marginTop: 2 }}
+          onClick={() => A.toggleCarouselMode(node.id)}
+        >
+          Desativar modo carrossel
+        </button>
+      </div>
+    </Section>
+  );
+}
+
 // ---------- com seleção ----------
 
 function SelectionPanels({ nodes }: { nodes: SceneNode[] }) {
@@ -221,6 +320,7 @@ function SelectionPanels({ nodes }: { nodes: SceneNode[] }) {
   return (
     <>
       <TypeHeader nodes={nodes} />
+      {nodes.length === 1 && nodes[0].type === 'FRAME' && <CarouselSection node={nodes[0]} />}
       {nodes.some((n) => n.type === 'INSTANCE') && <InstanceSection nodes={nodes.filter((n) => n.type === 'INSTANCE')} />}
       {nodes.some((n) => n.type === 'BOOLEAN_OPERATION') && <BooleanSection nodes={nodes.filter((n) => n.type === 'BOOLEAN_OPERATION')} />}
       <PositionSection nodes={nodes} ids={ids} />

@@ -623,7 +623,7 @@ export class CanvasController {
     dx = Math.round(dx);
     dy = Math.round(dy);
     const moved = { ...d.startBounds, x: d.startBounds.x + dx, y: d.startBounds.y + dy };
-    const snap = snapRect(moved, d.targets, 6 / this.state.camera.zoom, allowX, allowY);
+    const snap = snapRect(moved, d.targets, Math.max(6, 8 / this.state.camera.zoom), allowX, allowY);
     dx += snap.dx;
     dy += snap.dy;
     this.overlay.guides = snap.guides;
@@ -703,7 +703,7 @@ export class CanvasController {
 
   private snapResizePoint(d: Extract<Drag, { kind: 'resize' }>, wp: Pt): Pt {
     if (!d.canSnap) return wp;
-    const res = snapPoint(wp, d.targets, 6 / this.state.camera.zoom, d.hx !== 0.5, d.hy !== 0.5);
+    const res = snapPoint(wp, d.targets, Math.max(6, 8 / this.state.camera.zoom), d.hx !== 0.5, d.hy !== 0.5);
     this.overlay.guides = res.guides;
     return res.point;
   }
@@ -893,7 +893,7 @@ export class CanvasController {
   private updateEndpoint(d: Extract<Drag, { kind: 'endpoint' }>, wp: Pt, shift: boolean) {
     const n = this.doc.nodes[d.id];
     if (!n) return;
-    const snapped = snapPoint(wp, d.targets, 6 / this.state.camera.zoom);
+    const snapped = snapPoint(wp, d.targets, Math.max(6, 8 / this.state.camera.zoom));
     this.overlay.guides = snapped.guides;
     let p = roundPt(applyMat(d.parentInv, snapped.point));
     if (shift) p = snap45(d.fixed, p);
@@ -912,7 +912,7 @@ export class CanvasController {
     const parentId = deepestFrameAt(doc, this.state.pageId, wp) ?? this.state.pageId;
     const parentInv = invert(doc.nodes[parentId] ? worldMatrix(doc, parentId) : [1, 0, 0, 1, 0, 0]);
     const targets = snapTargets(doc, this.state.pageId, new Set());
-    const snapped = snapPoint(wp, targets, 6 / this.state.camera.zoom).point;
+    const snapped = snapPoint(wp, targets, Math.max(6, 8 / this.state.camera.zoom)).point;
     const start = roundPt(applyMat(parentInv, snapped));
     let nodeId: string | null = null;
     if (type !== 'TEXT') {
@@ -938,7 +938,7 @@ export class CanvasController {
     if (!d.moved && dist(sp, d.startScreen) < 3) return;
     d.moved = true;
     const doc = this.doc;
-    const snapRes = snapPoint(wpRaw, d.targets, 6 / this.state.camera.zoom);
+    const snapRes = snapPoint(wpRaw, d.targets, Math.max(6, 8 / this.state.camera.zoom));
     this.overlay.guides = snapRes.guides;
     const p = roundPt(applyMat(d.parentInv, snapRes.point));
     if (d.tool === 'TEXT' && !d.nodeId) {
