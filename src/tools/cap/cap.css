@@ -657,11 +657,19 @@
   background: rgb(var(--cm-surface-2));
   border-radius: var(--cm-radius-md);
   border: 1px solid rgb(var(--cm-line));
-  transition: border-color var(--cm-dur-micro) var(--cm-ease-out);
+  cursor: pointer;
+  transition: all var(--cm-dur-micro) var(--cm-ease-out);
 }
 
 .cap-zoom-item:hover {
   border-color: rgb(var(--cm-line-strong));
+  background: rgb(var(--cm-surface-2) / 0.8);
+}
+
+.cap-zoom-item.selected {
+  border-color: rgb(var(--cm-accent));
+  background: rgb(var(--cm-accent) / 0.12);
+  box-shadow: 0 0 12px rgb(var(--cm-accent) / 0.2);
 }
 
 .cap-zoom-meta {
@@ -679,6 +687,94 @@
   font-size: 11px;
   color: rgb(var(--cm-accent-ink));
   font-family: var(--caramelo-font-mono, monospace);
+}
+
+/* Active Zoom Editor Card in Sidebar */
+.cap-zoom-editor-card {
+  background: rgb(var(--cm-surface-2));
+  border: 1.5px solid rgb(var(--cm-accent) / 0.5);
+  border-radius: var(--cm-radius-lg);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.35);
+}
+
+.cap-zoom-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cap-scale-pills {
+  display: flex;
+  gap: 4px;
+}
+
+.cap-scale-pill {
+  flex: 1;
+  padding: 6px 0;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: var(--cm-radius-xs);
+  border: 1px solid rgb(var(--cm-line));
+  background: rgb(var(--cm-surface-1));
+  color: rgb(var(--cm-fg-muted));
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--cm-dur-micro) var(--cm-ease-out);
+}
+
+.cap-scale-pill:hover {
+  border-color: rgb(var(--cm-line-strong));
+  color: rgb(var(--cm-fg));
+}
+
+.cap-scale-pill.active {
+  background: rgb(var(--cm-accent));
+  border-color: rgb(var(--cm-accent));
+  color: #101014;
+  font-weight: 900;
+}
+
+.cap-focal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  background: rgb(var(--cm-surface-1));
+  padding: 6px;
+  border-radius: var(--cm-radius-md);
+  border: 1px solid rgb(var(--cm-line));
+}
+
+.cap-focal-btn {
+  aspect-ratio: 1.2;
+  border-radius: var(--cm-radius-xs);
+  border: 1px solid transparent;
+  background: rgb(var(--cm-surface-2));
+  color: rgb(var(--cm-fg-muted));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all var(--cm-dur-micro) var(--cm-ease-out);
+}
+
+.cap-focal-btn:hover {
+  background: rgb(var(--cm-surface-1));
+  color: rgb(var(--cm-fg));
+  border-color: rgb(var(--cm-line-strong));
+}
+
+.cap-focal-btn.active {
+  background: rgb(var(--cm-accent));
+  color: #101014;
+  font-weight: 900;
+  border-color: rgb(var(--cm-accent));
+  box-shadow: 0 0 8px rgb(var(--cm-accent) / 0.5);
 }
 
 /* ---------------- Timeline & Trimmer Bar ---------------- */
@@ -756,8 +852,8 @@
 /* Zoom keyframe markers on timeline */
 .cap-timeline-zoom-marker {
   position: absolute;
-  top: 6px;
-  bottom: 6px;
+  top: 4px;
+  bottom: 4px;
   background: rgb(var(--cm-info) / 0.25);
   border: 1.5px solid rgb(var(--cm-info));
   border-radius: var(--cm-radius-xs);
@@ -767,9 +863,173 @@
   font-size: 11px;
   font-weight: 800;
   color: rgb(var(--cm-info));
+  cursor: grab;
+  user-select: none;
+  box-sizing: border-box;
+  z-index: 10;
+  transition: background var(--cm-dur-micro) var(--cm-ease-out), border-color var(--cm-dur-micro) var(--cm-ease-out), box-shadow var(--cm-dur-micro) var(--cm-ease-out);
+}
+
+.cap-timeline-zoom-marker:hover {
+  background: rgb(var(--cm-info) / 0.4);
+  box-shadow: 0 0 10px rgb(var(--cm-info) / 0.4);
+}
+
+.cap-timeline-zoom-marker.selected {
+  background: rgb(var(--cm-accent) / 0.3);
+  border-color: rgb(var(--cm-accent));
+  color: rgb(var(--cm-accent));
+  box-shadow: 0 0 12px rgb(var(--cm-accent) / 0.6);
+  z-index: 15;
+}
+
+.cap-timeline-zoom-marker.dragging {
+  cursor: grabbing !important;
+  opacity: 0.9;
+}
+
+.cap-zoom-marker-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  padding: 0 8px;
+  pointer-events: none;
+  width: 100%;
+}
+
+.cap-zoom-marker-scale {
+  font-family: var(--caramelo-font-mono, monospace);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.cap-zoom-marker-label {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.85;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Timeline Zoom Resize Handles */
+.cap-zoom-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: ew-resize;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.cap-zoom-handle::after {
+  content: "";
+  width: 2px;
+  height: 14px;
+  background: currentColor;
+  border-radius: 1px;
+  opacity: 0.7;
+  transition: opacity var(--cm-dur-micro), transform var(--cm-dur-micro);
+}
+
+.cap-zoom-handle:hover::after {
+  opacity: 1;
+  transform: scaleY(1.3);
+}
+
+.cap-zoom-handle-left {
+  left: 0;
+}
+
+.cap-zoom-handle-right {
+  right: 0;
+}
+
+/* Video Stage Focal Target Reticle */
+.cap-focal-reticle {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  touch-action: none;
+}
+
+.cap-focal-reticle:active {
+  cursor: grabbing;
+}
+
+.cap-focal-reticle-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px dashed rgb(var(--cm-accent));
+  box-shadow: 0 0 16px rgb(var(--cm-accent) / 0.7), inset 0 0 10px rgb(var(--cm-accent) / 0.3);
+  animation: capRotateReticle 10s linear infinite;
+}
+
+@keyframes capRotateReticle {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.cap-focal-reticle-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgb(var(--cm-accent));
+  box-shadow: 0 0 10px rgb(var(--cm-accent));
+  border: 1.5px solid #fff;
+  z-index: 2;
+}
+
+.cap-focal-reticle-crosshair-h {
+  position: absolute;
+  left: -12px;
+  right: -12px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(var(--cm-accent) / 0.9), transparent);
+  pointer-events: none;
+}
+
+.cap-focal-reticle-crosshair-v {
+  position: absolute;
+  top: -12px;
+  bottom: -12px;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgb(var(--cm-accent) / 0.9), transparent);
+  pointer-events: none;
+}
+
+.cap-focal-reticle-badge {
+  position: absolute;
+  top: calc(100% + 6px);
+  white-space: nowrap;
+  background: rgb(var(--cm-surface-1) / 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgb(var(--cm-accent) / 0.6);
+  border-radius: var(--cm-radius-pill);
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgb(var(--cm-fg));
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.6);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* ---------------- Library Drawer ---------------- */

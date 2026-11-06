@@ -6,6 +6,8 @@ interface VideoStageProps {
   videoUrl: string;
   dressing: CanvasDressing;
   keyframes: ZoomKeyframe[];
+  selectedZoom?: ZoomKeyframe | null;
+  onUpdateZoom?: (id: string, patch: Partial<ZoomKeyframe>) => void;
   currentTime: number;
   videoRef: React.RefObject<HTMLVideoElement | null>;
   onTimeUpdate: (time: number) => void;
@@ -20,6 +22,8 @@ export function VideoStage({
   videoUrl,
   dressing,
   keyframes,
+  selectedZoom,
+  onUpdateZoom,
   currentTime,
   videoRef,
   onTimeUpdate,
@@ -30,11 +34,21 @@ export function VideoStage({
   onEnded,
 }: VideoStageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState<{ width: number; height: number }>({
     width: 0,
     height: 0,
   });
   const [videoRatio, setVideoRatio] = useState<number>(16 / 9);
+  const [isDraggingReticle, setIsDraggingReticle] = useState(false);
+  const reticleDragRef = useRef<{
+    startX: number;
+    startY: number;
+    initialFocusX: number;
+    initialFocusY: number;
+    vpW: number;
+    vpH: number;
+  } | null>(null);
 
   useEffect(() => {
     if (videoRef.current && videoUrl) {
@@ -92,9 +106,72 @@ export function VideoStage({
   // Compute live interpolated zoom & pan transform based on currentTime
   const { scale, focusX, focusY } = getInterpolatedZoom(keyframes, currentTime);
 
-  // Translate focus coordinate (0 to 1) into transform origin / translate
-  const transX = (0.5 - focusX) * 100 * (scale - 1);
-  const transY = (0.5 - focusY) * 100 * (scale - 1);
+  // Translate focus coordinate (0 to 1) into CSS translation matching canvas export exactly
+  const transX = (0.5 - focusX) * 100;
+  const transY = (0.5 - focusY) * 100;
+
+  // Reticle screen position inside video viewport
+  const reticleLeft = selectedZoom
+    ? Math.max(5, Math.min(95, 50 + (selectedZoom.focusX - focusX) * 100 * scale))
+    : 50;
+  const reticleTop = selectedZoom
+    ? Math.max(5, Math.min(95, 50 + (selectedZoom.focusY - focusY) * 100 * scale))
+    : 50;
+
+  // Global dragging handler for the focal reticle
+  useEffect(() => {
+    if (!isDraggingReticle) return;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      const rd = reticleDragRef.current;
+      if (!rd || !selectedZoom || !onUpdateZoom) return;
+
+      const deltaX = e.clientX - rd.startX;
+      const deltaY = e.clientY - rd.startY;
+
+      const newFocusX = Math.max(
+        0.05,
+        Math.min(0.95, rd.initialFocusX + deltaX / (rd.vpW * Math.max(1, scale)))
+      );
+      const newFocusY = Math.max(
+        0.05,
+        Math.min(0.95, rd.initialFocusY + deltaY / (rd.vpH * Math.max(1, scale)))
+      );
+
+      onUpdateZoom(selectedZoom.id, {
+        focusX: Number(newFocusX.toFixed(3)),
+        focusY: Number(newFocusY.toFixed(3)),
+      });
+    };
+
+    const handlePointerUp = () => {
+      setIsDraggingReticle(false);
+      reticleDragRef.current = null;
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+    };
+  }, [isDraggingReticle, selectedZoom, onUpdateZoom, scale]);
+
+  const handleReticlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!selectedZoom || !viewportRef.current) return;
+    const vpRect = viewportRef.current.getBoundingClientRect();
+    reticleDragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      initialFocusX: selectedZoom.focusX,
+      initialFocusY: selectedZoom.focusY,
+      vpW: vpRect.width,
+      vpH: vpRect.height,
+    };
+    setIsDraggingReticle(true);
+  };
 
   // Canvas target aspect ratio
   const getCanvasRatio = () => {
@@ -138,8 +215,6 @@ export function VideoStage({
   const maxWinH = Math.max(80, cardH - effectivePadding * 2);
 
   // Inner window dimensions preserving the native video aspect ratio
-  // Window total height = innerViewportH + chromeH
-  // innerViewportH = winW / videoRatio
   let winW = maxWinW;
   let winViewportH = winW / videoRatio;
   let winH = winViewportH + chromeH;
@@ -151,11 +226,25 @@ export function VideoStage({
   }
 
   const handleStageClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!onCanvasClick) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    const y = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
-    onCanvasClick(x, y);
+    if (isDraggingReticle) return;
+    if (!viewportRef.current) return;
+    const rect = viewportRef.current.getBoundingClientRect();
+    const u = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const v = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+
+    // When a zoom is selected, clicking anywhere on the screen updates its focal target!
+    if (selectedZoom && onUpdateZoom) {
+      const targetX = focusX + (u - 0.5) / Math.max(1, scale);
+      const targetY = focusY + (v - 0.5) / Math.max(1, scale);
+      const clampedX = Math.max(0.05, Math.min(0.95, targetX));
+      const clampedY = Math.max(0.05, Math.min(0.95, targetY));
+      onUpdateZoom(selectedZoom.id, {
+        focusX: Number(clampedX.toFixed(3)),
+        focusY: Number(clampedY.toFixed(3)),
+      });
+    }
+
+    onCanvasClick?.(u, v);
   };
 
   const videoFitMode = dressing.videoFit || "cover";
@@ -200,6 +289,7 @@ export function VideoStage({
 
           {/* Video Viewport applying dynamic zoom transform */}
           <div
+            ref={viewportRef}
             className="cap-video-viewport"
             onClick={handleStageClick}
             style={{
@@ -208,7 +298,7 @@ export function VideoStage({
               height: `calc(100% - ${chromeH}px)`,
               position: "relative",
               overflow: "hidden",
-              cursor: "crosshair",
+              cursor: selectedZoom ? "crosshair" : "default",
             }}
           >
             <video
@@ -244,9 +334,32 @@ export function VideoStage({
                   color: "#101014",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
                   pointerEvents: "none",
+                  zIndex: 25,
                 }}
               >
                 ZOOM {scale.toFixed(1)}X
+              </div>
+            )}
+
+            {/* Interactive Focal Reticle Target for the Selected Zoom */}
+            {selectedZoom && (
+              <div
+                className="cap-focal-reticle"
+                style={{
+                  left: `${reticleLeft}%`,
+                  top: `${reticleTop}%`,
+                }}
+                onPointerDown={handleReticlePointerDown}
+                title="Ponto Focal do Zoom — Arraste para reposicionar ou clique em qualquer lugar do vídeo"
+              >
+                <div className="cap-focal-reticle-ring" />
+                <div className="cap-focal-reticle-crosshair-h" />
+                <div className="cap-focal-reticle-crosshair-v" />
+                <div className="cap-focal-reticle-dot" />
+
+                <div className="cap-focal-reticle-badge">
+                  <span>🎯 Foco ({Math.round(selectedZoom.focusX * 100)}%, {Math.round(selectedZoom.focusY * 100)}%)</span>
+                </div>
               </div>
             )}
           </div>
