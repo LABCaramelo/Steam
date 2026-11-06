@@ -128,7 +128,7 @@ export function StoriesApp() {
       link.download = filename;
       link.href = dataUrl;
       link.click();
-      setQuickToast("Story salvo com sucesso! 📸");
+      setQuickToast("Story salvo com sucesso!");
       setTimeout(() => setQuickToast(null), 2500);
     } catch (err) {
       console.error(err);
@@ -162,7 +162,7 @@ export function StoriesApp() {
             title: "Story Instagram",
             files: [file],
           });
-          setQuickToast("Story compartilhado! 🌟");
+          setQuickToast("Story compartilhado com sucesso!");
           setTimeout(() => setQuickToast(null), 2000);
           return;
         }
@@ -173,7 +173,7 @@ export function StoriesApp() {
       link.download = `story-instagram-${Date.now()}.jpg`;
       link.href = dataUrl;
       link.click();
-      setQuickToast("Story salvo em JPG! 🌟");
+      setQuickToast("Story salvo em JPG!");
       setTimeout(() => setQuickToast(null), 2500);
     } catch (err) {
       console.error(err);

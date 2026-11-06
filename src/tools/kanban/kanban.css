@@ -375,7 +375,7 @@
 
 .kb-list.is-target {
   border-color: rgb(var(--cm-accent) / 0.6);
-  box-shadow: var(--cm-elev-2), var(--cm-spectrum-glow);
+  box-shadow: var(--cm-elev-2), 0 0 0 1px rgb(var(--cm-accent) / 0.4);
 }
 
 .kb-list.is-dragging { opacity: .4; }
@@ -504,11 +504,11 @@
 }
 
 .kb-drop {
-  height: 4px;
+  height: 3px;
   flex: none;
-  border-radius: var(--cm-radius-pill);
-  background: var(--cm-spectrum-gradient);
-  box-shadow: var(--cm-spectrum-glow);
+  border-radius: 2px;
+  background: rgb(var(--cm-accent));
+  box-shadow: 0 0 8px rgb(var(--cm-accent) / 0.35);
 }
 
 .kb-add {

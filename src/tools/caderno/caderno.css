@@ -91,7 +91,7 @@ body.caderno-body {
 .caderno-brand-badge {
   background-color: var(--cad-caramel);
   color: #101014;
-  font-weight: 900;
+  font-weight: 700;
   font-size: 11px;
   letter-spacing: 1px;
   padding: 2px 7px;
@@ -104,7 +104,7 @@ body.caderno-body {
 }
 
 .caderno-brand-name {
-  font-weight: 900;
+  font-weight: 700;
   font-size: 15px;
   letter-spacing: 0.5px;
   color: var(--cad-text);
@@ -135,7 +135,7 @@ body.caderno-body {
   color: var(--cad-text-muted);
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
   text-align: left;
 }
 
@@ -172,7 +172,7 @@ body.caderno-body {
   border: 1px solid var(--cad-border);
   background-color: var(--cad-surface-2);
   color: var(--cad-text);
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
   text-align: center;
 }
 
@@ -203,7 +203,7 @@ body.caderno-body {
   justify-content: space-between;
   padding: 4px 12px 6px;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 1px;
   color: var(--cad-text-dim);
 }
@@ -344,7 +344,7 @@ body.caderno-body {
   background: var(--cad-pink);
   color: #fff;
   font-size: 9px;
-  font-weight: 800;
+  font-weight: 600;
   padding: 1px 5px;
   border-radius: 10px;
 }
@@ -443,7 +443,7 @@ body.caderno-body {
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  transition: all 0.12s ease;
+  transition: opacity 0.12s ease, transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .caderno-btn-icon-subtle:hover {
@@ -465,7 +465,7 @@ body.caderno-body {
   padding: 4px 10px;
   border-radius: 14px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
 .caderno-btn-pill-subtle:hover {
@@ -481,7 +481,7 @@ body.caderno-body {
   padding: 5px 10px;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: opacity 0.12s ease, transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .caderno-btn-subtle:hover {
@@ -640,7 +640,7 @@ body.caderno-body {
   outline: none;
   color: var(--cad-text);
   font-size: 40px;
-  font-weight: 900;
+  font-weight: 700;
   font-family: inherit;
   resize: none;
   line-height: 1.15;
@@ -717,7 +717,7 @@ body.caderno-body {
 
 .caderno-block-menu-header {
   font-size: 9px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 1px;
   color: var(--cad-text-dim);
   padding: 4px 8px;
@@ -776,7 +776,7 @@ body.caderno-body {
 /* Tipos Específicos de Bloco */
 .caderno-block-h1 textarea {
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.25;
   margin-top: 18px;
 }
@@ -820,13 +820,13 @@ body.caderno-body {
   font-size: 11px;
   color: #101014;
   background-color: var(--cad-surface-1);
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
 .caderno-checkbox-box.is-checked {
   background-color: var(--cad-caramel);
   border-color: var(--cad-caramel);
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .caderno-block-todo.is-checked textarea {
@@ -1084,7 +1084,7 @@ body.caderno-body {
   font-size: 13px;
   cursor: pointer;
   text-align: left;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
 .caderno-add-block-bottom:hover {
@@ -1116,7 +1116,7 @@ body.caderno-body {
   align-items: center;
   justify-content: space-between;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 1px;
   color: var(--cad-text-dim);
 }
@@ -1158,7 +1158,7 @@ body.caderno-body {
   align-items: center;
   justify-content: center;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--cad-caramel);
   flex-shrink: 0;
 }
@@ -1222,7 +1222,7 @@ body.caderno-body {
   font-weight: 600;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: opacity 0.12s ease, transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .caderno-db-view-tab.is-active {
@@ -1487,7 +1487,7 @@ body.caderno-body {
 
 .caderno-card-priority-pill {
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 600;
   border: 1px solid;
   border-radius: 4px;
   padding: 1px 6px;
@@ -1655,7 +1655,7 @@ body.caderno-body {
 .caderno-trash-header h3 {
   margin: 0;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 1px;
   color: var(--cad-caramel);
 }
@@ -1864,7 +1864,7 @@ body.caderno-body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
   position: relative;
 }
 
@@ -1950,7 +1950,7 @@ body.caderno-body {
 
 .caderno-export-preview-title {
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 1px;
   color: var(--cad-text-dim);
 }

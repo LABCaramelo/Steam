@@ -129,7 +129,7 @@
   border-radius: 12px;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
 }
 
 .font-picker-cat-chip:hover {

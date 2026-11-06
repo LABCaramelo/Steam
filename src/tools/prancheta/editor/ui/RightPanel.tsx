@@ -975,7 +975,12 @@ function ImageAiActions({ nodes }: { nodes: SceneNode[] }) {
           }
         }}
       >
-        {isRemovingBg ? 'Processando recorte...' : '📸 Efeito Revista (Recorte no topo)'}
+        {isRemovingBg ? 'Processando recorte...' : (
+          <>
+            <I.IconSparkles style={{ width: 14, height: 14, marginRight: 5, verticalAlign: 'middle', display: 'inline-block' }} />
+            Efeito Revista (Recorte no topo)
+          </>
+        )}
       </button>
     </div>
   );

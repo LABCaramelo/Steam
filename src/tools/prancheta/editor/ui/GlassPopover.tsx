@@ -98,7 +98,7 @@ export function GlassPopover({ anchor, effect, onChange, onClose }: GlassPopover
           <span>Vidro</span>
         </div>
         <button type="button" className="glass-popover-close" onClick={onClose} title="Fechar">
-          ✕
+          <I.IconClose size={12} />
         </button>
       </div>
 
@@ -114,9 +114,7 @@ export function GlassPopover({ anchor, effect, onChange, onClose }: GlassPopover
           onPointerUp={handleLightPointerUp}
           title="Arraste para mudar o ângulo da luz"
         >
-          <div className="glass-light-pin" style={{ left: `${pinX}%`, top: `${pinY}%` }}>
-            📌
-          </div>
+          <div className="glass-light-pin" style={{ left: `${pinX}%`, top: `${pinY}%` }} />
         </div>
 
         <div className="glass-light-inputs">

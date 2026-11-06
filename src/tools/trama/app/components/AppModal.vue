@@ -53,7 +53,7 @@ function closeModal() {
 .app-modal-close{position:absolute;top:19px;right:19px;z-index:2;min-height:40px;min-width:40px;color:rgb(var(--cm-fg-muted));border:1px solid rgb(var(--cm-line));border-radius:10px}
 .app-modal-close:hover{background:rgb(var(--cm-surface-3));color:rgb(var(--cm-fg))}
 .app-modal-body{position:relative;min-width:0}
-.app-modal-body :deep(h2),.app-modal-body :deep(h3){font-family:var(--trama-font-display,Montserrat,sans-serif);font-weight:800;line-height:1.2;letter-spacing:-.04em}
+.app-modal-body :deep(h2),.app-modal-body :deep(h3){font-family:var(--trama-font-display,Montserrat,sans-serif);font-weight:600;line-height:1.2;letter-spacing:-.02em}
 .app-modal-body :deep(p){font-size:14px;line-height:1.65;color:rgb(var(--cm-fg-muted))}
 .app-modal-body :deep(.v-btn){min-height:40px}
 @media(max-width:600px){.app-modal{padding:22px!important}.app-modal-close{top:14px;right:14px;min-width:44px;min-height:44px}.app-modal-signature{margin-bottom:26px}.app-modal-body :deep(p){font-size:16px}.app-modal-body :deep(.v-btn){min-height:44px}}

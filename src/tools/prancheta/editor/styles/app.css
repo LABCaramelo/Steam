@@ -20,7 +20,7 @@ svg { vertical-align: middle; }
 .file-name { display: flex; align-items: center; gap: 9px; border-radius: 5px; font-weight: 550; padding: 7px; max-width: 430px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .file-name-input { width: 280px; padding: 7px; background: var(--input); border-radius: 4px; }
 .local-badge { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 10px; margin-left: 1px; }
-.header-back-btn { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 6px; font-size: 11px; font-weight: 550; color: var(--text); background: var(--surface); border: 1px solid var(--border); cursor: pointer; white-space: nowrap; transition: all .15s ease; }
+.header-back-btn { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 6px; font-size: 11px; font-weight: 550; color: var(--text); background: var(--surface); border: 1px solid var(--border); cursor: pointer; white-space: nowrap; transition: opacity .15s ease, transform .15s ease, background .15s ease, border-color .15s ease; }
 .header-back-btn:hover:not(:disabled) { background: var(--surface-hover); border-color: var(--blue); color: var(--blue); }
 .header-back-btn:disabled { opacity: .5; cursor: wait; }
 .header-save-slot { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; }
@@ -152,7 +152,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   font-size: 12px;
   font-weight: 550;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: opacity 0.12s ease, transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .pp-type-trigger:hover,
@@ -199,7 +199,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   cursor: pointer;
   background: transparent;
   text-align: left;
-  transition: all 0.12s ease;
+  transition: opacity 0.12s ease, transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .pp-type-item:hover {
@@ -390,7 +390,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   cursor: pointer;
   flex-shrink: 0;
   padding: 0;
-  transition: all 0.12s ease;
+  transition: opacity 0.12s ease, transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .cp-pipette-btn:hover {
@@ -418,7 +418,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   border: 1px solid rgba(255, 112, 26, 0.3);
   background: rgba(255, 112, 26, 0.08);
   color: #ff9b50;
-  transition: all 0.14s ease;
+  transition: opacity 0.14s ease, transform 0.14s ease, background 0.14s ease, border-color 0.14s ease;
 }
 
 .cp-ai-btn:hover:not(:disabled) {
@@ -547,7 +547,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   color: var(--muted);
   border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: opacity 0.12s ease, transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .cp-grad-btn:hover {
@@ -601,7 +601,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   border-radius: 4px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: opacity 0.12s ease, transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .pp-scale-mode-btn:hover {
@@ -1062,7 +1062,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 @media (max-width: 760px) { :root { --panel-width: 200px; } .right-panel { display: none; } .file-name { max-width: 40vw; } .save-copy { font-size: 10px; padding: 6px 8px; } }
 @media (max-width: 520px) { .left-panel { display: none; } .header-divider { display: none; } .app-header > .icon-btn { display: none; } .file-name { max-width: 48vw; } }
 
-.pr-editor-beta-tag { font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--cm-accent, 255 112 26)); background: rgb(var(--cm-accent, 255 112 26) / 0.12); border: 1px solid rgb(var(--cm-accent, 255 112 26) / 0.35); border-radius: 999px; padding: 1px 6px; display: inline-flex; align-items: center; line-height: 1.4; }
+.pr-editor-beta-tag { font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--cm-accent, 255 112 26)); background: rgb(var(--cm-accent, 255 112 26) / 0.12); border: 1px solid rgb(var(--cm-accent, 255 112 26) / 0.35); border-radius: 6px; padding: 1px 6px; display: inline-flex; align-items: center; line-height: 1.4; }
 
 /* Carousel Controls & Badges (Caramelo V1 2026) */
 .carousel-card {
@@ -1121,7 +1121,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   color: #FFF4E8;
   border: none;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
 .carousel-stepper-btn:hover:not(:disabled) {
@@ -1166,7 +1166,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #FFF4E8;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: opacity 0.12s ease, transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .carousel-chip:hover {

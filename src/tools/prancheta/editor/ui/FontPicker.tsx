@@ -188,7 +188,7 @@ export function FontPicker({ value, mixed, onChange }: FontPickerProps) {
             />
             {search && (
               <button className="font-picker-clear-btn" onClick={() => setSearch('')} title="Limpar busca">
-                ✕
+                <I.IconClose size={12} />
               </button>
             )}
           </div>

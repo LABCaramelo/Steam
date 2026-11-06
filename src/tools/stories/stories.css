@@ -126,7 +126,7 @@ html, body.stories-body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .stories-topbar__btn:hover {
@@ -178,7 +178,7 @@ html, body.stories-body {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .stories-topbar__pill-btn.is-active {
@@ -196,7 +196,7 @@ html, body.stories-body {
 .stories-topbar__btn--export {
   background: var(--stories-primary);
   color: #101014;
-  font-weight: 800;
+  font-weight: 600;
   font-size: 13px;
   padding: 0 16px;
   width: auto;
@@ -242,7 +242,7 @@ html, body.stories-body {
   background: rgba(255, 112, 26, 0.15);
   color: var(--stories-primary);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   padding: 4px 8px;
   border-radius: 12px;
 }
@@ -265,7 +265,7 @@ html, body.stories-body {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .bottom-bar-action-btn:hover {
@@ -375,7 +375,7 @@ html, body.stories-body {
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .drawer-tab-btn.is-active {
@@ -417,7 +417,7 @@ html, body.stories-body {
   gap: 14px;
   text-align: left;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .widget-card-btn:hover {
@@ -464,7 +464,7 @@ html, body.stories-body {
   padding: 12px 22px;
   border-radius: 30px;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
   font-family: 'Space Grotesk', sans-serif;
   cursor: pointer;
   transition: transform 0.15s ease;
@@ -574,7 +574,7 @@ html, body.stories-body {
   gap: 10px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
 .media-dropzone-btn:hover {
@@ -635,7 +635,7 @@ html, body.stories-body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .text-editor-icon-btn.is-active {
@@ -648,7 +648,7 @@ html, body.stories-body {
 }
 
 .mode-btn-a {
-  font-weight: 800;
+  font-weight: 600;
   font-size: 18px;
 }
 
@@ -665,7 +665,7 @@ html, body.stories-body {
   border: none;
   padding: 8px 20px;
   border-radius: 24px;
-  font-weight: 800;
+  font-weight: 600;
   font-size: 14px;
   display: flex;
   align-items: center;
@@ -754,7 +754,7 @@ html, body.stories-body {
   font-size: 16px;
   white-space: nowrap;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .font-pill-btn.is-selected {
@@ -785,7 +785,7 @@ html, body.stories-body {
 .color-swatch-circle.is-active {
   transform: scale(1.25);
   border-color: #FFFFFF;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
 }
 
 /* BRAND KIT DRAWER */
@@ -829,7 +829,7 @@ html, body.stories-body {
   border: none;
   padding: 14px;
   border-radius: 16px;
-  font-weight: 800;
+  font-weight: 600;
   font-size: 15px;
   display: flex;
   align-items: center;
@@ -1016,7 +1016,7 @@ html, body.stories-body {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .font-select-card.is-active {
@@ -1093,7 +1093,7 @@ html, body.stories-body {
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
   display: flex;
   flex-direction: column;
 }
@@ -1129,7 +1129,7 @@ html, body.stories-body {
   background: var(--stories-primary);
   color: #101014;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   padding: 4px 8px;
   border-radius: 8px;
 }
@@ -1216,7 +1216,7 @@ html, body.stories-body {
   gap: 6px;
   color: #FFF;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .export-format-btn.is-active {
@@ -1264,14 +1264,14 @@ html, body.stories-body {
   border: none;
   padding: 16px;
   border-radius: 18px;
-  font-weight: 800;
+  font-weight: 600;
   font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .main-export-submit-btn:disabled {
@@ -1625,7 +1625,7 @@ html, body.stories-body {
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
   white-space: nowrap;
 }
 
@@ -1720,7 +1720,7 @@ html, body.stories-body {
   border-radius: 14px;
   min-width: 68px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .day-tab-pill strong {
@@ -1785,7 +1785,7 @@ html, body.stories-body {
 .day-title-wrap h3 {
   margin: 0;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.3px;
   color: #FFF;
 }
@@ -1812,7 +1812,7 @@ html, body.stories-body {
   border-radius: 20px;
   padding: 14px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1823,7 +1823,7 @@ html, body.stories-body {
 .figma-story-card:hover {
   transform: translateY(-4px);
   border-color: #0D99FF; /* Figma Selection Blue */
-  box-shadow: 0 14px 35px rgba(13, 153, 255, 0.2);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
 }
 
 .figma-card__label-bar {
@@ -1840,7 +1840,7 @@ html, body.stories-body {
 
 .frame-number {
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--stories-text-muted);
 }
 
@@ -1919,7 +1919,7 @@ html, body.stories-body {
 
 .mini-badge {
   font-size: 8px;
-  font-weight: 800;
+  font-weight: 600;
   padding: 3px 8px;
   border-radius: 10px;
   white-space: nowrap;
@@ -1964,12 +1964,12 @@ html, body.stories-body {
   padding: 8px 14px;
   border-radius: 20px;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 112, 26, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .figma-card__briefing {
@@ -2000,7 +2000,7 @@ html, body.stories-body {
 .daily-header-card h2 {
   margin: 0 0 6px;
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 600;
   color: #FFF;
 }
 
@@ -2040,7 +2040,7 @@ html, body.stories-body {
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .back-to-board-btn:hover {
@@ -2155,7 +2155,7 @@ html, body.stories-body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.18s ease;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
   flex-shrink: 0;
   touch-action: manipulation;
@@ -2309,7 +2309,7 @@ html, body.stories-body {
   padding: 10px 16px;
   border-radius: 30px;
   cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.18s ease;
   color: #FFF4E8;
   font-size: 13px;
   font-weight: 700;
@@ -2357,7 +2357,7 @@ html, body.stories-body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: opacity 0.18s ease, transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
   flex-shrink: 0;
 }
@@ -2393,7 +2393,7 @@ html, body.stories-body {
   align-items: center;
   justify-content: center;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.2s ease;
 }
 
 .trash-label {
@@ -2410,7 +2410,7 @@ html, body.stories-body {
   background: #FF3B30;
   border-color: #FF3B30;
   transform: scale(1.3);
-  box-shadow: 0 0 25px rgba(255, 59, 48, 0.8);
+  box-shadow: 0 0 0 2px #ff3b30, 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .story-trash-bin.is-hovered .trash-label {
@@ -2489,13 +2489,13 @@ html, body.stories-body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .brush-icon-btn.is-active {
   background: var(--stories-primary);
   color: #101014;
-  box-shadow: 0 0 14px rgba(255, 112, 26, 0.5);
+  box-shadow: 0 0 0 1px #ff701a, 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 .drawing-topbar-right {
@@ -2529,7 +2529,7 @@ html, body.stories-body {
   border-radius: 20px;
   padding: 8px 16px;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -2652,13 +2652,13 @@ html, body.stories-body {
   justify-content: center;
   position: relative;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.2s ease;
 }
 
 .filter-bubble-item.is-active .filter-bubble-preview {
   border-color: #FF701A;
   transform: scale(1.12);
-  box-shadow: 0 0 20px rgba(255, 112, 26, 0.6);
+  box-shadow: 0 0 0 1px #ff701a, 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 .filter-bubble-check {
@@ -2711,7 +2711,7 @@ html, body.stories-body {
 
 .intensity-value {
   color: #FF701A;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .filter-range-slider {

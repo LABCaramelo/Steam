@@ -13,7 +13,7 @@
 .trama-root{min-height:100dvh;background:rgb(var(--cm-stage));isolation:isolate}
 .trama-root .v-application{background:rgb(var(--cm-stage));color:rgb(var(--cm-fg));font-family:var(--trama-font-ui)}
 .trama-root .v-main{min-height:100dvh}
-:where(.trama-root,.trama-overlay) :is(h1,h2,h3,h4){font-family:var(--trama-font-display);font-weight:800;letter-spacing:-.04em;text-wrap:balance}
+:where(.trama-root,.trama-overlay) :is(h1,h2,h3,h4){font-family:var(--trama-font-display);font-weight:600;letter-spacing:-.02em;text-wrap:balance}
 :where(.trama-root,.trama-overlay) :is(p,small,label){text-wrap:pretty}
 :where(.trama-root,.trama-overlay) :is(button,a,input,select,textarea,[tabindex]):focus-visible{outline:2px solid rgb(var(--cm-focus));outline-offset:3px}
 :where(.trama-root,.trama-overlay) input:focus,:where(.trama-root,.trama-overlay) select:focus,:where(.trama-root,.trama-overlay) textarea:focus{border-color:rgb(var(--cm-focus));box-shadow:0 0 0 3px rgb(var(--cm-focus)/.12)}

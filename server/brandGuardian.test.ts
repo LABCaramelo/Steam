@@ -274,3 +274,98 @@ describe("Brand Guardian — Validação Estrutural da Migration DDL e RLS", () 
     assert.ok(sqlContent.includes("idx_brand_guardian_releases_brand"));
   });
 });
+
+describe("Brand Guardian — Component Studio Engine & DaisyUI 5", () => {
+  const brand: Brand = {
+    id: "b-caramelo",
+    name: "Caramelo Studio",
+    slug: "caramelo-studio",
+    kind: "agency",
+    description: "Estúdio de Interação",
+    status: "published",
+    logo_url: "/logo.svg",
+    primary_color: "#FF701A",
+    accent_color: "#25BFFF",
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+
+  const brandData = createDefaultBrandData("Caramelo Studio", "#FF701A");
+
+  test("Biblioteca de componentes DaisyUI inclui todos os componentes essenciais", async () => {
+    const { CANONICAL_DAISY_COMPONENTS } = await import("../src/tools/brand-guardian/componentStudioEngine.ts");
+    assert.ok(CANONICAL_DAISY_COMPONENTS.length >= 18);
+
+    const requiredTags = [
+      "btn",
+      "modal",
+      "drawer",
+      "dropdown",
+      "tooltip",
+      "table",
+      "join",
+      "skeleton",
+      "toast",
+      "loading",
+      "steps",
+      "tabs",
+      "collapse",
+      "breadcrumbs",
+      "alert",
+      "progress",
+    ];
+
+    for (const tag of requiredTags) {
+      const found = CANONICAL_DAISY_COMPONENTS.some((c) => c.daisyTag === tag);
+      assert.ok(found, `Componente com tag '${tag}' deve estar presente na biblioteca`);
+    }
+  });
+
+  test("Exportador de Tema DaisyUI 5 gera sintaxe oficial @plugin 'daisyui/theme'", async () => {
+    const { exportDaisyUi5ThemeCss } = await import("../src/tools/brand-guardian/componentStudioEngine.ts");
+    const css = exportDaisyUi5ThemeCss(brand, brandData);
+
+    assert.ok(css.includes('@plugin "daisyui"'));
+    assert.ok(css.includes('@plugin "daisyui/theme"'));
+    assert.ok(css.includes('name: "caramelo-studio"'));
+    assert.ok(css.includes("--color-primary: #FF701A"));
+    assert.ok(css.includes("--color-accent: #25BFFF"));
+    assert.ok(css.includes("--color-base-100: #101014"));
+  });
+
+  test("Exportador DaisyUI 4 gera configuração compatível com Tailwind v3", async () => {
+    const { exportDaisyUi4TailwindConfig } = await import("../src/tools/brand-guardian/componentStudioEngine.ts");
+    const config = exportDaisyUi4TailwindConfig(brand, brandData);
+
+    assert.ok(config.includes('plugins: [require("daisyui")]'));
+    assert.ok(config.includes('"caramelo-studio": {'));
+    assert.ok(config.includes('"primary": "#FF701A"'));
+    assert.ok(config.includes('"accent": "#25BFFF"'));
+  });
+
+  test("Exportador de manifesto package.json declara dependências limpas", async () => {
+    const { exportComponentPackageJson } = await import("../src/tools/brand-guardian/componentStudioEngine.ts");
+    const jsonStr = exportComponentPackageJson(brand, "1.2.0");
+    const pkg = JSON.parse(jsonStr);
+
+    assert.equal(pkg.name, "@caramelo-studio/design-system");
+    assert.equal(pkg.version, "1.2.0");
+    assert.ok(pkg.peerDependencies.daisyui);
+    assert.ok(pkg.peerDependencies.tailwindcss);
+  });
+
+  test("Gerador de snippets produz marcação oficial DaisyUI 5 para botões e modais", async () => {
+    const { CANONICAL_DAISY_COMPONENTS, generateDaisyUi5Snippet } = await import(
+      "../src/tools/brand-guardian/componentStudioEngine.ts"
+    );
+
+    const btnComp = CANONICAL_DAISY_COMPONENTS.find((c) => c.id === "btn")!;
+    const btnSnippet = generateDaisyUi5Snippet(btnComp, { ...btnComp.defaultProps, variant: "primary", size: "sm" }, brand);
+    assert.ok(btnSnippet.includes("btn btn-primary btn-sm"));
+
+    const modalComp = CANONICAL_DAISY_COMPONENTS.find((c) => c.id === "modal")!;
+    const modalSnippet = generateDaisyUi5Snippet(modalComp, { ...modalComp.defaultProps, open: true }, brand);
+    assert.ok(modalSnippet.includes("modal modal-open"));
+    assert.ok(modalSnippet.includes("modal-box"));
+  });
+});

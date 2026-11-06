@@ -1058,3 +1058,361 @@
   overflow-x: auto;
   max-height: 180px;
 }
+
+/* ==============================================================================
+   Component Studio Workspace Layout & Official DaisyUI Runtime Support
+   ============================================================================== */
+
+.component-studio-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.component-studio-workspace {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .component-studio-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+.component-directory {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+}
+
+.component-dir-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.component-dir-item:hover {
+  border-color: var(--border-accent);
+  background: var(--bg-elevated);
+}
+
+.component-dir-item.active {
+  border-color: var(--accent-caramel);
+  background: rgba(255, 112, 26, 0.12);
+  color: var(--accent-caramel);
+  font-weight: 700;
+}
+
+/* Interactive Stage & Canvas Viewports */
+.component-stage-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.component-stage-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 16px;
+}
+
+.viewport-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  transition: all 0.2s ease;
+}
+
+.viewport-canvas {
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 24px;
+  border-radius: var(--b-radius, 10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.viewport-canvas[data-viewport="desktop"] {
+  width: 100%;
+  max-width: 100%;
+}
+
+.viewport-canvas[data-viewport="tablet"] {
+  width: 768px;
+  max-width: 100%;
+}
+
+.viewport-canvas[data-viewport="mobile"] {
+  width: 375px;
+  max-width: 100%;
+}
+
+/* Canvas Theme Scoping */
+.viewport-canvas[data-theme="dark"] {
+  background: var(--brand-surface, #101014);
+  color: var(--brand-text, #fff4e8);
+}
+
+.viewport-canvas[data-theme="light"] {
+  background: #fbf8f5;
+  color: #101014;
+}
+
+/* Official DaisyUI Class Equivalents inside Stage */
+.bg-daisy-stage .btn,
+.viewport-canvas .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+  border-radius: var(--b-radius, 10px);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  font-family: inherit;
+}
+
+.viewport-canvas .btn-primary {
+  background: var(--b-primary, #ff701a);
+  color: #101014;
+}
+
+.viewport-canvas .btn-primary:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.viewport-canvas .btn-accent {
+  background: var(--b-accent, #25bfff);
+  color: #101014;
+}
+
+.viewport-canvas .btn-secondary {
+  background: var(--b-surface, #1f1f27);
+  color: var(--b-text, #fff4e8);
+  border: 1px solid var(--border-subtle);
+}
+
+.viewport-canvas .btn-outline {
+  background: transparent;
+  border-color: var(--b-primary, #ff701a);
+  color: var(--b-primary, #ff701a);
+}
+
+.viewport-canvas .btn-outline:hover {
+  background: var(--b-primary, #ff701a);
+  color: #101014;
+}
+
+.viewport-canvas .btn-ghost {
+  background: transparent;
+  color: inherit;
+}
+
+.viewport-canvas .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.viewport-canvas .btn-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* DaisyUI Badge */
+.viewport-canvas .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+
+.viewport-canvas .badge-primary {
+  background: var(--b-primary, #ff701a);
+  color: #101014;
+}
+
+.viewport-canvas .badge-accent {
+  background: var(--b-accent, #25bfff);
+  color: #101014;
+}
+
+.viewport-canvas .badge-outline {
+  background: transparent;
+  border-color: var(--b-primary, #ff701a);
+  color: var(--b-primary, #ff701a);
+}
+
+/* DaisyUI Join (Pagination) */
+.viewport-canvas .join {
+  display: inline-flex;
+  border-radius: var(--b-radius, 8px);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.viewport-canvas .join-item {
+  border-radius: 0 !important;
+  border: none;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.viewport-canvas .join-item:last-child {
+  border-right: none;
+}
+
+/* DaisyUI Skeleton */
+.viewport-canvas .skeleton {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--b-radius, 8px);
+  animation: pulse-skeleton 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-skeleton {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.25; }
+  100% { opacity: 0.6; }
+}
+
+/* DaisyUI Loading */
+.viewport-canvas .loading {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--b-primary, #ff701a);
+  border-radius: 50%;
+  animation: spin-loading 0.8s linear infinite;
+}
+
+@keyframes spin-loading {
+  to { transform: rotate(360deg); }
+}
+
+/* DaisyUI Steps */
+.viewport-canvas .steps {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.viewport-canvas .step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.viewport-canvas .step-primary {
+  color: var(--b-primary, #ff701a);
+}
+
+.viewport-canvas .step-primary::before {
+  content: "✓";
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--b-primary, #ff701a);
+  color: #101014;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+/* DaisyUI Tooltip */
+.viewport-canvas .tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.viewport-canvas .tooltip:hover::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #101014;
+  color: #fff4e8;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--b-primary, #ff701a);
+  z-index: 10;
+}
+
+/* DaisyUI Table */
+.viewport-canvas .table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.viewport-canvas .table th,
+.viewport-canvas .table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.viewport-canvas .table-zebra tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Modal Dialog Preview inside Stage */
+.viewport-canvas .modal-box {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--b-radius, 12px);
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  max-width: 480px;
+  width: 100%;
+}
+
+.viewport-canvas .modal-action {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
