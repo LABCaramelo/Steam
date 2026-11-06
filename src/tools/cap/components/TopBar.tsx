@@ -44,7 +44,7 @@ export function TopBar({
     <header className="cap-topbar">
       <div className="cap-brand">
         <div className="cap-logo-badge" title="Cap — Screen Studio do LAB">
-          <Isotype variant="spectrum" size={22} decorative interactive />
+          <Isotype size={28} variant="caramel" decorative interactive />
         </div>
         <div className="cap-brand-meta">
           <div className="cap-brand-title">Cap · LAB</div>

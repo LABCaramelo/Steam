@@ -54,18 +54,13 @@ export function LibraryDrawer({
       >
         <div
           style={{
-            width: 64,
-            height: 64,
             borderRadius: "var(--cm-radius-xl)",
-            background: "rgb(var(--cm-surface-2))",
-            border: "1px solid rgb(var(--cm-line))",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 4px 16px rgb(var(--cm-accent) / 0.15)",
+            boxShadow: "0 8px 24px rgb(var(--cm-accent) / 0.35)",
+            display: "inline-flex",
+            overflow: "hidden",
           }}
         >
-          <Isotype variant="spectrum" size={36} decorative interactive />
+          <Isotype size={56} variant="caramel" decorative interactive />
         </div>
         <div style={{ textAlign: "center", maxWidth: 400 }}>
           <div style={{ fontSize: 18, fontWeight: 800, color: "rgb(var(--cm-fg))" }}>
