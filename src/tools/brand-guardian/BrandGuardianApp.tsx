@@ -29,6 +29,20 @@ import {
   Moon,
   BookOpen,
   Upload,
+  Check,
+  Search,
+  Share2,
+  Star,
+  Info,
+  AlertTriangle,
+  Code2,
+  UserCheck,
+  ChevronRight,
+  MessageSquare,
+  Bell,
+  Heart,
+  Eye,
+  ArrowUpRight,
 } from "lucide-react";
 
 import { useToast } from "../shared/kit";
