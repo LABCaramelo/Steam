@@ -51,60 +51,63 @@ export function StoreToolPage() {
         <p className="store-tool__tagline">{store.tagline}</p>
       </header>
 
-      <div className="store-tool__top">
-        <PointerTrail className="store-tool__hero">
-          <AppArt app={app} kind="hero" className="store-tool__hero-bg" aria-hidden="true" fallbackLabel={false} />
-          <AppArt app={app} kind="hero" className="store-tool__hero-img" fallbackLabel={false} />
-        </PointerTrail>
+      <div className="store-tool__layout">
+        <div className="store-tool__main">
+          <PointerTrail className="store-tool__hero">
+            <AppArt app={app} kind="hero" className="store-tool__hero-bg" aria-hidden="true" fallbackLabel={false} />
+            <AppArt app={app} kind="hero" className="store-tool__hero-img" fallbackLabel={false} />
+          </PointerTrail>
 
-        <aside className="store-tool__buy cm-surface cm-surface--spotlight">
-          <AppArt app={app} kind="header" className="store-tool__buy-art" />
-          <p className="store-tool__desc">{app.tool.description}</p>
-          <dl className="store-tool__facts">
-            {[["Por", app.developer ?? "Um Cara Caramelo"], ["Categoria", store.category], ...store.about].map(([label, value]) => (
-              <div key={label} className="store-tool__fact">
-                <dt>{label}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
-          </dl>
-          <div className="store-tool__price">
-            <OwnedBadge owned={owned} available={available} stage={app.tool.stage} />
-            <span className="store-tool__price-note">{accessNote}</span>
+          <section className="store-tool__intro" aria-label="Apresentação da ferramenta">
+            <span className="tool-details__eyebrow">{store.eyebrow}</span>
+            <TiltSurface max={2.5}>
+              <h2 className="store-tool__headline">
+                {store.headline.split("\n").map((line: string, i: number) => (
+                  <span key={i}>{line}</span>
+                ))}
+              </h2>
+            </TiltSurface>
+            <div className="tool-details__features">
+              {store.features.map((f: { title: string; text: string }) => (
+                <div key={f.title} className="cm-surface--spotlight">
+                  <h3>{f.title}</h3>
+                  <p>{f.text}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <aside className="store-tool__sidebar">
+          <div className="store-tool__buy cm-surface cm-surface--spotlight">
+            <AppArt app={app} kind="header" className="store-tool__buy-art" />
+            <p className="store-tool__desc">{app.tool.description}</p>
+            <dl className="store-tool__facts">
+              {[["Por", app.developer ?? "Um Cara Caramelo"], ["Categoria", store.category], ...store.about].map(([label, value]) => (
+                <div key={label} className="store-tool__fact">
+                  <dt>{label}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="store-tool__price">
+              <OwnedBadge owned={owned} available={available} stage={app.tool.stage} />
+              <span className="store-tool__price-note">{accessNote}</span>
+            </div>
+            <AcquireButton app={app} size="lg" block />
+            <p className="store-tool__data">{store.dataNote}</p>
           </div>
-          <AcquireButton app={app} size="lg" block />
-          <p className="store-tool__data">{store.dataNote}</p>
+
+          <section className="panel store-tool__steps">
+            <h2 className="panel__title">Como funciona</h2>
+            <ol className="tool-details__steps">
+              {store.steps.map((step: string) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+          </section>
         </aside>
       </div>
-
-      <section className="store-tool__body">
-        <div className="store-tool__intro">
-          <span className="tool-details__eyebrow">{store.eyebrow}</span>
-          <TiltSurface max={2.5}>
-            <h2 className="store-tool__headline">
-              {store.headline.split("\n").map((line: string, i: number) => (
-                <span key={i}>{line}</span>
-              ))}
-            </h2>
-          </TiltSurface>
-          <div className="tool-details__features">
-            {store.features.map((f: { title: string; text: string }) => (
-              <div key={f.title} className="cm-surface--spotlight">
-                <h3>{f.title}</h3>
-                <p>{f.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <section className="panel store-tool__steps">
-          <h2 className="panel__title">Como funciona</h2>
-          <ol className="tool-details__steps">
-            {store.steps.map((step: string) => (
-              <li key={step}>{step}</li>
-            ))}
-          </ol>
-        </section>
-      </section>
     </div>
   );
 }
