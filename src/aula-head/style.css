@@ -59,7 +59,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   font-family: Montserrat,sans-serif;
   font-size: 17px;
   line-height: .96;
-  font-weight: 900;
+  font-weight: 700;
   text-decoration: none;
   letter-spacing: -.7px;
   position: relative;
@@ -123,7 +123,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .lesson-number {
   font-family: Montserrat,sans-serif;
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -1.4px;
   color: #5b5959;
 }
@@ -201,7 +201,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .slide-header h1 {
   font-family: Montserrat,Inter,sans-serif;
   font-size: clamp(21px,2.95cqw,52px);
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1.08;
   letter-spacing: -.085cqw;
   max-width: 92%;
@@ -224,7 +224,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .experiment h2 {
   font-family: Montserrat,Inter,sans-serif;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -.06cqw;
   font-size: 2.35cqw;
   line-height: 1.12;
@@ -483,7 +483,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   display: block;
   font-size: 2.25cqw;
   letter-spacing: -.12cqw;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1.05;
   width: 70%;
   margin: 1.1cqw 0;
@@ -513,7 +513,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .mini-orbit {
   font-size: 14cqw;
-  font-weight: 900;
+  font-weight: 700;
   position: absolute;
   right: -.3cqw;
   top: 2.5cqw;
@@ -824,7 +824,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   font-family: Montserrat,sans-serif;
   font-size: 1.7cqw;
   margin: .5cqw 0;
-  font-weight: 800;
+  font-weight: 600;
 }
 .section-detail>p {
   font-size: .95cqw;
@@ -1086,7 +1086,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .hero-logo {
   font-family: Montserrat,sans-serif;
-  font-weight: 800;
+  font-weight: 600;
   font-size: .85cqw;
   padding: .2cqw 0;
   position: relative;
@@ -1096,7 +1096,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   position: absolute;
   font-family: Montserrat,sans-serif;
   font-size: 27cqw;
-  font-weight: 900;
+  font-weight: 700;
   right: -1.2cqw;
   top: 1cqw;
   line-height: 1;
@@ -1117,7 +1117,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .hero-headline {
   font-family: Montserrat,sans-serif;
   font-size: 3.4cqw;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: -.14cqw;
   line-height: 1.07;
   margin: 0 0 .8cqw;
@@ -1406,7 +1406,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   font-size: 2cqw;
   line-height: 1;
   letter-spacing: -.08cqw;
-  font-weight: 900;
+  font-weight: 700;
   white-space: pre-line;
   position: relative;
   z-index: 1;
@@ -1976,7 +1976,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .kinetic-headline {
   font-family: Montserrat,sans-serif;
   font-size: 3.5cqw;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: -.15cqw;
   line-height: 1.02;
   display: flex;
@@ -2017,7 +2017,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   font-size: 6cqw;
   line-height: 1;
   color: #101014;
-  font-weight: 800;
+  font-weight: 600;
 }
 .scroll-transform>.range-label {
   width: 100%;
@@ -2274,7 +2274,7 @@ textarea {
 .modal-header h2 {
   font-family: Montserrat,sans-serif;
   font-size: 21px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -.6px;
   margin: 0;
 }

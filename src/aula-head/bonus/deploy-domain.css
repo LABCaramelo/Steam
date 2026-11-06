@@ -254,7 +254,7 @@
 }
 .deploy-phases>li>span {
   font-size: 1.6cqw;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1;
 }
 .deploy-phases b {
@@ -569,7 +569,7 @@
 }
 .domain-dns-path>div>span {
   font-size: 1.8cqw;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--accent);
 }
 .domain-dns-path b {

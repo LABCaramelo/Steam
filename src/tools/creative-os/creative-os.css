@@ -79,7 +79,7 @@
   background: linear-gradient(135deg, var(--cos-accent), #e65c00);
   border-radius: var(--cos-radius-sm);
   color: #101014;
-  font-weight: 900;
+  font-weight: 700;
   font-size: 18px;
   box-shadow: 0 4px 12px rgba(255, 112, 26, 0.3);
 }
@@ -87,7 +87,7 @@
 .cos-brand__title {
   font-family: Montserrat, sans-serif;
   font-size: 15px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0;
 }
@@ -108,7 +108,7 @@
   padding: 6px 14px;
   background-color: var(--cos-surface-2);
   border: 1px solid var(--cos-border);
-  border-radius: 999px;
+  border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
 }
@@ -145,7 +145,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .cos-nav__item:hover {
@@ -186,7 +186,7 @@
 .cos-view-header__title {
   font-family: Montserrat, sans-serif;
   font-size: 24px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: -0.03em;
   margin: 0 0 6px 0;
 }
@@ -270,7 +270,7 @@
 .cos-kpi-card__value {
   font-family: Montserrat, sans-serif;
   font-size: 28px;
-  font-weight: 900;
+  font-weight: 700;
   color: var(--cos-text-primary);
   margin: 0;
 }
@@ -287,7 +287,7 @@
   align-items: center;
   gap: 5px;
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: 8px;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -315,7 +315,7 @@
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
   text-decoration: none;
 }
 
@@ -470,7 +470,7 @@
 
 .cos-calendar-card__title {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 600;
   margin: 0;
 }
 
@@ -511,7 +511,7 @@
 .cos-modal__title {
   font-family: Montserrat, sans-serif;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 600;
   margin: 0;
 }
 

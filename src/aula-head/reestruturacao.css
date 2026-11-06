@@ -75,7 +75,7 @@
   align-items: center;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
+  border-radius: 8px;
   padding: 3px;
   gap: 2px;
 }
@@ -88,11 +88,11 @@
   border: none;
   color: #8e8d9b;
   padding: 5px 12px;
-  border-radius: 999px;
+  border-radius: 8px;
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
   white-space: nowrap;
 }
 
@@ -202,7 +202,7 @@
   background: #ff701a;
   color: #101014;
   font-size: 0.62rem;
-  font-weight: 800;
+  font-weight: 600;
   padding: 1px 4px;
   border-radius: 3px;
   line-height: 1;
@@ -782,7 +782,7 @@
   border-radius: 6px;
   cursor: pointer;
   font-size: clamp(10px, 0.85cqw, 13px);
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
 }
 
 .return-check-item.checked {
@@ -959,7 +959,7 @@
   gap: 6px !important;
   font-family: Montserrat, Inter, sans-serif !important;
   font-size: 10px !important;
-  font-weight: 800 !important;
+  font-weight: 600 !important;
   letter-spacing: 0.12em !important;
   text-transform: uppercase !important;
   color: var(--lesson-accent, #fff) !important;
@@ -980,7 +980,7 @@
   flex-direction: column !important;
   font-family: Montserrat, sans-serif !important;
   font-size: clamp(14px, 1.25vw, 18px) !important;
-  font-weight: 900 !important;
+  font-weight: 700 !important;
   line-height: 1.12 !important;
   letter-spacing: -0.025em !important;
   color: #ffffff !important;
@@ -990,7 +990,7 @@
 
 .head-intro .mini-card-title .title-action {
   font-size: 0.85em !important;
-  font-weight: 800 !important;
+  font-weight: 600 !important;
   letter-spacing: 0.04em !important;
   color: rgba(255, 255, 255, 0.82) !important;
   text-transform: uppercase !important;
@@ -998,7 +998,7 @@
 
 .head-intro .mini-card-title .title-target {
   font-size: 1.05em !important;
-  font-weight: 900 !important;
+  font-weight: 700 !important;
   letter-spacing: -0.02em !important;
   color: #ffffff !important;
   text-transform: uppercase !important;

@@ -18,7 +18,7 @@ body.montagem-dark-theme { background:var(--bg-app);color:var(--text-main);heigh
 .montagem-header { position:relative;flex-shrink:0;gap:12px;height:var(--header-height);padding:0 14px; }
 .montagem-header::before { content:'';position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#FF701A 0% 20%,#25BFFF 20% 40%,#FF3D8D 40% 60%,#FFD52A 60% 80%,#8B5CFF 80%); }
 .header-left { min-width:0;gap:14px; }
-.montagem-brand { display:flex;align-items:center;gap:8px;color:var(--text-main);text-decoration:none;flex-shrink:0;font-family:Montserrat,sans-serif;font-size:16px;font-weight:800;letter-spacing:-.5px; }
+.montagem-brand { display:flex;align-items:center;gap:8px;color:var(--text-main);text-decoration:none;flex-shrink:0;font-family:Montserrat,sans-serif;font-size:16px;font-weight: 600;letter-spacing:-.5px; }
 .montagem-brand img { width:26px;height:26px; }
 .montagem-brand small { display:block;font:9px Inter,sans-serif;letter-spacing:.9px;margin-top:2px;color:var(--text-muted); }
 .montagem-divider { height:26px;width:1px;background:var(--border-color); }
