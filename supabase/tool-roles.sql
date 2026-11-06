@@ -8,7 +8,7 @@ alter type public.user_role add value if not exists 'beta';
 alter table public.lab_tools add column if not exists stage text;
 update public.lab_tools
 set stage = case when slug in (
-  'prancheta', 'automation', 'comunidade', 'gravador', 'montagem', 'creative-os',
+  'prancheta', 'automation', 'comunidade', 'montagem', 'creative-os',
   'gabinete', 'stories', 'logomotion', 'cap', 'voicestudio', 'caderno'
 ) then 'beta' else 'stable' end
 where stage is null;

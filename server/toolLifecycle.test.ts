@@ -83,21 +83,6 @@ test("Montagem cleanup deletes only the account's local project database", async
   } finally {browser.restore();}
 });
 
-test("No Ar cleanup removes only the released account's studio configuration", async () => {
-  const browser = browserFixture();
-  try {
-    const own = toolStorageKey("alice", "gravador", "studio");
-    const other = toolStorageKey("bruno", "gravador", "studio");
-    const otherTool = toolStorageKey("alice", "montagem", "studio");
-    for (const key of [own, other, otherTool]) browser.local.setItem(key, "scene configuration");
-    await clearToolLocalData({ userId: "alice", slug: "gravador", appid: 9 });
-    assert.equal(browser.local.getItem(own), null);
-    assert.equal(browser.local.getItem(other), "scene configuration");
-    assert.equal(browser.local.getItem(otherTool), "scene configuration");
-    assert.deepEqual(browser.databases, []);
-  } finally { browser.restore(); }
-});
-
 test("Kanban cleanup removes only the exact account selection", async () => {
   const browser = browserFixture();
   try {

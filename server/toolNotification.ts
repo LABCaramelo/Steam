@@ -149,20 +149,6 @@ export const KNOWN_LAB_TOOLS: Record<string, Partial<ToolNotificationData>> = {
     ],
     publicPage: "/tools/montagem",
   },
-  gravador: {
-    slug: "gravador",
-    name: "No Ar",
-    category: "Audiovisual",
-    stage: "beta",
-    tagline: "Estúdio web para compor cenas, capturar tela e câmera e transmitir ao vivo.",
-    description: "Estúdio web para compor cenas, capturar tela e câmera, misturar áudio, gravar vídeos e transmitir por WHIP.",
-    features: [
-      { title: "Cenas no Navegador", text: "Componha tela, webcam, mídias e textos em um estúdio completo." },
-      { title: "Preview & Program", text: "Prepare no preview e faça cortes suaves para o programa no ar." },
-      { title: "Gravação & Transmissão WHIP", text: "Grave localmente ou transmita para serviços ao vivo compatíveis." },
-    ],
-    publicPage: "/tools/gravador",
-  },
   kanban: {
     slug: "kanban",
     name: "Kanban",

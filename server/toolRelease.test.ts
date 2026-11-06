@@ -3,10 +3,10 @@ import test from "node:test";
 import { assertToolReleaseConfirmed, ToolReleaseError, toolReleaseFailure } from "../src/toolRelease.ts";
 
 test("release confirms only a matching authoritative server result, including an idempotent removal", () => {
-  assert.doesNotThrow(() => assertToolReleaseConfirmed({ slug: "gravador", removed: true }, "gravador"));
-  assert.doesNotThrow(() => assertToolReleaseConfirmed({ slug: "gravador", removed: false }, "gravador"));
-  for (const value of [null, undefined, true, [], {}, { slug: "gravador" }, { slug: "gravador", removed: "true" }, { slug: "kanban", removed: true }]) {
-    assert.throws(() => assertToolReleaseConfirmed(value, "gravador"), (error: unknown) => error instanceof ToolReleaseError && error.kind === "unconfirmed");
+  assert.doesNotThrow(() => assertToolReleaseConfirmed({ slug: "montagem", removed: true }, "montagem"));
+  assert.doesNotThrow(() => assertToolReleaseConfirmed({ slug: "montagem", removed: false }, "montagem"));
+  for (const value of [null, undefined, true, [], {}, { slug: "montagem" }, { slug: "montagem", removed: "true" }, { slug: "kanban", removed: true }]) {
+    assert.throws(() => assertToolReleaseConfirmed(value, "montagem"), (error: unknown) => error instanceof ToolReleaseError && error.kind === "unconfirmed");
   }
 });
 

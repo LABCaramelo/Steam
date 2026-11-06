@@ -608,7 +608,7 @@ begin
   if uid is null then
     raise exception 'Entre no LAB para remover ferramentas.' using errcode = '28000';
   end if;
-  if p_slug is null or p_slug not in ('prompt-library', 'kanban', 'prancheta', 'automation', 'academy', 'claquete', 'comunidade', 'gravador', 'montagem', 'creative-os') then
+  if p_slug is null or p_slug not in ('prompt-library', 'kanban', 'prancheta', 'automation', 'academy', 'claquete', 'comunidade', 'montagem', 'creative-os') then
     raise exception 'Ferramenta não encontrada.' using errcode = 'P0002';
   end if;
   perform 1 from public.user_tools where user_id = uid and tool_slug = p_slug for update;

@@ -208,7 +208,6 @@ export const CLAQUETE_APP = tool(CLAQUETE_APP_ID, "Claquete", {
 /** Store order. */
 
 export const ADMIN_APP_ID = 8;
-export const GRAVADOR_APP_ID = 9;
 export const STORIES_APP_ID = 14;
 
 export const STORIES_APP = tool(STORIES_APP_ID, "Stories Maker", {
@@ -260,40 +259,6 @@ export const MONTAGEM_APP = tool(MONTAGEM_APP_ID, "Montagem", {
     about:[["Formato","Editor de vídeo web"],["Versão","Beta"],["Legendas","Importação SRT"],["Exportação","WebM / MP4 conforme o navegador"]],
     dataNote:"Projetos e arquivos são salvos neste navegador, separados por conta. A exportação ocorre em tempo real. Não há sincronização na nuvem nem transcrição automática.",
     category:"Audiovisual",
-  },
-});
-
-export const GRAVADOR_APP = tool(GRAVADOR_APP_ID, "No Ar", {
-  slug: "gravador",
-  available: true,
-  stage: "beta",
-  launchPath: `/library/app/${GRAVADOR_APP_ID}/open`,
-  publicPage: "/tools/gravador",
-  description: "Estúdio web para compor cenas, capturar tela e câmera, misturar áudio, gravar vídeos e transmitir por WHIP.",
-  assets: art("/tools/gravador/art"),
-  store: {
-    tagline: "Seu próximo programa começa aqui.",
-    eyebrow: "AUDIOVISUAL / GRAVAÇÃO E TRANSMISSÃO / BETA",
-    headline: "Sua ideia.\nNo Ar.",
-    features: [
-      { title: "Monte seu estúdio", text: "Organize cenas com tela, webcam, arquivos de mídia, texto e cor. Posicione e ajuste cada fonte no canvas." },
-      { title: "Prepare antes de entrar", text: "Use PREVIEW e PROGRAM para ensaiar a próxima cena e fazer cortes ou transições durante o programa." },
-      { title: "Cuide do som", text: "Misture microfone e áudio das fontes com volumes independentes, mute e medidores em tempo real." },
-      { title: "Grave ou transmita", text: "Baixe a gravação em WebM ou MP4 conforme o navegador. Transmita por um endpoint WHIP HTTPS de serviço externo compatível." },
-    ],
-    steps: [
-      "Adquira o No Ar e abra seu estúdio pelo LAB.",
-      "Monte suas cenas e autorize as capturas que quiser usar.",
-      "Prepare no PREVIEW, envie ao PROGRAM e grave ou conecte seu serviço WHIP.",
-    ],
-    about: [
-      ["Formato", "Estúdio de gravação e transmissão web"],
-      ["Versão", "Beta"],
-      ["Exportação", "WebM / MP4 conforme o navegador"],
-      ["Transmissão", "WHIP HTTPS com serviço externo"],
-    ],
-    dataNote: "Configurações ficam neste navegador, separadas por conta; mídias precisam ser adicionadas novamente. Gravações são locais. A transmissão envia áudio e vídeo ao serviço WHIP escolhido; o token fica só na sessão. Captura, codecs e CORS dependem do navegador e do serviço. Sem sincronização de mídia na nuvem ou RTMP nativo.",
-    category: "Audiovisual",
   },
 });
 
@@ -552,7 +517,6 @@ export const TOOL_CATALOG: readonly LibraryApp[] = [
   COMUNIDADE_APP,
   GABINETE_APP,
   CLAQUETE_APP,
-  GRAVADOR_APP,
   MONTAGEM_APP,
   ACADEMY_APP,
   KANBAN_APP,

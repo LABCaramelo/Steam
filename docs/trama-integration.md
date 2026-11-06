@@ -13,7 +13,6 @@ Trama é a evolução da Automation a partir de `D:\meus documentos\Fiqon`, anal
 | Academy | Cursos, aulas e progresso |
 | Claquete | Projetos de cinema e vídeo com IA |
 | Comunidade | Canais, mensagens e voz |
-| No Ar | Composição, gravação e transmissão web |
 | Montagem | Edição e exportação de vídeo |
 | Creative OS | Clientes, projetos e operação criativa |
 | Administração do LAB | Catálogo e gestão |

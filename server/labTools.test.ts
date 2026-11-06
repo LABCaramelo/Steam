@@ -27,7 +27,6 @@ const TOOL_SLUGS = [
   "claquete",
   "comunidade",
   "admin",
-  "gravador",
   "montagem",
   "gabinete",
   "stories",
@@ -104,7 +103,7 @@ before(async () => {
 describe("loja e biblioteca", () => {
   test("o catálogo é público e a biblioteca começa vazia", async () => {
     const tools = await as(null, (tx) => rows<{ slug: string; available: boolean }>(tx, "select slug, available from public.lab_tools order by appid"));
-    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" || slug === "prancheta" || slug === "gravador" || slug === "montagem" || slug === "automation" })));
+    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" || slug === "prancheta" || slug === "montagem" || slug === "automation" })));
     const owned = await as(ALICE, (tx) => rows(tx, "select * from public.user_tools"));
     assert.equal(owned.length, 0);
   });
@@ -119,11 +118,11 @@ describe("loja e biblioteca", () => {
     await db.exec(sql("lab-tools.sql"));
 
     const tools = await as(null, (tx) => rows<{ slug: string; available: boolean }>(tx, "select slug, available from public.lab_tools order by appid"));
-    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" || slug === "prancheta" || slug === "gravador" || slug === "montagem" || slug === "automation" })));
+    assert.deepEqual(tools, TOOL_SLUGS.map((slug) => ({ slug, available: slug === "prompt-library" || slug === "prancheta" || slug === "montagem" || slug === "automation" })));
     const future = await db.query<{ available: boolean }>("insert into public.lab_tools (slug, appid, name) values ('futura', 99, 'Futura') returning available");
     assert.deepEqual(future.rows, [{ available: false }]);
     await db.exec("delete from public.lab_tools where slug = 'futura'");
-    for (const slug of TOOL_SLUGS.filter((s) => s !== "prompt-library" && s !== "prancheta" && s !== "gravador" && s !== "montagem" && s !== "automation")) {
+    for (const slug of TOOL_SLUGS.filter((s) => s !== "prompt-library" && s !== "prancheta" && s !== "montagem" && s !== "automation")) {
       assert.match(await rejects(ALICE, "select public.acquire_tool($1)", [slug]), /Em breve/);
     }
     assert.deepEqual(await as(PREVIOUS_OWNER, (tx) => rows(tx, "select * from public.user_tools")), [previous]);
@@ -157,25 +156,6 @@ describe("loja e biblioteca", () => {
     assert.deepEqual(await as(BRUNO,tx=>rows(tx,"select public.has_tool('montagem') as owned")),[{owned:false}]);
     await as(ALICE,tx=>tx.query("select public.release_tool('montagem')"));
     assert.deepEqual(await as(ALICE,tx=>rows(tx,"select public.has_tool('montagem') as owned")),[{owned:false}]);
-  });
-
-  test("instalação do No Ar preserva o catálogo e permite adquirir e remover só da própria conta", async () => {
-    await db.exec("update public.lab_tools set name = 'Gravador', available = false where slug = 'gravador'");
-    const before = (await db.query("select slug, available, price_cents from public.lab_tools order by appid")).rows;
-    assert.equal(sql("no-ar.sql"), sql("migrations/20261023013201_no_ar.sql"), "Script manual e migração devem ser equivalentes");
-    await db.exec(sql("no-ar.sql"));
-    await db.exec(sql("no-ar.sql"));
-    assert.deepEqual((await db.query("select slug, available, price_cents from public.lab_tools order by appid")).rows, before);
-    assert.deepEqual((await db.query("select appid, name from public.lab_tools where slug = 'gravador'")).rows, [{ appid: 9, name: "No Ar" }]);
-    await db.exec("update public.lab_tools set available = true where slug = 'gravador'");
-    await as(ALICE, (tx) => tx.query("select public.acquire_tool('gravador')"));
-    await as(BRUNO, (tx) => tx.query("select public.acquire_tool('gravador')"));
-    assert.deepEqual(await as(ALICE, (tx) => rows(tx, "select public.has_tool('gravador') as owned")), [{ owned: true }]);
-    assert.deepEqual(await as(ALICE, (tx) => rows(tx, "select public.release_tool('gravador') as result")), [{ result: { slug: "gravador", removed: true } }]);
-    assert.deepEqual(await as(ALICE, (tx) => rows(tx, "select public.release_tool('gravador') as result")), [{ result: { slug: "gravador", removed: false } }]);
-    assert.deepEqual(await as(BRUNO, (tx) => rows(tx, "select public.has_tool('gravador') as owned")), [{ owned: true }]);
-    assert.match(await rejects(null, "select public.release_tool('gravador')"), /permission denied/);
-    await as(BRUNO, (tx) => tx.query("select public.release_tool('gravador')"));
   });
 
   test("acquire_tool adiciona a ferramenta só para quem pediu", async () => {
@@ -519,7 +499,7 @@ describe("remoção de ferramentas e dados próprios", () => {
   });
 
   test("ferramentas com tabelas opcionais ausentes também podem ser removidas", async () => {
-    for (const slug of ["prompt-library", "claquete", "comunidade", "gravador", "montagem"]) {
+    for (const slug of ["prompt-library", "claquete", "comunidade", "montagem"]) {
       assert.deepEqual(await release(OWNER, slug), { slug, removed: true });
       assert.deepEqual(await release(OWNER, slug), { slug, removed: false });
     }

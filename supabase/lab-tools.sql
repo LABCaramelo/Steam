@@ -82,7 +82,6 @@ insert into public.lab_tools (slug, appid, name, available) values
   ('claquete', 6, 'Claquete', false),
   ('comunidade', 7, 'Comunidade', false),
   ('admin', 8, 'Administração do LAB', false),
-  ('gravador', 9, 'No Ar', true),
   ('montagem', 10, 'Montagem', true),
   ('gabinete', 11, 'Gabinete', false),
   ('stories', 14, 'Stories Maker', false),
@@ -738,7 +737,7 @@ begin
   if uid is null then
     raise exception 'Entre no LAB para remover ferramentas.' using errcode = '28000';
   end if;
-  if p_slug is null or p_slug not in ('prompt-library', 'kanban', 'prancheta', 'automation', 'academy', 'claquete', 'comunidade', 'gravador', 'montagem') then
+  if p_slug is null or p_slug not in ('prompt-library', 'kanban', 'prancheta', 'automation', 'academy', 'claquete', 'comunidade', 'montagem') then
     raise exception 'Ferramenta não encontrada.' using errcode = 'P0002';
   end if;
   perform 1 from public.user_tools where user_id = uid and tool_slug = p_slug for update;
