@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { BatchItem, VoicePreset, AudioTake } from "../types";
 import { synthesizeProceduralSpeech } from "../utils/audioEngine";
+import { Trash2 } from "lucide-react";
 
 interface NarratorBatchQueueProps {
   voices: VoicePreset[];
@@ -103,7 +104,7 @@ export function NarratorBatchQueue({ voices, onAddTake }: NarratorBatchQueueProp
     <div className="vs-batch">
       <div className="vs-banner">
         <div className="vs-banner__text">
-          <h3>📚 Fila de Produção em Lote (Long-Form & Audiobooks)</h3>
+          <h3>Fila de Produção em Lote (Long-Form & Audiobooks)</h3>
           <p>
             Decupe capítulos inteiros, audiobooks, carrosséis ou módulos de curso em blocos.
             A fila processa cada cena em sequência e permite unificar a obra completa em um arquivo master.
@@ -168,7 +169,7 @@ export function NarratorBatchQueue({ voices, onAddTake }: NarratorBatchQueueProp
                 </select>
 
                 <div className="vs-batch-card__status">
-                  {item.status === "ready" && <span className="vs-badge vs-badge--success">Pronto ✓</span>}
+                  {item.status === "ready" && <span className="vs-badge vs-badge--success">Pronto</span>}
                   {item.status === "rendering" && <span className="vs-badge vs-badge--warn">Renderizando...</span>}
                   {item.status === "error" && <span className="vs-badge vs-badge--danger">Erro</span>}
                   {item.status === "idle" && <span className="vs-badge">Na Fila</span>}
@@ -179,7 +180,7 @@ export function NarratorBatchQueue({ voices, onAddTake }: NarratorBatchQueueProp
                   className="vs-icon-btn vs-icon-btn--danger"
                   onClick={() => handleRemoveItem(item.id)}
                 >
-                  ✕
+                  <Trash2 size={13} strokeWidth={1.5} />
                 </button>
               </div>
 

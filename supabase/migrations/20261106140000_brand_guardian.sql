@@ -6,6 +6,8 @@
 begin;
 
 -- 1. Registro no Catálogo Oficial de Ferramentas do LAB (AppID 19)
+alter table public.lab_tools add column if not exists stage text default 'stable';
+
 insert into public.lab_tools (slug, appid, name, available, stage)
 values ('brand-guardian', 19, 'Brand Guardian', true, 'beta')
 on conflict (slug) do update set

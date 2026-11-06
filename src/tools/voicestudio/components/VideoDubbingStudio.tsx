@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import type { VoicePreset, DubbingSegment, AudioTake } from "../types";
 import { synthesizeProceduralSpeech } from "../utils/audioEngine";
 import { generateSRT, downloadTextFile } from "../utils/srtExporter";
+import { Video, Folder, RotateCw, Film, FileText, Download } from "lucide-react";
 
 interface VideoDubbingStudioProps {
   voices: VoicePreset[];
@@ -9,14 +10,14 @@ interface VideoDubbingStudioProps {
 }
 
 const SAMPLE_LANGUAGES = [
-  { code: "pt-BR", label: "Português (Brasil)", flag: "🇧🇷" },
-  { code: "en-US", label: "English (US)", flag: "🇺🇸" },
-  { code: "es-ES", label: "Español", flag: "🇲🇽" },
-  { code: "fr-FR", label: "Français", flag: "🇫🇷" },
-  { code: "de-DE", label: "Deutsch", flag: "🇩🇪" },
-  { code: "it-IT", label: "Italiano", flag: "🇮🇹" },
-  { code: "ja-JP", label: "日本語 (Japonês)", flag: "🇯🇵" },
-  { code: "zh-CN", label: "中文 (Mandarim)", flag: "🇨🇳" },
+  { code: "pt-BR", label: "Português (Brasil)", flag: "PT" },
+  { code: "en-US", label: "English (US)", flag: "EN" },
+  { code: "es-ES", label: "Español", flag: "ES" },
+  { code: "fr-FR", label: "Français", flag: "FR" },
+  { code: "de-DE", label: "Deutsch", flag: "DE" },
+  { code: "it-IT", label: "Italiano", flag: "IT" },
+  { code: "ja-JP", label: "日本語 (Japonês)", flag: "JA" },
+  { code: "zh-CN", label: "中文 (Mandarim)", flag: "ZH" },
 ];
 
 export function VideoDubbingStudio({ voices, onAddTake }: VideoDubbingStudioProps) {
@@ -145,7 +146,7 @@ export function VideoDubbingStudio({ voices, onAddTake }: VideoDubbingStudioProp
 
       <div className="vs-banner">
         <div className="vs-banner__text">
-          <h3>🎬 Dublagem de Vídeo & Sincronia Multilíngue</h3>
+          <h3>Dublagem de Vídeo & Sincronia Multilíngue</h3>
           <p>
             Traduza e re-aloque falas em mais de 600 idiomas preservando a identidade,
             com ducking inteligente sobre a trilha original e sincronia de corte.
@@ -170,10 +171,10 @@ export function VideoDubbingStudio({ voices, onAddTake }: VideoDubbingStudioProp
             </div>
           ) : (
             <div className="vs-video-placeholder">
-              <span className="vs-placeholder-icon">📹</span>
+              <Video size={36} strokeWidth={1.5} className="vs-placeholder-icon" />
               <p>Envie o vídeo que deseja traduzir ou dublar</p>
               <label className="vs-btn vs-btn--primary">
-                <span>📁 Selecionar Arquivo de Vídeo (MP4/WebM)</span>
+                <span><Folder size={14} strokeWidth={1.5} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} /> Selecionar Arquivo de Vídeo (MP4/WebM)</span>
                 <input
                   type="file"
                   accept="video/*"
@@ -248,7 +249,14 @@ export function VideoDubbingStudio({ voices, onAddTake }: VideoDubbingStudioProp
                 onClick={handleTranslateAll}
                 disabled={isTranslating}
               >
-                {isTranslating ? "Traduzindo..." : "🔄 Traduzir Automaticamente"}
+                {isTranslating ? (
+                  "Traduzindo..."
+                ) : (
+                  <>
+                    <RotateCw size={12} strokeWidth={1.5} style={{ marginRight: 5, verticalAlign: "middle" }} />
+                    Traduzir Automaticamente
+                  </>
+                )}
               </button>
             </div>
 
@@ -289,7 +297,16 @@ export function VideoDubbingStudio({ voices, onAddTake }: VideoDubbingStudioProp
               disabled={isSynthesizingDub}
               onClick={handleSynthesizeDub}
             >
-              <span>{isSynthesizingDub ? "Sintetizando Dublagem..." : "🎬 Renderizar & Sincronizar Dublagem"}</span>
+              <span>
+                {isSynthesizingDub ? (
+                  "Sintetizando Dublagem..."
+                ) : (
+                  <>
+                    <Film size={14} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                    Renderizar & Sincronizar Dublagem
+                  </>
+                )}
+              </span>
             </button>
 
             <button
@@ -297,7 +314,10 @@ export function VideoDubbingStudio({ voices, onAddTake }: VideoDubbingStudioProp
               className="vs-btn vs-btn--outline"
               onClick={handleExportSRT}
             >
-              <span>📄 Baixar Legendas SRT</span>
+              <span>
+                <FileText size={14} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                Baixar Legendas SRT
+              </span>
             </button>
 
             {dubbedAudioUrl && (
@@ -306,7 +326,10 @@ export function VideoDubbingStudio({ voices, onAddTake }: VideoDubbingStudioProp
                 download={`dublagem-${targetLang}.wav`}
                 className="vs-btn vs-btn--accent"
               >
-                <span>⬇ Baixar Áudio Dublado (WAV)</span>
+                <span>
+                  <Download size={14} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                  Baixar Áudio Dublado (WAV)
+                </span>
               </a>
             )}
           </div>

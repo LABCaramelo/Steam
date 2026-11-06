@@ -27,7 +27,7 @@
   --vs-radius-sm: 6px;
   --vs-radius: 10px;
   --vs-radius-lg: 16px;
-  --vs-transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --vs-transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
 }
 
 body.voicestudio-body {
@@ -97,14 +97,14 @@ body.voicestudio-body {
 .vs-header__name {
   font-family: var(--vs-font-display);
   font-size: 1.15rem;
-  font-weight: 900;
+  font-weight: 600;
   letter-spacing: -0.5px;
   color: var(--vs-cream);
 }
 
 .vs-header__tag {
   font-size: 0.7rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 1px;
   color: var(--vs-caramel);
   background: rgba(255, 112, 26, 0.12);
@@ -151,12 +151,12 @@ body.voicestudio-body {
   height: 8px;
   border-radius: 50%;
   background: var(--vs-mint);
-  box-shadow: 0 0 8px var(--vs-mint);
+  box-shadow: 0 0 0 1px var(--vs-mint);
 }
 
 .vs-engine-pill--idle .vs-engine-pill__dot {
   background: var(--vs-yellow);
-  box-shadow: 0 0 6px var(--vs-yellow);
+  box-shadow: 0 0 0 1px var(--vs-yellow);
 }
 
 /* Takes trigger */
@@ -184,7 +184,7 @@ body.voicestudio-body {
   background: var(--vs-caramel);
   color: var(--vs-ink);
   font-size: 0.7rem;
-  font-weight: 900;
+  font-weight: 600;
   padding: 0.1rem 0.4rem;
   border-radius: 10px;
 }
@@ -265,7 +265,7 @@ body.voicestudio-body {
   margin: 0;
   font-family: var(--vs-font-display);
   font-size: 1.15rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--vs-cream);
 }
 
@@ -278,7 +278,7 @@ body.voicestudio-body {
 
 .vs-banner__badge {
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.5px;
   color: var(--vs-caramel);
   background: rgba(255, 112, 26, 0.15);
@@ -306,7 +306,7 @@ body.voicestudio-body {
   margin: 0 0 1rem;
   font-family: var(--vs-font-display);
   font-size: 0.98rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.2px;
   color: var(--vs-cream);
 }
@@ -459,7 +459,7 @@ body.voicestudio-body {
 
 .vs-badge {
   font-size: 0.7rem;
-  font-weight: 800;
+  font-weight: 600;
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   background: var(--vs-surface-elevated);
@@ -619,7 +619,7 @@ input[type="range"] {
 
 .vs-script-card--active {
   border-color: var(--vs-caramel);
-  box-shadow: 0 0 20px var(--vs-caramel-glow);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--vs-caramel);
 }
 
 .vs-script-card__header {
@@ -664,7 +664,7 @@ input[type="range"] {
 
 .vs-script-badge {
   font-size: 0.75rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--vs-cream-faint);
 }
 
@@ -785,7 +785,7 @@ input[type="range"] {
 }
 
 .vs-player-bar__title {
-  font-weight: 800;
+  font-weight: 600;
   font-size: 0.9rem;
   color: var(--vs-cream);
   display: block;
@@ -881,7 +881,7 @@ input[type="range"] {
   margin: 0 0 0.85rem;
   color: var(--vs-sky);
   font-size: 0.85rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .vs-biometrics-grid {
@@ -903,7 +903,7 @@ input[type="range"] {
 
 .vs-bio-val {
   font-size: 1.1rem;
-  font-weight: 900;
+  font-weight: 600;
   color: var(--vs-cream);
   font-family: var(--vs-font-mono);
 }
@@ -926,7 +926,7 @@ input[type="range"] {
   margin: 0 0 1rem;
   font-family: var(--vs-font-display);
   font-size: 1.1rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--vs-cream);
 }
 
@@ -969,7 +969,7 @@ input[type="range"] {
 }
 
 .vs-voice-card__name {
-  font-weight: 800;
+  font-weight: 600;
   font-size: 0.95rem;
   color: var(--vs-cream);
   display: block;
@@ -1103,7 +1103,7 @@ input[type="range"] {
   align-items: center;
   justify-content: space-between;
   font-size: 0.82rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--vs-cream-dim);
 }
 
@@ -1232,7 +1232,7 @@ input[type="range"] {
 .vs-batch-card__num {
   font-family: var(--vs-font-mono);
   font-size: 0.85rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--vs-caramel);
 }
 
@@ -1313,7 +1313,7 @@ input[type="range"] {
 
 .vs-knob-val {
   font-size: 1.15rem;
-  font-weight: 900;
+  font-weight: 600;
   color: var(--vs-caramel);
   font-family: var(--vs-font-mono);
   margin: 0.25rem 0 0.5rem;
@@ -1376,7 +1376,7 @@ input[type="range"] {
 .vs-drawer__title {
   margin: 0;
   font-size: 1.1rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--vs-cream);
 }
 

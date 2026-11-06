@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { applyCopyFilter, downloadTextFile, generateSRT } from "../utils/srtExporter";
+import { Mic, Square, Copy, FileText, Film } from "lucide-react";
 
 interface DictationStudioProps {
   onSendToTTS: (text: string) => void;
@@ -129,7 +130,7 @@ export function DictationStudio({ onSendToTTS }: DictationStudioProps) {
     <div className="vs-dictation">
       <div className="vs-banner">
         <div className="vs-banner__text">
-          <h3>⚡ Ditado Inteligente & Transcrição para Copy</h3>
+          <h3>Ditado Inteligente & Transcrição para Copy</h3>
           <p>
             Fale pensando em voz alta. O microfone capta seu fluxo de pensamento em tempo real,
             e o Filtro Copy Caramelo elimina vícios de linguagem e molda parágrafos com cadência.
@@ -161,7 +162,7 @@ export function DictationStudio({ onSendToTTS }: DictationStudioProps) {
               className="vs-btn vs-btn--danger vs-btn--pulse"
               onClick={handleStop}
             >
-              <span>⏹ Pausar Ditado</span>
+              <span><Square size={13} strokeWidth={1.5} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} /> Pausar Ditado</span>
             </button>
           ) : (
             <button
@@ -169,7 +170,7 @@ export function DictationStudio({ onSendToTTS }: DictationStudioProps) {
               className="vs-btn vs-btn--primary"
               onClick={handleStart}
             >
-              <span>🎙️ Iniciar Ditado Contínuo</span>
+              <span><Mic size={14} strokeWidth={1.5} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} /> Iniciar Ditado Contínuo</span>
             </button>
           )}
 
@@ -179,7 +180,7 @@ export function DictationStudio({ onSendToTTS }: DictationStudioProps) {
             onClick={handleApplyCarameloFilter}
             disabled={!rawText.trim()}
           >
-            <span>✨ Aplicar Filtro Copy Caramelo</span>
+            <span>Aplicar Filtro Copy Caramelo</span>
           </button>
         </div>
       </div>
@@ -231,7 +232,7 @@ export function DictationStudio({ onSendToTTS }: DictationStudioProps) {
               disabled={!polishedCopy && !rawText}
               onClick={handleCopyToClipboard}
             >
-              <span>📋 Copiar Texto</span>
+              <span><Copy size={13} strokeWidth={1.5} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} /> Copiar Texto</span>
             </button>
 
             <button
@@ -240,7 +241,7 @@ export function DictationStudio({ onSendToTTS }: DictationStudioProps) {
               disabled={!polishedCopy && !rawText}
               onClick={handleDownloadTXT}
             >
-              <span>📄 Baixar TXT</span>
+              <span><FileText size={13} strokeWidth={1.5} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} /> Baixar TXT</span>
             </button>
 
             <button
@@ -249,7 +250,7 @@ export function DictationStudio({ onSendToTTS }: DictationStudioProps) {
               disabled={!polishedCopy && !rawText}
               onClick={handleDownloadSRT}
             >
-              <span>🎬 Baixar Legendas SRT</span>
+              <span><Film size={13} strokeWidth={1.5} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} /> Baixar Legendas SRT</span>
             </button>
 
             <button
@@ -258,7 +259,7 @@ export function DictationStudio({ onSendToTTS }: DictationStudioProps) {
               disabled={!polishedCopy && !rawText}
               onClick={() => onSendToTTS(polishedCopy || rawText)}
             >
-              <span>🎙️ Enviar para o TTS Studio ➔</span>
+              <span><Mic size={13} strokeWidth={1.5} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} /> Enviar para o TTS Studio ➔</span>
             </button>
           </div>
         </div>

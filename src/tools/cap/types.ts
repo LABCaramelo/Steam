@@ -71,3 +71,5 @@ export interface TakeRecord {
   trimStart: number;
   trimEnd: number;
 }
+
+export type ExportPreset = "whatsapp" | "mp4-hd" | "webm";

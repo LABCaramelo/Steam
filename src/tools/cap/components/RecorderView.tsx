@@ -294,19 +294,49 @@ export function RecorderView({
       }
     }
 
-    const audioTracks = [
-      ...activeScreenStream.getAudioTracks(),
-      ...(micStream ? micStream.getAudioTracks() : []),
-    ];
+    const screenAudioTracks = activeScreenStream.getAudioTracks();
+    const micAudioTracks = micStream ? micStream.getAudioTracks() : [];
+
+    let recordingAudioTrack: MediaStreamTrack | null = null;
+    let recAudioCtx: AudioContext | null = null;
+
+    if (screenAudioTracks.length > 0 && micAudioTracks.length > 0) {
+      // Both screen audio and mic are present: mix them into a single stereo track
+      try {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioCtx) {
+          recAudioCtx = new AudioCtx();
+          if (recAudioCtx.state === "suspended") {
+            await recAudioCtx.resume();
+          }
+          const dest = recAudioCtx.createMediaStreamDestination();
+          const screenSource = recAudioCtx.createMediaStreamSource(new MediaStream(screenAudioTracks));
+          const micSource = recAudioCtx.createMediaStreamSource(new MediaStream(micAudioTracks));
+          screenSource.connect(dest);
+          micSource.connect(dest);
+          recordingAudioTrack = dest.stream.getAudioTracks()[0] || null;
+        }
+      } catch (err) {
+        console.warn("Audio mixing fallback:", err);
+        recordingAudioTrack = micAudioTracks[0] || screenAudioTracks[0];
+      }
+    } else if (micAudioTracks.length > 0) {
+      recordingAudioTrack = micAudioTracks[0];
+    } else if (screenAudioTracks.length > 0) {
+      recordingAudioTrack = screenAudioTracks[0];
+    }
 
     const recordingStream = new MediaStream([
       ...activeScreenStream.getVideoTracks(),
-      ...audioTracks,
+      ...(recordingAudioTrack ? [recordingAudioTrack] : []),
     ]);
 
-    const mimeType = MediaRecorder.isTypeSupported("video/webm; codecs=vp9")
-      ? "video/webm; codecs=vp9"
-      : "video/webm";
+    const mimeCandidates = [
+      "video/webm; codecs=vp9,opus",
+      "video/webm; codecs=vp8,opus",
+      "video/webm",
+    ];
+    let mimeType = mimeCandidates.find((m) => MediaRecorder.isTypeSupported(m)) || "video/webm";
 
     const recorder = new MediaRecorder(recordingStream, {
       mimeType,
@@ -321,6 +351,7 @@ export function RecorderView({
     };
 
     recorder.onstop = () => {
+      recAudioCtx?.close().catch(() => {});
       micStream?.getTracks().forEach((t) => t.stop());
       activeScreenStream.getTracks().forEach((t) => t.stop());
       webcamStream?.getTracks().forEach((t) => t.stop());

@@ -3,8 +3,8 @@
 // Verificações determinísticas de contraste, conformidade de tokens, logotipos e diretrizes
 // ==============================================================================
 
-import { evaluateContrast } from "./colorEngine";
-import { resolveAllTokens } from "./tokenEngine";
+import { evaluateContrast } from "./colorEngine.ts";
+import { resolveAllTokens } from "./tokenEngine.ts";
 import type { BrandGuardFinding, CompleteBrandData } from "./types";
 
 export function auditBrandConsistency(data: CompleteBrandData): BrandGuardFinding[] {

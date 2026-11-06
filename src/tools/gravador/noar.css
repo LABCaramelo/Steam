@@ -11,7 +11,7 @@
 .noar-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--cm-spectrum); }
 .noar-brand { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
 .noar-mark { background: rgb(var(--cm-accent)); color: #101014; width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; }
-.noar-brand h1 { font-family: var(--caramelo-font-display); font-size: 26px; font-weight: 900; line-height: .95; letter-spacing: -1.5px; }
+.noar-brand h1 { font-family: var(--caramelo-font-display); font-size: 26px; font-weight: 600; line-height: .95; letter-spacing: -1.5px; }
 .noar-brand h1 span { font: 9px var(--caramelo-font-sans); vertical-align: top; margin-left: 4px; }
 .noar-brand p { margin-top: 7px; font-size: 8px; letter-spacing: 2px; color: rgb(var(--cm-fg-muted)); font-weight: 600; }
 .noar-beta { margin-left: 4px; padding: 4px 6px; border: 1px solid rgb(var(--cm-line-strong)); border-radius: 4px; font-size: 8px; letter-spacing: 1px; color: rgb(var(--cm-fg-muted)); }
@@ -51,7 +51,7 @@
 .noar-empty-cross { position: absolute; right: 18px; top: 14px; color: #5a5a66; font-size: 18px; font-weight: 200; }
 .noar-empty-symbol { width: 66px; height: 54px; display: grid; place-items: center; color: #ff701a; margin-bottom: 12px; }
 .noar-overline { color: #a3a3b0; letter-spacing: 2.5px; font: 8px var(--caramelo-font-mono); margin-bottom: 14px; }
-.noar-empty h2 { font-family: var(--caramelo-font-display); font-weight: 800; letter-spacing: -1.8px; font-size: clamp(24px, 3vw, 42px); line-height: 1.08; }
+.noar-empty h2 { font-family: var(--caramelo-font-display); font-weight: 600; letter-spacing: -1.8px; font-size: clamp(24px, 3vw, 42px); line-height: 1.08; }
 .noar-empty > p:not(.noar-overline) { color: #a3a3b0; font-size: 11px; margin-top: 15px; }
 .noar-empty-actions { display: flex; gap: 9px; margin-top: 22px; }
 .noar-shell .noar-empty .obs-btn { min-height: 36px; background: #18181d; border-color: #3a3a44; color: #fff4e8; }
@@ -92,7 +92,7 @@
 .noar-shell .obs-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; background: rgb(var(--cm-surface-2)); border: 1px solid rgb(var(--cm-line-strong)); color: rgb(var(--cm-fg-2)); min-height: 32px; padding: 7px 10px; border-radius: 6px; font-size: 10px; font-weight: 500; white-space: nowrap; }
 .noar-shell .obs-btn:hover:not(:disabled) { background: rgb(var(--cm-surface-3)); border-color: rgb(var(--cm-fg-dim)); color: rgb(var(--cm-fg)); }
 .noar-shell .obs-btn.primary { background: rgb(var(--cm-accent)); color: rgb(var(--cm-accent-contrast)); border-color: rgb(var(--cm-accent)); font-weight: 700; }
-.noar-shell .obs-btn.primary:hover:not(:disabled) { background: rgb(var(--cm-accent-bright)); color: rgb(var(--cm-accent-contrast)); box-shadow: var(--cm-spectrum-glow); }
+.noar-shell .obs-btn.primary:hover:not(:disabled) { background: rgb(var(--cm-accent-bright)); color: rgb(var(--cm-accent-contrast)); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); }
 .noar-shell .obs-btn.recording-active { background: rgb(var(--cm-danger)); border-color: rgb(var(--cm-danger)); color: rgb(var(--cm-on-status)); }
 .noar-shell .noar-stream-button { background: transparent; border-color: rgb(var(--cm-line-strong)); }
 .noar-shell .noar-stream-button.active { color: rgb(var(--cm-success)); border-color: rgb(var(--cm-success)); }

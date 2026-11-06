@@ -43,7 +43,46 @@ export async function generateSampleTake(): Promise<TakeRecord> {
   const ctx = canvas.getContext("2d")!;
 
   const stream = canvas.captureStream(30);
-  const mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp9" });
+
+  // Synthesize real audio track for demo take (subtle click & UI feedback at zoom transitions)
+  let demoAudioCtx: AudioContext | null = null;
+  let demoAudioDest: MediaStreamAudioDestinationNode | null = null;
+  try {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (AudioCtx) {
+      demoAudioCtx = new AudioCtx();
+      demoAudioDest = demoAudioCtx.createMediaStreamDestination();
+      const playBeep = (freq: number, durationMs: number) => {
+        if (!demoAudioCtx || !demoAudioDest) return;
+        const osc = demoAudioCtx.createOscillator();
+        const gain = demoAudioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, demoAudioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06, demoAudioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, demoAudioCtx.currentTime + durationMs / 1000);
+        osc.connect(gain);
+        gain.connect(demoAudioDest);
+        osc.start();
+        osc.stop(demoAudioCtx.currentTime + durationMs / 1000);
+      };
+      setTimeout(() => playBeep(523.25, 200), 1500);
+      setTimeout(() => playBeep(659.25, 250), 5500);
+    }
+  } catch {}
+
+  const demoTracks = [
+    ...stream.getVideoTracks(),
+    ...(demoAudioDest ? demoAudioDest.stream.getAudioTracks() : []),
+  ];
+  const demoStream = new MediaStream(demoTracks);
+
+  const mimeCandidates = [
+    "video/webm; codecs=vp9,opus",
+    "video/webm; codecs=vp8,opus",
+    "video/webm",
+  ];
+  const mimeType = mimeCandidates.find((m) => MediaRecorder.isTypeSupported(m)) || "video/webm";
+  const mediaRecorder = new MediaRecorder(demoStream, { mimeType });
   const chunks: BlobPart[] = [];
 
   mediaRecorder.ondataavailable = (e) => {
@@ -57,6 +96,7 @@ export async function generateSampleTake(): Promise<TakeRecord> {
 
   return new Promise((resolve) => {
     mediaRecorder.onstop = () => {
+      demoAudioCtx?.close().catch(() => {});
       const blob = new Blob(chunks, { type: "video/webm" });
       const videoUrl = URL.createObjectURL(blob);
 

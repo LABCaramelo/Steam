@@ -60,7 +60,7 @@ body.logomotion-body {
 .dia-header-title {
   font-family: var(--caramelo-font-display, "Syne", "Montserrat", sans-serif);
   font-size: 19px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.5px;
   color: var(--cm-cream);
 }
@@ -123,7 +123,7 @@ body.logomotion-body {
   padding: 24px 16px;
   background-color: rgba(255, 112, 26, 0.04);
   cursor: pointer;
-  transition: all 0.2s var(--cm-ease-out, ease);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
   text-align: center;
 }
 
@@ -135,7 +135,7 @@ body.logomotion-body {
 .dia-dropzone-icon {
   font-size: 26px;
   color: var(--cm-orange);
-  font-weight: 900;
+  font-weight: 600;
   margin-bottom: 6px;
 }
 
@@ -172,7 +172,7 @@ body.logomotion-body {
 .dia-rail-title {
   margin: 0;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: rgba(255, 244, 232, 0.7);
@@ -180,7 +180,7 @@ body.logomotion-body {
 
 .dia-rail-tag {
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--cm-orange);
   background-color: rgba(255, 112, 26, 0.15);
   padding: 2px 6px;
@@ -215,7 +215,7 @@ body.logomotion-body {
 }
 
 .dia-tab-title {
-  font-weight: 800;
+  font-weight: 600;
   font-size: 13px;
 }
 
@@ -371,7 +371,7 @@ body.logomotion-body {
 
 .dia-track-badge {
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--cm-sky);
   background: rgba(37, 191, 255, 0.15);
   padding: 2px 6px;
@@ -521,7 +521,7 @@ body.logomotion-body {
 .dia-empty-title {
   font-family: var(--caramelo-font-display, "Syne", sans-serif);
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .dia-empty-sub {
@@ -611,7 +611,7 @@ body.logomotion-body {
   bottom: 0;
   width: 2px;
   background-color: var(--cm-orange);
-  box-shadow: 0 0 10px var(--cm-orange);
+  box-shadow: 0 0 0 1px var(--cm-orange);
   z-index: 5;
   pointer-events: none;
 }
@@ -651,7 +651,7 @@ body.logomotion-body {
 .dia-caramelo-export-btn {
   box-shadow: 0 8px 24px rgba(255, 112, 26, 0.35);
   font-family: var(--caramelo-font-display, "Syne", sans-serif);
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.2px;
 }
 
@@ -747,7 +747,7 @@ body.logomotion-body {
 
 .dia-menu-section-label {
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 600;
   text-transform: uppercase;
   color: rgba(255, 244, 232, 0.4);
   padding: 6px 8px 2px;
@@ -877,7 +877,7 @@ body.logomotion-body {
 
 .dia-frame-order-index {
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--cm-orange);
 }
 

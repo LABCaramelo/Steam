@@ -1,19 +1,46 @@
 // ==============================================================================
-// Brand Guardian — Repositório Híbrido (Supabase + LocalStorage Fallback Resiliente)
+// Brand Guardian — Repositório Híbrido Resiliente (Supabase + Local-First Scoped)
 // ==============================================================================
 
-import { supabase } from "../../supabase";
+import { supabase } from "../../supabase.ts";
 import type {
   Brand,
+  BrandAssetItem,
   BrandReleaseRecord,
   CompleteBrandData,
-} from "./types";
+} from "./types.ts";
 
-const STORAGE_PREFIX = "brand_guardian_";
+export interface SaveResult {
+  remoteSynced: boolean;
+  message: string;
+}
 
-function getLocal<T>(key: string, fallback: T): T {
+export interface WorkspaceOption {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface ClientOption {
+  id: string;
+  workspace_id: string;
+  name: string;
+  segment: string;
+}
+
+async function getActiveUserId(): Promise<string> {
   try {
-    const raw = localStorage.getItem(STORAGE_PREFIX + key);
+    const { data: { user } } = await supabase.auth.getUser();
+    return user?.id || "local_user";
+  } catch {
+    return "local_user";
+  }
+}
+
+function getLocal<T>(key: string, userId: string, fallback: T): T {
+  try {
+    const scopedKey = `brand_guardian_${userId}_${key}`;
+    const raw = localStorage.getItem(scopedKey);
     if (!raw) return fallback;
     return JSON.parse(raw) as T;
   } catch {
@@ -21,15 +48,16 @@ function getLocal<T>(key: string, fallback: T): T {
   }
 }
 
-function setLocal<T>(key: string, val: T): void {
+function setLocal<T>(key: string, userId: string, val: T): void {
   try {
-    localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(val));
+    const scopedKey = `brand_guardian_${userId}_${key}`;
+    localStorage.setItem(scopedKey, JSON.stringify(val));
   } catch (err) {
     console.warn("Brand Guardian: Erro de quota no LocalStorage:", err);
   }
 }
 
-// Template inicial canônico Caramelo para nova marca
+// Template inicial canônico Caramelo com as 18 Seções Canônicas
 export function createDefaultBrandData(name: string, primaryColor = "#FF701A"): CompleteBrandData {
   return {
     foundations: {
@@ -280,7 +308,7 @@ export function createDefaultBrandData(name: string, primaryColor = "#FF701A"): 
         id: "ref-1",
         title: "Composição Tipográfica de Alto Impacto",
         category: "editorial",
-        imageUrl: "/public/tools/brand-guardian/art/hero.svg",
+        imageUrl: "/tools/brand-guardian/art/hero.svg",
         tags: ["Editorial", "Display", "Tipografia"],
         isPositive: true,
         notes: "Excelente distribuição de massa de texto com entrelinha compacta.",
@@ -493,25 +521,72 @@ export function createDefaultBrandData(name: string, primaryColor = "#FF701A"): 
       },
     ],
     brandbookSections: [
-      { id: "sec-1", title: "01. Apresentação & Manifesto", order: 1, visible: true, content: "Introdução à visão da marca.", linkedModule: "foundations" },
-      { id: "sec-2", title: "02. Posicionamento & Valores", order: 2, visible: true, content: "Pilares estratégicos e cultura.", linkedModule: "foundations" },
-      { id: "sec-3", title: "03. Logotipo & Assinaturas", order: 3, visible: true, content: "Variantes oficiais e regras de aplicação.", linkedModule: "logos" },
-      { id: "sec-4", title: "04. Área de Proteção & Escala", order: 4, visible: true, content: "Dimensões mínimas e margem de respiro.", linkedModule: "logos" },
-      { id: "sec-5", title: "05. Paleta de Cores & Contrastes", order: 5, visible: true, content: "Cores primárias, neutras e WCAG 2.2.", linkedModule: "colors" },
-      { id: "sec-6", title: "06. Sistema Tipográfico", order: 6, visible: true, content: "Hierarquia, pesos e escalas responsivas.", linkedModule: "typography" },
-      { id: "sec-7", title: "07. Iconografia & Geometria", order: 7, visible: true, content: "Linguagem de formas e traços.", linkedModule: "elements" },
-      { id: "sec-8", title: "08. Fotografia & Direção de Arte", order: 8, visible: true, content: "Universo visual, enquadramentos e moodboard.", linkedModule: "art" },
-      { id: "sec-9", title: "09. Motion & Interação", order: 9, visible: true, content: "Curvas de aceleração e transições.", linkedModule: "motion" },
-      { id: "sec-10", title: "10. Design System & Tokens DTCG", order: 10, visible: true, content: "Variáveis interoperáveis e especificações.", linkedModule: "tokens" },
-      { id: "sec-11", title: "11. Aplicações Práticas", order: 11, visible: true, content: "Demonstrações em peças reais.", linkedModule: "applications" },
-      { id: "sec-12", title: "12. Downloads & Recursos", order: 12, visible: true, content: "Pacotes oficiais de ativos e código.", linkedModule: "assets" },
+      { id: "sec-1", title: "01. Apresentação da Marca", order: 1, visible: true, content: "Visão geral, história e manifesto do laboratório.", linkedModule: "foundations" },
+      { id: "sec-2", title: "02. Conceito e Posicionamento", order: 2, visible: true, content: "Pilares estratégicos, proposta de valor e público.", linkedModule: "foundations" },
+      { id: "sec-3", title: "03. Personalidade e Tom de Voz", order: 3, visible: true, content: "Arquétipos, atributos, tom de voz e anti-clichê.", linkedModule: "foundations" },
+      { id: "sec-4", title: "04. Logotipos e Variantes", order: 4, visible: true, content: "Variantes oficiais, horizontais, verticais e símbolos.", linkedModule: "logos" },
+      { id: "sec-5", title: "05. Área de Proteção e Escala", order: 5, visible: true, content: "Margens de respiro proporcionais e limites mínimos.", linkedModule: "logos" },
+      { id: "sec-6", title: "06. Uso Correto e Incorreto", order: 6, visible: true, content: "Regras de aplicação sobre fundos e proibições.", linkedModule: "logos" },
+      { id: "sec-7", title: "07. Paletas de Cores", order: 7, visible: true, content: "Cores primárias, secundárias, superfícies e papéis semânticos.", linkedModule: "colors" },
+      { id: "sec-8", title: "08. Tipografia", order: 8, visible: true, content: "Hierarquia tipográfica, pesos e escalas responsivas.", linkedModule: "typography" },
+      { id: "sec-9", title: "09. Elementos Gráficos", order: 9, visible: true, content: "Linguagem visual de suporte e formas recorrentes.", linkedModule: "elements" },
+      { id: "sec-10", title: "10. Iconografia", order: 10, visible: true, content: "Biblioteca de ícones, grid de 24px e traço.", linkedModule: "elements" },
+      { id: "sec-11", title: "11. Fotografia e Direção de Arte", order: 11, visible: true, content: "Tratamento de imagem, iluminação e atmosfera.", linkedModule: "art" },
+      { id: "sec-12", title: "12. Ilustração", order: 12, visible: true, content: "Estilo ilustrativo, cel-shading e regras de consistência.", linkedModule: "elements" },
+      { id: "sec-13", title: "13. Motion e Expressão Digital", order: 13, visible: true, content: "Curvas de easing, durações e microinterações.", linkedModule: "motion" },
+      { id: "sec-14", title: "14. Composição e Grids", order: 14, visible: true, content: "Grades de 12 colunas, margens e respiros.", linkedModule: "elements" },
+      { id: "sec-15", title: "15. Aplicações da Marca", order: 15, visible: true, content: "Demonstrações reais em telas, redes e impressos.", linkedModule: "applications" },
+      { id: "sec-16", title: "16. Fundamentos Digitais", order: 16, visible: true, content: "Acessibilidade WCAG 2.2, contraste e semântica.", linkedModule: "colors" },
+      { id: "sec-17", title: "17. Design System & Tokens", order: 17, visible: true, content: "Árvore de tokens DTCG 2025.10 e variáveis.", linkedModule: "tokens" },
+      { id: "sec-18", title: "18. Downloads e Recursos", order: 18, visible: true, content: "Pacotes de ativos vetoriais, código e exportações.", linkedModule: "assets" },
     ],
   };
 }
 
 export const brandGuardianRepo = {
-  // Lista de marcas disponíveis para o usuário
+  // Lista Workspaces do usuário (Creative OS)
+  async getWorkspaces(): Promise<WorkspaceOption[]> {
+    try {
+      const { data, error } = await supabase
+        .from("creative_os_workspaces")
+        .select("id, name, slug")
+        .order("created_at", { ascending: true });
+
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return data as WorkspaceOption[];
+      }
+    } catch {
+      // fallback
+    }
+
+    const userId = await getActiveUserId();
+    return getLocal<WorkspaceOption[]>("workspaces", userId, [
+      { id: "ws-default-luiz", name: "Luiz — Head de Conteúdo", slug: "luiz-head" },
+    ]);
+  },
+
+  // Lista Clientes do CRM (Gabinete / Creative OS)
+  async getClients(workspaceId?: string): Promise<ClientOption[]> {
+    try {
+      let query = supabase.from("creative_os_clients").select("id, workspace_id, name, segment");
+      if (workspaceId) query = query.eq("workspace_id", workspaceId);
+      const { data, error } = await query.order("name", { ascending: true });
+
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return data as ClientOption[];
+      }
+    } catch {
+      // fallback
+    }
+
+    const userId = await getActiveUserId();
+    return getLocal<ClientOption[]>("clients", userId, []);
+  },
+
+  // Lista de marcas do usuário (com isolamento por userId)
   async getBrands(): Promise<Brand[]> {
+    const userId = await getActiveUserId();
+
     try {
       const { data, error } = await supabase
         .from("brand_guardian_brands")
@@ -519,17 +594,17 @@ export const brandGuardianRepo = {
         .order("created_at", { ascending: false });
 
       if (!error && Array.isArray(data) && data.length > 0) {
-        setLocal("brands", data);
+        setLocal("brands", userId, data);
         return data as Brand[];
       }
     } catch {
       // fallback
     }
 
-    const local = getLocal<Brand[]>("brands", []);
+    const local = getLocal<Brand[]>("brands", userId, []);
     if (local.length > 0) return local;
 
-    // Marca inicial padrão do LAB / Luiz
+    // Marca inicial padrão do LAB
     const defaultBrand: Brand = {
       id: "brand-caramelo-oficial",
       name: "Um Cara Caramelo",
@@ -545,13 +620,15 @@ export const brandGuardianRepo = {
     };
 
     const initialList = [defaultBrand];
-    setLocal("brands", initialList);
-    setLocal(`brand_data_${defaultBrand.id}`, createDefaultBrandData(defaultBrand.name, defaultBrand.primary_color));
+    setLocal("brands", userId, initialList);
+    setLocal(`brand_data_${defaultBrand.id}`, userId, createDefaultBrandData(defaultBrand.name, defaultBrand.primary_color));
     return initialList;
   },
 
   // Busca dados completos de uma marca
   async getBrandData(brandId: string): Promise<CompleteBrandData> {
+    const userId = await getActiveUserId();
+
     try {
       const { data, error } = await supabase
         .from("brand_guardian_brands")
@@ -560,42 +637,56 @@ export const brandGuardianRepo = {
         .single();
 
       if (!error && data && data.data && Object.keys(data.data).length > 0) {
-        setLocal(`brand_data_${brandId}`, data.data);
+        setLocal(`brand_data_${brandId}`, userId, data.data);
         return data.data as CompleteBrandData;
       }
     } catch {
       // fallback
     }
 
-    const localData = getLocal<CompleteBrandData | null>(`brand_data_${brandId}`, null);
+    const localData = getLocal<CompleteBrandData | null>(`brand_data_${brandId}`, userId, null);
     if (localData) return localData;
 
-    const brandList = getLocal<Brand[]>("brands", []);
+    const brandList = await this.getBrands();
     const found = brandList.find((b) => b.id === brandId);
     const created = createDefaultBrandData(found?.name || "Minha Marca", found?.primary_color || "#FF701A");
-    setLocal(`brand_data_${brandId}`, created);
+    setLocal(`brand_data_${brandId}`, userId, created);
     return created;
   },
 
-  // Salva dados de uma marca
-  async saveBrandData(brandId: string, data: CompleteBrandData): Promise<void> {
-    setLocal(`brand_data_${brandId}`, data);
+  // Salva dados de uma marca com feedback honesto de sincronização
+  async saveBrandData(brandId: string, data: CompleteBrandData): Promise<SaveResult> {
+    const userId = await getActiveUserId();
+    setLocal(`brand_data_${brandId}`, userId, data);
 
     try {
-      await supabase
+      const { error } = await supabase
         .from("brand_guardian_brands")
         .update({
           data,
           updated_at: new Date().toISOString(),
         })
         .eq("id", brandId);
-    } catch (err) {
-      console.warn("Brand Guardian: Não foi possível sincronizar no Supabase agora:", err);
+
+      if (!error) {
+        return { remoteSynced: true, message: "Identidade sincronizada no Supabase com sucesso!" };
+      }
+      return {
+        remoteSynced: false,
+        message: "Salvo localmente no navegador (sincronização remota pendente de migração).",
+      };
+    } catch {
+      return {
+        remoteSynced: false,
+        message: "Salvo localmente no navegador (modo offline).",
+      };
     }
   },
 
-  // Cria uma nova marca
+  // Cria uma nova marca vinculada a Workspace e Cliente opcional
   async createBrand(brandData: Partial<Brand>): Promise<Brand> {
+    const userId = await getActiveUserId();
+
     const slug = (brandData.name || "marca")
       .toLowerCase()
       .trim()
@@ -604,6 +695,8 @@ export const brandGuardianRepo = {
 
     const newBrand: Brand = {
       id: "brand-" + Math.random().toString(36).substring(2, 9),
+      workspace_id: brandData.workspace_id,
+      client_id: brandData.client_id,
       name: brandData.name || "Nova Marca",
       slug: slug || "marca",
       kind: brandData.kind || "client",
@@ -617,15 +710,16 @@ export const brandGuardianRepo = {
     };
 
     const initialDetails = createDefaultBrandData(newBrand.name, newBrand.primary_color);
-    setLocal(`brand_data_${newBrand.id}`, initialDetails);
+    setLocal(`brand_data_${newBrand.id}`, userId, initialDetails);
 
-    const brands = getLocal<Brand[]>("brands", []);
+    const brands = await this.getBrands();
     brands.unshift(newBrand);
-    setLocal("brands", brands);
+    setLocal("brands", userId, brands);
 
     try {
       await supabase.from("brand_guardian_brands").insert({
         ...newBrand,
+        owner_id: userId !== "local_user" ? userId : null,
         data: initialDetails,
       });
     } catch {
@@ -635,9 +729,119 @@ export const brandGuardianRepo = {
     return newBrand;
   },
 
-  // Histórico de publicações e releases
+  // Upload real de arquivos com R2 e fallback
+  async uploadAsset(file: File, brandId: string, kind: BrandAssetItem["kind"]): Promise<BrandAssetItem> {
+    const assetId = "ast-" + Date.now();
+
+    // Tenta upload no endpoint /api/upload
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers: Record<string, string> = {
+        "x-folder": "media",
+        "x-tool-slug": "brand-guardian",
+        "content-type": file.type || "image/png",
+      };
+      if (session?.access_token) {
+        headers["authorization"] = `Bearer ${session.access_token}`;
+      }
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers,
+        body: file,
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        const url = json.url || json.publicUrl;
+        const storageKey = json.key || `media/brand-guardian/${file.name}`;
+
+        const item: BrandAssetItem = {
+          id: assetId,
+          name: file.name,
+          kind,
+          url,
+          storageKey,
+          mimeType: file.type,
+          fileSize: file.size,
+          approvalStatus: "approved",
+          tags: ["Upload", kind],
+          createdAt: new Date().toISOString(),
+        };
+
+        // Registra na tabela brand_guardian_assets se disponível
+        try {
+          await supabase.from("brand_guardian_assets").insert({
+            id: assetId,
+            brand_id: brandId,
+            kind,
+            name: file.name,
+            url,
+            storage_key: storageKey,
+            mime_type: file.type,
+            file_size: file.size,
+          });
+        } catch {}
+
+        return item;
+      }
+    } catch {
+      // offline / sem R2 configurado
+    }
+
+    // Fallback local seguro (Data URL para visualização local imediata)
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const item: BrandAssetItem = {
+          id: assetId,
+          name: file.name,
+          kind,
+          url: (reader.result as string) || "/favicon.svg",
+          storageKey: `local/${file.name}`,
+          mimeType: file.type,
+          fileSize: file.size,
+          approvalStatus: "approved",
+          tags: ["Local", kind],
+          createdAt: new Date().toISOString(),
+        };
+        resolve(item);
+      };
+      reader.onerror = () => {
+        resolve({
+          id: assetId,
+          name: file.name,
+          kind,
+          url: "/favicon.svg",
+          storageKey: `local/${file.name}`,
+          mimeType: file.type,
+          fileSize: file.size,
+          approvalStatus: "approved",
+          tags: ["Local", kind],
+          createdAt: new Date().toISOString(),
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  },
+
+  // Histórico de publicações e releases imutáveis
   async getReleases(brandId: string): Promise<BrandReleaseRecord[]> {
-    return getLocal<BrandReleaseRecord[]>(`releases_${brandId}`, [
+    const userId = await getActiveUserId();
+
+    try {
+      const { data, error } = await supabase
+        .from("brand_guardian_releases")
+        .select("*")
+        .eq("brand_id", brandId)
+        .order("published_at", { ascending: false });
+
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return data as BrandReleaseRecord[];
+      }
+    } catch {}
+
+    return getLocal<BrandReleaseRecord[]>(`releases_${brandId}`, userId, [
       {
         id: "rel-v1-initial",
         version: "1.0.0",
@@ -650,18 +854,20 @@ export const brandGuardianRepo = {
   },
 
   async publishRelease(brandId: string, version: string, notes: string, currentData: CompleteBrandData): Promise<BrandReleaseRecord> {
+    const userId = await getActiveUserId();
+
     const newRelease: BrandReleaseRecord = {
       id: "rel-" + Date.now(),
       version,
       releaseNotes: notes,
       publishedAt: new Date().toISOString(),
       publishedBy: "Equipe",
-      snapshot: currentData,
+      snapshot: JSON.parse(JSON.stringify(currentData)), // Snapshot profundo imutável
     };
 
     const list = await this.getReleases(brandId);
     list.unshift(newRelease);
-    setLocal(`releases_${brandId}`, list);
+    setLocal(`releases_${brandId}`, userId, list);
 
     try {
       await supabase.from("brand_guardian_releases").insert({

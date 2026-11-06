@@ -1,4 +1,4 @@
-import type { CanvasDressing, ZoomKeyframe } from "../types";
+import type { CanvasDressing, ExportPreset, ZoomKeyframe } from "../types";
 
 export interface ExportProgress {
   currentSec: number;
@@ -169,7 +169,11 @@ export function drawBackground(
 
 /**
  * High quality export engine that renders the trimmed video with background,
- * padding, corner radius, drop shadow, macOS chrome, and animated smooth zooms!
+ * padding, corner radius, drop shadow, macOS chrome, animated smooth zooms,
+ * and high-fidelity synchronized audio (preserving microphone and system audio).
+ *
+ * Supports an optimized WhatsApp preset (720p HD H.264 + AAC, strictly even dimensions,
+ * fast-loading bitrate) ensuring seamless playback and sharing on iOS, Android, and Web.
  */
 export async function renderExportedVideo(
   videoElement: HTMLVideoElement,
@@ -178,44 +182,57 @@ export async function renderExportedVideo(
   trimStart: number,
   trimEnd: number,
   onProgress?: (progress: ExportProgress) => void,
-  format?: "webm" | "mp4"
+  formatOrPreset: ExportPreset | "webm" | "mp4" = "whatsapp"
 ): Promise<Blob> {
+  const isWhatsApp = formatOrPreset === "whatsapp";
+  const isMp4 = formatOrPreset === "mp4" || formatOrPreset === "mp4-hd" || isWhatsApp;
+
   const vRatio =
     videoElement.videoWidth && videoElement.videoHeight
       ? videoElement.videoWidth / videoElement.videoHeight
       : 16 / 9;
 
-  let canvasW = 1920;
-  let canvasH = 1080;
+  // Base canvas dimensions:
+  // WhatsApp: 720p HD (1280x720 / 720x1280) — optimum compatibility, instant upload without compression delay.
+  // Full HD: 1080p (1920x1080 / 1080x1920) — high-fidelity master for YouTube / desktop.
+  const baseDim = isWhatsApp ? 1280 : 1920;
+  const subDim = isWhatsApp ? 720 : 1080;
+
+  let canvasW = baseDim;
+  let canvasH = subDim;
 
   switch (dressing.aspectRatio) {
     case "9:16":
-      canvasW = 1080;
-      canvasH = 1920;
+      canvasW = subDim;
+      canvasH = baseDim;
       break;
     case "1:1":
-      canvasW = 1080;
-      canvasH = 1080;
+      canvasW = subDim;
+      canvasH = subDim;
       break;
     case "4:3":
-      canvasW = 1440;
-      canvasH = 1080;
+      canvasW = isWhatsApp ? 960 : 1440;
+      canvasH = subDim;
       break;
     case "fit":
       if (vRatio >= 1) {
-        canvasW = 1920;
-        canvasH = Math.round(1920 / vRatio);
+        canvasW = baseDim;
+        canvasH = Math.round(baseDim / vRatio);
       } else {
-        canvasH = 1920;
-        canvasW = Math.round(1920 * vRatio);
+        canvasH = baseDim;
+        canvasW = Math.round(baseDim * vRatio);
       }
       break;
     case "16:9":
     default:
-      canvasW = 1920;
-      canvasH = 1080;
+      canvasW = baseDim;
+      canvasH = subDim;
       break;
   }
+
+  // Strictly enforce even dimensions (divisible by 2) for H.264 / mobile decoder compliance!
+  canvasW = Math.floor(canvasW / 2) * 2;
+  canvasH = Math.floor(canvasH / 2) * 2;
 
   const canvas = document.createElement("canvas");
   canvas.width = canvasW;
@@ -225,34 +242,75 @@ export async function renderExportedVideo(
   const totalDuration = Math.max(0.5, trimEnd - trimStart);
   const stream = canvas.captureStream(30);
 
-  // Capture audio from video element if available
+  // Setup Web Audio extraction to capture full audio from videoElement
   let combinedStream = stream;
+  let audioCtx: AudioContext | null = null;
   try {
-    const audioCtx = new AudioContext();
-    const sourceNode = audioCtx.createMediaElementSource(videoElement);
-    const dest = audioCtx.createMediaStreamDestination();
-    sourceNode.connect(dest);
-    sourceNode.connect(audioCtx.destination);
-    combinedStream = new MediaStream([
-      ...stream.getVideoTracks(),
-      ...dest.stream.getAudioTracks(),
-    ]);
-  } catch {
-    // If audio extraction is not supported/restricted, keep video stream
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (AudioCtx) {
+      audioCtx = new AudioCtx();
+      if (audioCtx.state === "suspended") {
+        await audioCtx.resume();
+      }
+      // Ensure video element allows audio reading
+      videoElement.muted = false;
+      videoElement.volume = 1.0;
+
+      const sourceNode = audioCtx.createMediaElementSource(videoElement);
+      const dest = audioCtx.createMediaStreamDestination();
+      sourceNode.connect(dest);
+      // NOTE: Do NOT connect to audioCtx.destination!
+      // This routes sound directly into dest for recording while keeping user speakers silent.
+
+      const audioTracks = dest.stream.getAudioTracks();
+      if (audioTracks.length > 0) {
+        combinedStream = new MediaStream([
+          ...stream.getVideoTracks(),
+          audioTracks[0],
+        ]);
+      }
+    }
+  } catch (audioErr) {
+    console.warn("Audio extraction fallback (mídia sem áudio ou restrita):", audioErr);
   }
 
-  let mimeType = "video/webm; codecs=vp9";
-  if (format === "mp4" && MediaRecorder.isTypeSupported("video/mp4")) {
-    mimeType = "video/mp4";
-  } else if (MediaRecorder.isTypeSupported("video/webm; codecs=vp9")) {
-    mimeType = "video/webm; codecs=vp9";
-  } else if (MediaRecorder.isTypeSupported("video/webm")) {
-    mimeType = "video/webm";
+  // Determine best codec matching WhatsApp & mobile standards
+  let mimeType = "";
+  if (isMp4) {
+    const candidateMimes = [
+      'video/mp4; codecs="avc1.42E01E, mp4a.40.2"',
+      'video/mp4; codecs="avc1, mp4a.40.2"',
+      'video/mp4; codecs=avc1',
+      'video/mp4',
+    ];
+    for (const m of candidateMimes) {
+      if (MediaRecorder.isTypeSupported(m)) {
+        mimeType = m;
+        break;
+      }
+    }
   }
 
+  if (!mimeType) {
+    // WebM fallback or explicit WebM
+    const webmMimes = [
+      "video/webm; codecs=vp9,opus",
+      "video/webm; codecs=vp8,opus",
+      "video/webm",
+    ];
+    for (const m of webmMimes) {
+      if (MediaRecorder.isTypeSupported(m)) {
+        mimeType = m;
+        break;
+      }
+    }
+  }
+
+  const videoBitsPerSecond = isWhatsApp ? 3_500_000 : 8_000_000;
   const recorder = new MediaRecorder(combinedStream, {
     mimeType,
-    videoBitsPerSecond: 8_000_000,
+    videoBitsPerSecond,
+    audioBitsPerSecond: 128_000,
   });
 
   const chunks: BlobPart[] = [];
@@ -267,11 +325,13 @@ export async function renderExportedVideo(
     const cleanup = () => {
       if (checkInterval) clearInterval(checkInterval);
       if (watchdogTimeout) clearTimeout(watchdogTimeout);
+      audioCtx?.close().catch(() => {});
     };
 
     recorder.onstop = () => {
       cleanup();
-      resolve(new Blob(chunks, { type: mimeType }));
+      const outputType = mimeType.startsWith("video/mp4") ? "video/mp4" : "video/webm";
+      resolve(new Blob(chunks, { type: outputType }));
     };
     recorder.onerror = (err) => {
       cleanup();

@@ -209,7 +209,7 @@ canvas.obs-render-canvas {
 .transform-bounding-box {
   position: absolute;
   border: 2px solid rgb(var(--cm-accent));
-  box-shadow: 0 0 10px rgba(255, 112, 26, 0.4);
+  box-shadow: 0 0 0 1px rgba(255, 244, 232, 0.15);
   pointer-events: none;
   z-index: 50;
   box-sizing: border-box;
@@ -217,7 +217,7 @@ canvas.obs-render-canvas {
 
 .transform-bounding-box.locked {
   border-color: rgb(var(--cm-warning));
-  box-shadow: 0 0 10px rgba(255, 213, 42, 0.4);
+  box-shadow: 0 0 0 1px rgba(255, 244, 232, 0.15);
 }
 
 .transform-handle {
@@ -318,7 +318,7 @@ canvas.obs-render-canvas {
   border-radius: 4px;
   color: var(--obs-text-primary);
   cursor: pointer;
-  transition: all 80ms ease-out;
+  transition: background-color 80ms ease, border-color 80ms ease, color 80ms ease, opacity 80ms ease;
 }
 
 .obs-tool-btn:hover {
@@ -380,7 +380,7 @@ canvas.obs-render-canvas {
   justify-content: center;
   padding: 2px;
   border-radius: 3px;
-  transition: all 80ms;
+  transition: background-color 80ms ease, border-color 80ms ease, color 80ms ease, opacity 80ms ease;
 }
 
 .obs-item-icon-btn:hover {
@@ -495,7 +495,7 @@ canvas.obs-render-canvas {
   justify-content: center;
   border-radius: 4px;
   cursor: pointer;
-  transition: all 80ms;
+  transition: background-color 80ms ease, border-color 80ms ease, color 80ms ease, opacity 80ms ease;
 }
 
 .audio-mute-btn:hover {
@@ -506,7 +506,7 @@ canvas.obs-render-canvas {
   background: var(--obs-accent-red);
   border-color: #ff5270;
   color: #fff;
-  box-shadow: 0 0 10px rgba(255, 61, 141, 0.5);
+  box-shadow: 0 0 0 1px rgba(255, 244, 232, 0.15);
 }
 
 /* Scene Transitions Dock */
@@ -567,7 +567,7 @@ canvas.obs-render-canvas {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 80ms;
+  transition: background-color 80ms ease, border-color 80ms ease, color 80ms ease, opacity 80ms ease;
   text-align: center;
 }
 
@@ -588,7 +588,7 @@ canvas.obs-render-canvas {
 }
 
 .obs-btn.primary:hover {
-  box-shadow: 0 0 14px rgba(255, 112, 26, 0.45);
+  box-shadow: 0 0 0 1px rgba(255, 244, 232, 0.15);
 }
 
 .obs-btn.recording-active {
@@ -596,7 +596,7 @@ canvas.obs-render-canvas {
   border-color: #ff5270;
   color: #fff;
   animation: pulse-recording 1.2s infinite;
-  box-shadow: 0 0 16px rgba(255, 61, 141, 0.6);
+  box-shadow: 0 0 0 1px rgba(255, 244, 232, 0.15);
 }
 
 @keyframes pulse-recording {
@@ -640,7 +640,7 @@ canvas.obs-render-canvas {
 
 .status-dot.active-red {
   background-color: var(--obs-accent-red);
-  box-shadow: 0 0 8px rgba(255, 61, 141, 0.9);
+  box-shadow: 0 0 0 1px rgba(255, 244, 232, 0.15);
 }
 
 /* Modals & Dialogs */
@@ -738,7 +738,7 @@ canvas.obs-render-canvas {
   border: 1px solid var(--obs-border);
   border-radius: 6px;
   cursor: pointer;
-  transition: all 100ms;
+  transition: background-color 80ms ease, border-color 80ms ease, color 80ms ease, opacity 80ms ease;
 }
 
 .source-type-card:hover {

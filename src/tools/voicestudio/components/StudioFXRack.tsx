@@ -134,7 +134,7 @@ export function StudioFXRack({ fxConfig, onUpdateFX }: StudioFXRackProps) {
     <div className="vs-fx">
       <div className="vs-banner">
         <div className="vs-banner__text">
-          <h3>🎚️ Rack de Efeitos & Masterização Vocal (Studio Suite)</h3>
+          <h3>Rack de Efeitos & Masterização Vocal (Studio Suite)</h3>
           <p>
             Equalizador de 3 bandas acústicas, de-esser para atenuação de sibilância,
             compressor de dinâmica, reverb de ambiente tratado e normalizador de loudness em LUFS.

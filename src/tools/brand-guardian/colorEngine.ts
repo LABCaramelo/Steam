@@ -3,7 +3,7 @@
 // Conversões determinísticas (HEX/RGB/HSL/OKLCH/CMYK), Harmonias, Escalas e WCAG 2.2
 // ==============================================================================
 
-import type { ColorHarmonyType, ContrastResult } from "./types";
+import type { ColorHarmonyType, ContrastResult } from "./types.ts";
 
 export interface RGB {
   r: number;

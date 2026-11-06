@@ -358,7 +358,7 @@ export function VideoStage({
                 <div className="cap-focal-reticle-dot" />
 
                 <div className="cap-focal-reticle-badge">
-                  <span>🎯 Foco ({Math.round(selectedZoom.focusX * 100)}%, {Math.round(selectedZoom.focusY * 100)}%)</span>
+                  <span>Foco ({Math.round(selectedZoom.focusX * 100)}%, {Math.round(selectedZoom.focusY * 100)}%)</span>
                 </div>
               </div>
             )}

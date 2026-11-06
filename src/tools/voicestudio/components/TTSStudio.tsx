@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import type { ScriptBlock, VoicePreset, AudioTake, EngineConfig } from "../types";
 import { parseExpressionTags, findBestVoice, speakSegment, stopSpeechSynthesis } from "../utils/speechSynthesis";
 import { synthesizeProceduralSpeech } from "../utils/audioEngine";
+import { User, Trash2 } from "lucide-react";
 
 interface TTSStudioProps {
   voices: VoicePreset[];
@@ -269,21 +270,21 @@ export function TTSStudio({
             className="vs-chip"
             onClick={() => loadTemplate("reels")}
           >
-            ⚡ Reels 3 Ganchos
+            Reels 3 Ganchos
           </button>
           <button
             type="button"
             className="vs-chip"
             onClick={() => loadTemplate("trailer")}
           >
-            🎬 Teaser Cinematográfico
+            Teaser Cinematográfico
           </button>
           <button
             type="button"
             className="vs-chip"
             onClick={() => loadTemplate("aula")}
           >
-            📚 Aula LAB & Academy
+            Aula LAB & Academy
           </button>
         </div>
 
@@ -326,7 +327,7 @@ export function TTSStudio({
                     className="vs-speaker-avatar"
                     style={{ background: speaker?.avatarBg }}
                   >
-                    {speaker?.gender === "masculino" ? "👨" : "👩"}
+                    <User size={13} strokeWidth={1.5} />
                   </span>
                   <select
                     className="vs-speaker-select"
@@ -361,7 +362,7 @@ export function TTSStudio({
                     onClick={() => handleRemoveBlock(block.id)}
                     title="Excluir este bloco"
                   >
-                    ✕
+                    <Trash2 size={13} strokeWidth={1.5} />
                   </button>
                 </div>
               </div>

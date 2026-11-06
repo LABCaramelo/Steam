@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { EngineConfig } from "../types";
+import { Settings, X, Volume2, Sliders, Server, Zap, Cpu } from "lucide-react";
 
 interface EngineSettingsModalProps {
   config: EngineConfig;
@@ -63,7 +64,7 @@ export function EngineSettingsModal({
       <div className="vs-modal" onClick={(e) => e.stopPropagation()}>
         <div className="vs-modal__header">
           <div className="vs-modal__title-group">
-            <span className="vs-modal__icon">⚙️</span>
+            <Settings size={18} strokeWidth={1.5} className="vs-modal__icon" />
             <div>
               <h3 className="vs-modal__title">Central de Motores Vocais</h3>
               <p className="vs-modal__subtitle">
@@ -72,7 +73,7 @@ export function EngineSettingsModal({
             </div>
           </div>
           <button type="button" className="vs-icon-btn" onClick={onClose}>
-            ✕
+            <X size={16} strokeWidth={1.5} />
           </button>
         </div>
 
@@ -91,7 +92,7 @@ export function EngineSettingsModal({
                   onChange={() => setActiveEngine("webspeech")}
                 />
                 <div className="vs-engine-card__content">
-                  <span className="vs-engine-card__name">🔊 Web Speech Nativo</span>
+                  <span className="vs-engine-card__name"><Volume2 size={14} strokeWidth={1.5} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} /> Web Speech Nativo</span>
                   <span className="vs-engine-card__desc">
                     100% no navegador, zero custo, vozes instaladas no seu sistema (Google, Microsoft, Apple).
                   </span>
@@ -108,7 +109,7 @@ export function EngineSettingsModal({
                   onChange={() => setActiveEngine("procedural")}
                 />
                 <div className="vs-engine-card__content">
-                  <span className="vs-engine-card__name">🎛️ Motor Acústico Procedural (Web Audio)</span>
+                  <span className="vs-engine-card__name"><Sliders size={14} strokeWidth={1.5} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} /> Motor Acústico Procedural (Web Audio)</span>
                   <span className="vs-engine-card__desc">
                     Síntese de formantes F1/F2 e micro-tremor vocal com renderização direta em WAV.
                   </span>
@@ -125,7 +126,7 @@ export function EngineSettingsModal({
                   onChange={() => setActiveEngine("local_server")}
                 />
                 <div className="vs-engine-card__content">
-                  <span className="vs-engine-card__name">💻 Servidor Local VoiceStudio / Ollama</span>
+                  <span className="vs-engine-card__name"><Server size={14} strokeWidth={1.5} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} /> Servidor Local VoiceStudio / Ollama</span>
                   <span className="vs-engine-card__desc">
                     Conecte a uma instância local do repositório debpalash/voicestudio, Piper ou XTTS.
                   </span>
@@ -142,7 +143,7 @@ export function EngineSettingsModal({
                   onChange={() => setActiveEngine("elevenlabs")}
                 />
                 <div className="vs-engine-card__content">
-                  <span className="vs-engine-card__name">⚡ ElevenLabs API (Opcional)</span>
+                  <span className="vs-engine-card__name"><Zap size={14} strokeWidth={1.5} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} /> ElevenLabs API (Opcional)</span>
                   <span className="vs-engine-card__desc">
                     Conecte sua chave pessoal. A chave fica salva apenas no seu navegador.
                   </span>
@@ -159,7 +160,7 @@ export function EngineSettingsModal({
                   onChange={() => setActiveEngine("openai")}
                 />
                 <div className="vs-engine-card__content">
-                  <span className="vs-engine-card__name">🧠 OpenAI TTS & Whisper (Opcional)</span>
+                  <span className="vs-engine-card__name"><Cpu size={14} strokeWidth={1.5} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} /> OpenAI TTS &amp; Whisper (Opcional)</span>
                   <span className="vs-engine-card__desc">
                     Vozes Alloy, Echo, Fable, Onyx, Nova e Shimmer via OpenAI.
                   </span>
@@ -258,7 +259,7 @@ export function EngineSettingsModal({
 
           {/* Hardware acceleration badge */}
           <div className="vs-hardware-banner">
-            <span className="vs-hw-icon">🚀</span>
+            <span className="vs-hw-icon"><Zap size={14} strokeWidth={1.5} /></span>
             <div style={{ flex: 1 }}>
               <strong>Aceleração de Hardware Detectada</strong>
               <p>WebAudio + WebAssembly SIMD ativos. Suporte a CUDA/MPS para instâncias locais.</p>

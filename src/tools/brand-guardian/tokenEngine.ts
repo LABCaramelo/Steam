@@ -3,7 +3,7 @@
 // Resolução determinística de aliases, prevenção de ciclos e exportadores interoperáveis
 // ==============================================================================
 
-import type { DesignToken } from "./types";
+import type { DesignToken } from "./types.ts";
 
 export interface ResolvedToken {
   token: DesignToken;
