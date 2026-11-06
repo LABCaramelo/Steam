@@ -103,7 +103,7 @@ function steamDataApi(): Plugin {
 /** LAB client routes (src/App.tsx). Everything else under "/" belongs to the public site. */
 const LAB_ROUTE = /^\/(?:library|store|profile|settings|app)(?:\/|$)/;
 /** Tool pages built from tools/<slug>/index.html (src/tools/<slug>). */
-const TOOL_PAGES = ["prompt-library", "kanban", "prancheta", "automation", "academy", "claquete", "comunidade", "admin", "gravador", "montagem", "creative-os", "gabinete", "trama", "stories", "logomotion", "cap", "voicestudio", "caderno"].filter((slug) =>
+const TOOL_PAGES = ["prompt-library", "kanban", "prancheta", "automation", "academy", "claquete", "comunidade", "admin", "gravador", "montagem", "creative-os", "gabinete", "trama", "stories", "logomotion", "cap", "voicestudio", "caderno", "brand-guardian"].filter((slug) =>
   fs.existsSync(path.resolve(import.meta.dirname, "src", "tools", slug, "main.tsx")),
 );
 const TOOL_ROUTE = new RegExp(`^/tools/(${TOOL_PAGES.join("|")})/?$`);
@@ -120,6 +120,11 @@ function siteRoutes(): Plugin {
     const url = new URL(req.url ?? "/", "http://localhost");
     const page = url.pathname;
 
+    if (/^\/(?:brand-guardian|guardian|marca)\/?$/.test(page)) {
+      res.statusCode = 308;
+      res.setHeader("Location", "/tools/brand-guardian");
+      return res.end();
+    }
     if (/^\/admin\/?$/.test(page)) {
       res.statusCode = 308;
       res.setHeader("Location", "/tools/admin");

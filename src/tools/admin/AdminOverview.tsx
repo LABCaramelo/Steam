@@ -1,4 +1,5 @@
 import type { AdminAchievementItem, AdminStats, AdminToolItem } from "./types";
+import { Megaphone, ArrowUpRight } from "lucide-react";
 
 export type AdminTab = "dashboard" | "tools" | "seeds" | "achievements" | "users";
 
@@ -82,7 +83,7 @@ export function AdminOverview({
               <strong>Revisar membros e permissões</strong>
               <small>{stats.pending_users} pendentes · {stats.blocked_users} bloqueados · {stats.admin_users} administradores</small>
             </span>
-            <span aria-hidden="true" style={{ fontSize: 16, color: "rgb(var(--cm-accent, 255 112 26))" }}>↗</span>
+            <ArrowUpRight size={16} strokeWidth={1.5} style={{ color: "rgb(var(--cm-accent, 255 112 26))" }} />
           </button>
 
           <button type="button" className="admin-action-row" onClick={() => navigate("tools")}>
@@ -90,7 +91,7 @@ export function AdminOverview({
               <strong>Organizar a vitrine da Loja</strong>
               <small>{stats.unreleased_tools} não publicadas · {stats.total_tools} ferramentas no catálogo</small>
             </span>
-            <span aria-hidden="true" style={{ fontSize: 16, color: "rgb(var(--cm-accent, 255 112 26))" }}>↗</span>
+            <ArrowUpRight size={16} strokeWidth={1.5} style={{ color: "rgb(var(--cm-accent, 255 112 26))" }} />
           </button>
 
           <button type="button" className="admin-action-row" onClick={() => navigate("users")}>
@@ -98,7 +99,7 @@ export function AdminOverview({
               <strong>Gerenciar ferramentas por membro</strong>
               <small>Conceda novas ferramentas ou revogue acessos individuais a qualquer momento.</small>
             </span>
-            <span aria-hidden="true" style={{ fontSize: 16, color: "rgb(var(--cm-accent, 255 112 26))" }}>↗</span>
+            <ArrowUpRight size={16} strokeWidth={1.5} style={{ color: "rgb(var(--cm-accent, 255 112 26))" }} />
           </button>
 
           <button type="button" className="admin-action-row" onClick={() => navigate("achievements")}>
@@ -106,7 +107,7 @@ export function AdminOverview({
               <strong>Conceder conquistas e reconhecer evolução</strong>
               <small>{achievements.length} medalhas cadastradas prontas para entrega.</small>
             </span>
-            <span aria-hidden="true" style={{ fontSize: 16, color: "rgb(var(--cm-accent, 255 112 26))" }}>↗</span>
+            <ArrowUpRight size={16} strokeWidth={1.5} style={{ color: "rgb(var(--cm-accent, 255 112 26))" }} />
           </button>
         </section>
 
@@ -196,7 +197,7 @@ export function AdminOverview({
                     title={`Avisar sobre ${t.name} no WhatsApp`}
                     onClick={() => onOpenNotify(t)}
                   >
-                    📢
+                    <Megaphone size={13} strokeWidth={1.5} />
                   </button>
                 )}
               </div>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">Brand Guardian Icon</title>
+  <defs>
+    <linearGradient id="iconShield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF701A"/>
+      <stop offset="100%" stop-color="#FF3D8D"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="#101014"/>
+  <rect x="6" y="6" width="244" height="244" rx="50" fill="none" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="2"/>
+  
+  <!-- Shield shape -->
+  <path d="M128 36 L204 68 V140 C204 192 128 226 128 226 C128 226 52 192 52 140 V68 Z" fill="#181822" stroke="url(#iconShield)" stroke-width="4"/>
+  
+  <!-- Color spectrum segments inside shield -->
+  <circle cx="128" cy="132" r="38" fill="none" stroke="#25BFFF" stroke-width="6" stroke-dasharray="60 180"/>
+  <circle cx="128" cy="132" r="38" fill="none" stroke="#FF701A" stroke-width="6" stroke-dasharray="60 180" stroke-dashoffset="-60"/>
+  <circle cx="128" cy="132" r="38" fill="none" stroke="#FF3D8D" stroke-width="6" stroke-dasharray="60 180" stroke-dashoffset="-120"/>
+  <circle cx="128" cy="132" r="38" fill="none" stroke="#FFD52A" stroke-width="6" stroke-dasharray="60 180" stroke-dashoffset="-180"/>
+  
+  <!-- Central Core Symbol -->
+  <circle cx="128" cy="132" r="20" fill="#FFF4E8"/>
+  <circle cx="128" cy="132" r="10" fill="#FF701A"/>
+  <circle cx="128" cy="132" r="4" fill="#101014"/>
+</svg>

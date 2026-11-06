@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="430" viewBox="0 0 920 430" role="img" aria-labelledby="title desc">
+  <title id="title">Brand Guardian</title>
+  <desc id="desc">Design System e Identidade Visual no LAB</desc>
+  <defs>
+    <pattern id="dots" width="14" height="14" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#FFF4E8" opacity=".07"/>
+    </pattern>
+  </defs>
+  <rect width="920" height="430" fill="#101014"/>
+  <rect width="920" height="430" fill="url(#dots)"/>
+  <path d="M720 0H920V430H800Z" fill="#FF701A" fill-opacity=".12"/>
+  
+  <g font-family="Montserrat, Inter, Arial, sans-serif">
+    <text x="60" y="65" fill="#FF701A" font-size="12" font-weight="700" letter-spacing="3">LAB / 19</text>
+    <text x="56" y="145" fill="#FFF4E8" font-size="52" font-weight="900" letter-spacing="-2">Brand Guardian<tspan fill="#FF701A">.</tspan></text>
+    <text x="60" y="185" fill="#FFF4E8" fill-opacity=".65" font-size="16">Fonte oficial de identidade visual de cada marca no LAB.</text>
+    
+    <g transform="translate(60 230)">
+      <rect x="0" y="0" width="140" height="44" rx="8" fill="#181820" stroke="#FFF4E8" stroke-opacity=".15"/>
+      <circle cx="25" cy="22" r="7" fill="#FF701A"/>
+      <text x="45" y="27" fill="#FFF4E8" font-size="13" font-weight="600">Color Lab</text>
+
+      <rect x="155" y="0" width="160" height="44" rx="8" fill="#181820" stroke="#FFF4E8" stroke-opacity=".15"/>
+      <circle cx="180" cy="22" r="7" fill="#25BFFF"/>
+      <text x="200" y="27" fill="#FFF4E8" font-size="13" font-weight="600">Tokens DTCG</text>
+
+      <rect x="330" y="0" width="150" height="44" rx="8" fill="#181820" stroke="#FFF4E8" stroke-opacity=".15"/>
+      <circle cx="355" cy="22" r="7" fill="#FF3D8D"/>
+      <text x="375" y="27" fill="#FFF4E8" font-size="13" font-weight="600">Brandbook</text>
+
+      <rect x="495" y="0" width="160" height="44" rx="8" fill="#181820" stroke="#FFF4E8" stroke-opacity=".15"/>
+      <circle cx="520" cy="22" r="7" fill="#FFD52A"/>
+      <text x="540" y="27" fill="#FFF4E8" font-size="13" font-weight="600">Brand Guard</text>
+    </g>
+
+    <text x="60" y="375" fill="#FFF4E8" font-size="20" font-weight="800">Menos dispersão. Mais consistência de marca.</text>
+  </g>
+</svg>

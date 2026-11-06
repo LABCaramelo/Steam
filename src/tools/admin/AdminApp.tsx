@@ -18,6 +18,19 @@ import type {
 } from "./types";
 import { updateCustomToolAssets, updateDynamicToolMeta } from "../../toolCatalog";
 import { AdminOverview, type AdminTab } from "./AdminOverview";
+import {
+  Activity,
+  Wrench,
+  Users,
+  Trophy,
+  Globe,
+  RotateCw,
+  Megaphone,
+  Shield,
+  Zap,
+  CheckCircle2,
+  Clock,
+} from "lucide-react";
 import "./admin.css";
 
 
@@ -718,7 +731,7 @@ export function AdminApp() {
             disabled={loading}
             title="Recarregar dados do painel"
           >
-            <span className={loading ? "admin-spin" : ""}>🔄</span> Atualizar
+            <RotateCw size={13} strokeWidth={1.5} className={loading ? "admin-spin" : ""} style={{ marginRight: 6 }} /> Atualizar
           </button>
           <button
             type="button"
@@ -729,7 +742,7 @@ export function AdminApp() {
             }}
             title="Enviar comunicado oficial para o grupo de WhatsApp"
           >
-            📢 Avisar Grupo
+            <Megaphone size={13} strokeWidth={1.5} style={{ marginRight: 6 }} /> Avisar Grupo
           </button>
         </div>
       </header>
@@ -742,14 +755,14 @@ export function AdminApp() {
           className={`admin-tab ${tab === "dashboard" ? "is-active" : ""}`}
           onClick={() => setTab("dashboard")}
         >
-          ⚡ Visão Geral
+          <Activity size={14} strokeWidth={1.5} style={{ marginRight: 6 }} /> Visão Geral
         </button>
         <button
           type="button"
           className={`admin-tab ${tab === "tools" ? "is-active" : ""}`}
           onClick={() => setTab("tools")}
         >
-          🛠️ Ferramentas &amp; Loja
+          <Wrench size={14} strokeWidth={1.5} style={{ marginRight: 6 }} /> Ferramentas &amp; Loja
           <span className="admin-tab__badge">{tools.length}</span>
         </button>
         <button
@@ -757,7 +770,7 @@ export function AdminApp() {
           className={`admin-tab ${tab === "users" ? "is-active" : ""}`}
           onClick={() => setTab("users")}
         >
-          👥 Membros &amp; Contas
+          <Users size={14} strokeWidth={1.5} style={{ marginRight: 6 }} /> Membros &amp; Contas
           <span className="admin-tab__badge">{stats?.total_users ?? users.length}</span>
         </button>
         <button
@@ -765,7 +778,7 @@ export function AdminApp() {
           className={`admin-tab ${tab === "achievements" ? "is-active" : ""}`}
           onClick={() => setTab("achievements")}
         >
-          🏆 Conquistas
+          <Trophy size={14} strokeWidth={1.5} style={{ marginRight: 6 }} /> Conquistas
           <span className="admin-tab__badge">{achievements.length}</span>
         </button>
         <button
@@ -776,7 +789,7 @@ export function AdminApp() {
             if (!seedStats) loadSeedData(seedRange);
           }}
         >
-          🌐 Seeds &amp; Proveniência
+          <Globe size={14} strokeWidth={1.5} style={{ marginRight: 6 }} /> Seeds &amp; Proveniência
           <span className="admin-tab__badge">{seedPublications.length || "v1"}</span>
         </button>
       </nav>
@@ -816,7 +829,7 @@ export function AdminApp() {
               }}
               title="Avisar a comunidade sobre ferramenta"
             >
-              📢 Avisar no Grupo
+              <Megaphone size={13} strokeWidth={1.5} style={{ marginRight: 6 }} /> Avisar no Grupo
             </button>
           </div>
 
@@ -848,7 +861,7 @@ export function AdminApp() {
               className={`admin-pill-filter ${toolFilter === "beta" ? "is-active" : ""}`}
               onClick={() => setToolFilter("beta")}
             >
-              ⚡ Beta <span className="admin-pill-filter__count">{tools.filter((t) => t.stage === "beta").length}</span>
+              <Zap size={12} strokeWidth={1.5} style={{ marginRight: 4 }} /> Beta <span className="admin-pill-filter__count">{tools.filter((t) => t.stage === "beta").length}</span>
             </button>
             <button
               type="button"
@@ -918,7 +931,7 @@ export function AdminApp() {
                             title={`Estágio atual: ${t.stage?.toUpperCase() || "STABLE"}. Clique para alternar para ${t.stage === "beta" ? "ESTÁVEL" : "BETA"}`}
                             onClick={() => handleToggleStage(t)}
                           >
-                            {t.stage === "beta" ? "⚡ BETA" : "● ESTÁVEL"}
+                            {t.stage === "beta" ? <><Zap size={10} strokeWidth={1.5} style={{ marginRight: 3 }} /> BETA</> : <><CheckCircle2 size={10} strokeWidth={1.5} style={{ marginRight: 3 }} /> ESTÁVEL</>}
                           </button>
                         )}
                       </td>
@@ -959,7 +972,7 @@ export function AdminApp() {
                           onClick={() => openNotifyModal(t)}
                           title="Avisar lançamento desta ferramenta no grupo do WhatsApp"
                         >
-                          📢 Avisar
+                          <Megaphone size={12} strokeWidth={1.5} style={{ marginRight: 4 }} /> Avisar
                         </button>
                         <button
                           type="button"
@@ -1639,14 +1652,14 @@ export function AdminApp() {
               className={`admin-pill-filter ${roleFilter === "admin" ? "is-active" : ""}`}
               onClick={() => setRoleFilter(roleFilter === "admin" ? "" : "admin")}
             >
-              👑 Admins <span className="admin-pill-filter__count">{users.filter((u) => u.is_admin || u.role === "admin").length}</span>
+              <Shield size={12} strokeWidth={1.5} style={{ marginRight: 4 }} /> Admins <span className="admin-pill-filter__count">{users.filter((u) => u.is_admin || u.role === "admin").length}</span>
             </button>
             <button
               type="button"
               className={`admin-pill-filter ${roleFilter === "beta" ? "is-active" : ""}`}
               onClick={() => setRoleFilter(roleFilter === "beta" ? "" : "beta")}
             >
-              ⚡ Beta <span className="admin-pill-filter__count">{users.filter((u) => u.role === "beta").length}</span>
+              <Zap size={12} strokeWidth={1.5} style={{ marginRight: 4 }} /> Beta <span className="admin-pill-filter__count">{users.filter((u) => u.role === "beta").length}</span>
             </button>
             <button
               type="button"
@@ -1821,7 +1834,7 @@ export function AdminApp() {
                           onClick={() => openUserActivities(u)}
                           aria-label="Atividades"
                         >
-                          ⏱️
+                          <Clock size={13} strokeWidth={1.5} />
                         </button>
                         <button
                           className="admin-btn admin-btn--primary admin-btn--icon"
@@ -1829,7 +1842,7 @@ export function AdminApp() {
                           onClick={() => openUserAchievements(u)}
                           aria-label="Conquistas"
                         >
-                          🏆
+                          <Trophy size={13} strokeWidth={1.5} />
                         </button>
                         <button
                           className="admin-btn admin-btn--ghost admin-btn--sm"
@@ -2288,7 +2301,7 @@ export function AdminApp() {
                 onClick={handleSendNotification}
                 disabled={sendingNotification || loadingNotifyPreview}
               >
-                {sendingNotification ? "Disparando..." : "📢 Disparar Aviso no Grupo Oficial"}
+                {sendingNotification ? "Disparando..." : <><Megaphone size={14} strokeWidth={1.5} style={{ marginRight: 6 }} /> Disparar Aviso no Grupo Oficial</>}
               </button>
             </div>
           </div>

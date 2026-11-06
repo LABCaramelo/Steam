@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="620" viewBox="0 0 1920 620" role="img" aria-labelledby="title desc">
+  <title id="title">Brand Guardian — LAB Caramelo</title>
+  <desc id="desc">Design System, Cores, Tipografia, Tokens e Brandbook unificados.</desc>
+  <defs>
+    <pattern id="dots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#FFF4E8" opacity=".06"/>
+    </pattern>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF701A" stop-opacity=".3"/>
+      <stop offset="50%" stop-color="#FF3D8D" stop-opacity=".15"/>
+      <stop offset="100%" stop-color="#25BFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="620" fill="#101014"/>
+  <rect width="1920" height="620" fill="url(#dots)"/>
+  <rect x="800" y="-100" width="1200" height="800" fill="url(#glow)"/>
+  
+  <g font-family="Montserrat, Inter, Arial, sans-serif">
+    <text x="100" y="110" fill="#FF701A" font-size="14" font-weight="700" letter-spacing="4">LAB / 19 · DESIGN SYSTEM &amp; IDENTIDADE VISUAL</text>
+    <text x="96" y="220" fill="#FFF4E8" font-size="88" font-weight="900" letter-spacing="-3">Brand Guardian<tspan fill="#FF701A">.</tspan></text>
+    <text x="100" y="280" fill="#FFF4E8" fill-opacity=".7" font-size="24" font-weight="400">A fonte oficial de identidade visual de cada marca no laboratório.</text>
+
+    <!-- Swatches Bar -->
+    <g transform="translate(100 340)">
+      <rect x="0" y="0" width="80" height="40" rx="6" fill="#101014" stroke="#FFF4E8" stroke-opacity=".3"/>
+      <text x="40" y="25" fill="#FFF4E8" font-size="11" text-anchor="middle" font-weight="600">Ink</text>
+      <rect x="95" y="0" width="80" height="40" rx="6" fill="#FFF4E8"/>
+      <text x="135" y="25" fill="#101014" font-size="11" text-anchor="middle" font-weight="700">Cream</text>
+      <rect x="190" y="0" width="80" height="40" rx="6" fill="#FF701A"/>
+      <text x="230" y="25" fill="#FFF4E8" font-size="11" text-anchor="middle" font-weight="700">Caramel</text>
+      <rect x="285" y="0" width="80" height="40" rx="6" fill="#25BFFF"/>
+      <text x="325" y="25" fill="#101014" font-size="11" text-anchor="middle" font-weight="700">Sky</text>
+      <rect x="380" y="0" width="80" height="40" rx="6" fill="#FF3D8D"/>
+      <text x="420" y="25" fill="#FFF4E8" font-size="11" text-anchor="middle" font-weight="700">Pink</text>
+      <rect x="475" y="0" width="80" height="40" rx="6" fill="#7657FF"/>
+      <text x="515" y="25" fill="#FFF4E8" font-size="11" text-anchor="middle" font-weight="700">Violet</text>
+      <rect x="570" y="0" width="80" height="40" rx="6" fill="#FFD52A"/>
+      <text x="610" y="25" fill="#101014" font-size="11" text-anchor="middle" font-weight="700">Yellow</text>
+    </g>
+
+    <!-- Interactive Cards Preview on Right Side -->
+    <g transform="translate(1180 80)">
+      <!-- Card 1: Color Lab -->
+      <rect x="0" y="0" width="340" height="210" rx="14" fill="#181820" stroke="#FFF4E8" stroke-opacity=".12"/>
+      <text x="24" y="42" fill="#FF701A" font-size="12" font-weight="700" letter-spacing="1">COLOR LAB &amp; HARMONIES</text>
+      <circle cx="90" cy="125" r="48" fill="none" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="8"/>
+      <circle cx="90" cy="125" r="48" fill="none" stroke="#FF701A" stroke-width="8" stroke-dasharray="60 240"/>
+      <circle cx="90" cy="125" r="48" fill="none" stroke="#25BFFF" stroke-width="8" stroke-dasharray="60 240" stroke-dashoffset="-75"/>
+      <circle cx="90" cy="125" r="48" fill="none" stroke="#FF3D8D" stroke-width="8" stroke-dasharray="60 240" stroke-dashoffset="-150"/>
+      <circle cx="90" cy="125" r="22" fill="#FFF4E8"/>
+      <text x="170" y="105" fill="#FFF4E8" font-size="14" font-weight="700">Triádica</text>
+      <text x="170" y="130" fill="#FFF4E8" fill-opacity=".5" font-size="12">WCAG 2.2 AAA</text>
+      <text x="170" y="155" fill="#25BFFF" font-size="12">DeltaE &lt; 1.8</text>
+
+      <!-- Card 2: DTCG Tokens -->
+      <rect x="360" y="80" width="340" height="220" rx="14" fill="#1E1E28" stroke="#FFF4E8" stroke-opacity=".16"/>
+      <text x="384" y="122" fill="#25BFFF" font-size="12" font-weight="700" letter-spacing="1">DTCG 2025.10 TOKENS</text>
+      <rect x="384" y="145" width="290" height="32" rx="6" fill="#101014"/>
+      <text x="400" y="166" fill="#FFF4E8" font-family="JetBrains Mono, monospace" font-size="12">color.brand.primary</text>
+      <rect x="384" y="185" width="290" height="32" rx="6" fill="#101014"/>
+      <text x="400" y="206" fill="#FF701A" font-family="JetBrains Mono, monospace" font-size="12">→ button.bg: #FF701A</text>
+      <rect x="384" y="225" width="290" height="32" rx="6" fill="#101014"/>
+      <text x="400" y="246" fill="#FFF4E8" fill-opacity=".6" font-family="JetBrains Mono, monospace" font-size="12">status: published</text>
+
+      <!-- Card 3: Brand Guard -->
+      <rect x="120" y="240" width="380" height="190" rx="14" fill="#14141A" stroke="#FF701A" stroke-opacity=".4"/>
+      <text x="144" y="282" fill="#FFD52A" font-size="12" font-weight="700" letter-spacing="1">BRAND GUARD · VALIDADOR</text>
+      <text x="144" y="320" fill="#FFF4E8" font-size="18" font-weight="700">100% de conformidade visual</text>
+      <text x="144" y="348" fill="#FFF4E8" fill-opacity=".6" font-size="13">Nenhuma violação em contraste, tokens ou logotipos.</text>
+      <rect x="144" y="370" width="120" height="28" rx="4" fill="#FF701A"/>
+      <text x="204" y="388" fill="#101014" font-size="11" text-anchor="middle" font-weight="700">PUBLICAR V1.0</text>
+    </g>
+  </g>
+</svg>

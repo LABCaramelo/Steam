@@ -20,6 +20,10 @@ import {
   applyAutoLayout,
   applyLocalMatrix,
   boundsOf,
+  CAROUSEL_SLIDE_HEIGHT,
+  CAROUSEL_SLIDE_WIDTH,
+  isCarouselNode,
+  getCarouselPages,
   childrenOf,
   cloneNodeTree,
   deleteNode,
@@ -933,11 +937,26 @@ export const FRAME_PRESETS: { group: string; items: FramePreset[] }[] = [
       { name: 'Slide 4:3', w: 1024, h: 768 },
     ],
   },
+    {
+    group: 'Carrossel Instagram (1080×1440)',
+    items: [
+      { name: 'Carrossel (2 slides)', w: 2160, h: 1440 },
+      { name: 'Carrossel (3 slides)', w: 3240, h: 1440 },
+      { name: 'Carrossel (4 slides)', w: 4320, h: 1440 },
+      { name: 'Carrossel (5 slides)', w: 5400, h: 1440 },
+      { name: 'Carrossel (6 slides)', w: 6480, h: 1440 },
+      { name: 'Carrossel (7 slides)', w: 7560, h: 1440 },
+      { name: 'Carrossel (8 slides)', w: 8640, h: 1440 },
+      { name: 'Carrossel (10 slides)', w: 10800, h: 1440 },
+    ],
+  },
   {
     group: 'Redes sociais',
     items: [
-      { name: 'Post do Instagram', w: 1080, h: 1350 },
-      { name: 'Story do Instagram', w: 1080, h: 1920 },
+      { name: 'Carrossel (4 slides)', w: 4320, h: 1440 },
+      { name: 'Post do Instagram (Retrato 4:5)', w: 1080, h: 1440 },
+      { name: 'Post do Instagram (Quadrado)', w: 1080, h: 1080 },
+      { name: 'Story do Instagram (9:16)', w: 1080, h: 1920 },
       { name: 'Post do Facebook', w: 1200, h: 630 },
       { name: 'Post do X', w: 1200, h: 675 },
     ],
@@ -961,8 +980,20 @@ export function createFramePreset(p: FramePreset) {
     x = Math.round(sel[0].x + sel[0].width + 100);
     y = Math.round(sel[0].y);
   }
+  const isCar = p.h === CAROUSEL_SLIDE_HEIGHT && p.w % CAROUSEL_SLIDE_WIDTH === 0;
+  const pages = isCar ? Math.round(p.w / CAROUSEL_SLIDE_WIDTH) : undefined;
   store.checkpoint();
-  const n = createNode('FRAME', { name: p.name, x, y, width: p.w, height: p.h });
+  const n = createNode('FRAME', {
+    name: p.name,
+    x,
+    y,
+    width: p.w,
+    height: p.h,
+    fills: [solid('#FFFFFF')],
+    clipsContent: true,
+    isCarousel: isCar,
+    carouselPages: pages,
+  });
   insertNode(doc, n, S().pageId);
   S().selection = [n.id];
   S().tool = 'MOVE';
@@ -970,6 +1001,81 @@ export function createFramePreset(p: FramePreset) {
   const v = store.viewportWorldRect();
   const b = worldBounds(doc, n.id);
   if (b.x < v.x || b.y < v.y || b.x + b.width > v.x + v.width || b.y + b.height > v.y + v.height) store.zoomToRect(b);
+}
+
+export function createCarousel(pages = 4) {
+  const clamped = Math.max(1, Math.min(20, Math.round(pages)));
+  createFramePreset({
+    name: `Carrossel (${clamped} slides)`,
+    w: clamped * CAROUSEL_SLIDE_WIDTH,
+    h: CAROUSEL_SLIDE_HEIGHT,
+  });
+  store.toast(`Carrossel criado com ${clamped} páginas (${clamped * 1080}×1440)`);
+}
+
+export function setCarouselPages(nodeId: string, pages: number) {
+  const doc = D();
+  const node = doc.nodes[nodeId];
+  if (!node || node.type !== 'FRAME') return;
+  const clamped = Math.max(1, Math.min(20, Math.round(pages)));
+  commit((d) => {
+    const target = d.nodes[nodeId];
+    if (!target) return;
+    target.width = clamped * CAROUSEL_SLIDE_WIDTH;
+    target.height = CAROUSEL_SLIDE_HEIGHT;
+    target.isCarousel = true;
+    target.carouselPages = clamped;
+    target.clipsContent = true;
+  });
+  store.toast(`Carrossel: ${clamped} páginas (${clamped * 1080}×1440)`);
+}
+
+export function addCarouselPage(nodeId: string) {
+  const doc = D();
+  const node = doc.nodes[nodeId];
+  if (!node) return;
+  const cur = getCarouselPages(node);
+  setCarouselPages(nodeId, cur + 1);
+}
+
+export function removeCarouselPage(nodeId: string) {
+  const doc = D();
+  const node = doc.nodes[nodeId];
+  if (!node) return;
+  const cur = getCarouselPages(node);
+  if (cur <= 1) {
+    store.toast('O carrossel já está com o número mínimo de páginas (1)');
+    return;
+  }
+  setCarouselPages(nodeId, cur - 1);
+}
+
+export function toggleCarouselMode(nodeId: string) {
+  const doc = D();
+  const node = doc.nodes[nodeId];
+  if (!node || node.type !== 'FRAME') return;
+  const isCar = isCarouselNode(node);
+  if (isCar) {
+    commit((d) => {
+      const target = d.nodes[nodeId];
+      if (target) {
+        target.isCarousel = false;
+      }
+    });
+    store.toast('Modo carrossel desativado para este frame');
+  } else {
+    const pages = Math.max(2, Math.round(node.width / CAROUSEL_SLIDE_WIDTH));
+    commit((d) => {
+      const target = d.nodes[nodeId];
+      if (!target) return;
+      target.width = pages * CAROUSEL_SLIDE_WIDTH;
+      target.height = CAROUSEL_SLIDE_HEIGHT;
+      target.isCarousel = true;
+      target.carouselPages = pages;
+      target.clipsContent = true;
+    });
+    store.toast(`Frame convertido em Carrossel (${pages} páginas de 1080×1440)`);
+  }
 }
 
 // ---------- páginas ----------

@@ -8,6 +8,9 @@ import {
   isDescendant,
   localMatrix,
   worldMatrix,
+  CAROUSEL_SLIDE_WIDTH,
+  isCarouselNode,
+  getCarouselPages,
 } from '../model/document';
 import type { DocumentData, SceneNode } from '../model/types';
 
@@ -214,7 +217,18 @@ export function snapTargets(doc: DocumentData, pageId: string, exclude: Set<stri
       if (!n || !n.visible || exclude.has(id)) continue;
       const w = multiply(parentWorld, localMatrix(n));
       rects.push(rectFromPoints(boxCorners(n.width, n.height).map((p) => applyMat(w, p))));
-      if (n.type === 'FRAME') walk(n.children ?? [], w);
+      if (n.type === 'FRAME') {
+        if (isCarouselNode(n)) {
+          const pages = getCarouselPages(n);
+          for (let i = 0; i < pages; i++) {
+            const slideCorners = boxCorners(CAROUSEL_SLIDE_WIDTH, n.height).map((p) =>
+              applyMat(w, { x: p.x + i * CAROUSEL_SLIDE_WIDTH, y: p.y })
+            );
+            rects.push(rectFromPoints(slideCorners));
+          }
+        }
+        walk(n.children ?? [], w);
+      }
     }
   };
   walk(page.children, IDENTITY);

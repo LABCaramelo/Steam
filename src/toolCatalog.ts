@@ -509,6 +509,43 @@ export const CADERNO_APP = tool(CADERNO_APP_ID, "Caderno", {
   },
 });
 
+export const BRAND_GUARDIAN_APP_ID = 19;
+
+export const BRAND_GUARDIAN_APP = tool(BRAND_GUARDIAN_APP_ID, "Brand Guardian", {
+  slug: "brand-guardian",
+  available: true,
+  stage: "beta",
+  launchPath: `/library/app/${BRAND_GUARDIAN_APP_ID}/open`,
+  publicPage: "/tools/brand-guardian",
+  description: "A fonte oficial de identidade visual de cada marca no LAB: Color Lab (Adobe Color), Tokens DTCG 2025.10, Tipografia, Logotipos com safe zone, Brandbook dinâmico e Validador Brand Guard.",
+  assets: art("/tools/brand-guardian/art"),
+  store: {
+    tagline: "Identidade visual, tokens DTCG e Design System de cada marca.",
+    eyebrow: "DESIGN SYSTEM & BRAND GUARDIAN / FONTE DA VERDADE",
+    headline: "A identidade de cada marca,\npreservada e pronta para o LAB.",
+    features: [
+      { title: "Color Lab & Harmonias Cromáticas", text: "Roda de cores interativa, harmonias cromáticas, conversões HEX/RGB/HSL/OKLCH, escalas tonais 50-900 e validador WCAG 2.2." },
+      { title: "Tokens DTCG 2025.10 & Modos", text: "Tokens primitivos, semânticos e de componente, modos Light/Dark, resolução determinística de aliases e exportação para CSS/JSON/Tailwind." },
+      { title: "Gerenciador de Logotipos & Safe Zone", text: "Variantes oficiais, área de proteção em canvas interativo, escalas mínimas, contrastes de fundo e pacotes de download." },
+      { title: "Brandbook Dinâmico & Brand Guard", text: "Documentação viva de 18 seções conectada aos dados oficiais e validador automático de inconsistências visuais." },
+    ],
+    steps: [
+      "Abra o Brand Guardian e cadastre a identidade da sua agência ou das marcas dos seus clientes.",
+      "Explore o Color Lab, configure fontes, logotipos, elementos visuais e a árvore de Design Tokens.",
+      "Valide a consistência com o Brand Guard e publique versões oficiais prontas para consumo em todo o LAB.",
+    ],
+    about: [
+      ["Formato", "Design System & Brandbook"],
+      ["Tokens", "Especificação DTCG 2025.10"],
+      ["Acessibilidade", "WCAG 2.2 AA / AAA"],
+      ["Exportação", "DTCG JSON, CSS, Tailwind e Markdown"],
+      ["Integração", "Workspaces do Estúdio & Clientes CRM"],
+    ],
+    dataNote: "Suas marcas, tokens e diretrizes ficam protegidos na sua conta do LAB, com persistência resiliente e suporte para consumo em outras ferramentas.",
+    category: "Design",
+  },
+});
+
 export const TOOL_CATALOG: readonly LibraryApp[] = [
   PROMPT_LIBRARY_APP,
   ADMIN_APP,
@@ -526,6 +563,7 @@ export const TOOL_CATALOG: readonly LibraryApp[] = [
   CAP_APP,
   VOICESTUDIO_APP,
   CADERNO_APP,
+  BRAND_GUARDIAN_APP,
 ];
 
 export interface DynamicToolMeta {

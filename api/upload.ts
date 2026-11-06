@@ -38,7 +38,7 @@ export default async function handler(req: Req, res: ServerResponse) {
       await requireLabAdmin(access);
     } else if (requestedFolder === "media") {
       const slug = String(req.headers["x-tool-slug"] ?? "");
-      if (!["claquete", "prancheta", "comunidade"].includes(slug)) {
+      if (!["claquete", "prancheta", "comunidade", "brand-guardian"].includes(slug)) {
         return send(res, 403, { error: "Informe a ferramenta responsável por este envio." });
       }
       await assertToolAccess(access, slug);

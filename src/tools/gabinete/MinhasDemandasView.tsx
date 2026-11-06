@@ -75,7 +75,7 @@ export const MinhasDemandasView: React.FC<Props> = ({
             </span>
           </div>
           <h1 className="mc-view-header__title" style={{ marginTop: 4 }}>
-            Olá, {firstName}!
+            Demandas de {firstName || "Criação"}
           </h1>
         </div>
 

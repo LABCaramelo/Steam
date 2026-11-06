@@ -100,11 +100,11 @@
   --cm-spectrum-gradient: linear-gradient(110deg, #FF701A 0%, #FF3D8D 24%, #7657FF 48%, #25BFFF 72%, #FFD52A 100%);
   --cm-spectrum: var(--cm-spectrum-gradient);
   --cm-spectrum-soft: linear-gradient(110deg, #FFAE7B 0%, #FF8FBD 24%, #B6A5FF 48%, #8ADEFF 72%, #FFE889 100%);
-  --cm-spectrum-glow: 0 0 14px rgba(255,112,26,.1), 4px 0 18px rgba(255,61,141,.1), -4px 0 18px rgba(37,191,255,.1), 0 4px 20px rgba(118,87,255,.1), 0 -3px 16px rgba(255,213,42,.1);
-  --cm-spectrum-glow-strong: 0 0 20px rgba(255,112,26,.24), 6px 0 26px rgba(255,61,141,.24), -6px 0 26px rgba(37,191,255,.24), 0 6px 30px rgba(118,87,255,.24), 0 -4px 22px rgba(255,213,42,.24);
-  --cm-glow-sm: var(--cm-spectrum-glow);
-  --cm-glow: var(--cm-spectrum-glow-strong);
-  --cm-glow-strong: var(--cm-spectrum-glow-strong);
+  --cm-spectrum-glow: 0 0 0 1px rgba(255, 244, 232, 0.06);
+  --cm-spectrum-glow-strong: 0 0 0 1px rgba(255, 244, 232, 0.12), 0 8px 24px -4px rgba(0, 0, 0, 0.6);
+  --cm-glow-sm: 0 0 0 1px rgba(255, 244, 232, 0.06);
+  --cm-glow: 0 0 0 1px rgba(255, 244, 232, 0.08), 0 4px 16px -2px rgba(0, 0, 0, 0.5);
+  --cm-glow-strong: 0 0 0 1px rgba(255, 244, 232, 0.12), 0 8px 24px -4px rgba(0, 0, 0, 0.6);
   --cm-focus-ring: 0 0 0 2px rgb(var(--cm-stage)), 0 0 0 4px rgb(var(--cm-focus));
 
   /* Material Lumen: elevação com aresta de luz + profundidade */
@@ -560,7 +560,7 @@ select {
   bottom: -1px;
   height: 2px;
   border-radius: 2px;
-  background: var(--cm-spectrum-gradient);
+  background: rgb(var(--cm-accent));
   box-shadow: var(--cm-spectrum-glow);
   pointer-events: none;
   transition: transform var(--cm-dur-base) var(--cm-ease-drawer), width var(--cm-dur-base) var(--cm-ease-drawer), opacity var(--cm-dur-micro) var(--cm-ease-out);
@@ -741,7 +741,7 @@ select {
 .bottombar__progress span {
   display: block;
   height: 100%;
-  background: var(--cm-spectrum-gradient);
+  background: rgb(var(--cm-accent));
   transition: width var(--cm-dur-base) var(--cm-ease-out);
 }
 
@@ -1088,7 +1088,7 @@ select {
 .shelf-title {
   font-family: var(--font-display);
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: rgb(var(--cm-fg));
@@ -1460,7 +1460,7 @@ select {
   bottom: 10%;
   margin: 0;
   font-size: 42px;
-  font-weight: 800;
+  font-weight: 600;
   font-family: var(--font-display);
   color: rgb(var(--cm-fg));
   text-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
@@ -1545,7 +1545,7 @@ select {
 .playbar__install-bar span {
   display: block;
   height: 100%;
-  background: var(--cm-spectrum-gradient);
+  background: rgb(var(--cm-accent));
   transition: width var(--cm-dur-base) var(--cm-ease-out);
 }
 .playbar__stats {
@@ -1612,7 +1612,7 @@ select {
 .mini-progress span {
   display: block;
   height: 100%;
-  background: var(--cm-spectrum-gradient);
+  background: rgb(var(--cm-accent));
 }
 .mini-progress--wide {
   width: 100%;
@@ -1986,7 +1986,7 @@ select {
 .store__carousel-title {
   font-size: 24px;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   color: rgb(var(--cm-fg));
   letter-spacing: 0.02em;
 }
@@ -2208,7 +2208,7 @@ select {
   margin: 4px 0;
   font-size: 26px;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   color: rgb(var(--cm-fg));
 }
 .profile__status {
@@ -2441,7 +2441,7 @@ select {
   color: rgb(var(--cm-accent));
   cursor: pointer;
   white-space: nowrap;
-  transition: all var(--cm-dur-instant) var(--cm-ease-out);
+  transition: background-color var(--cm-dur-instant) var(--cm-ease-out), border-color var(--cm-dur-instant) var(--cm-ease-out);
 }
 .friends__notif-chip:hover {
   background: rgb(var(--cm-accent) / 0.15);
@@ -2820,7 +2820,7 @@ select {
 .storage__bar span {
   display: block;
   height: 100%;
-  background: var(--cm-spectrum-gradient);
+  background: rgb(var(--cm-accent));
 }
 .storage__apps {
   list-style: none;
@@ -2921,7 +2921,7 @@ select {
 .storage__bar span {
   display: block;
   height: 100%;
-  background: var(--cm-spectrum-gradient);
+  background: rgb(var(--cm-accent));
 }
 
 .storage__apps {
@@ -3060,7 +3060,7 @@ select {
 .login-modal__title {
   margin: 0;
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 600;
   color: rgb(var(--cm-fg));
   letter-spacing: 0.08em;
   font-family: var(--font-display);
@@ -3202,7 +3202,7 @@ select {
 
 .login-modal__submit.cm-btn {
   font-family: var(--caramelo-font-display);
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.08em;
 }
 
@@ -3366,7 +3366,7 @@ a.login-modal__submit {
 .font-display,
 .cm-display {
   font-family: var(--caramelo-font-display) !important;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.04em;
 }
 
@@ -3486,7 +3486,7 @@ h1, h2, h3, .page-title, .shelf-title {
 .home-hero__eyebrow {
   font-family: var(--caramelo-font-display);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgb(var(--cm-accent));
@@ -3496,7 +3496,7 @@ h1, h2, h3, .page-title, .shelf-title {
 .home-hero__title {
   font-family: var(--caramelo-font-display);
   font-size: 32px;
-  font-weight: 900;
+  font-weight: 600;
   letter-spacing: -0.02em;
   color: rgb(var(--cm-fg));
   margin: 0 0 16px;
@@ -3591,16 +3591,16 @@ button:focus-visible,
 .cm-brand-action,
 .btn--primary {
   color: #101014;
-  background: var(--cm-spectrum-soft);
+  background: #FF701A;
   border: 1px solid rgb(255 244 232 / 0.3);
-  box-shadow: inset 0 1px 0 #FFF4E84D, var(--cm-spectrum-glow);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 .cm-brand-action:hover,
 .btn--primary:hover {
   color: #101014;
-  background: var(--cm-spectrum-soft);
+  background: #FF701A;
   border-color: rgb(255 244 232 / 0.45);
-  box-shadow: inset 0 1px 0 #FFF4E84D, var(--cm-spectrum-glow-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 /* Isotipo vetorial: o gesto revela o espectro sem deformar a silhueta. */
@@ -3629,8 +3629,8 @@ button:focus-visible,
   animation: cm-breathe 1.6s var(--cm-ease-standard) infinite alternate;
 }
 @keyframes cm-breathe {
-  from { transform: scale(1); box-shadow: var(--cm-spectrum-glow); }
-  to { transform: scale(0.94); box-shadow: var(--cm-spectrum-glow-strong); }
+  from { opacity: 0.7; }
+  to { opacity: 1; }
 }
 
 /* Rastro de figurinhas (pointer-trail): alpha, proporção e recorte originais, sem moldura. */
@@ -3948,7 +3948,7 @@ button:focus-visible,
   background: rgb(var(--cm-accent) / 0.1);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 /* Keep release status visible in the compact store rows too. */

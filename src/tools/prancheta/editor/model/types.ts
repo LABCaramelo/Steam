@@ -84,6 +84,12 @@ export type LayoutMode = 'NONE' | 'HORIZONTAL' | 'VERTICAL';
 export type LayoutAlign = 'MIN' | 'CENTER' | 'MAX' | 'SPACE_BETWEEN';
 export type LayoutSizing = 'FIXED' | 'HUG' | 'FILL';
 
+export interface GuideLine {
+  axis: 'x' | 'y'; // 'x' = vertical, 'y' = horizontal
+  offset: number; // posição em px relativa ao canto superior esquerdo do nó/frame
+  label?: string; // rótulo descritivo (ex: 'Slide 1', 'Margem')
+}
+
 export interface VectorPoint {
   x: number; // normalizado 0..1 em relação à largura
   y: number; // normalizado 0..1 em relação à altura
@@ -122,6 +128,10 @@ export interface SceneNode {
   effects: Effect[];
   cornerRadius: number;
   constrainProportions: boolean;
+  // carrossel e guias
+  isCarousel?: boolean;
+  carouselPages?: number;
+  guides?: GuideLine[];
   // contêineres e auto layout
   children?: string[];
   clipsContent?: boolean;

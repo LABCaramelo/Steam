@@ -15,7 +15,7 @@ export const AiChatFloating: React.FC = () => {
     {
       id: "m1",
       sender: "ai",
-      text: "Olá, Luiz! Sou a inteligência de bastidor do Gabinete. O que vamos destravar hoje? Pode me pedir ganchos para carrosséis, roteiros de Reels no formato 5 passos ou revisão de copies.",
+      text: "Gabinete de Criação pronto. Envie uma demanda editorial, solicite ganchos para carrossel ou passe uma copy para revisão técnica em 5 passos.",
       time: "Agora",
     },
   ]);

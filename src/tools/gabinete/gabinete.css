@@ -115,7 +115,7 @@ body {
 
 .mc-sidebar__title {
   font-family: var(--mc-font-display);
-  font-weight: 800;
+  font-weight: 600;
   font-size: 17px;
   letter-spacing: -0.02em;
   color: #fff4e8;
@@ -295,7 +295,7 @@ body {
 .mc-view-header__title {
   font-family: var(--mc-font-display);
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--mc-text-title);
   margin: 0;
   display: flex;
@@ -406,7 +406,7 @@ body {
 .mc-hero-card__title {
   font-family: var(--mc-font-display);
   font-size: 21px;
-  font-weight: 800;
+  font-weight: 600;
   margin: 0 0 6px 0;
   display: flex;
   align-items: center;
@@ -449,7 +449,7 @@ body {
   font-family: var(--mc-font-mono);
   font-variant-numeric: tabular-nums;
   font-size: 30px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1;
 }
 
@@ -479,7 +479,7 @@ button.mc-btn,
   height: 38px;
   min-height: 38px;
   padding: 0 20px;
-  border-radius: 9999px !important;
+  border-radius: 10px !important;
   font-family: var(--mc-font-sans, Inter, sans-serif);
   font-size: 13px;
   font-weight: 700;
@@ -515,9 +515,9 @@ button.mc-btn:focus-visible,
 .mc-hero-card .cm-btn,
 .mc-hero-card button,
 .mc-hero-card__btn {
-  border-radius: 9999px !important;
+  border-radius: 10px !important;
   font-family: var(--mc-font-sans, Inter, sans-serif);
-  font-weight: 800 !important;
+  font-weight: 600 !important;
   height: 38px !important;
   min-height: 38px !important;
   padding: 0 22px !important;
@@ -570,8 +570,8 @@ button.cm-btn--caramel {
   background: #FF701A !important;
   color: #101014 !important;
   border: 0 !important;
-  border-radius: 9999px !important;
-  font-weight: 800;
+  border-radius: 10px !important;
+  font-weight: 600;
   box-shadow: 0 2px 14px rgba(255, 112, 26, 0.35);
 }
 
@@ -593,7 +593,7 @@ button.cm-glow-btn {
   height: 38px;
   min-height: 38px;
   border: 0 !important;
-  border-radius: 9999px !important;
+  border-radius: 10px !important;
   padding: 0 22px;
   background: linear-gradient(180deg, #FFFAF4, #EFDFCC) !important;
   color: #101014 !important;
@@ -625,9 +625,9 @@ button.cm-glow-btn:hover {
 button.mc-btn--acid {
   background: #ffd52a !important;
   color: #101014 !important;
-  font-weight: 800;
+  font-weight: 600;
   border: 0 !important;
-  border-radius: 9999px !important;
+  border-radius: 10px !important;
   box-shadow: 0 2px 10px rgba(255, 213, 42, 0.3);
 }
 
@@ -644,7 +644,7 @@ button.mc-btn--secondary {
   background: var(--mc-ink-surface) !important;
   border: 1px solid var(--mc-ink-border) !important;
   color: var(--mc-text-title) !important;
-  border-radius: 9999px !important;
+  border-radius: 10px !important;
 }
 
 .mc-btn--secondary:hover,
@@ -711,10 +711,7 @@ button.mc-btn--secondary:hover {
 }
 
 .cm-spectrum-text {
-  background: linear-gradient(110deg, #FF701A 0%, #FF3D8D 24%, #7657FF 48%, #25BFFF 72%, #FFD52A 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #FF701A;
 }
 
 /* Modals */
@@ -754,7 +751,7 @@ button.mc-btn--secondary:hover {
 .mc-modal__header h2 {
   font-family: var(--mc-font-display);
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.02em;
   margin: 0;
   color: var(--mc-text-title);

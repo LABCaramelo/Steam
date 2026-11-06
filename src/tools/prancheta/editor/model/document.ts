@@ -18,6 +18,21 @@ import {
 import { TYPE_LABELS, uid } from './defaults';
 import type { DocumentData, NodeType, Page, SceneNode } from './types';
 
+export const CAROUSEL_SLIDE_WIDTH = 1080;
+export const CAROUSEL_SLIDE_HEIGHT = 1440;
+
+export function isCarouselNode(n?: SceneNode | null): boolean {
+  if (!n || n.type !== 'FRAME') return false;
+  if (n.isCarousel) return true;
+  return n.height === CAROUSEL_SLIDE_HEIGHT && n.width >= 2160 && n.width % CAROUSEL_SLIDE_WIDTH === 0;
+}
+
+export function getCarouselPages(n?: SceneNode | null): number {
+  if (!n) return 1;
+  if (n.carouselPages && n.carouselPages >= 1) return n.carouselPages;
+  return Math.max(1, Math.round(n.width / CAROUSEL_SLIDE_WIDTH));
+}
+
 // ---------- consultas na árvore ----------
 
 export const getPage = (doc: DocumentData, id: string): Page | undefined => doc.pages.find((p) => p.id === id);
