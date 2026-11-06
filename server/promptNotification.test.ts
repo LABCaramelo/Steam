@@ -40,7 +40,8 @@ test("formatNewPromptsMessage formata no singular quando há 1 prompt", () => {
   assert.match(msg, /Acabamos de subir 1 novo prompt exclusivo/);
   assert.match(msg, /\*Offline Footer\* \(Componentes UI\)/);
   assert.match(msg, /prompt=offline-footer/);
-  assert.match(msg, /umcaracaramelo\.com\.br\/tools\/prompt-library\/index\.html/);
+  assert.match(msg, /umcaracaramelo\.com\.br\/library\/home/);
+  assert.doesNotMatch(msg, /\.html/);
 });
 
 test("formatNewPromptsMessage lista links individuais para até 6 prompts", () => {

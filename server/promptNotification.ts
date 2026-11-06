@@ -58,7 +58,7 @@ export function formatNewPromptsMessage(
   if (count <= 6) {
     // Lista detalhada com link direto para cada prompt
     const lines = prompts.map((p) => {
-      const link = `${baseUrl}/tools/prompt-library/index.html?prompt=${encodeURIComponent(p.slug)}`;
+      const link = `${baseUrl}/tools/prompt-library?prompt=${encodeURIComponent(p.slug)}`;
       return `• *${p.title}* (${p.category})\n  🔗 ${link}`;
     });
     body = `\n\n📦 *O que acabou de entrar:*\n\n` + lines.join("\n\n");
@@ -77,7 +77,7 @@ export function formatNewPromptsMessage(
 
   const footer =
     `\n\n👉 *Acesse a Biblioteca do LAB e copie agora:*\n` +
-    `${baseUrl}/tools/prompt-library/index.html\n\n` +
+    `${baseUrl}/library/home\n\n` +
     `_Bora testar e colocar no ar!_ 🚀`;
 
   return `${header}${body}${footer}`;
