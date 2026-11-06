@@ -3,7 +3,7 @@
 // Aplicação Principal Integrada com 17 Módulos de Identidade e Governança
 // ==============================================================================
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import {
   Shield,
   Palette,
@@ -28,6 +28,7 @@ import {
   Sun,
   Moon,
   BookOpen,
+  Upload,
 } from "lucide-react";
 
 import { useToast } from "../shared/kit";
@@ -1350,7 +1351,7 @@ export function BrandGuardianApp() {
               {brandData!.foundations.tradeName} — {brandData!.foundations.slogan}
             </p>
             <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 6, lineHeight: 1.6 }}>
-              {brandData!.foundations.mission || brandData!.foundations.positioning}
+              {brandData!.foundations.valueProposition || brandData!.foundations.positioning}
             </p>
           </div>
 
@@ -1439,15 +1440,15 @@ export function BrandGuardianApp() {
             <div className="bg-grid-2" style={{ marginTop: 12 }}>
               <div style={{ background: "var(--bg-secondary)", padding: 12, borderRadius: 6 }}>
                 <div style={{ fontSize: 11, textTransform: "uppercase", color: "var(--text-dim)" }}>Display / Títulos</div>
-                <div style={{ fontSize: 18, fontWeight: 900, fontFamily: brandData!.typography.displayFamily, marginTop: 6 }}>
-                  {brandData!.typography.displayFamily}
+                <div style={{ fontSize: 18, fontWeight: 900, fontFamily: brandData!.typography.families.find(f => f.category === "display")?.familyName || "Syne", marginTop: 6 }}>
+                  {brandData!.typography.families.find(f => f.category === "display")?.familyName || "Syne"}
                 </div>
                 <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>Voz de cartaz, impacto e autoridade.</p>
               </div>
               <div style={{ background: "var(--bg-secondary)", padding: 12, borderRadius: 6 }}>
                 <div style={{ fontSize: 11, textTransform: "uppercase", color: "var(--text-dim)" }}>Corpo de Texto (Sans)</div>
-                <div style={{ fontSize: 15, fontFamily: brandData!.typography.bodyFamily, marginTop: 6 }}>
-                  {brandData!.typography.bodyFamily}
+                <div style={{ fontSize: 15, fontFamily: brandData!.typography.families.find(f => f.category === "sans-serif")?.familyName || "Plus Jakarta Sans", marginTop: 6 }}>
+                  {brandData!.typography.families.find(f => f.category === "sans-serif")?.familyName || "Plus Jakarta Sans"}
                 </div>
                 <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>Leitura fluida, ergonomia e interface.</p>
               </div>
@@ -1461,7 +1462,7 @@ export function BrandGuardianApp() {
               <div>
                 <strong style={{ fontSize: 12 }}>Direção Fotográfica & Iluminação:</strong>
                 <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4, lineHeight: 1.5 }}>
-                  {brandData!.character.lightingPhilosophy || "Luz de recorte quente dourada combinada a ambiente frio/cianeto."}
+                  {brandData!.references?.find(r => r.category === "photography")?.notes || "Luz de recorte quente dourada combinada a ambiente frio/cianeto."}
                 </p>
               </div>
               <div>
