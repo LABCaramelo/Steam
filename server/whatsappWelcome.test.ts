@@ -84,6 +84,44 @@ test("parseGroupJoinEvent aceita variações de entrada por link de convite (inv
   }
 });
 
+test("parseGroupJoinEvent identifica formato real da uazapi com event.Join e event.JID (convite)", () => {
+  const payload = {
+    BaseUrl: "https://umcaracaramelo.uazapi.com",
+    EventType: "groups",
+    event: {
+      JID: "120363411603021913@g.us",
+      Notify: "invite",
+      Timestamp: "2026-11-07T16:23:54Z",
+      JoinReason: "invite",
+      Join: ["5521965102475@s.whatsapp.net"],
+      Leave: null,
+      JoinLid: ["212609739526396@lid"],
+    },
+    instanceName: "lab",
+    owner: "553185869015",
+    token: "95846f2e-242b-4b4d-888b-c3df99aa989a",
+    type: "Group",
+  };
+  const event = parseGroupJoinEvent(payload);
+  assert.ok(event, "Deve detectar evento de entrada da uazapi");
+  assert.equal(event?.groupJid, "120363411603021913@g.us");
+  assert.deepEqual(event?.participants, ["5521965102475"]);
+});
+
+test("parseGroupJoinEvent ignora evento da uazapi quando event.Leave está preenchido e Join é null", () => {
+  const payload = {
+    EventType: "groups",
+    event: {
+      JID: "120363411603021913@g.us",
+      Notify: "leave",
+      Join: null,
+      Leave: ["5521965102475@s.whatsapp.net"],
+    },
+    type: "Group",
+  };
+  assert.equal(parseGroupJoinEvent(payload), null);
+});
+
 test("parseGroupJoinEvent ignora eventos de saída (remove / leave)", () => {
   const payload = {
     EventType: "groups",

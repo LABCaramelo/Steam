@@ -68,6 +68,7 @@ function clientFixture(path: string) {
     if (name.endsWith("supabase")) return { supabase: sdk };
     if (name.endsWith("labAccess")) return { activateLabUser: (id: string | null) => { activeUser = id; } };
     if (name.endsWith("toolLifecycle")) return { subscribeToolReleases: (fn: typeof releaseEvent) => { releaseEvent = fn; return () => {}; } };
+    if (name.includes("platformTheme")) return { installPlatformThemeSync: () => () => {} };
     throw new Error(`Unexpected client dependency: ${name}`);
   };
   new Function("exports", "require", output)(exports, require);

@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { createPortal } from "react-dom";
 import { supabase } from "../../supabase";
 import { subscribeToolReleases } from "../../toolLifecycle";
+import { installPlatformThemeSync } from "../../theme/platformTheme";
 
 /**
  * Shared runtime of the LAB tools (Kanban, Prancheta, Automation, Academy). Each tool is its
@@ -31,6 +32,7 @@ export function cleanToolUrl() {
 
 export function installThemeSync() {
   cleanToolUrl();
+  installPlatformThemeSync();
   const root = document.documentElement;
   const apply = (value: string | null) => {
     if (value === "light" || value === "dark") root.setAttribute("data-caramelo-theme", value);

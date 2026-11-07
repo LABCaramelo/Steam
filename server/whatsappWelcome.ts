@@ -217,13 +217,43 @@ export function parseGroupJoinEvent(body: unknown): GroupJoinEvent | null {
 
   const payload = body as Record<string, unknown>;
   const data = (payload.data && typeof payload.data === "object" ? payload.data : payload) as Record<string, unknown>;
+  const eventObj = (payload.event && typeof payload.event === "object" ? payload.event : null) as Record<string, unknown> | null;
+
+  // Detecta listas específicas de entrada/saída (formato nativo UAZAPI event.Join / event.Leave)
+  const joinList = Array.isArray(eventObj?.Join)
+    ? eventObj.Join
+    : Array.isArray(data.Join)
+    ? data.Join
+    : Array.isArray(eventObj?.join)
+    ? eventObj.join
+    : Array.isArray(data.join)
+    ? data.join
+    : null;
+
+  const leaveList = Array.isArray(eventObj?.Leave)
+    ? eventObj.Leave
+    : Array.isArray(data.Leave)
+    ? data.Leave
+    : Array.isArray(eventObj?.leave)
+    ? eventObj.leave
+    : Array.isArray(data.leave)
+    ? data.leave
+    : null;
+
+  // Se for explicitamente saída na lista nativa da UAZAPI e não tiver ninguém entrando
+  if (leaveList && leaveList.length > 0 && (!joinList || joinList.length === 0)) {
+    return null;
+  }
 
   // Detecta ação
   const rawAction = String(
-    data.action ||
+    eventObj?.action ||
+      data.action ||
       payload.action ||
       data.actionType ||
       data.subType ||
+      eventObj?.JoinReason ||
+      eventObj?.Notify ||
       data.type ||
       payload.type ||
       ""
@@ -241,8 +271,20 @@ export function parseGroupJoinEvent(body: unknown): GroupJoinEvent | null {
   if (isLeave) return null;
 
   // Ações que configuram entrada no grupo
-  const eventName = String(payload.event || payload.eventType || payload.EventType || data.event || "").toLowerCase();
+  const eventName = (
+    typeof payload.event === "string"
+      ? payload.event
+      : typeof payload.EventType === "string"
+      ? payload.EventType
+      : typeof payload.eventType === "string"
+      ? payload.eventType
+      : typeof data.event === "string"
+      ? data.event
+      : ""
+  ).toLowerCase();
+
   const isJoinAction =
+    (joinList && joinList.length > 0) ||
     rawAction === "add" ||
     rawAction === "join" ||
     rawAction === "joined" ||
@@ -268,7 +310,9 @@ export function parseGroupJoinEvent(body: unknown): GroupJoinEvent | null {
 
   // Detecta JID do grupo
   const rawGroupJid = String(
-    data.jid ||
+    eventObj?.JID ||
+      eventObj?.jid ||
+      data.jid ||
       data.id ||
       data.groupId ||
       data.groupJid ||
@@ -289,19 +333,22 @@ export function parseGroupJoinEvent(body: unknown): GroupJoinEvent | null {
   const groupJid = rawGroupJid.split(":")[0].replace(/@.*$/, "") + "@g.us";
 
   // Extrai participantes
-  const listRaw = Array.isArray(data.participants)
-    ? data.participants
-    : Array.isArray(payload.participants)
-    ? payload.participants
-    : data.participant
-    ? [data.participant]
-    : payload.participant
-    ? [payload.participant]
-    : Array.isArray(data.users)
-    ? data.users
-    : data.user
-    ? [data.user]
-    : [];
+  const listRaw =
+    joinList && joinList.length > 0
+      ? joinList
+      : Array.isArray(data.participants)
+      ? data.participants
+      : Array.isArray(payload.participants)
+      ? payload.participants
+      : data.participant
+      ? [data.participant]
+      : payload.participant
+      ? [payload.participant]
+      : Array.isArray(data.users)
+      ? data.users
+      : data.user
+      ? [data.user]
+      : [];
 
   const participants: string[] = [];
   const rawParticipants: string[] = [];
@@ -313,6 +360,8 @@ export function parseGroupJoinEvent(body: unknown): GroupJoinEvent | null {
       ? data.pushName.trim()
       : typeof payload.pushName === "string"
       ? payload.pushName.trim()
+      : typeof eventObj?.pushName === "string"
+      ? (eventObj.pushName as string).trim()
       : undefined;
 
   for (const item of listRaw) {

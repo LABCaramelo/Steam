@@ -16,7 +16,67 @@
       try {
         var t = localStorage.getItem('caramelo-theme');
         if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-caramelo-theme', t);
-      } catch (e) {}
+        var p = localStorage.getItem('caramelo_platform_theme_v1');
+        if (p) {
+          var theme = JSON.parse(p);
+          if (theme && theme.colors) {
+            var c = theme.colors;
+            var s = document.documentElement.style;
+            var h2r = function(hex) {
+              var n = parseInt(hex.replace('#',''), 16);
+              return ((n>>16)&255) + ' ' + ((n>>8)&255) + ' ' + (n&255);
+            };
+            var h2rgb = function(hex) {
+              var n = parseInt(hex.replace('#',''), 16);
+              return 'rgb(' + ((n>>16)&255) + ', ' + ((n>>8)&255) + ', ' + (n&255) + ')';
+            };
+            if (c.accent) {
+              s.setProperty('--cm-accent', h2r(c.accent));
+              s.setProperty('--c-accent', h2rgb(c.accent));
+              s.setProperty('--accent-caramel', c.accent);
+              s.setProperty('--caramelo-accent', h2rgb(c.accent));
+            }
+            if (c.surface) {
+              s.setProperty('--cm-surface-1', h2r(c.surface));
+              s.setProperty('--c-chrome', h2rgb(c.surface));
+              s.setProperty('--bg-primary', c.surface);
+            }
+            if (c.stage) {
+              s.setProperty('--cm-stage', h2r(c.stage));
+              s.setProperty('--c-main', h2rgb(c.stage));
+              s.setProperty('--c-darkest', h2rgb(c.stage));
+            }
+            if (c.text) {
+              s.setProperty('--cm-fg', h2r(c.text));
+              s.setProperty('--c-text', h2rgb(c.text));
+              s.setProperty('--text-main', c.text);
+            }
+            if (c.focus) {
+              s.setProperty('--cm-focus', h2r(c.focus));
+              s.setProperty('--accent-sky', c.focus);
+            }
+            if (c.danger) {
+              s.setProperty('--cm-danger', h2r(c.danger));
+              s.setProperty('--accent-pink', c.danger);
+            }
+            if (c.warning) {
+              s.setProperty('--cm-warning', h2r(c.warning));
+              s.setProperty('--accent-yellow', c.warning);
+            }
+            if (c.violet) {
+              s.setProperty('--cm-violet', h2r(c.violet));
+              s.setProperty('--accent-violet', c.violet);
+            }
+            if (c.success) {
+              s.setProperty('--cm-success', h2r(c.success));
+            }
+            var spec = 'linear-gradient(110deg, ' + (c.accent||'#FF701A') + ' 0%, ' + (c.danger||'#FF3D8D') + ' 24%, ' + (c.violet||'#7657FF') + ' 48%, ' + (c.focus||'#25BFFF') + ' 72%, ' + (c.warning||'#FFD52A') + ' 100%)';
+            s.setProperty('--cm-spectrum-gradient', spec);
+            s.setProperty('--cm-spectrum', spec);
+            s.setProperty('--g-play', spec);
+          }
+        }
+      } catch(e) {}
     </script>
   </head>
   <body class="stories-body">

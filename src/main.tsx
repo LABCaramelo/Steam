@@ -12,6 +12,9 @@ import { EntitlementsProvider } from "./entitlements";
 import { UiProvider } from "./ui";
 import "@caramelo/design-system/styles.css";
 import "./styles.css";
+import { installPlatformThemeSync } from "./theme/platformTheme";
+
+installPlatformThemeSync();
 
 // spotlight-surface: a mesma escrita de --mx/--my do usePointerVars do pacote, delegada para
 // qualquer .cm-surface--spotlight (cartões, painéis e modais que não são <Surface>).

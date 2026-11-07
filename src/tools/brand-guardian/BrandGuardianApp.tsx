@@ -60,12 +60,23 @@ import type {
   BrandAssetItem,
 } from "./types";
 import "./brand-guardian.css";
+import {
+  savePlatformTheme,
+  resetPlatformTheme,
+  applyPlatformTheme,
+  getCachedPlatformTheme,
+  DEFAULT_PLATFORM_COLORS,
+  PLATFORM_THEME_PRESETS,
+  type PlatformThemeColors,
+  type ThemePreset,
+} from "../../theme/platformTheme";
 
 type NavSection =
   | "overview"
   | "foundations"
   | "logos"
   | "colors"
+  | "platform_theme"
   | "typography"
   | "elements"
   | "art_direction"
@@ -93,6 +104,93 @@ export function BrandGuardianApp() {
 
   // Onboarding / Modal de Nova Marca
   const [isNewBrandModalOpen, setIsNewBrandModalOpen] = useState(false);
+
+  // Cores da Plataforma (LAB)
+  const [platformColors, setPlatformColors] = useState<PlatformThemeColors>(() => {
+    return getCachedPlatformTheme()?.colors || DEFAULT_PLATFORM_COLORS;
+  });
+  const [activePresetId, setActivePresetId] = useState<string>(() => {
+    return getCachedPlatformTheme()?.presetId || "canonical";
+  });
+  const [isSavingPlatformTheme, setIsSavingPlatformTheme] = useState(false);
+
+  const handleColorChange = (key: keyof PlatformThemeColors, value: string) => {
+    const updated = { ...platformColors, [key]: value };
+    setPlatformColors(updated);
+    setActivePresetId("custom");
+    applyPlatformTheme({
+      version: 1,
+      colors: updated,
+      updatedAt: new Date().toISOString(),
+    });
+  };
+
+  const handleApplyPreset = (preset: ThemePreset) => {
+    setPlatformColors(preset.colors);
+    setActivePresetId(preset.id);
+    applyPlatformTheme({
+      version: 1,
+      colors: preset.colors,
+      updatedAt: new Date().toISOString(),
+    });
+  };
+
+  const handleSavePlatformTheme = async () => {
+    setIsSavingPlatformTheme(true);
+    try {
+      const res = await savePlatformTheme(platformColors, {
+        presetId: activePresetId,
+        sourceBrandName: brandData?.foundations.tradeName,
+      });
+      showToast(res.message, "success");
+    } catch {
+      showToast("Erro ao sincronizar cores da plataforma.", "error");
+    } finally {
+      setIsSavingPlatformTheme(false);
+    }
+  };
+
+  const handleResetPlatformTheme = async () => {
+    try {
+      const res = await resetPlatformTheme();
+      setPlatformColors(DEFAULT_PLATFORM_COLORS);
+      setActivePresetId("canonical");
+      showToast(res.message, "info");
+    } catch {
+      showToast("Erro ao restaurar paleta padrão.", "error");
+    }
+  };
+
+  const handleImportBrandColors = () => {
+    if (!brandData) return;
+    const pCol = brandData.colors.find((c) => c.role === "primary")?.hex || (brands.find((b) => b.id === selectedBrandId) as any)?.primary_color || "#FF701A";
+    const sCol = brandData.colors.find((c) => c.role === "surface" || c.name.toLowerCase().includes("ink"))?.hex || "#101014";
+    const tCol = brandData.colors.find((c) => c.role === "text_primary" || c.name.toLowerCase().includes("cream"))?.hex || "#FFF4E8";
+    const fCol = brandData.colors.find((c) => c.role === "secondary" || c.name.toLowerCase().includes("sky"))?.hex || "#25BFFF";
+    const dCol = brandData.colors.find((c) => c.role === "accent" || c.name.toLowerCase().includes("pink"))?.hex || "#FF3D8D";
+    const wCol = brandData.colors.find((c) => c.role === "warning" || c.name.toLowerCase().includes("yellow"))?.hex || "#FFD52A";
+
+    const imported: PlatformThemeColors = {
+      accent: pCol,
+      surface: sCol,
+      stage: "#0A0A0D",
+      text: tCol,
+      focus: fCol,
+      danger: dCol,
+      warning: wCol,
+      violet: platformColors.violet,
+      success: platformColors.success,
+    };
+
+    setPlatformColors(imported);
+    setActivePresetId("custom");
+    applyPlatformTheme({
+      version: 1,
+      colors: imported,
+      updatedAt: new Date().toISOString(),
+    });
+    showToast(`Cores importadas da marca "${brandData.foundations.tradeName}"! Clique em Salvar para fixar no LAB.`, "success");
+  };
   const [newBrandName, setNewBrandName] = useState("");
   const [newBrandKind, setNewBrandKind] = useState<Brand["kind"]>("client");
   const [newBrandColor, setNewBrandColor] = useState("#FF701A");
@@ -411,6 +509,7 @@ export function BrandGuardianApp() {
           {activeSection === "foundations" && renderFoundationsSection()}
           {activeSection === "logos" && renderLogosSection()}
           {activeSection === "colors" && renderColorLabSection()}
+          {activeSection === "platform_theme" && renderPlatformThemeSection()}
           {activeSection === "typography" && renderTypographySection()}
           {activeSection === "elements" && renderElementsSection()}
           {activeSection === "art_direction" && renderArtDirectionSection()}
@@ -889,6 +988,475 @@ export function BrandGuardianApp() {
                   Componentes UI (3.0:1): {liveContrast.uiComponentsAA ? "Aprovado" : "Falhou"}
                 </span>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function renderPlatformThemeSection() {
+    const lumAccent = evaluateContrast(platformColors.accent, "#101014");
+    const lumText = evaluateContrast(platformColors.text, platformColors.surface);
+
+    return (
+      <div className="bg-theme-section">
+        {/* Banner Informativo & Ações Rápidas */}
+        <div className="bg-theme-banner">
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <Palette size={22} color={platformColors.accent} />
+              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 900 }}>
+                Cores da Plataforma & LAB
+              </h2>
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  padding: "3px 8px",
+                  borderRadius: 4,
+                  background: platformColors.accent,
+                  color: "#101014",
+                }}
+              >
+                18 Ferramentas Conectadas
+              </span>
+            </div>
+            <p style={{ margin: "6px 0 0 0", fontSize: 13, color: "var(--text-muted)", maxWidth: 640 }}>
+              Personalize a paleta visual que rege toda a interface do LAB. Ao alterar e salvar,
+              as cores são aplicadas instantaneamente em todas as ferramentas, salvas em cache no seu navegador (0ms) e sincronizadas no seu usuário no Supabase.
+            </p>
+          </div>
+
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <button
+              className="bg-btn bg-btn--ghost"
+              onClick={handleResetPlatformTheme}
+              title="Voltar às cores oficiais Caramelo V2"
+            >
+              <RefreshCw size={14} /> Restaurar Padrão
+            </button>
+            <button
+              className="bg-btn bg-btn--primary"
+              onClick={handleSavePlatformTheme}
+              disabled={isSavingPlatformTheme}
+            >
+              {isSavingPlatformTheme ? (
+                <RefreshCw size={14} style={{ animation: "spin 1s linear infinite" }} />
+              ) : (
+                <CheckCircle size={14} />
+              )}
+              {isSavingPlatformTheme ? "Salvando..." : "Salvar & Aplicar em Todo o LAB"}
+            </button>
+          </div>
+        </div>
+
+        {/* 1. Presets Rápidos de 1 Clique */}
+        <div className="bg-card">
+          <div className="bg-card__header">
+            <div className="bg-card__title">
+              <Sliders size={18} color={platformColors.accent} />
+              Presets de Identidade (1 Clique)
+            </div>
+            {brandData && (
+              <button
+                className="bg-btn bg-btn--ghost"
+                style={{ fontSize: 11 }}
+                onClick={handleImportBrandColors}
+                title="Puxar as cores oficiais da marca selecionada acima"
+              >
+                Importar da Marca: <strong>{brandData.foundations.tradeName}</strong>
+              </button>
+            )}
+          </div>
+
+          <div className="bg-theme-presets-grid">
+            {PLATFORM_THEME_PRESETS.map((preset) => {
+              const isActive = activePresetId === preset.id;
+              return (
+                <div
+                  key={preset.id}
+                  className={`bg-theme-preset-card ${isActive ? "is-active" : ""}`}
+                  onClick={() => handleApplyPreset(preset)}
+                >
+                  <div className="bg-theme-preset-swatches">
+                    <div
+                      className="bg-theme-preset-swatch"
+                      style={{ background: preset.colors.accent }}
+                      title={`Acento: ${preset.colors.accent}`}
+                    />
+                    <div
+                      className="bg-theme-preset-swatch"
+                      style={{ background: preset.colors.surface }}
+                      title={`Superfície: ${preset.colors.surface}`}
+                    />
+                    <div
+                      className="bg-theme-preset-swatch"
+                      style={{ background: preset.colors.text }}
+                      title={`Texto: ${preset.colors.text}`}
+                    />
+                    <div
+                      className="bg-theme-preset-swatch"
+                      style={{ background: preset.colors.focus }}
+                      title={`Foco: ${preset.colors.focus}`}
+                    />
+                  </div>
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <strong style={{ fontSize: 13 }}>{preset.name}</strong>
+                      {isActive && (
+                        <span style={{ fontSize: 10, color: preset.colors.accent, fontWeight: 700 }}>
+                          ● Ativo
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
+                      {preset.description}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 2. Customização Detalhada de Cada Token */}
+        <div className="bg-card">
+          <div className="bg-card__header">
+            <div className="bg-card__title">
+              <Palette size={18} color={platformColors.accent} />
+              Ajuste Fino da Paleta Mestre
+            </div>
+            <span style={{ fontSize: 11, color: "var(--text-dim)" }}>
+              As mudanças alteram a interface ao vivo para pré-visualização.
+            </span>
+          </div>
+
+          <div className="bg-theme-colors-grid">
+            {/* Acento Primário */}
+            <div className="bg-theme-color-item" style={{ borderLeft: `3px solid ${platformColors.accent}` }}>
+              <div className="bg-theme-color-item__header">
+                <div>
+                  <strong style={{ fontSize: 13 }}>Acento Primário (CTA / Ação)</strong>
+                  <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Botões, abas ativas, realces e foco</div>
+                </div>
+                <span style={{ fontSize: 11, fontFamily: "monospace", color: "var(--text-dim)" }}>--cm-accent</span>
+              </div>
+              <div className="bg-theme-color-item__input-row">
+                <input
+                  type="color"
+                  className="bg-theme-color-item__picker"
+                  value={platformColors.accent}
+                  onChange={(e) => handleColorChange("accent", e.target.value.toUpperCase())}
+                />
+                <input
+                  type="text"
+                  className="bg-theme-color-item__hex"
+                  value={platformColors.accent}
+                  onChange={(e) => handleColorChange("accent", e.target.value.toUpperCase())}
+                />
+              </div>
+            </div>
+
+            {/* Fundo Principal / Superfície */}
+            <div className="bg-theme-color-item" style={{ borderLeft: `3px solid ${platformColors.surface}` }}>
+              <div className="bg-theme-color-item__header">
+                <div>
+                  <strong style={{ fontSize: 13 }}>Superfície Base (Chrome)</strong>
+                  <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Fundo do app, menus e contêineres</div>
+                </div>
+                <span style={{ fontSize: 11, fontFamily: "monospace", color: "var(--text-dim)" }}>--cm-surface-1</span>
+              </div>
+              <div className="bg-theme-color-item__input-row">
+                <input
+                  type="color"
+                  className="bg-theme-color-item__picker"
+                  value={platformColors.surface}
+                  onChange={(e) => handleColorChange("surface", e.target.value.toUpperCase())}
+                />
+                <input
+                  type="text"
+                  className="bg-theme-color-item__hex"
+                  value={platformColors.surface}
+                  onChange={(e) => handleColorChange("surface", e.target.value.toUpperCase())}
+                />
+              </div>
+            </div>
+
+            {/* Fundo Profundo Stage */}
+            <div className="bg-theme-color-item" style={{ borderLeft: `3px solid ${platformColors.stage}` }}>
+              <div className="bg-theme-color-item__header">
+                <div>
+                  <strong style={{ fontSize: 13 }}>Canvas Profundo (Stage)</strong>
+                  <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Plano de fundo mais profundo do LAB</div>
+                </div>
+                <span style={{ fontSize: 11, fontFamily: "monospace", color: "var(--text-dim)" }}>--cm-stage</span>
+              </div>
+              <div className="bg-theme-color-item__input-row">
+                <input
+                  type="color"
+                  className="bg-theme-color-item__picker"
+                  value={platformColors.stage}
+                  onChange={(e) => handleColorChange("stage", e.target.value.toUpperCase())}
+                />
+                <input
+                  type="text"
+                  className="bg-theme-color-item__hex"
+                  value={platformColors.stage}
+                  onChange={(e) => handleColorChange("stage", e.target.value.toUpperCase())}
+                />
+              </div>
+            </div>
+
+            {/* Texto Principal */}
+            <div className="bg-theme-color-item" style={{ borderLeft: `3px solid ${platformColors.text}` }}>
+              <div className="bg-theme-color-item__header">
+                <div>
+                  <strong style={{ fontSize: 13 }}>Texto Principal (Foreground)</strong>
+                  <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Títulos, parágrafos e leitura</div>
+                </div>
+                <span style={{ fontSize: 11, fontFamily: "monospace", color: "var(--text-dim)" }}>--cm-fg</span>
+              </div>
+              <div className="bg-theme-color-item__input-row">
+                <input
+                  type="color"
+                  className="bg-theme-color-item__picker"
+                  value={platformColors.text}
+                  onChange={(e) => handleColorChange("text", e.target.value.toUpperCase())}
+                />
+                <input
+                  type="text"
+                  className="bg-theme-color-item__hex"
+                  value={platformColors.text}
+                  onChange={(e) => handleColorChange("text", e.target.value.toUpperCase())}
+                />
+              </div>
+            </div>
+
+            {/* Acento Digital / Foco */}
+            <div className="bg-theme-color-item" style={{ borderLeft: `3px solid ${platformColors.focus}` }}>
+              <div className="bg-theme-color-item__header">
+                <div>
+                  <strong style={{ fontSize: 13 }}>Acento Frio & Foco</strong>
+                  <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Anéis de foco, links e tecnologia</div>
+                </div>
+                <span style={{ fontSize: 11, fontFamily: "monospace", color: "var(--text-dim)" }}>--cm-focus</span>
+              </div>
+              <div className="bg-theme-color-item__input-row">
+                <input
+                  type="color"
+                  className="bg-theme-color-item__picker"
+                  value={platformColors.focus}
+                  onChange={(e) => handleColorChange("focus", e.target.value.toUpperCase())}
+                />
+                <input
+                  type="text"
+                  className="bg-theme-color-item__hex"
+                  value={platformColors.focus}
+                  onChange={(e) => handleColorChange("focus", e.target.value.toUpperCase())}
+                />
+              </div>
+            </div>
+
+            {/* Alerta Crítico / Perigo */}
+            <div className="bg-theme-color-item" style={{ borderLeft: `3px solid ${platformColors.danger}` }}>
+              <div className="bg-theme-color-item__header">
+                <div>
+                  <strong style={{ fontSize: 13 }}>Alerta Crítico / Perigo</strong>
+                  <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Erros, ações destrutivas e avisos</div>
+                </div>
+                <span style={{ fontSize: 11, fontFamily: "monospace", color: "var(--text-dim)" }}>--cm-danger</span>
+              </div>
+              <div className="bg-theme-color-item__input-row">
+                <input
+                  type="color"
+                  className="bg-theme-color-item__picker"
+                  value={platformColors.danger}
+                  onChange={(e) => handleColorChange("danger", e.target.value.toUpperCase())}
+                />
+                <input
+                  type="text"
+                  className="bg-theme-color-item__hex"
+                  value={platformColors.danger}
+                  onChange={(e) => handleColorChange("danger", e.target.value.toUpperCase())}
+                />
+              </div>
+            </div>
+
+            {/* Aviso / Warning */}
+            <div className="bg-theme-color-item" style={{ borderLeft: `3px solid ${platformColors.warning}` }}>
+              <div className="bg-theme-color-item__header">
+                <div>
+                  <strong style={{ fontSize: 13 }}>Aviso / Alta Visibilidade</strong>
+                  <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Pendências, badges de atenção e alertas</div>
+                </div>
+                <span style={{ fontSize: 11, fontFamily: "monospace", color: "var(--text-dim)" }}>--cm-warning</span>
+              </div>
+              <div className="bg-theme-color-item__input-row">
+                <input
+                  type="color"
+                  className="bg-theme-color-item__picker"
+                  value={platformColors.warning}
+                  onChange={(e) => handleColorChange("warning", e.target.value.toUpperCase())}
+                />
+                <input
+                  type="text"
+                  className="bg-theme-color-item__hex"
+                  value={platformColors.warning}
+                  onChange={(e) => handleColorChange("warning", e.target.value.toUpperCase())}
+                />
+              </div>
+            </div>
+
+            {/* Sucesso / Confirmação */}
+            <div className="bg-theme-color-item" style={{ borderLeft: `3px solid ${platformColors.success}` }}>
+              <div className="bg-theme-color-item__header">
+                <div>
+                  <strong style={{ fontSize: 13 }}>Sucesso & Online</strong>
+                  <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Status ativo, sincronização e sucesso</div>
+                </div>
+                <span style={{ fontSize: 11, fontFamily: "monospace", color: "var(--text-dim)" }}>--cm-success</span>
+              </div>
+              <div className="bg-theme-color-item__input-row">
+                <input
+                  type="color"
+                  className="bg-theme-color-item__picker"
+                  value={platformColors.success}
+                  onChange={(e) => handleColorChange("success", e.target.value.toUpperCase())}
+                />
+                <input
+                  type="text"
+                  className="bg-theme-color-item__hex"
+                  value={platformColors.success}
+                  onChange={(e) => handleColorChange("success", e.target.value.toUpperCase())}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Simulador de Preview do LAB ao Vivo */}
+        <div className="bg-card">
+          <div className="bg-card__header">
+            <div className="bg-card__title">
+              <CheckCircle size={18} color={platformColors.accent} />
+              Simulador Visual do LAB
+            </div>
+            <div style={{ display: "flex", gap: 12, fontSize: 12 }}>
+              <span>
+                Contraste Texto/Fundo: <strong>{lumText.ratio}:1</strong> ({lumText.normalTextAAA ? "AAA" : lumText.normalTextAA ? "AA" : "Falhou"})
+              </span>
+              <span>
+                Contraste Botão/Fundo: <strong>{lumAccent.ratio}:1</strong> ({lumAccent.normalTextAAA ? "AAA" : lumAccent.normalTextAA ? "AA" : "Falhou"})
+              </span>
+            </div>
+          </div>
+
+          <div
+            className="bg-theme-preview-stage"
+            style={{
+              background: platformColors.surface,
+              color: platformColors.text,
+              borderColor: "rgba(255,255,255,0.1)",
+            }}
+          >
+            {/* Header Mock */}
+            <div
+              className="bg-theme-preview-navbar"
+              style={{
+                background: platformColors.surface,
+                borderColor: "rgba(255,255,255,0.1)",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span
+                  style={{
+                    background: platformColors.accent,
+                    color: "#101014",
+                    fontWeight: 900,
+                    padding: "3px 8px",
+                    borderRadius: 4,
+                    fontSize: 12,
+                  }}
+                >
+                  C.
+                </span>
+                <span style={{ fontWeight: 800, fontSize: 13 }}>UM CARA CARAMELO · LAB</span>
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <span style={{ fontSize: 11, padding: "4px 8px", borderRadius: 4, background: "rgba(255,255,255,0.06)" }}>
+                  Loja
+                </span>
+                <span
+                  style={{
+                    fontSize: 11,
+                    padding: "4px 8px",
+                    borderRadius: 4,
+                    background: platformColors.accent,
+                    color: "#101014",
+                    fontWeight: 700,
+                  }}
+                >
+                  Biblioteca
+                </span>
+              </div>
+            </div>
+
+            {/* Card Content Mock */}
+            <div
+              className="bg-theme-preview-card"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                borderColor: "rgba(255,255,255,0.08)",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      color: platformColors.accent,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.06em",
+                    }}
+                  >
+                    IDENTIDADE VISUAL VIVA
+                  </span>
+                  <h3 style={{ margin: "4px 0 0 0", fontSize: 18, fontWeight: 900 }}>
+                    Menos página em branco. Mais ideias em ação.
+                  </h3>
+                </div>
+                <button
+                  style={{
+                    background: platformColors.accent,
+                    color: "#101014",
+                    border: "none",
+                    fontWeight: 800,
+                    padding: "8px 16px",
+                    borderRadius: 6,
+                    cursor: "pointer",
+                    fontSize: 12,
+                  }}
+                >
+                  ABRIR FERRAMENTA ▶
+                </button>
+              </div>
+
+              <p style={{ margin: 0, fontSize: 12, color: "var(--text-muted)" }}>
+                Assim será exibida a interface com os tokens calculados. O gradiente do espectro
+                combinado abaixo é recalculado em harmonia com as cores configuradas:
+              </p>
+
+              {/* Barra do Espectro Combinado Dinâmico */}
+              <div
+                style={{
+                  height: 10,
+                  borderRadius: 999,
+                  background: `linear-gradient(110deg, ${platformColors.accent} 0%, ${platformColors.danger} 24%, ${platformColors.violet} 48%, ${platformColors.focus} 72%, ${platformColors.warning} 100%)`,
+                }}
+              />
             </div>
           </div>
         </div>
