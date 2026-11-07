@@ -90,7 +90,7 @@ export default async function handler(req: Req, res: ServerResponse) {
     }
 
     const cleanSeed = seed.trim();
-    const cleanDomain = domain.trim().toLowerCase();
+    const cleanDomain = domain.trim().toLowerCase().replace(/^www\./, "");
 
     // 3. Schema & Length Rules
     if (!SEED_REGEX.test(cleanSeed) || cleanDomain.length > 253) {
@@ -124,17 +124,19 @@ export default async function handler(req: Req, res: ServerResponse) {
       const shouldVerifyNow = Boolean(regData?.should_verify_now);
 
       if (shouldVerifyNow && publicationId) {
-        // Kick off immediate verification in background
-        runScan({ publicationId, limit: 1, force: false }).catch((err) => {
-          console.warn("[presence] Immediate scan background error:", err.message);
-        });
+        // Executa verificação imediata para evitar cancelamento por encerramento de função serverless
+        try {
+          await runScan({ publicationId, limit: 1, force: false });
+        } catch (err: any) {
+          console.warn("[presence] Immediate scan error:", err?.message || err);
+        }
       }
     }
 
     res.statusCode = 204;
     return res.end();
   } catch (err: any) {
-    console.error("[presence] Handler error:", err.message);
+    console.error("[presence] Handler error:", err?.message || err);
     res.statusCode = 204;
     return res.end();
   }

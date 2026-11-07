@@ -16,7 +16,24 @@ function send(res: ServerResponse, status: number, body: unknown) {
   res.end(JSON.stringify(body));
 }
 
-async function readBodyJson(req: IncomingMessage): Promise<Record<string, any>> {
+async function parseJsonBody(req: Req): Promise<Record<string, any>> {
+  if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {
+    return req.body as Record<string, any>;
+  }
+  if (typeof req.body === "string" && req.body.trim()) {
+    try {
+      return JSON.parse(req.body);
+    } catch {
+      return {};
+    }
+  }
+  if (Buffer.isBuffer(req.body)) {
+    try {
+      return JSON.parse(req.body.toString("utf8"));
+    } catch {
+      return {};
+    }
+  }
   const chunks: Buffer[] = [];
   for await (const chunk of req) {
     chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
@@ -40,11 +57,7 @@ export default async function handler(req: Req, res: ServerResponse) {
     const access = await requireUser(req);
     await requireLabAdmin(access);
 
-    let body: any = req.body;
-    if (!body || typeof body !== "object") {
-      body = await readBodyJson(req);
-    }
-
+    const body = await parseJsonBody(req);
     const action = body?.action;
 
     if (action === "verify-now") {
