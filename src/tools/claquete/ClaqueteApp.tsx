@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { Isotype } from "@caramelo/design-system";
-import { useToolUser } from "../shared/kit";
 import { supabase } from "../../supabase";
 
 const CLOUD_URL = "https://claquete-phi.vercel.app";
@@ -11,11 +10,9 @@ const LOCAL_CANDIDATES = [
 ];
 
 export function ClaqueteApp() {
-  const user = useToolUser();
   const [activeUrl, setActiveUrl] = useState<string>(CLOUD_URL);
-  const [isLocal, setIsLocal] = useState(false);
   const [frameLoading, setFrameLoading] = useState(true);
-  const [attempt, setAttempt] = useState(0);
+  const [attempt] = useState(0);
   const [session, setSession] = useState<Session | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -41,7 +38,6 @@ export function ClaqueteApp() {
             const res = await fetch(`${base}/api/health`, { method: "GET", mode: "cors" }).catch(() => null);
             if (res && res.ok && alive) {
               setActiveUrl(base);
-              setIsLocal(true);
               return;
             }
           } catch {
@@ -50,13 +46,11 @@ export function ClaqueteApp() {
         }
         if (alive) {
           setActiveUrl(CLOUD_URL);
-          setIsLocal(false);
         }
       };
       checkLocal();
     } else {
       setActiveUrl(CLOUD_URL);
-      setIsLocal(false);
     }
 
     return () => {
@@ -109,65 +103,6 @@ export function ClaqueteApp() {
 
   return (
     <div className="claquete-shell">
-      <header className="claquete-topbar">
-        <div className="claquete-brand">
-          <Isotype size={24} decorative interactive />
-          <span className="claquete-title">Claquete</span>
-          <span className="claquete-badge">CINEMA & VÍDEO COM IA</span>
-          <span
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 5,
-              padding: "2px 8px",
-              borderRadius: 999,
-              background: "rgba(255, 255, 255, 0.06)",
-              color: isLocal ? "#FFD52A" : "#25BFFF",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-            }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: isLocal ? "#FFD52A" : "#25BFFF",
-                boxShadow: `0 0 6px ${isLocal ? "#FFD52A" : "#25BFFF"}`,
-              }}
-            />
-            {isLocal ? "Servidor Local" : "Nuvem (Supabase & R2)"}
-          </span>
-        </div>
-
-        <div className="claquete-actions">
-          <a
-            className="btn btn--ghost"
-            href={`${activeUrl}/${authHash}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ fontSize: 13, textDecoration: "none" }}
-          >
-            Abrir em nova aba ↗
-          </a>
-          <button
-            className="btn btn--ghost"
-            onClick={() => {
-              setFrameLoading(true);
-              setAttempt((n) => n + 1);
-            }}
-            title="Recarregar"
-            style={{ fontSize: 13 }}
-          >
-            Recarregar
-          </button>
-          <span style={{ fontSize: 12, color: "rgb(var(--cm-fg-muted))", marginLeft: 6 }}>
-            Logado como {user.name}
-          </span>
-        </div>
-      </header>
-
       <main className="claquete-viewport">
         {frameLoading && (
           <div

@@ -3,61 +3,19 @@
 .claquete-shell {
   display: flex;
   flex-direction: column;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background: rgb(var(--cm-stage));
   color: rgb(var(--cm-fg));
   overflow: hidden;
   font-family: var(--caramelo-font-sans, system-ui, sans-serif);
 }
 
-.claquete-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 48px;
-  padding: 0 16px;
-  background: rgb(var(--cm-surface-1));
-  border-bottom: 1px solid rgb(var(--cm-line));
-  z-index: 10;
-}
-
-.claquete-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.claquete-title {
-  font-family: var(--caramelo-font-display, "Montserrat", sans-serif);
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: rgb(var(--cm-fg));
-}
-
-.claquete-badge {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  padding: 2px 7px;
-  border-radius: var(--cm-radius-pill, 999px);
-  background: rgba(var(--cm-accent), 0.15);
-  color: rgb(var(--cm-accent));
-  border: 1px solid rgba(var(--cm-accent), 0.3);
-}
-
-.claquete-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .claquete-viewport {
   flex: 1;
   position: relative;
   width: 100%;
-  height: calc(100% - 48px);
+  height: 100%;
   background: rgb(var(--cm-stage));
 }
 
