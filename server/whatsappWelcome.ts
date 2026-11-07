@@ -17,131 +17,97 @@ export interface WelcomeTemplate {
   format: (phone: string, name?: string) => string;
 }
 
-function formatMention(phone: string, name?: string): string {
-  if (name && name.trim()) {
-    return `*${name.trim()}*`;
-  }
-  return `@${phone}`;
+function formatMention(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  return `@${digits}`;
 }
 
 export const WELCOME_TEMPLATES: WelcomeTemplate[] = [
   {
     id: "puxa-uma-cadeira",
     title: "Acolhedor & Informal (O clássico Caramelo)",
-    format: (phone: string, name?: string) => {
-      const target = formatMention(phone, name);
+    format: (phone: string) => {
+      const target = formatMention(phone);
       return (
-        `Opa, ${target}! Puxa uma cadeira e chega mais. Seja muito bem-vindo(a) ao *LAB Caramelo*! 🐕✨\n\n` +
-        `Aqui é o nosso espaço de troca sobre conteúdo, direção criativa, design, IA e projetos reais na prática.\n\n` +
-        `Pra começar com o pé direito:\n` +
-        `📌 *Dá um pulo na descrição do grupo:* lá estão as regras da comunidade e o link do nosso acervo de ferramentas.\n` +
-        `💬 *Manda uma mensagem se apresentando:* conta pra gente quem é você, de onde fala e com o que você trabalha ou gosta de criar?\n\n` +
-        `Sinta-se em casa! ☕`
+        `Opa, ${target}! Puxa uma cadeira e chega mais. Boas-vindas ao *LAB Caramelo*! 🐕✨\n\n` +
+        `Dá uma olhada rápida nas regras na descrição do grupo e manda uma mensagem aqui se apresentando!`
       );
     },
   },
   {
     id: "cerebro-inquieto",
     title: "Repertório & Bastidores",
-    format: (phone: string, name?: string) => {
-      const target = formatMention(phone, name);
+    format: (phone: string) => {
+      const target = formatMention(phone);
       return (
-        `Mais um cérebro inquieto na área! Boas-vindas ao LAB, ${target}! 🚀🎨\n\n` +
-        `A gente acredita que *trabalho bom não deveria parecer comum*. O objetivo do grupo é compartilhar referências de alto nível, ferramentas, testes e bastidores sem filtro.\n\n` +
-        `Dois passos rápidos de chegada:\n` +
-        `1️⃣ *Leia as regras na descrição do grupo* para manter a nossa convivência leve e produtiva.\n` +
-        `2️⃣ *Solta uma mensagem se apresentando aqui no chat:* qual é o seu universo criativo e o que você anda construindo ultimamente?\n\n` +
-        `Bora trocar repertório! ⚡`
+        `Mais um cérebro inquieto na área! Boas-vindas ao *LAB Caramelo*, ${target}! 🚀🎨\n\n` +
+        `Confere as regras na descrição do grupo e se apresente contando quem é você e o que anda criando.`
       );
     },
   },
   {
     id: "bancada-de-testes",
     title: "Laboratório & Bancada de Testes",
-    format: (phone: string, name?: string) => {
-      const target = formatMention(phone, name);
+    format: (phone: string) => {
+      const target = formatMention(phone);
       return (
-        `Salve, ${target}! A bancada de testes tá aberta. Seja muito bem-vindo(a)! 🧪✨\n\n` +
-        `O *LAB* é onde a gente experimenta de tudo: inteligência artificial, código, narrativa visual e estratégias que tiram ideias do papel.\n\n` +
-        `Pra você se enturmar:\n` +
-        `👉 *Confira as regras na descrição do grupo:* é jogo rápido e essencial pra manter o foco da comunidade.\n` +
-        `👉 *Dá um alô e se apresente pra turma:* seu nome, sua área de atuação e qual curiosidade te trouxe até aqui!\n\n` +
-        `Chega junto que a conversa aqui não para! 🔥`
+        `Salve, ${target}! A bancada de testes tá aberta. Seja muito bem-vindo(a) ao *LAB*! 🧪⚡\n\n` +
+        `Dá um pulo na descrição do grupo pras regras e solta uma mensagem se apresentando pra turma!`
       );
     },
   },
   {
     id: "primeiro-a-intencao",
     title: "Filosofia Caramelo (Primeiro a Intenção)",
-    format: (phone: string, name?: string) => {
-      const target = formatMention(phone, name);
+    format: (phone: string) => {
+      const target = formatMention(phone);
       return (
-        `Olá, ${target}! Que massa ter você com a gente no *LAB Caramelo*! 🤝\n\n` +
-        `A nossa regra de ouro é: *primeiro a intenção, depois a ferramenta*. Se você curte criar com propósito, debater ideias e explorar o futuro da comunicação, você tá no lugar certo.\n\n` +
-        `Recadinhos rápidos:\n` +
-        `📖 *Dê uma lida nas regras na descrição do grupo:* lá também tem links úteis da comunidade.\n` +
-        `🎙️ *Apresente-se pra gente:* de onde você é, o que faz no dia a dia e o que anda estudando ou criando?\n\n` +
-        `A casa é sua! 💡`
+        `Olá, ${target}! Que bom ter você com a gente no *LAB Caramelo*! 💡\n\n` +
+        `Passe na descrição do grupo pra ver as regras e solta um alô se apresentando: de onde você é e o que curte criar!`
       );
     },
   },
   {
     id: "sem-cracha",
     title: "Direto ao Ponto & Sem Crachá",
-    format: (phone: string, name?: string) => {
-      const target = formatMention(phone, name);
+    format: (phone: string) => {
+      const target = formatMention(phone);
       return (
-        `Opa, ${target}, tudo bem? Seja muito bem-vindo(a) ao grupo! 👋🐕\n\n` +
-        `Aqui no LAB ninguém precisa parecer corporativo demais: o foco é trocar ideias de verdade entre criadores, designers, desenvolvedores e cabeças inquietas.\n\n` +
-        `Pra entrar na sintonia:\n` +
-        `⚠️ *Não deixe de ler as regrinhas na descrição do grupo* (respeito e troca genuína em primeiro lugar).\n` +
-        `🙋 *Manda um alô se apresentando:* quem é você, qual seu projeto do momento e que assunto mais faz seus olhos brilharem por aqui?\n\n` +
-        `Bora pra cima! ⚡`
+        `Opa, ${target}! Seja muito bem-vindo(a) ao *LAB*! 👋🐕\n\n` +
+        `Dá uma conferida nas regras na descrição do grupo e se apresenta por aqui: qual é o seu universo criativo?`
       );
     },
   },
   {
     id: "pasta-de-salvos",
     title: "De Pasta de Salvos a Trabalho Real",
-    format: (phone: string, name?: string) => {
-      const target = formatMention(phone, name);
+    format: (phone: string) => {
+      const target = formatMention(phone);
       return (
-        `Boas-vindas ao LAB, ${target}! 🎉✨\n\n` +
-        `O propósito desta comunidade é simples: transformar pastas de referências salvas em projetos reais, com direção e identidade.\n\n` +
-        `Antes de qualquer coisa:\n` +
-        `🔍 *Passe na descrição do grupo e leia as regras* da comunidade.\n` +
-        `💬 *Mande uma mensagem se apresentando:* seu nome, qual a sua área de criação e que tipo de desafio você mais curte resolver?\n\n` +
-        `Muito bom ter você somando na nossa comunidade! 🚀`
+        `Boas-vindas ao *LAB Caramelo*, ${target}! 🎉✨\n\n` +
+        `Aqui é lugar de tirar ideia do papel. Confere as regras na descrição e manda uma mensagem se apresentando!`
       );
     },
   },
   {
     id: "mao-na-massa",
     title: "Mão na Massa & Construção Prática",
-    format: (phone: string, name?: string) => {
-      const target = formatMention(phone, name);
+    format: (phone: string) => {
+      const target = formatMention(phone);
       return (
         `Chegou na hora certa, ${target}! Boas-vindas ao *LAB Caramelo*! ⚡🛠️\n\n` +
-        `Aqui a gente valoriza quem testa, erra rápido e coloca ideia na rua. Nada de teoria vazia: é design, código, IA e direção criativa aplicados.\n\n` +
-        `Se liga no checklist de entrada:\n` +
-        `📖 *Dá uma conferida nas regras na descrição do grupo* para entender como funcionam as trocas e os links da comunidade.\n` +
-        `💬 *Conta pra turma quem é você:* se apresenta com seu nome, sua área e o que você tá criando ou querendo aprender por aqui!\n\n` +
-        `Bora colocar a mão na massa! 🚀`
+        `Dá uma passada rápida nas regras na descrição do grupo e se apresente: conta com o que você trabalha ou gosta de criar!`
       );
     },
   },
   {
     id: "ecossistema-criativo",
     title: "Ecossistema & Troca Real",
-    format: (phone: string, name?: string) => {
-      const target = formatMention(phone, name);
+    format: (phone: string) => {
+      const target = formatMention(phone);
       return (
-        `Muito bom ter você por aqui, ${target}! Seja bem-vindo(a) ao *LAB Caramelo*! 🐕💫\n\n` +
-        `Este é o nosso espaço de colaboração e estudo contínuo. Aqui se encontram mentes criativas que pensam diferente e executam com excelência.\n\n` +
-        `Dois toques essenciais pra começar:\n` +
-        `📌 *Leia com atenção as regras na descrição do grupo* (elas mantêm o nível de foco e respeito da galera lá no alto).\n` +
-        `🎙️ *Dê um olá e se apresente:* compartilha com a gente seu nome, de onde você fala e o que mais desperta sua curiosidade hoje!\n\n` +
-        `Aproveite cada troca! ☕🔥`
+        `Muito bom ter você por aqui, ${target}! Boas-vindas ao *LAB Caramelo*! 🐕💫\n\n` +
+        `Dá uma olhada nas regras na descrição do grupo e solta um alô se apresentando pra turma!`
       );
     },
   },

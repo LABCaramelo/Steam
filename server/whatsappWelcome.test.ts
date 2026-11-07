@@ -9,17 +9,14 @@ import {
 } from "./whatsappWelcome.ts";
 import type { IncomingMessage, ServerResponse } from "node:http";
 
-test("WELCOME_TEMPLATES contém pelo menos 6 modelos com menção e convite", () => {
+test("WELCOME_TEMPLATES contém pelo menos 6 modelos concisos com menção @ e convite", () => {
   assert.ok(WELCOME_TEMPLATES.length >= 6, "Deve conter pelo menos 6 modelos");
   for (const t of WELCOME_TEMPLATES) {
-    const renderedFallback = t.format("5531985869015");
-    assert.match(renderedFallback, /@5531985869015/, "Sem nome, a mensagem deve mencionar o número como fallback");
-    assert.match(renderedFallback, /descri[çc][ãa]o/i, "A mensagem deve convidar a ler a descrição do grupo");
-    assert.match(renderedFallback, /apresent/i, "A mensagem deve convidar a se apresentar");
-
-    const renderedWithName = t.format("5531985869015", "Luiz");
-    assert.match(renderedWithName, /\*Luiz\*/, "Com nome, a mensagem deve destacar o nome do usuário");
-    assert.doesNotMatch(renderedWithName, /@5531985869015/, "Com nome, não deve expor o número bruto");
+    const rendered = t.format("5531985869015");
+    assert.match(rendered, /@5531985869015/, "A mensagem deve conter @número para menção real do WhatsApp e notificação");
+    assert.match(rendered, /descri[çc][ãa]o/i, "A mensagem deve convidar a ler a descrição do grupo");
+    assert.match(rendered, /apresent/i, "A mensagem deve convidar a se apresentar");
+    assert.ok(rendered.length <= 250, "A mensagem deve ser concisa (máximo 250 caracteres)");
   }
 });
 
@@ -194,7 +191,7 @@ test("sendWelcomeToGroup chama uazapi /send/text com dados corretos e fallback p
   }
 });
 
-test("sendWelcomeToGroup usa nome do usuário no texto quando disponível", async () => {
+test("sendWelcomeToGroup resolve nome do usuário nos metadados e mantém menção @ no texto para notificação real", async () => {
   const calls: { url: string; body: Record<string, unknown>; headers: Record<string, string> }[] = [];
   const originalFetch = globalThis.fetch;
   globalThis.fetch = (async (input: string | URL | Request, init: RequestInit = {}) => {
@@ -241,8 +238,7 @@ test("sendWelcomeToGroup usa nome do usuário no texto quando disponível", asyn
     const sendCall = calls.find((c) => c.url.endsWith("/send/text"));
     assert.ok(sendCall);
     assert.equal(sendCall.body.mentions, "5531985869015");
-    assert.match(String(sendCall.body.text), /\*Luiz Caramelo\*/);
-    assert.doesNotMatch(String(sendCall.body.text), /@5531985869015/);
+    assert.match(String(sendCall.body.text), /@5531985869015/, "Deve manter @número no texto para o WhatsApp notificar o usuário");
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -297,7 +293,7 @@ test("sendWelcomeToGroup resolve LID para número de telefone real e nome", asyn
     const sendCall = calls.find((c) => c.url.endsWith("/send/text"));
     assert.ok(sendCall);
     assert.equal(sendCall.body.mentions, "553188015544", "Deve mencionar o número PN real, não o LID");
-    assert.match(String(sendCall.body.text), /\*Camila Alves\*/);
+    assert.match(String(sendCall.body.text), /@553188015544/, "Deve conter @número PN real no texto para o WhatsApp notificar o usuário");
   } finally {
     globalThis.fetch = originalFetch;
   }
