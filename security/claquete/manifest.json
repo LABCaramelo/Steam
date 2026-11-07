@@ -39,7 +39,7 @@
     {
       "path": "src/LabGate.tsx",
       "baselineSha256": null,
-      "patchedSha256": "70fe24b4164fb25d8fc7491996c4c43ca9cdb4a7722ad670be660ce453144481"
+      "patchedSha256": "9a281f968719d17ec7893ffb0483ac439e2e3da35f217ae4e21d93dcb0b19edf"
     },
     {
       "path": "src/main.tsx",
