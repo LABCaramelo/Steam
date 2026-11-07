@@ -413,6 +413,10 @@ export function BrandGuardianApp() {
               <Palette size={16} /> Color Lab & Paletas
               <span className="bg-nav-item__badge">{brandData.colors.length}</span>
             </div>
+            <div className={`bg-nav-item ${activeSection === "platform_theme" ? "is-active" : ""}`} onClick={() => setActiveSection("platform_theme")}>
+              <Sliders size={16} /> Cores da Plataforma (LAB)
+              <span className="bg-nav-item__badge" style={{ background: "var(--cm-accent, #FF701A)", color: "rgb(var(--cm-accent-contrast, 16 16 20))" }}>LAB</span>
+            </div>
             <div className={`bg-nav-item ${activeSection === "typography" ? "is-active" : ""}`} onClick={() => setActiveSection("typography")}>
               <Type size={16} /> Tipografia
             </div>
@@ -604,9 +608,14 @@ export function BrandGuardianApp() {
               <Palette size={18} color="#FF701A" />
               Paleta Oficial de Trabalho
             </div>
-            <button className="bg-btn bg-btn--ghost" onClick={() => setActiveSection("colors")}>
-              Abrir Color Lab →
-            </button>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button className="bg-btn bg-btn--primary" onClick={() => setActiveSection("platform_theme")}>
+                Personalizar Cores do LAB →
+              </button>
+              <button className="bg-btn bg-btn--ghost" onClick={() => setActiveSection("colors")}>
+                Abrir Color Lab →
+              </button>
+            </div>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             {brandData!.colors.map((c) => (
@@ -807,6 +816,17 @@ export function BrandGuardianApp() {
 
     return (
       <div>
+        {/* Banner de Atalho para Cores da Plataforma */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, padding: "14px 18px", background: "linear-gradient(135deg, rgba(255, 112, 26, 0.1) 0%, rgba(37, 191, 255, 0.08) 100%)", borderRadius: 8, border: "1px solid var(--border-accent)" }}>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: 14, color: "var(--text-main)" }}>Deseja aplicar estas cores a toda a plataforma?</div>
+            <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 2 }}>Você pode padronizar o LAB e todas as 18 ferramentas com esta identidade.</div>
+          </div>
+          <button className="bg-btn bg-btn--primary" onClick={() => setActiveSection("platform_theme")}>
+            Personalizar Cores do LAB →
+          </button>
+        </div>
+
         {/* 8.1. Color Lab Interativo */}
         <div className="bg-card">
           <div className="bg-card__header">
