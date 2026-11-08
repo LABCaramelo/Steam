@@ -70,6 +70,30 @@
   ],
   "rewrites": [
     {
+      "source": "/lab",
+      "destination": "/lab/index.html"
+    },
+    {
+      "source": "/lab/",
+      "destination": "/lab/index.html"
+    },
+    {
+      "source": "/download",
+      "destination": "/lab/index.html"
+    },
+    {
+      "source": "/download/",
+      "destination": "/lab/index.html"
+    },
+    {
+      "source": "/desktop",
+      "destination": "/lab/index.html"
+    },
+    {
+      "source": "/desktop/",
+      "destination": "/lab/index.html"
+    },
+    {
       "source": "/head-de-conteudo",
       "destination": "/head-de-conteudo/index.html"
     },

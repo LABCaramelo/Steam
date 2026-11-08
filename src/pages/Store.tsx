@@ -49,6 +49,22 @@ export function StorePage() {
         </div>
       )}
 
+            <div className="store__desktop-banner cm-surface--spotlight">
+        <div className="store__desktop-banner-inner">
+          <div className="store__desktop-banner-badge">NOVO · MODO DESKTOP WINDOWS</div>
+          <h3>Prefere ter seus arquivos 100% salvos no seu computador?</h3>
+          <p>
+            Conheça o <strong>LAB Desktop</strong>, nosso launcher modular estilo Steam. Instale apenas as ferramentas que quiser, trabalhe com velocidade de SSD local e esqueça limites de upload ou faturas de nuvem (R2/Storage).
+          </p>
+        </div>
+        <a href="/lab" target="_blank" rel="noopener noreferrer" className="store__desktop-banner-btn">
+          <span>Conhecer o LAB Desktop & Baixar</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </a>
+      </div>
+
       <section className="store__section">
         <h2 className="store__heading">Destaques do LAB</h2>
         <div className="store__carousel">

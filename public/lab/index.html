@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LAB Desktop — O Estúdio Criativo no seu Computador · Um Cara Caramelo</title>
+  <meta name="description" content="O LAB agora é um launcher nativo para Windows estilo Steam. Armazenamento 100% no seu computador, ferramentas modulares sob demanda e zero custos de nuvem com R2/Storage. Baixe o instalador leve para Windows.">
+  <meta name="theme-color" content="#101014">
+  <link rel="canonical" href="https://www.umcaracaramelo.com.br/lab">
+
+  <!-- OpenGraph / Twitter Cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Um Cara Caramelo · LAB">
+  <meta property="og:title" content="LAB Desktop — O Estúdio Criativo no seu Computador (Modo Windows)">
+  <meta property="og:description" content="Launcher leve estilo Steam. Armazenamento 100% local, ferramentas modulares sob demanda e zero dependência de nuvem para seus arquivos de mídia.">
+  <meta property="og:url" content="https://www.umcaracaramelo.com.br/lab">
+  <meta property="og:image" content="https://www.umcaracaramelo.com.br/assets/images/video-posters/work-02.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LAB Desktop — Um Cara Caramelo">
+  <meta name="twitter:description" content="Launcher nativo para Windows estilo Steam. Seus arquivos no seu computador.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- Caramelo Design System & Tipografia em Três Vozes -->
+  <link rel="stylesheet" href="/caramelo/styles.css">
+  <link rel="stylesheet" href="/caramelo-tokens.css">
+  <link rel="stylesheet" href="/fonts.css">
+  <link rel="preload" href="/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <style>
+    :root {
+      --bg-stage: #101014;
+      --bg-surface-1: #16161c;
+      --bg-surface-2: #1e1e26;
+      --bg-surface-3: #262632;
+      --border-subtle: rgba(255, 244, 232, 0.08);
+      --border-strong: rgba(255, 244, 232, 0.16);
+      --text-main: #FFF4E8;
+      --text-muted: #A3A3B0;
+      --text-dim: #707080;
+      --accent-caramel: #FF701A;
+      --accent-sky: #25BFFF;
+      --accent-pink: #FF3D8D;
+      --accent-violet: #7657FF;
+      --accent-yellow: #FFD52A;
+      --accent-mint: #3DDC97;
+      --spectrum: linear-gradient(110deg, #FF701A 0%, #FF3D8D 24%, #7657FF 48%, #25BFFF 72%, #FFD52A 100%);
+      --glow-spectrum: 0 0 25px rgba(255, 112, 26, 0.25), 0 0 50px rgba(37, 191, 255, 0.15);
+      --font-display: 'Montserrat', system-ui, -apple-system, sans-serif;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-hand: 'Covered By Your Grace', cursive, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-stage);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Glow Background */
+    .ambient-glow {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1000px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 112, 26, 0.12) 0%, rgba(37, 191, 255, 0.06) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(80px);
+    }
+
+    .container {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .lab-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      background: rgba(16, 16, 20, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .brand-isotype {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 13px;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .brand-badge {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      background: var(--accent-caramel);
+      color: #101014;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-left: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-web-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.2s ease;
+    }
+
+    .btn-web-ghost:hover {
+      color: var(--text-main);
+      border-color: var(--border-strong);
+      background: var(--bg-surface-2);
+    }
+
+    .btn-download-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-caramel);
+      color: #101014;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+      padding: 8px 18px;
+      border-radius: 6px;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-download-top:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 18px rgba(255, 112, 26, 0.35);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 84px 0 60px;
+      text-align: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-caramel);
+      background: rgba(255, 112, 26, 0.1);
+      border: 1px solid rgba(255, 112, 26, 0.3);
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+
+    .hero-eyebrow .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-caramel);
+      box-shadow: 0 0 10px var(--accent-caramel);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(34px, 5.5vw, 68px);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      max-width: 1060px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-title .accent {
+      color: var(--accent-caramel);
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero-lead {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-muted);
+      max-width: 820px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+
+    .hero-lead strong {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .hero-handwritten {
+      font-family: var(--font-hand);
+      font-size: 26px;
+      color: var(--accent-sky);
+      display: block;
+      margin-bottom: 30px;
+      transform: rotate(-1.5deg);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 60px;
+    }
+
+    .cta-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-download-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: var(--accent-caramel);
+      color: #101014;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 17px;
+      letter-spacing: 0.02em;
+      padding: 18px 38px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 30px rgba(255, 112, 26, 0.3);
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-download-primary:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 16px 45px rgba(255, 112, 26, 0.45);
+    }
+
+    .btn-download-primary svg {
+      flex-shrink: 0;
+    }
+
+    .btn-web-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-surface-2);
+      color: var(--text-main);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 18px 30px;
+      border-radius: 10px;
+      text-decoration: none;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.2s ease;
+    }
+
+    .btn-web-secondary:hover {
+      background: var(--bg-surface-3);
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .download-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12.5px;
+      color: var(--text-dim);
+    }
+
+    .download-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Client Mockup Window */
+    .client-mockup {
+      max-width: 1080px;
+      margin: 0 auto;
+      background: #141419;
+      border-radius: 14px;
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 40px rgba(255, 112, 26, 0.08);
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .mockup-titlebar {
+      height: 44px;
+      background: #181820;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .mockup-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .mockup-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--bg-surface-3);
+    }
+
+    .mockup-dot.close { background: #FF5F56; }
+    .mockup-dot.min { background: #FFBD2E; }
+    .mockup-dot.max { background: #27C93F; }
+
+    .mockup-tabs {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .mockup-tab.active {
+      color: var(--accent-caramel);
+      border-bottom: 2px solid var(--accent-caramel);
+      padding-bottom: 11px;
+      margin-bottom: -11px;
+    }
+
+    .mockup-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--accent-mint);
+      background: rgba(61, 220, 151, 0.08);
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid rgba(61, 220, 151, 0.2);
+    }
+
+    .mockup-body {
+      padding: 24px;
+      background: #101014;
+    }
+
+    .mockup-banner {
+      background: linear-gradient(135deg, rgba(255, 112, 26, 0.15) 0%, rgba(37, 191, 255, 0.08) 100%), #181822;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .banner-text h4 {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 16px;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .banner-text p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .banner-badge {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-sky);
+      background: rgba(37, 191, 255, 0.1);
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid rgba(37, 191, 255, 0.25);
+    }
+
+    .mockup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .mockup-card {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 160px;
+      transition: border-color 0.2s ease;
+    }
+
+    .mockup-card:hover {
+      border-color: var(--border-strong);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+
+    .card-tag {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .card-tag.installed {
+      background: rgba(61, 220, 151, 0.15);
+      color: var(--accent-mint);
+    }
+
+    .card-tag.cloud {
+      background: rgba(37, 191, 255, 0.15);
+      color: var(--accent-sky);
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+
+    .card-btn {
+      width: 100%;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      font-family: var(--font-display);
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .card-btn.open {
+      background: var(--accent-caramel);
+      color: #101014;
+    }
+
+    .card-btn.install {
+      background: var(--bg-surface-3);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* Section Styles */
+    .section-pad {
+      padding: 96px 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 840px;
+      margin: 0 auto 60px;
+    }
+
+    .section-tag {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-caramel);
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      font-size: 17px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Pillars (Steam Model) */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .pillar-card {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .pillar-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 112, 26, 0.4);
+    }
+
+    .pillar-num {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 32px;
+      color: var(--accent-caramel);
+      margin-bottom: 16px;
+      opacity: 0.8;
+    }
+
+    .pillar-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 18px;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .pillar-text {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Comparison Table */
+    .compare-wrap {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .compare-table th {
+      background: var(--bg-surface-2);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-main);
+    }
+
+    .compare-table th.col-desktop {
+      background: rgba(255, 112, 26, 0.08);
+      color: var(--accent-caramel);
+      border-bottom: 2px solid var(--accent-caramel);
+    }
+
+    .compare-table th.col-web {
+      background: rgba(37, 191, 255, 0.06);
+      color: var(--accent-sky);
+    }
+
+    .compare-table td.col-desktop {
+      background: rgba(255, 112, 26, 0.02);
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .compare-table td.col-web {
+      color: var(--text-muted);
+    }
+
+    .compare-feature {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .check-yes {
+      color: var(--accent-mint);
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .check-alt {
+      color: var(--text-dim);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Tools Showcase Grid */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 20px;
+    }
+
+    .tool-box {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .tool-box:hover {
+      border-color: var(--border-strong);
+      background: var(--bg-surface-2);
+      transform: translateY(-2px);
+    }
+
+    .tool-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .tool-name {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 17px;
+      color: var(--text-main);
+    }
+
+    .tool-category {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-caramel);
+    }
+
+    .tool-summary {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .tool-badge-pill {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px 10px;
+      border-radius: 4px;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    /* Steps Section */
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .step-box {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 30px 24px;
+      position: relative;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--accent-caramel);
+      color: #101014;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 16px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+    }
+
+    .step-box h3 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .step-box p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Requirements & Specs */
+    .specs-card {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 36px;
+    }
+
+    .specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 768px) {
+      .specs-grid { grid-template-columns: 1fr; }
+    }
+
+    .specs-col h4 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--accent-sky);
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .specs-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    .specs-list li {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 10px;
+    }
+
+    .specs-label {
+      color: var(--text-muted);
+    }
+
+    .specs-val {
+      font-weight: 700;
+      color: var(--text-main);
+      text-align: right;
+    }
+
+    /* FAQ */
+    .faq-list {
+      max-width: 840px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .faq-item {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      padding: 20px 24px;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: color 0.2s ease;
+    }
+
+    .faq-question:hover {
+      color: var(--accent-caramel);
+    }
+
+    .faq-answer {
+      padding: 0 24px 20px;
+      font-size: 14.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      display: none;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+    }
+
+    .faq-icon {
+      font-size: 20px;
+      color: var(--accent-caramel);
+      transition: transform 0.2s ease;
+    }
+
+    /* Bottom CTA Banner */
+    .cta-banner {
+      background: linear-gradient(135deg, rgba(255, 112, 26, 0.16) 0%, rgba(37, 191, 255, 0.08) 100%), var(--bg-surface-1);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      padding: 60px 36px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin: 80px 0 40px;
+    }
+
+    .cta-banner-title {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(26px, 4vw, 42px);
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .cta-banner-lead {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 32px;
+    }
+
+    /* Modal Download Started */
+    .download-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 10, 14, 0.85);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .download-modal-overlay.active {
+      display: flex;
+    }
+
+    .download-modal-card {
+      background: #16161d;
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      max-width: 520px;
+      width: 100%;
+      padding: 36px;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), var(--glow-spectrum);
+      position: relative;
+      animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.94) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .modal-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(61, 220, 151, 0.15);
+      color: var(--accent-mint);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .modal-desc {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .modal-steps {
+      text-align: left;
+      background: #111116;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      font-size: 13.5px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .modal-step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .modal-step-item span.num {
+      background: var(--accent-caramel);
+      color: #101014;
+      font-weight: 800;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 2px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    /* Footer */
+    .lab-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 40px 0;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-main);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .mockup-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Glow -->
+  <div class="ambient-glow" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header class="lab-nav">
+    <div class="container nav-inner">
+      <a href="/lab" class="brand-wrap" aria-label="LAB Desktop — Início">
+        <img class="brand-isotype" src="/assets/icons/caramelo-mark.svg?v=2" alt="Logo Um Cara Caramelo" width="34" height="34">
+        <span class="brand-title">UM CARA<br>CARAMELO<sup>®</sup></span>
+        <span class="brand-badge">LAB</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#sobre">O que é o LAB</a></li>
+        <li><a href="#modelo-steam">Modelo Steam</a></li>
+        <li><a href="#comparativo">Desktop vs Web</a></li>
+        <li><a href="#ferramentas">Ferramentas</a></li>
+        <li><a href="#requisitos">Requisitos</a></li>
+        <li><a href="#faq">Dúvidas</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="/store" class="btn-web-ghost" title="Abrir versão que roda direto no navegador">
+          <span>Versão Web</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+        <a href="/downloads/LAB-Setup.exe" class="btn-download-top js-download-trigger" download="LAB-Setup.exe">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Baixar para Windows</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero" id="sobre">
+      <div class="container">
+        <div class="hero-eyebrow">
+          <span class="dot"></span>
+          NOVO · MODO DESKTOP WINDOWS · ARQUITETURA LOCAL-FIRST
+        </div>
+
+        <h1 class="hero-title">
+          TODO O ESTÚDIO NO SEU COMPUTADOR.<br>
+          <span class="accent">SEUS ARQUIVOS NA SUA MÁQUINA.</span>
+        </h1>
+
+        <p class="hero-lead">
+          O <strong>LAB</strong> agora é um <strong>launcher nativo para Windows</strong>, inspirado no modelo da <strong>Steam</strong>.<br>
+          Instale o cliente leve de ~58 MB, entre com sua conta e adicione apenas as ferramentas que quiser.<br>
+          Seus renders, vídeos, gravações e bancos de dados ficam salvos diretamente no seu disco — sem faturas de R2, sem uploads lentos e com privacidade total.
+        </p>
+
+        <span class="hero-handwritten">"Menos ferramenta. Mais sistema. E zero arquivos reféns da nuvem."</span>
+
+        <div class="hero-actions" id="download">
+          <div class="cta-group">
+            <a href="/downloads/LAB-Setup.exe" class="btn-download-primary js-download-trigger" download="LAB-Setup.exe">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>BAIXAR INSTALADOR PARA WINDOWS (64-BIT)</span>
+            </a>
+
+            <a href="/store" class="btn-web-secondary">
+              <span>Abrir Versão Web no Navegador ↗</span>
+            </a>
+          </div>
+
+          <div class="download-meta">
+            <span>💻 Windows 10 e 11 (64-bit)</span>
+            <span>⚡ Instalador Ultraleve (~58 MB)</span>
+            <span>🔒 Software Seguro & Sem Bloatware</span>
+          </div>
+        </div>
+
+        <!-- Interactive Steam-Like Desktop Client Preview -->
+        <div class="client-mockup" aria-label="Prévia da interface do LAB Desktop">
+          <div class="mockup-titlebar">
+            <div class="mockup-controls">
+              <div class="mockup-dot close"></div>
+              <div class="mockup-dot min"></div>
+              <div class="mockup-dot max"></div>
+            </div>
+
+            <div class="mockup-tabs">
+              <span class="mockup-tab active">BIBLIOTECA</span>
+              <span class="mockup-tab">LOJA</span>
+              <span class="mockup-tab">PERFIL</span>
+              <span class="mockup-tab">COMUNIDADE</span>
+            </div>
+
+            <div class="mockup-status">
+              <span>🟢 Disco Local: C:\...\Documentos\LAB (Ilimitado)</span>
+            </div>
+          </div>
+
+          <div class="mockup-body">
+            <div class="mockup-banner">
+              <div class="banner-text">
+                <h4>ESTÚDIO LOCAL-FIRST ATIVO</h4>
+                <p>Todos os seus arquivos de projeto, linhas do tempo e renders são gravados no seu SSD local. Zero consumo de banda de nuvem.</p>
+              </div>
+              <div class="banner-badge">
+                MODO WINDOWS ATIVO
+              </div>
+            </div>
+
+            <div class="mockup-grid">
+              <!-- Tool 1 -->
+              <div class="mockup-card">
+                <div class="card-top">
+                  <span class="card-title">Claquete</span>
+                  <span class="card-tag installed">INSTALADO</span>
+                </div>
+                <p class="card-desc">Estúdio de cinema, geração de cenas com IA, nodes visuais e direção contínua.</p>
+                <button type="button" class="card-btn open">▶ ABRIR ESTÚDIO</button>
+              </div>
+
+              <!-- Tool 2 -->
+              <div class="mockup-card">
+                <div class="card-top">
+                  <span class="card-title">Montagem</span>
+                  <span class="card-tag installed">INSTALADO</span>
+                </div>
+                <p class="card-desc">Editor de vídeo e timeline NLE nativa com render acelerado por GPU local.</p>
+                <button type="button" class="card-btn open">▶ ABRIR NLE</button>
+              </div>
+
+              <!-- Tool 3 -->
+              <div class="mockup-card">
+                <div class="card-top">
+                  <span class="card-title">Voice Studio</span>
+                  <span class="card-tag cloud">NA LOJA</span>
+                </div>
+                <p class="card-desc">Gravação, mixagem, vozes neurais e criação de trilhas sonoras autorais.</p>
+                <button type="button" class="card-btn install">⬇ INSTALAR NO PC</button>
+              </div>
+
+              <!-- Tool 4 -->
+              <div class="mockup-card">
+                <div class="card-top">
+                  <span class="card-title">Brand Guardian</span>
+                  <span class="card-tag installed">INSTALADO</span>
+                </div>
+                <p class="card-desc">Guardião do Design System, tokens DTCG e paletas semânticas unificadas.</p>
+                <button type="button" class="card-btn open">▶ ABRIR GUARDIAN</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Steam Model Section -->
+    <section class="section-pad" id="modelo-steam">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">ARQUITETURA INTELIGENTE</span>
+          <h2 class="section-title">COMO FUNCIONA O MODELO STEAM DO LAB</h2>
+          <p class="section-desc">
+            Você não precisa baixar dezenas de gigabytes de uma vez. O launcher é leve e rápido. Você instala o motor base e baixa cada ferramenta sob demanda apenas quando for usá-la.
+          </p>
+        </div>
+
+        <div class="pillars-grid">
+          <!-- Pillar 1 -->
+          <div class="pillar-card">
+            <span class="pillar-num">01</span>
+            <h3 class="pillar-title">Instalador Ultraleve (~58 MB)</h3>
+            <p class="pillar-text">
+              O instalador baixa em segundos. Ele não empacota todas as ferramentas de forma pesada e desnecessária. Ele instala a carcaça central e o gerenciador de biblioteca.
+            </p>
+          </div>
+
+          <!-- Pillar 2 -->
+          <div class="pillar-card">
+            <span class="pillar-num">02</span>
+            <h3 class="pillar-title">Armazenamento 100% Local (Local-First)</h3>
+            <p class="pillar-text">
+              Chega de pagar faturas de Cloudflare R2 ou Supabase Storage por gigabytes de mídia. Todos os seus vídeos, áudios e dados vivem no seu computador com leitura de SSD em tempo real.
+            </p>
+          </div>
+
+          <!-- Pillar 3 -->
+          <div class="pillar-card">
+            <span class="pillar-num">03</span>
+            <h3 class="pillar-title">Login e Licenças na Nuvem</h3>
+            <p class="pillar-text">
+              O login continua funcionando normalmente (Supabase Auth). A nuvem gerencia apenas sua autenticação, suas permissões e as ferramentas que você adquiriu na Loja do LAB.
+            </p>
+          </div>
+
+          <!-- Pillar 4 -->
+          <div class="pillar-card">
+            <span class="pillar-num">04</span>
+            <h3 class="pillar-title">Versão Web de Bolso Mantida</h3>
+            <p class="pillar-text">
+              Está longe do seu computador de trabalho? A versão web continua no ar com versões simplificadas das ferramentas para você rascunhar, consultar e planejar direto pelo navegador.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Table (Desktop vs Web) -->
+    <section class="section-pad" id="comparativo">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">DUAS FORMAS DE CRIAR</span>
+          <h2 class="section-title">LAB DESKTOP (WINDOWS) VS LAB WEB (NAVEGADOR)</h2>
+          <p class="section-desc">
+            Escolha o poder bruto da sua máquina com arquivos locais ou a agilidade de abrir direto em qualquer navegador.
+          </p>
+        </div>
+
+        <div class="compare-wrap">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th style="width: 38%;">Capacidade / Recurso</th>
+                <th class="col-desktop" style="width: 31%;">LAB Desktop (Windows)</th>
+                <th class="col-web" style="width: 31%;">LAB Web (Navegador)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="compare-feature">Onde os arquivos são guardados?</td>
+                <td class="col-desktop"><span class="check-yes">✔ 100% no seu disco local (SSD/HD)</span></td>
+                <td class="col-web">Cache local do navegador / exportação</td>
+              </tr>
+              <tr>
+                <td class="compare-feature">Custos e limites de Nuvem (R2 / Storage)</td>
+                <td class="col-desktop"><span class="check-yes">✔ Zero custos de nuvem (Espaço Ilimitado)</span></td>
+                <td class="col-web">Sem suporte a mídias gigabytes</td>
+              </tr>
+              <tr>
+                <td class="compare-feature">Tamanho inicial do instalador</td>
+                <td class="col-desktop"><span class="check-yes">✔ Ultraleve (~58 MB)</span></td>
+                <td class="col-web">Zero download (carrega na aba)</td>
+              </tr>
+              <tr>
+                <td class="compare-feature">Instalação de ferramentas</td>
+                <td class="col-desktop"><span class="check-yes">✔ Modular: Baixa apenas o que você usa</span></td>
+                <td class="col-web">Carregadas via streaming web</td>
+              </tr>
+              <tr>
+                <td class="compare-feature">Desempenho de renderização</td>
+                <td class="col-desktop"><span class="check-yes">✔ Aceleração por GPU / CPU local nativa</span></td>
+                <td class="col-web">Limitado pelo sandbox do browser</td>
+              </tr>
+              <tr>
+                <td class="compare-feature">Nível das ferramentas</td>
+                <td class="col-desktop"><span class="check-yes">✔ Ferramentas completas (NLE, 4K, IA)</span></td>
+                <td class="col-web">Versões simplificadas para agilidade</td>
+              </tr>
+              <tr>
+                <td class="compare-feature">Trabalho offline</td>
+                <td class="col-desktop"><span class="check-yes">✔ Funciona offline com ferramentas baixadas</span></td>
+                <td class="col-web"><span class="check-alt">Requer conexão contínua</span></td>
+              </tr>
+              <tr>
+                <td class="compare-feature">Autenticação e Perfil de Usuário</td>
+                <td class="col-desktop"><span class="check-yes">✔ Login unificado (Supabase Auth)</span></td>
+                <td class="col-web"><span class="check-yes">✔ Login unificado (Supabase Auth)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modular Tools Showcase -->
+    <section class="section-pad" id="ferramentas">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">CATÁLOGO MODULAR</span>
+          <h2 class="section-title">SUAS FERRAMENTAS. SEU RITMO.</h2>
+          <p class="section-desc">
+            Instale o launcher uma única vez e explore a Loja do LAB para adquirir e instalar o que faz sentido para a sua rotina criativa.
+          </p>
+        </div>
+
+        <div class="tools-grid">
+          <!-- Claquete -->
+          <div class="tool-box">
+            <div>
+              <div class="tool-header">
+                <span class="tool-name">Claquete</span>
+                <span class="tool-category">Audiovisual</span>
+              </div>
+              <p class="tool-summary">Estúdio de cinema com geração de cenas via IA, canvas de nodes infinitos, roteiro sincronizado e direção contínua.</p>
+            </div>
+            <span class="tool-badge-pill">Modo Completo no Desktop</span>
+          </div>
+
+          <!-- Montagem -->
+          <div class="tool-box">
+            <div>
+              <div class="tool-header">
+                <span class="tool-name">Montagem</span>
+                <span class="tool-category">Pós-Produção</span>
+              </div>
+              <p class="tool-summary">Editor de vídeo NLE nativo, corte multipistas, inserção de legendas automáticas e exportação acelerada em GPU.</p>
+            </div>
+            <span class="tool-badge-pill">Render Local Direto</span>
+          </div>
+
+          <!-- Voice Studio -->
+          <div class="tool-box">
+            <div>
+              <div class="tool-header">
+                <span class="tool-name">Voice Studio</span>
+                <span class="tool-category">Áudio & Voz</span>
+              </div>
+              <p class="tool-summary">Gravação multifaixa, clonagem de voz neural, limpeza acústica e geração de trilhas instrumentais sob medida.</p>
+            </div>
+            <span class="tool-badge-pill">Processamento no PC</span>
+          </div>
+
+          <!-- Prancheta -->
+          <div class="tool-box">
+            <div>
+              <div class="tool-header">
+                <span class="tool-name">Prancheta</span>
+                <span class="tool-category">Design</span>
+              </div>
+              <p class="tool-summary">Editor vetorial e de layout visual com frames, componentes reutilizáveis, tipografia refinada e exportação SVG/PNG.</p>
+            </div>
+            <span class="tool-badge-pill">Alta Precisão</span>
+          </div>
+
+          <!-- Brand Guardian -->
+          <div class="tool-box">
+            <div>
+              <div class="tool-header">
+                <span class="tool-name">Brand Guardian</span>
+                <span class="tool-category">Identidade</span>
+              </div>
+              <p class="tool-summary">Guardião oficial do Design System, tokens W3C DTCG 2025.10, Color Lab e validação automática de consistência.</p>
+            </div>
+            <span class="tool-badge-pill">Sincronizado na Conta</span>
+          </div>
+
+          <!-- Biblioteca de Prompts -->
+          <div class="tool-box">
+            <div>
+              <div class="tool-header">
+                <span class="tool-name">Biblioteca de Prompts</span>
+                <span class="tool-category">Repertório</span>
+              </div>
+              <p class="tool-summary">Mais de 500 prompts e referências autorais de interfaces, direção de arte e fotografia testados na prática.</p>
+            </div>
+            <span class="tool-badge-pill">Acesso Imediato</span>
+          </div>
+
+          <!-- Caderno -->
+          <div class="tool-box">
+            <div>
+              <div class="tool-header">
+                <span class="tool-name">Caderno</span>
+                <span class="tool-category">Documentação</span>
+              </div>
+              <p class="tool-summary">Notas, wikis de projetos e documentação com persistência local estilo AppFlowy, protegida na sua máquina.</p>
+            </div>
+            <span class="tool-badge-pill">Local-First</span>
+          </div>
+
+          <!-- Gabinete & Kanban -->
+          <div class="tool-box">
+            <div>
+              <div class="tool-header">
+                <span class="tool-name">Gabinete & Kanban</span>
+                <span class="tool-category">Gestão & CRM</span>
+              </div>
+              <p class="tool-summary">Pipeline de clientes, pautas semanais e acompanhamento de rotina criativa com métricas de entrega.</p>
+            </div>
+            <span class="tool-badge-pill">Produtividade Pura</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How to Get Started (3 Steps) -->
+    <section class="section-pad">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">SIMPLES E DIRETO</span>
+          <h2 class="section-title">COMO COMEÇAR EM 3 PASSOS</h2>
+          <p class="section-desc">
+            Da instalação ao seu primeiro projeto salvo no computador, sem configurações complexas.
+          </p>
+        </div>
+
+        <div class="steps-row">
+          <div class="step-box">
+            <span class="step-badge">1</span>
+            <h3>Baixe o Launcher Leve</h3>
+            <p>O instalador <code>LAB-Setup.exe</code> tem cerca de 58 MB. Ele baixa rápido e prepara a estrutura do estúdio no Windows.</p>
+          </div>
+
+          <div class="step-box">
+            <span class="step-badge">2</span>
+            <h3>Entre com sua Conta</h3>
+            <p>Faça login com seu e-mail e senha normais do LAB. O launcher valida sua conta e carrega sua biblioteca de licenças.</p>
+          </div>
+
+          <div class="step-box">
+            <span class="step-badge">3</span>
+            <h3>Instale suas Ferramentas</h3>
+            <p>Abra a Loja, escolha as ferramentas que deseja e instale localmente. Seus arquivos serão gravados na pasta Documentos\LAB.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- System Requirements -->
+    <section class="section-pad" id="requisitos">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">ESPECIFICAÇÕES TÉCNICAS</span>
+          <h2 class="section-title">REQUISITOS DE SISTEMA PARA WINDOWS</h2>
+          <p class="section-desc">
+            O LAB Desktop foi desenvolvido para aproveitar o hardware local da sua máquina.
+          </p>
+        </div>
+
+        <div class="specs-card">
+          <div class="specs-grid">
+            <div class="specs-col">
+              <h4>Requisitos Mínimos</h4>
+              <ul class="specs-list">
+                <li><span class="specs-label">Sistema Operacional:</span><span class="specs-val">Windows 10 64-bit (2004+)</span></li>
+                <li><span class="specs-label">Processador:</span><span class="specs-val">Intel Core i5 / AMD Ryzen 5</span></li>
+                <li><span class="specs-label">Memória RAM:</span><span class="specs-val">8 GB</span></li>
+                <li><span class="specs-label">Espaço em Disco:</span><span class="specs-val">500 MB (Launcher base)</span></li>
+                <li><span class="specs-label">Placa de Vídeo:</span><span class="specs-val">Intel UHD Graphics / DirectX 11</span></li>
+                <li><span class="specs-label">Conexão:</span><span class="specs-val">Banda larga para baixar ferramentas</span></li>
+              </ul>
+            </div>
+
+            <div class="specs-col">
+              <h4>Requisitos Recomendados</h4>
+              <ul class="specs-list">
+                <li><span class="specs-label">Sistema Operacional:</span><span class="specs-val">Windows 11 64-bit (Atualizado)</span></li>
+                <li><span class="specs-label">Processador:</span><span class="specs-val">Intel Core i7 / AMD Ryzen 7</span></li>
+                <li><span class="specs-label">Memória RAM:</span><span class="specs-val">16 GB a 32 GB (para vídeo e IA)</span></li>
+                <li><span class="specs-label">Espaço em Disco:</span><span class="specs-val">SSD NVMe com 20 GB livres</span></li>
+                <li><span class="specs-label">Placa de Vídeo:</span><span class="specs-val">NVIDIA RTX 3060+ / 8GB VRAM</span></li>
+                <li><span class="specs-label">Armazenamento Local:</span><span class="specs-val">Pasta Meus Documentos\LAB</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section-pad" id="faq">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">TIRE SUAS DÚVIDAS</span>
+          <h2 class="section-title">PERGUNTAS FREQUENTES</h2>
+          <p class="section-desc">
+            Tudo o que você precisa saber sobre o LAB Desktop, armazenamento local e funcionamento híbrido.
+          </p>
+        </div>
+
+        <div class="faq-list">
+          <!-- Question 1 -->
+          <div class="faq-item">
+            <button type="button" class="faq-question">
+              <span>Por que o instalador é leve e pequeno?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              Assim como a Steam, o LAB Desktop adota uma arquitetura modular. O instalador inicial (~58 MB) instala apenas o launcher central e o gerenciador de conta. As ferramentas pesadas (com seus binários, modelos de IA e bibliotecas de render) são baixadas e instaladas sob demanda pela Loja do LAB apenas se você decidir usá-las.
+            </div>
+          </div>
+
+          <!-- Question 2 -->
+          <div class="faq-item">
+            <button type="button" class="faq-question">
+              <span>Como funciona o armazenamento local sem precisar de R2 ou Supabase Storage?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              No aplicativo desktop, todos os projetos criados, vídeos renderizados na timeline, áudios gerados e anotações são gravados diretamente no sistema de arquivos do seu computador (por padrão em <code>Documentos\LAB</code>). Isso elimina o custo astronômico de armazenar gigabytes em servidores de nuvem como Cloudflare R2 e remove qualquer limite artificial de upload.
+            </div>
+          </div>
+
+          <!-- Question 3 -->
+          <div class="faq-item">
+            <button type="button" class="faq-question">
+              <span>Eu ainda preciso de login e internet para usar o LAB?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              Sim, o login continua sendo feito normalmente através da sua conta segura no Supabase Auth para validar sua identidade, verificar quais ferramentas você possui e sincronizar suas diretrizes de marca do Brand Guardian. Uma vez que uma ferramenta está instalada no seu computador, o acesso aos seus arquivos locais é instantâneo.
+            </div>
+          </div>
+
+          <!-- Question 4 -->
+          <div class="faq-item">
+            <button type="button" class="faq-question">
+              <span>A versão web no navegador continuará existindo?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              Sim! O LAB continua com sua versão web ativa para quem precisa acessar de outro dispositivo, celular ou tablet. As ferramentas na web possuem versões simplificadas e otimizadas para o navegador, enquanto a versão Desktop para Windows oferece o poder bruto completo e aceleração gráfica local.
+            </div>
+          </div>
+
+          <!-- Question 5 -->
+          <div class="faq-item">
+            <button type="button" class="faq-question">
+              <span>Se eu desinstalar uma ferramenta do launcher, meus projetos são apagados?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              Não. Seus projetos e criações ficam guardados na sua pasta de usuário no disco local. Ao desinstalar uma ferramenta, você libera apenas os binários dela, mantendo seus arquivos intactos para quando quiser reinstalá-la.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA Banner -->
+    <section class="container">
+      <div class="cta-banner">
+        <h2 class="cta-banner-title">SEU ESTÚDIO CRIATIVO.<br><span style="color: var(--accent-caramel);">SOB O SEU CONTROLE.</span></h2>
+        <p class="cta-banner-lead">
+          Instale o LAB Desktop para Windows e trabalhe com total privacidade, arquivos no seu SSD e velocidade nativa de computador.
+        </p>
+
+        <div class="cta-group">
+          <a href="/downloads/LAB-Setup.exe" class="btn-download-primary js-download-trigger" download="LAB-Setup.exe">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>BAIXAR PARA WINDOWS (64-BIT)</span>
+          </a>
+
+          <a href="/store" class="btn-web-secondary">
+            <span>Abrir no Navegador (Versão Web) ↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Download Started Modal -->
+  <div class="download-modal-overlay" id="downloadModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="download-modal-card">
+      <button type="button" class="modal-close-btn" id="modalCloseBtn" aria-label="Fechar janela">&times;</button>
+      
+      <div class="modal-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+
+      <h3 class="modal-title" id="modalTitle">Download Iniciado!</h3>
+      <p class="modal-desc">O instalador leve <code>LAB-Setup.exe</code> está sendo baixado no seu navegador.</p>
+
+      <div class="modal-steps">
+        <div class="modal-step-item">
+          <span class="num">1</span>
+          <div>Execute o <strong>LAB-Setup.exe</strong> na sua pasta de Downloads.</div>
+        </div>
+        <div class="modal-step-item">
+          <span class="num">2</span>
+          <div>Faça login com sua conta do LAB (o mesmo login da versão web).</div>
+        </div>
+        <div class="modal-step-item">
+          <span class="num">3</span>
+          <div>Abra a <strong>Loja</strong> e instale as ferramentas que quiser. Seus arquivos ficarão salvos no seu disco local!</div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <a href="/downloads/LAB-Setup.exe" class="btn-web-ghost" download="LAB-Setup.exe">Tentar download novamente</a>
+        <button type="button" class="btn-download-top" id="modalOkBtn">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="lab-footer">
+    <div class="container footer-inner">
+      <a href="/lab" class="footer-brand">
+        <img src="/assets/icons/caramelo-mark.svg?v=2" alt="" width="22" height="22">
+        <span>UM CARA CARAMELO · LAB DESKTOP</span>
+      </a>
+
+      <ul class="footer-links">
+        <li><a href="/store">Loja Web</a></li>
+        <li><a href="/library/home">Biblioteca</a></li>
+        <li><a href="https://wa.me/5531985869015" target="_blank" rel="noopener noreferrer">Suporte no WhatsApp</a></li>
+        <li><a href="https://www.umcaracaramelo.com.br" target="_blank" rel="noopener noreferrer">Estúdio Criativo</a></li>
+      </ul>
+
+      <div>
+        <span>© 2026 Um Cara Caramelo · Todos os direitos reservados.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Interactive Scripts -->
+  <script>
+    // FAQ Accordion
+    document.querySelectorAll('.faq-question').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var item = this.closest('.faq-item');
+        var wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
+        if (!wasOpen) item.classList.add('open');
+      });
+    });
+
+    // Download Modal Trigger
+    var modal = document.getElementById('downloadModal');
+    var closeBtn = document.getElementById('modalCloseBtn');
+    var okBtn = document.getElementById('modalOkBtn');
+
+    function openDownloadModal() {
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeDownloadModal() {
+      if (modal) modal.classList.remove('active');
+    }
+
+    document.querySelectorAll('.js-download-trigger').forEach(function(trigger) {
+      trigger.addEventListener('click', function() {
+        setTimeout(openDownloadModal, 400);
+      });
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', closeDownloadModal);
+    if (okBtn) okBtn.addEventListener('click', closeDownloadModal);
+    if (modal) {
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeDownloadModal();
+      });
+    }
+  </script>
+</body>
+</html>

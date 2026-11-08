@@ -95,6 +95,20 @@ export function AppHeader() {
       </nav>
 
       <div className="app-header__actions">
+        <a
+          href="/lab"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="app-header__install-btn"
+          title="Baixar LAB Desktop para Windows (Estilo Steam · Local-First)"
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <span>Instalar o LAB</span>
+        </a>
         <ThemeToggle className="app-header__icon" theme={theme} />
         <button type="button" className="app-header__icon" aria-label="Notificações" title="Notificações" onClick={() => ui.toast("Nenhuma notificação nova.")}>
           <IconBell size={16} />
@@ -104,6 +118,7 @@ export function AppHeader() {
           items={[
             { label: t("Menu_ViewMyProfile"), onSelect: () => nav("/profile") },
             { label: t("Menu_Settings"), onSelect: () => nav("/settings") },
+            { label: "💻 Baixar LAB Desktop", onSelect: () => window.open("/lab", "_blank") },
             { kind: "separator" },
             { label: t("Menu_ChangeAccount"), onSelect: () => logout() },
             { label: t("Menu_SignOut"), onSelect: () => logout() },
