@@ -2,7 +2,8 @@ import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { JobState } from '../shared/types';
 import { api } from '../lib/api';
-import { labAuthorization } from '../lib/labAccess';
+import { labAuthorization, labCredentials } from '../lib/labAccess';
+import type { MediaNode } from '../shared/types';
 import { subscribeProjectEvents } from '../lib/projectEvents';
 import { applyJob } from '../lib/generation';
 import { useProject, type View } from '../store/project';
@@ -16,6 +17,65 @@ const StageView = lazy(() => import('../components/stage/StageView').then((m) =>
 const EditorView = lazy(() => import('../components/editor/EditorView').then((m) => ({ default: m.EditorView })));
 
 const VIEWS: View[] = ['canvas', 'story', 'stage', 'editor'];
+
+async function healProjectBlobUrls(p: import('../shared/types').Project) {
+  if (!p?.nodes) return;
+  const nodes = { ...p.nodes };
+  let modified = false;
+
+  for (const [_id, node] of Object.entries(nodes)) {
+    if (node.type === 'image' || node.type === 'video' || node.type === 'audio') {
+      const mediaNode = node as MediaNode;
+      const url = mediaNode.data?.url;
+      if (url && url.startsWith('blob:')) {
+        try {
+          const res = await fetch(url).catch(() => null);
+          if (res && res.ok) {
+            const blob = await res.blob();
+            const { token } = await labCredentials();
+            const ext = blob.type.includes('png') ? 'png' : blob.type.includes('webp') ? 'webp' : 'jpg';
+            const uploadRes = await fetch('/api/upload', {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': blob.type || 'image/png',
+                'x-folder': 'media',
+                'x-tool-slug': 'claquete',
+                'x-filename': `${mediaNode.data.user_input_title || 'recovered-image'}.${ext}`,
+              },
+              body: blob,
+            });
+
+            if (uploadRes.ok) {
+              const json = await uploadRes.json();
+              if (json?.url) {
+                mediaNode.data.url = json.url;
+                if (Array.isArray(mediaNode.data.versions)) {
+                  mediaNode.data.versions.forEach((v) => {
+                    if (v.url?.startsWith('blob:')) v.url = json.url;
+                  });
+                }
+                modified = true;
+              }
+            }
+          }
+        } catch {
+          // ignora se blob não puder ser lido nesta sessão
+        }
+      }
+    }
+  }
+
+  if (modified) {
+    useProject.getState().update((d) => {
+      d.nodes = nodes;
+    });
+    const current = useProject.getState().project;
+    if (current) {
+      await api.saveProject(current).catch(() => undefined);
+    }
+  }
+}
 
 export function ProjectPage() {
   const { projectId = '' } = useParams();
@@ -35,6 +95,7 @@ export function ProjectPage() {
         if (!alive) return;
         useProject.getState().setProject(p);
         document.title = `${p.name} — Claquete`;
+        void healProjectBlobUrls(p);
       })
       .catch((e) => alive && setError(String(e.message)));
     return () => {

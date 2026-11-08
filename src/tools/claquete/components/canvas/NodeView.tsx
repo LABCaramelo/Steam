@@ -5,7 +5,9 @@ import { AudioLines, Box, Image as ImageIcon, RotateCcw, Video } from 'lucide-re
 import { ACTIONS } from '../../shared/actions';
 import { nodeSize, nodeTitle } from '../../shared/project';
 import type { CanvasNode, MediaNode, TextNode } from '../../shared/types';
-import { useProject } from '../../store/project';
+import { getProject, useProject } from '../../store/project';
+import { api } from '../../lib/api';
+import { pickFiles } from '../../lib/canvasOps';
 import { runGeneration } from '../../lib/generation';
 import { toast } from '../../store/ui';
 
@@ -30,10 +32,89 @@ function MediaBody({ node }: { node: MediaNode }) {
   const busy = d.status === 'queued' || d.status === 'processing';
   const videoRef = useRef<HTMLVideoElement>(null);
   const Icon = KIND_ICON[node.type];
+  const [loadError, setLoadError] = useState(false);
+  const [replacing, setReplacing] = useState(false);
+
+  useEffect(() => {
+    setLoadError(false);
+  }, [d.url]);
 
   return (
     <>
-      {d.url && node.type === 'image' && <img src={d.url} alt="" draggable={false} loading="lazy" />}
+      {d.url && node.type === 'image' && !loadError && (
+        <img
+          src={d.url}
+          alt=""
+          draggable={false}
+          loading="lazy"
+          onError={() => setLoadError(true)}
+        />
+      )}
+      {d.url && node.type === 'image' && loadError && (
+        <div className="node-empty" style={{ padding: '16px 12px', textAlign: 'center', minHeight: 140 }}>
+          <ImageIcon size={22} strokeWidth={1.4} style={{ color: '#FF701A', marginBottom: 6 }} />
+          <b style={{ fontSize: 13, color: '#FFF4E8' }}>Imagem não sincronizada</b>
+          <span style={{ fontSize: 11, color: '#A0A0A8', marginTop: 4, lineHeight: 1.4 }}>
+            {d.url.startsWith('blob:')
+              ? 'Esta mídia foi enviada localmente no outro navegador. Abra o projeto no navegador original para sincronizá-la na nuvem, ou clique abaixo para reenviar.'
+              : 'Não foi possível carregar a imagem neste navegador.'}
+          </span>
+          <button
+            type="button"
+            className="btn"
+            disabled={replacing}
+            style={{
+              marginTop: 10,
+              fontSize: 11,
+              padding: '4px 12px',
+              borderRadius: 6,
+              background: '#FF701A',
+              color: '#101014',
+              fontWeight: 600,
+              border: 'none',
+              cursor: 'pointer',
+              pointerEvents: 'auto',
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={async () => {
+              const files = await pickFiles('image/*', false);
+              if (!files.length) return;
+              setReplacing(true);
+              try {
+                const p = getProject();
+                if (!p) return;
+                const [up] = await api.upload(p.projectId, files);
+                if (up?.url) {
+                  useProject.getState().update((doc) => {
+                    const target = doc.nodes[node.id] as MediaNode | undefined;
+                    if (target) {
+                      target.data.url = up.url;
+                      target.data.width = up.width;
+                      target.data.height = up.height;
+                      if (!target.data.versions) target.data.versions = [];
+                      target.data.versions.push({
+                        url: up.url,
+                        width: up.width,
+                        height: up.height,
+                        createdAt: new Date().toISOString(),
+                      });
+                      target.data.activeVersion = target.data.versions.length - 1;
+                    }
+                  });
+                  setLoadError(false);
+                  toast('Imagem enviada e sincronizada na nuvem!', 'info');
+                }
+              } catch (err) {
+                toast(`Falha no envio: ${err instanceof Error ? err.message : String(err)}`, 'error');
+              } finally {
+                setReplacing(false);
+              }
+            }}
+          >
+            {replacing ? 'Enviando…' : 'Reenviar imagem'}
+          </button>
+        </div>
+      )}
       {d.url && node.type === 'video' && (
         <video
           ref={videoRef}

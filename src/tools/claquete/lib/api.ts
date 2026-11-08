@@ -200,25 +200,144 @@ export const api = {
     return dup;
   },
 
-  async upload(projectId: string, files: File[]): Promise<UploadedMedia[]> {
-    const fd = new FormData();
-    files.forEach((f) => fd.append('files', f, f.name));
-    const headers = await labAuthorization();
-    const res = await fetch(`/api/projects/${projectId}/upload`, { method: 'POST', headers, body: fd }).catch(() => null);
-    if (res && res.ok) {
-      return (await res.json()) as UploadedMedia[];
+  async upload(_projectId: string, files: File[]): Promise<UploadedMedia[]> {
+    const { token } = await labCredentials();
+    const results: UploadedMedia[] = [];
+
+    for (const file of files) {
+      const kind: 'image' | 'video' | 'audio' = file.type.startsWith('video')
+        ? 'video'
+        : file.type.startsWith('audio')
+          ? 'audio'
+          : 'image';
+
+      let dims: { width?: number; height?: number; duration?: number } = {};
+      try {
+        if (typeof window !== 'undefined') {
+          if (kind === 'image') {
+            dims = await new Promise<{ width?: number; height?: number }>((resolve) => {
+              const img = new Image();
+              const objUrl = URL.createObjectURL(file);
+              img.onload = () => {
+                const res = { width: img.naturalWidth, height: img.naturalHeight };
+                URL.revokeObjectURL(objUrl);
+                resolve(res);
+              };
+              img.onerror = () => {
+                URL.revokeObjectURL(objUrl);
+                resolve({});
+              };
+              img.src = objUrl;
+            });
+          } else if (kind === 'video' || kind === 'audio') {
+            dims = await new Promise<{ width?: number; height?: number; duration?: number }>((resolve) => {
+              const el = document.createElement(kind === 'video' ? 'video' : 'audio') as HTMLVideoElement;
+              const objUrl = URL.createObjectURL(file);
+              el.onloadedmetadata = () => {
+                const res = {
+                  width: el.videoWidth || undefined,
+                  height: el.videoHeight || undefined,
+                  duration: el.duration || undefined,
+                };
+                URL.revokeObjectURL(objUrl);
+                resolve(res);
+              };
+              el.onerror = () => {
+                URL.revokeObjectURL(objUrl);
+                resolve({});
+              };
+              el.src = objUrl;
+            });
+          }
+        }
+      } catch {
+        // non-blocking
+      }
+
+      let url: string | undefined;
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': file.type || (kind === 'video' ? 'video/mp4' : kind === 'audio' ? 'audio/mpeg' : 'image/png'),
+            'x-folder': 'media',
+            'x-tool-slug': 'claquete',
+            'x-filename': file.name,
+          },
+          body: file,
+        });
+
+        if (res.ok) {
+          const json = await res.json();
+          if (json?.url) url = json.url;
+        } else {
+          const errData = await res.json().catch(() => null);
+          console.error('[Claquete Upload Error]', errData || res.statusText);
+        }
+      } catch (err) {
+        console.error('[Claquete Upload Network Error]', err);
+      }
+
+      if (url) {
+        results.push({
+          url,
+          kind,
+          width: dims.width,
+          height: dims.height,
+          duration: dims.duration,
+          name: file.name,
+        });
+      } else {
+        console.warn(`[Claquete] Não foi possível enviar "${file.name}" para a nuvem. Usando sessão local temporária.`);
+        results.push({
+          url: URL.createObjectURL(file),
+          kind,
+          width: dims.width,
+          height: dims.height,
+          duration: dims.duration,
+          name: file.name,
+        });
+      }
     }
-    // Fallback: convert to ObjectURLs for client-side local session
-    return files.map((f) => ({
-      url: URL.createObjectURL(f),
-      kind: f.type.startsWith('video') ? 'video' : f.type.startsWith('audio') ? 'audio' : 'image',
-      name: f.name,
-    }));
+
+    return results;
   },
 
-  async uploadDataUrl(projectId: string, dataUrl: string): Promise<UploadedMedia> {
-    const res = await req<UploadedMedia>('POST', `/api/projects/${projectId}/upload-dataurl`, { dataUrl }).catch(() => null);
-    if (res) return res;
+  async uploadDataUrl(_projectId: string, dataUrl: string): Promise<UploadedMedia> {
+    try {
+      const { token } = await labCredentials();
+      const parts = dataUrl.split(',');
+      const mime = parts[0]?.match(/:(.*?);/)?.[1] || 'image/png';
+      const byteString = atob(parts[1] || '');
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      const blob = new Blob([ab], { type: mime });
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': mime,
+          'x-folder': 'media',
+          'x-tool-slug': 'claquete',
+          'x-filename': `snapshot-${Date.now()}.${mime.includes('png') ? 'png' : 'jpg'}`,
+        },
+        body: blob,
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        if (json?.url) {
+          return { url: json.url, kind: 'image' };
+        }
+      }
+    } catch {
+      // fallback
+    }
     return { url: dataUrl, kind: 'image' };
   },
 

@@ -7,7 +7,7 @@ const BUCKET = process.env.CLOUDFLARE_R2_BUCKET || "umcaracaramelo";
 const PUBLIC_URL = (process.env.CLOUDFLARE_R2_PUBLIC_URL || "https://media.umcaracaramelo.com.br").replace(/\/$/, "");
 const MAX_BYTES = 10 * 1024 * 1024;
 
-const ALLOWED_MIME_TYPES = new Set([
+const ALLOWED_IMAGE_TYPES = new Set([
   "image/png",
   "image/jpeg",
   "image/jpg",
@@ -15,6 +15,45 @@ const ALLOWED_MIME_TYPES = new Set([
   "image/gif",
   "image/svg+xml",
 ]);
+
+const ALLOWED_MEDIA_TYPES = new Set([
+  ...ALLOWED_IMAGE_TYPES,
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+  "audio/mpeg",
+  "audio/mp3",
+  "audio/wav",
+  "audio/wave",
+  "audio/x-wav",
+  "audio/webm",
+  "audio/ogg",
+  "audio/aac",
+  "audio/m4a",
+  "audio/x-m4a",
+]);
+
+const EXT_BY_MIME: Record<string, string> = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/jpg": "jpg",
+  "image/webp": "webp",
+  "image/gif": "gif",
+  "image/svg+xml": "svg",
+  "video/mp4": "mp4",
+  "video/webm": "webm",
+  "video/quicktime": "mov",
+  "audio/mpeg": "mp3",
+  "audio/mp3": "mp3",
+  "audio/wav": "wav",
+  "audio/wave": "wav",
+  "audio/x-wav": "wav",
+  "audio/webm": "webm",
+  "audio/ogg": "ogg",
+  "audio/aac": "aac",
+  "audio/m4a": "m4a",
+  "audio/x-m4a": "m4a",
+};
 
 type Req = IncomingMessage & { body?: unknown };
 
@@ -81,14 +120,17 @@ export default async function handler(req: Req, res: ServerResponse) {
     }
 
     const contentType = ((req.headers["content-type"] as string) || "image/png").split(";")[0].trim().toLowerCase();
-    if (!ALLOWED_MIME_TYPES.has(contentType)) {
-      return send(res, 400, { error: "Tipo de arquivo não permitido. Apenas imagens são aceitas." });
+    const isMedia = requestedFolder === "media";
+    const allowed = isMedia ? ALLOWED_MEDIA_TYPES : ALLOWED_IMAGE_TYPES;
+
+    if (!allowed.has(contentType)) {
+      return send(res, 400, { error: isMedia ? "Tipo de arquivo não permitido. Apenas imagens, vídeos e áudios são aceitos." : "Tipo de arquivo não permitido. Apenas imagens são aceitas." });
     }
     if (contentType === "image/svg+xml" && requestedFolder !== "tool-banners") {
       return send(res, 400, { error: "Use PNG, JPEG, WebP ou GIF neste envio." });
     }
 
-    const ext = ({ "image/png": "png", "image/jpeg": "jpg", "image/jpg": "jpg", "image/webp": "webp", "image/gif": "gif", "image/svg+xml": "svg" } as Record<string, string>)[contentType];
+    const ext = EXT_BY_MIME[contentType] || "bin";
     const safeUser = access.user.id;
 
     let key: string;
