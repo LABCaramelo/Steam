@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import {
   AudioLines,
   Clapperboard,
@@ -28,8 +27,7 @@ export function NodeOverlays() {
   const node = useProject((s) => (s.selection.length === 1 ? s.project?.nodes[s.selection[0]] : undefined));
   const aspect = useProject((s) => s.project?.projectSettings.aspectRatio ?? '16:9');
   const editingText = useProject((s) => s.editingTextId);
-  const [, setParams] = useSearchParams();
-
+  
   if (selection.length > 1) return <MultiToolbar ids={selection} />;
   if (!node || editingText === node.id) return null;
 

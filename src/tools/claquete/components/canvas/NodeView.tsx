@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm';
 import { AudioLines, Image as ImageIcon, RotateCcw, Video } from 'lucide-react';
 import { ACTIONS } from '../../shared/actions';
 import { nodeSize, nodeTitle } from '../../shared/project';
-import type { CanvasNode, MediaNode, TextNode } from '../../shared/types';
+import type { MediaNode, TextNode } from '../../shared/types';
 import { getProject, useProject } from '../../store/project';
 import { api } from '../../lib/api';
 import { pickFiles } from '../../lib/canvasOps';
@@ -131,6 +131,7 @@ function MediaBody({ node }: { node: MediaNode }) {
       {d.url && node.type === 'audio' && <AudioBody url={d.url} seed={node.id} />}
       {!d.url && !busy && (
         <div className="node-empty">
+          <Icon size={18} strokeWidth={1.4} />
           <b>{action?.name ?? (node.type === 'image' ? 'Imagem' : node.type === 'video' ? 'Vídeo' : 'Áudio')}</b>
           <span>{d.status === 'failed' ? 'A geração falhou' : `Pronto para gerar ${node.type === 'image' ? 'imagem' : node.type === 'video' ? 'vídeo' : 'áudio'}`}</span>
         </div>
