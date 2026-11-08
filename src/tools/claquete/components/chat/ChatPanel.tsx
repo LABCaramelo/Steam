@@ -45,7 +45,7 @@ import './chat.css';
 type Approval = 'auto' | 'ask';
 const APPROVAL_KEY = 'claquete.approvalMode';
 
-const VIEW_LABEL: Record<View, string> = { canvas: 'Tela', story: 'História', stage: 'Set 3D', editor: 'Editor de Vídeo' };
+const VIEW_LABEL: Record<View, string> = { canvas: 'Tela', story: 'História', editor: 'Editor de Vídeo' };
 
 const SAMPLES = [
   'Me mostre 4 enquadramentos para uma cena de estação de trem à noite.',

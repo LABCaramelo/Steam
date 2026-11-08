@@ -13,7 +13,6 @@ import { ProviderPill } from './settings/ProviderPill';
 const TABS: { id: View; label: string }[] = [
   { id: 'story', label: 'História' },
   { id: 'canvas', label: 'Tela' },
-  { id: 'stage', label: 'Set 3D' },
   { id: 'editor', label: 'Editor de Vídeo' },
 ];
 

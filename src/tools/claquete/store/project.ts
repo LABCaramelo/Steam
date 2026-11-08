@@ -4,7 +4,7 @@ import type { Draft } from 'immer';
 import type { Edge, JobState, ModelInfo, Project, Section, StageScene, Timeline, CanvasNode } from '../shared/types';
 import { DEFAULT_MODELS } from '../shared/actions';
 
-export type View = 'canvas' | 'story' | 'stage' | 'editor';
+export type View = 'canvas' | 'story' | 'editor';
 
 interface Snapshot {
   nodes: Record<string, CanvasNode>;

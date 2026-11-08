@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   AudioLines,
-  Box,
   Clapperboard,
   Copy,
   Download,
@@ -16,7 +15,7 @@ import {
   Video,
 } from 'lucide-react';
 import { nodeSize, nodeTitle, uid } from '../../shared/project';
-import type { MediaNode, StageScene } from '../../shared/types';
+import type { MediaNode } from '../../shared/types';
 import { useProject } from '../../store/project';
 import { toast, useUi } from '../../store/ui';
 import { addNodesToTimeline, createDownstream, createSection, deleteNodes, duplicateNodes } from '../../lib/canvasOps';
@@ -51,7 +50,7 @@ export function NodeOverlays() {
   return (
     <>
       <NodeToolbar nodeId={node.id} x={left + w / 2} y={top - 26} />
-      {(hasUrl || node.type === 'text') && <SideMenu nodeId={node.id} x={sideX} y={top} onOpenStage={() => setParams({ view: 'stage' })} />}
+      {(hasUrl || node.type === 'text') && <SideMenu nodeId={node.id} x={sideX} y={top}  />}
       {isGenerator && <GeneratorPanel nodeId={node.id} x={left + w / 2} y={top + h + 12} />}
     </>
   );
@@ -119,7 +118,7 @@ export function attachToChat(ids: string[]) {
   setTimeout(() => (document.querySelector('.chat-input textarea') as HTMLTextAreaElement | null)?.focus(), 50);
 }
 
-function SideMenu({ nodeId, x, y, onOpenStage }: { nodeId: string; x: number; y: number; onOpenStage: () => void }) {
+function SideMenu({ nodeId, x, y }: { nodeId: string; x: number; y: number }) {
   const node = useProject((s) => s.project?.nodes[nodeId]);
   if (!node) return null;
   const media = node.type !== 'text' ? (node as MediaNode) : undefined;
@@ -137,17 +136,7 @@ function SideMenu({ nodeId, x, y, onOpenStage }: { nodeId: string; x: number; y:
     toast(`Estilo "${name}" salvo e ativado.`);
   };
 
-  const toStage = () => {
-    if (!media?.data.url || node.type !== 'image') return;
-    const id = uid();
-    const scene: StageScene = { id, name: nodeTitle(node), backdropUrl: media.data.url, backdropNodeId: nodeId, objects: [], shots: [] };
-    useProject.getState().update((d) => {
-      d.stage.scenes[id] = scene;
-      d.stage.activeSceneId = id;
-    });
-    onOpenStage();
-  };
-
+  
   return (
     <div className="node-side-menu" style={{ left: x, top: y }} onPointerDown={(e) => e.stopPropagation()}>
       <button className="menu-item" onClick={() => createDownstream(nodeId, 'image')}>
@@ -179,12 +168,7 @@ function SideMenu({ nodeId, x, y, onOpenStage }: { nodeId: string; x: number; y:
           <Clapperboard size={13} /> Adicionar à Linha do Tempo
         </button>
       )}
-      {node.type === 'image' && (
-        <button className="menu-item" onClick={toStage}>
-          <Box size={13} /> Converter para 3D
-        </button>
-      )}
-    </div>
+          </div>
   );
 }
 

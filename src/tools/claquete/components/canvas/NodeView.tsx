@@ -1,7 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { AudioLines, Box, Image as ImageIcon, RotateCcw, Video } from 'lucide-react';
+import { AudioLines, Image as ImageIcon, RotateCcw, Video } from 'lucide-react';
 import { ACTIONS } from '../../shared/actions';
 import { nodeSize, nodeTitle } from '../../shared/project';
 import type { CanvasNode, MediaNode, TextNode } from '../../shared/types';
@@ -131,7 +131,6 @@ function MediaBody({ node }: { node: MediaNode }) {
       {d.url && node.type === 'audio' && <AudioBody url={d.url} seed={node.id} />}
       {!d.url && !busy && (
         <div className="node-empty">
-          <Icon size={18} strokeWidth={1.4} />
           <b>{action?.name ?? (node.type === 'image' ? 'Imagem' : node.type === 'video' ? 'Vídeo' : 'Áudio')}</b>
           <span>{d.status === 'failed' ? 'A geração falhou' : `Pronto para gerar ${node.type === 'image' ? 'imagem' : node.type === 'video' ? 'vídeo' : 'áudio'}`}</span>
         </div>
@@ -193,6 +192,7 @@ function AudioBody({ url, seed }: { url: string; seed: string }) {
     </div>
   );
 }
+    
 
 function NoteBody({ node, editing }: { node: TextNode; editing: boolean }) {
   const [value, setValue] = useState(node.data.content);
@@ -238,16 +238,6 @@ function NoteBody({ node, editing }: { node: TextNode; editing: boolean }) {
   );
 }
 
-function StageBody({ node }: { node: CanvasNode }) {
-  return (
-    <div className="node-empty">
-      <Box size={18} strokeWidth={1.4} />
-      <b>Cena 3D</b>
-      <span>{nodeTitle(node)}</span>
-    </div>
-  );
-}
-
 export const NodeView = memo(function NodeView({ id, handlers, selected, dropTarget }: { id: string; handlers: NodeHandlers; selected: boolean; dropTarget: boolean }) {
   const node = useProject((s) => s.project?.nodes[id]);
   const aspect = useProject((s) => s.project?.projectSettings.aspectRatio ?? '16:9');
@@ -274,7 +264,6 @@ export const NodeView = memo(function NodeView({ id, handlers, selected, dropTar
       <div className="node-body">
         {isMedia && <MediaBody node={node as MediaNode} />}
         {node.type === 'text' && <NoteBody node={node as TextNode} editing={editing} />}
-        {node.type === 'stage_scene' && <StageBody node={node} />}
       </div>
       {isGenerator && <div className="handle handle-in" />}
       <div className="handle handle-out" title="Arraste para conectar" onPointerDown={(e) => handlers.onHandleDown(e, id)} />
