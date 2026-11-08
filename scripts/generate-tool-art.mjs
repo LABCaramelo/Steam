@@ -23,9 +23,45 @@ const tools = [
   { slug: 'voicestudio', name: 'Voice Studio', number: '17', accent: '#FF701A', category: 'ÁUDIO / LOCUÇÃO & IA', lines: ['Do texto à voz autoral.', 'Sem sotaque de robô.'] },
   { slug: 'caderno', name: 'Caderno', number: '18', accent: '#FF701A', category: 'SEGUNDO CÉREBRO & BASES', lines: ['Do pensamento solto', 'ao sistema estruturado.'] },
   { slug: 'stories', name: 'Stories Maker', number: '14', accent: '#FF701A', category: 'SOCIAL MEDIA / STORIES', lines: ['Menos posts genéricos.', 'Mais presença visual.'] },
+  { slug: 'trilha', name: 'Trilha', number: '20', accent: '#FF701A', category: 'MÚSICA & TRILHA / ACE-STEP', lines: ['Da ideia ao arranjo.', 'Trilha com IA.'] },
 ];
 
 const motif = (slug, color) => {
+  if (slug === 'trilha') {
+    return `<g transform="translate(15, 20)">
+      <rect x="30" y="30" width="380" height="240" rx="14" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="3"/>
+      <circle cx="52" cy="50" r="5" fill="#FF701A"/>
+      <circle cx="68" cy="50" r="5" fill="#25BFFF"/>
+      <circle cx="84" cy="50" r="5" fill="#FF3D8D"/>
+      <rect x="240" y="42" width="150" height="20" rx="6" fill="#101014" stroke="${color}" stroke-opacity=".4" stroke-width="1.5"/>
+      <text x="315" y="56" fill="${color}" font-size="9" font-weight="900" text-anchor="middle">ACE-STEP 1.5 &#8226; PRO</text>
+      <g transform="translate(100, 150)">
+        <circle cx="0" cy="0" r="62" fill="#101014" stroke="#FFF4E8" stroke-opacity=".2" stroke-width="2"/>
+        <circle cx="0" cy="0" r="52" fill="none" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="1.5"/>
+        <circle cx="0" cy="0" r="42" fill="none" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="1.5"/>
+        <circle cx="0" cy="0" r="32" fill="none" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="1.5"/>
+        <circle cx="0" cy="0" r="24" fill="${color}"/>
+        <circle cx="0" cy="0" r="8" fill="#101014"/>
+        <circle cx="0" cy="0" r="3" fill="#FFF4E8"/>
+      </g>
+      <g transform="translate(200, 95)">
+        <rect x="0" y="55" width="9" height="50" rx="4" fill="${color}"/>
+        <rect x="15" y="25" width="9" height="80" rx="4" fill="${color}"/>
+        <rect x="30" y="10" width="9" height="95" rx="4" fill="#25BFFF"/>
+        <rect x="45" y="35" width="9" height="70" rx="4" fill="#25BFFF"/>
+        <rect x="60" y="18" width="9" height="87" rx="4" fill="#FFD52A"/>
+        <rect x="75" y="45" width="9" height="60" rx="4" fill="#FF3D8D"/>
+        <rect x="90" y="30" width="9" height="75" rx="4" fill="${color}"/>
+        <rect x="105" y="60" width="9" height="45" rx="4" fill="#25BFFF"/>
+        <rect x="120" y="20" width="9" height="85" rx="4" fill="${color}"/>
+        <rect x="135" y="48" width="9" height="57" rx="4" fill="#FFD52A"/>
+        <rect x="150" y="68" width="9" height="37" rx="4" fill="#FFF4E8" fill-opacity=".4"/>
+      </g>
+      <rect x="180" y="220" width="200" height="22" rx="7" fill="#101014" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="1.5"/>
+      <rect x="180" y="220" width="135" height="22" rx="7" fill="${color}" fill-opacity=".3"/>
+      <text x="280" y="235" fill="#FFF4E8" font-size="9" font-weight="800" text-anchor="middle">FULL SONG &#8226; 128 BPM &#8226; 4/4</text>
+    </g>`;
+  }
   if (slug === 'stories') {
     return `<g transform="translate(50, 15)">
       <rect x="70" y="20" width="160" height="280" rx="22" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".2" stroke-width="3"/>

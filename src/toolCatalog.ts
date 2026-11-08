@@ -186,7 +186,7 @@ export const CLAQUETE_APP = tool(CLAQUETE_APP_ID, "Claquete", {
   slug: "claquete",
   launchPath: `/library/app/${CLAQUETE_APP_ID}/open`,
   publicPage: "/tools/claquete",
-  description: "Plataforma de cinema e vídeo com IA: canvas infinito, roteiro, set 3D e editor de vídeo multi-trilha.",
+  description: "Plataforma de cinema e vídeo com IA: canvas infinito, roteiro e editor de vídeo multi-trilha.",
   assets: art("/tools/claquete/art"),
   store: {
     tagline: "Do roteiro ao corte final num só canvas com IA.",
@@ -195,10 +195,10 @@ export const CLAQUETE_APP = tool(CLAQUETE_APP_ID, "Claquete", {
     features: [
       { title: "Canvas Infinito de Cinema", text: "Organize planos, cenas, referências, áudios e notas visuais com conexões inteligentes." },
       { title: "20 Ações de Geração e Agente", text: "Gere imagens, planos em vídeo, diálogos e efeitos sonoros com assistência do Agente Diretor." },
-      { title: "Set 3D com Câmera Virtual", text: "Transforme fotos em cenários 3D, posicione personagens e ensaie movimentos cinematográficos reais." },
+      { title: "Roteiro & Decupagem Narrativa", text: "Escreva e estruture sua história com sincronia direta entre o roteiro literário e os planos visuais." },
       { title: "Editor de Vídeo Multi-trilha", text: "Corte, transições, ajuste de velocidade, mixagem de áudio e exportação em vídeo de alta fidelidade." },
     ],
-    steps: ["Adquira a Claquete e inicie um novo projeto cinematográfico.", "Monte o canvas com cenas, decupagem no roteiro ou bloqueio de câmera no Set 3D.", "Gere os planos com IA, monte na linha do tempo e exporte seu filme."],
+    steps: ["Adquira a Claquete e inicie um novo projeto cinematográfico.", "Monte o canvas com cenas e decupagem completa no roteiro.", "Gere os planos com IA, monte na linha do tempo e exporte seu filme."],
     about: [["Formato", "Estúdio de cinema com IA"], ["Geração", "Higgsfield & OpenAI"], ["Exportação", "MP4, Canvas e Roteiro"]],
     dataNote: "Seus projetos, chats e decupagens ficam salvos no Supabase do LAB; mídias e renders são hospedados no Cloudflare R2.",
     category: "Cinema",
@@ -511,6 +511,81 @@ export const BRAND_GUARDIAN_APP = tool(BRAND_GUARDIAN_APP_ID, "Brand Guardian", 
   },
 });
 
+export const AMPLIA_APP_ID = 20;
+
+export const AMPLIA_APP = tool(AMPLIA_APP_ID, "Amplia", {
+  slug: "amplia",
+  available: true,
+  stage: "beta",
+  launchPath: `/library/app/${AMPLIA_APP_ID}/open`,
+  publicPage: "/tools/amplia",
+  description: "Estúdio de super-resolução 8K, restauração facial GFPGAN, recorte fino de fundo BiRefNet, borracha mágica LaMa e masterização de áudio 24-bit.",
+  assets: art("/tools/amplia/art"),
+  store: {
+    tagline: "Super-resolução 8K, restauração facial e pós-produção IA.",
+    eyebrow: "PÓS-PRODUÇÃO / UPSCALE 8K / 100% LOCAL",
+    headline: "Da imagem comum\nà fidelidade máxima.",
+    features: [
+      { title: "Super-Resolução até 8K", text: "Modelos Real-ESRGAN e Real-ESRGAN Anime para fotos, renders e capas com preservação cirúrgica de texturas." },
+      { title: "Restauração Facial com GFPGAN", text: "Recuperação de íris, dentes, pele e traços anatômicos com eliminação de artefatos de IA em retratos." },
+      { title: "Recorte BiRefNet & Inpainting LaMa", text: "Remoção de fundo de altíssima precisão com preservação de cabelos e borracha mágica generativa." },
+      { title: "Estúdio de Áudio & Vídeo 4K", text: "Masterização no navegador (-14 LUFS Reels/TikTok), separação de faixas MDX-Net e transcodificação FFmpeg." },
+    ],
+    steps: [
+      "Arraste fotos, ilustrações, áudios ou vídeos para o Amplia.",
+      "Selecione um Preset Caramelo ou ajuste escala, modelo e filtros contextuais.",
+      "Processe localmente ou no navegador e exporte com qualidade master.",
+    ],
+    about: [
+      ["Formato", "Estúdio de Super-Resolução & Restauração"],
+      ["Upscale", "2x, 4x e 8K (Real-ESRGAN / CAS)"],
+      ["Rostos & Fundo", "GFPGAN v1.4 e BiRefNet"],
+      ["Áudio & Master", "ITU-R BS.1770-4 (-14 LUFS) & MDX-Net"],
+      ["Vídeo", "4K frame-a-frame e compressão 2-pass"],
+    ],
+    dataNote: "Processamento 100% offline em sua máquina. Sem limites de nuvem, sem taxas por imagem e sem marcas d'água.",
+    category: "Pós-Produção",
+  },
+});
+
+export const TRILHA_APP_ID = 21;
+
+export const TRILHA_APP = tool(TRILHA_APP_ID, "Trilha", {
+  slug: "trilha",
+  available: true,
+  stage: "beta",
+  launchPath: `/library/app/${TRILHA_APP_ID}/open`,
+  publicPage: "/tools/trilha",
+  description: "Estúdio musical e trilha sonora autoral com IA baseado em ACE-Step 1.5: arranjos completos até 4+ min, letras estruturadas, separador de stems e gerador de vídeo 9:16.",
+  assets: art("/tools/trilha/art"),
+  store: {
+    tagline: "Da ideia ao arranjo completo. Trilha sonora autoral com IA.",
+    eyebrow: "MÚSICA & TRILHA SONORA / ACE-STEP 1.5 / LAB",
+    headline: "Menos trilha genérica de banco.\nMais atmosfera de cinema.",
+    features: [
+      { title: "Geração Musical Completa até 4+ min", text: "Crie músicas completas com vocais, letras estruturadas e arranjos orquestrados ou faixas puramente instrumentais." },
+      { title: "Controle de Produção & Harmonia", text: "Ajuste fino de BPM com Tap Tempo, tonalidades maiores/menores, fórmulas de compasso, seeds determinísticas e modelos DiT." },
+      { title: "Stems Studio (Separador de Faixas)", text: "Mixer de 4 canais isolados (Vocais, Bateria, Baixo, Harmonia) com faders de volume, Mute e Solo em tempo real." },
+      { title: "Motion Visualizer 9:16 para Reels e TikTok", text: "Gere vídeos reativos ao som com espectro animado, tipografia elegante e exportação direta em WebM/MP4." },
+    ],
+    steps: [
+      "Abra o Trilha no LAB e selecione o Modo Rápido ou Estúdio Pro.",
+      "Descreva o clima da cena ou insira letra com seções [Intro], [Verso] e [Refrão].",
+      "Defina BPM, tonalidade e gere sua trilha com síntese nativa ou servidor ACE-Step local.",
+      "Isole faixas no Stems Studio ou exporte o vídeo 9:16 pronto para Reels.",
+    ],
+    about: [
+      ["Formato", "Estúdio Musical & Trilha Sonora"],
+      ["Modelo Base", "ACE-Step 1.5 (Gradio / Web Audio)"],
+      ["Mixagem", "4 Stems (Voz, Beat, Baixo, Harmonia)"],
+      ["Vídeo", "Motion Visualizer 9:16 e 16:9"],
+      ["Exportação", "WAV 16-bit 44.1kHz e WebM/MP4"],
+    ],
+    dataNote: "Faixas, metadados e parâmetros ficam salvos de forma privada no seu navegador via IndexedDB. Conexão opcional com servidor local ACE-Step 1.5.",
+    category: "Áudio & Música",
+  },
+});
+
 export const TOOL_CATALOG: readonly LibraryApp[] = [
   PROMPT_LIBRARY_APP,
   ADMIN_APP,
@@ -528,6 +603,8 @@ export const TOOL_CATALOG: readonly LibraryApp[] = [
   VOICESTUDIO_APP,
   CADERNO_APP,
   BRAND_GUARDIAN_APP,
+  AMPLIA_APP,
+  TRILHA_APP,
 ];
 
 export interface DynamicToolMeta {
@@ -663,7 +740,7 @@ export function toolArtUrl(appid: number, kind: ArtKind): string | undefined {
   const assets = getRegisteredTool(appid)?.tool?.assets;
   const url = assets?.[kind] ?? assets?.header;
   if (url && url.startsWith("/tools/") && !url.includes("?")) {
-    return `${url}?v=20261105b`;
+    return `${url}?v=20261108c`;
   }
   return url;
 }

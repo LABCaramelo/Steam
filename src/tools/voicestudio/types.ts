@@ -70,6 +70,7 @@ export interface DubbingSegment {
   endTime: number;
   originalText: string;
   translatedText: string;
+  speaker?: string;
   dubbedAudioUrl?: string;
   isDubbing?: boolean;
 }

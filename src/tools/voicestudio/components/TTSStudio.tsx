@@ -73,10 +73,85 @@ export function TTSStudio({
     stopSpeechSynthesis();
 
     try {
+      const combinedText = scripts.map((s) => s.text).join(" ");
+      const firstVoice = voices.find((v) => v.id === scripts[0].speakerId) || voices[0];
+
+      if (engineConfig.activeEngine === "local_server") {
+        try {
+          const res = await fetch(`${engineConfig.localServerUrl}/v1/audio/speech`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "omnivoice",
+              input: combinedText,
+              voice: firstVoice.name,
+            }),
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const blob = await res.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          setCurrentTakeUrl(blobUrl);
+          setIsPlaying(true);
+          onAddTake({
+            id: `take-local-${Date.now()}`,
+            title: `Locução Local (${scripts.length} blocos)`,
+            speakerName: firstVoice.name,
+            category: "TTS",
+            durationSeconds: Math.max(2, Math.round(combinedText.length / 15)),
+            blobUrl,
+            createdAt: new Date().toLocaleTimeString(),
+            engineUsed: "VoiceStudio Local (OmniVoice)",
+          });
+          if (audioRef.current) {
+            audioRef.current.src = blobUrl;
+            void audioRef.current.play();
+          }
+          return;
+        } catch (localErr) {
+          console.warn("Servidor local VoiceStudio não conectado, usando síntese nativa do LAB:", localErr);
+        }
+      }
+
+      if (engineConfig.activeEngine === "openai" && engineConfig.openAiApiKey) {
+        try {
+          const res = await fetch("https://api.openai.com/v1/audio/speech", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${engineConfig.openAiApiKey}`,
+            },
+            body: JSON.stringify({
+              model: "tts-1-hd",
+              input: combinedText,
+              voice: "alloy",
+            }),
+          });
+          if (!res.ok) throw new Error(`OpenAI HTTP ${res.status}`);
+          const blob = await res.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          setCurrentTakeUrl(blobUrl);
+          setIsPlaying(true);
+          onAddTake({
+            id: `take-openai-${Date.now()}`,
+            title: `Locução OpenAI (${scripts.length} blocos)`,
+            speakerName: firstVoice.name,
+            category: "TTS",
+            durationSeconds: Math.max(2, Math.round(combinedText.length / 15)),
+            blobUrl,
+            createdAt: new Date().toLocaleTimeString(),
+            engineUsed: "OpenAI TTS-1-HD",
+          });
+          if (audioRef.current) {
+            audioRef.current.src = blobUrl;
+            void audioRef.current.play();
+          }
+          return;
+        } catch (apiErr) {
+          console.error("Erro OpenAI TTS:", apiErr);
+        }
+      }
+
       if (engineConfig.activeEngine === "procedural") {
-        // Procedural Web Audio engine
-        const combinedText = scripts.map((s) => s.text).join(" ");
-        const firstVoice = voices.find((v) => v.id === scripts[0].speakerId) || voices[0];
         const res = await synthesizeProceduralSpeech(combinedText, {
           pitchOffsetHz: firstVoice.pitchOffset * 10,
           speed: firstVoice.speed,

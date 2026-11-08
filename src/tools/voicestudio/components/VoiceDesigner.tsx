@@ -1,26 +1,90 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { VoicePreset, AudioTake } from "../types";
 import { synthesizeProceduralSpeech } from "../utils/audioEngine";
-import { Sliders, User, Play, Save } from "lucide-react";
+import { parseVoiceDescription, type ParsedVoiceAttributes } from "../utils/voiceParser";
+import { Sliders, Play, Save, Wand2, Sparkles, Volume2 } from "lucide-react";
 
 interface VoiceDesignerProps {
   onAddVoice: (voice: VoicePreset) => void;
   onAddTake: (take: AudioTake) => void;
 }
 
+const CARAMELO_PRESET_PROMPTS = [
+  {
+    label: "Confessional Caramelo",
+    prompt: "Voz masculina adulta, aveludada, tom calmo e intimista, ritmo reflexivo, sotaque neutro mineiro.",
+  },
+  {
+    label: "Narrador de Cinema",
+    prompt: "Voz masculina idosa, muito grave, ressoante, tom épico e dramático de trailer.",
+  },
+  {
+    label: "Especialista Didático",
+    prompt: "Voz feminina adulta, cristalina, tom firme e explicativo, autoridade cirúrgica.",
+  },
+  {
+    label: "Sussurro ASMR",
+    prompt: "Voz feminina jovem, muito sussurrada e suave, respiração evidente, tom intimista.",
+  },
+  {
+    label: "Locutor Comercial",
+    prompt: "Voz masculina jovem, ágil, brilhante e enérgica, tom vibrante de anúncio.",
+  },
+];
+
 export function VoiceDesigner({ onAddVoice, onAddTake }: VoiceDesignerProps) {
-  const [name, setName] = useState("Voz Desenhada");
+  const [prompt, setPrompt] = useState(
+    "Voz masculina adulta, aveludada e quente, tom reflexivo e intimista, ritmo calmo."
+  );
+  const [name, setName] = useState("Voz Confessional Caramelo");
   const [gender, setGender] = useState<"masculino" | "feminino" | "neutro">("masculino");
   const [age, setAge] = useState<"jovem" | "adulto" | "senior">("adulto");
   const [timbre, setTimbre] = useState<"aveludado" | "metalico" | "rouco" | "cristalino" | "ressoante">("aveludado");
+  const [accent, setAccent] = useState("Mineiro (BH)");
   const [archetype, setArchetype] = useState("confessional");
   const [pitchSemitones, setPitchSemitones] = useState(0);
-  const [speed, setSpeed] = useState(1.0);
-  const [breathiness, setBreathiness] = useState(25);
+  const [speed, setSpeed] = useState(0.95);
+  const [breathiness, setBreathiness] = useState(40);
+  const [parsedMeta, setParsedMeta] = useState<ParsedVoiceAttributes | null>(null);
+
   const [testPhrase, setTestPhrase] = useState(
-    "Estratégia precisa ser sentida. Menos ferramenta, mais sistema."
+    "Estratégia precisa ser sentida. Marca não é só o que ela diz. É o que ela faz você fazer."
   );
   const [isSynthesizing, setIsSynthesizing] = useState(false);
+
+  // Parse prompt automatically on change
+  useEffect(() => {
+    if (!prompt.trim()) return;
+    const res = parseVoiceDescription(prompt);
+    setParsedMeta(res);
+  }, [prompt]);
+
+  const handleApplyParsedAttributes = () => {
+    if (!parsedMeta) return;
+    setGender(parsedMeta.gender);
+    setAge(parsedMeta.age);
+    setPitchSemitones(parsedMeta.pitchSemitones);
+    setTimbre(parsedMeta.timbre);
+    setAccent(parsedMeta.accent);
+    setArchetype(parsedMeta.archetype);
+    setSpeed(parsedMeta.speed);
+    setBreathiness(parsedMeta.breathiness);
+  };
+
+  const handleSelectPreset = (p: { label: string; prompt: string }) => {
+    setPrompt(p.prompt);
+    setName(p.label);
+    const res = parseVoiceDescription(p.prompt);
+    setParsedMeta(res);
+    setGender(res.gender);
+    setAge(res.age);
+    setPitchSemitones(res.pitchSemitones);
+    setTimbre(res.timbre);
+    setAccent(res.accent);
+    setArchetype(res.archetype);
+    setSpeed(res.speed);
+    setBreathiness(res.breathiness);
+  };
 
   const handleTestVoice = async () => {
     setIsSynthesizing(true);
@@ -34,6 +98,7 @@ export function VoiceDesigner({ onAddVoice, onAddTake }: VoiceDesignerProps) {
 
       const audio = new Audio(res.url);
       audio.onended = () => setIsSynthesizing(false);
+      audio.onerror = () => setIsSynthesizing(false);
       void audio.play();
 
       onAddTake({
@@ -61,22 +126,22 @@ export function VoiceDesigner({ onAddVoice, onAddTake }: VoiceDesignerProps) {
       category: "designed",
       gender,
       age,
-      accent: "Modelagem Paramétrica",
+      accent,
       lang: "pt-BR",
-      description: `Voz desenhada paramétrica: ${gender}, ${age}, timbre ${timbre}, arquétipo ${archetype}.`,
+      description: `Voz desenhada: ${gender}, ${age}, timbre ${timbre}, arquétipo ${archetype}. Prompt: "${prompt}"`,
       avatarBg: "linear-gradient(135deg, #7657FF, #FF701A)",
-      tags: ["Design Paramétrico", timbre, archetype],
+      tags: ["Design Paramétrico", timbre, archetype, accent],
       samplePhrase: testPhrase,
       pitchOffset: pitchSemitones,
       speed,
-      similarity: 90,
+      similarity: 92,
       stability: 95,
       styleExaggeration: 35,
       breathiness,
     };
 
     onAddVoice(newVoice);
-    alert(`Voz desenhada "${newVoice.name}" foi salva com sucesso!`);
+    alert(`Voz desenhada "${newVoice.name}" foi salva na sua biblioteca!`);
   };
 
   return (
@@ -84,144 +149,226 @@ export function VoiceDesigner({ onAddVoice, onAddTake }: VoiceDesignerProps) {
       <div className="vs-banner">
         <div className="vs-banner__text">
           <h3>
-            <Sliders size={16} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
-            Design de Voz Paramétrico (Voice Modeling)
+            <Wand2 size={16} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
+            Voice Design Inteligente (describe_voice)
           </h3>
           <p>
-            Modele novas personalidades vocais a partir de variáveis acústicas e psicológicas.
-            Sem necessidade de amostras prévias: defina timbre, arquétipo, formantes e cadência.
+            Modele vozes a partir de descrições em linguagem natural ou ajuste fino de formantes acústicos.
+            Baseado no algoritmo determinístico do VoiceStudio — 100% offline e sem necessidade de gravação prévia.
           </p>
         </div>
-        <div className="vs-banner__badge">Síntese Contínua</div>
+        <div className="vs-banner__badge">Léxico Determinístico</div>
+      </div>
+
+      {/* NLP Prompt Section */}
+      <div className="vs-panel" style={{ marginBottom: 20 }}>
+        <div className="vs-panel__head">
+          <h4>
+            <Sparkles size={15} style={{ marginRight: 6, verticalAlign: "middle" }} />
+            Descreva a voz que deseja criar
+          </h4>
+          <span className="vs-panel__hint">Tradução automática para matriz de formantes</span>
+        </div>
+
+        {/* Preset Chips */}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+          {CARAMELO_PRESET_PROMPTS.map((p) => (
+            <button
+              key={p.label}
+              type="button"
+              className="vs-chip vs-chip--active"
+              style={{ fontSize: 11, padding: "5px 10px" }}
+              onClick={() => handleSelectPreset(p)}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ position: "relative" }}>
+          <textarea
+            className="vs-textarea"
+            rows={3}
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Ex: Voz masculina idosa, tom grave e rouco, narrador de documentário calmo e reflexivo..."
+          />
+        </div>
+
+        {parsedMeta && (
+          <div style={{ marginTop: 12, padding: 12, borderRadius: 8, background: "rgba(255, 244, 232, 0.04)", border: "1px solid rgba(255, 244, 232, 0.08)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#FF701A" }}>
+                PARÂMETROS EXTRAÍDOS (describe_voice):
+              </span>
+              <button
+                type="button"
+                className="vs-btn vs-btn--secondary"
+                style={{ fontSize: 11, padding: "3px 8px" }}
+                onClick={handleApplyParsedAttributes}
+              >
+                Aplicar aos Sliders
+              </button>
+            </div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {parsedMeta.matchedTokens.map((tok) => (
+                <span key={tok} style={{ fontSize: 10, padding: "3px 8px", background: "rgba(255, 112, 26, 0.15)", color: "#FF701A", borderRadius: 4, fontWeight: 600 }}>
+                  ✓ {tok}
+                </span>
+              ))}
+              {parsedMeta.unmatchedKeywords.map((kw) => (
+                <span key={kw} style={{ fontSize: 10, padding: "3px 8px", background: "rgba(37, 191, 255, 0.1)", color: "#25BFFF", borderRadius: 4 }}>
+                  Nuance: {kw}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="vs-designer__grid">
-        {/* Left column: Parameters */}
+        {/* Left column: Manual adjustment parameters */}
         <div className="vs-panel">
-          <h4 className="vs-panel__title">Modelagem de Persona</h4>
+          <div className="vs-panel__head">
+            <h4>
+              <Sliders size={15} style={{ marginRight: 6, verticalAlign: "middle" }} />
+              Ajuste Fino de Formantes & Identidade
+            </h4>
+          </div>
 
           <div className="vs-form-group">
-            <label className="vs-form-label">Nome da Voz Criada</label>
+            <label className="vs-label">Nome da Persona Vocal</label>
             <input
               type="text"
               className="vs-input"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              placeholder="Ex: Narrador Épico Caramelo"
             />
           </div>
 
-          <div className="vs-form-row">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div className="vs-form-group">
-              <label className="vs-form-label">Gênero</label>
+              <label className="vs-label">Gênero Acústico</label>
               <select
                 className="vs-select"
                 value={gender}
                 onChange={(e) => setGender(e.target.value as "masculino" | "feminino" | "neutro")}
               >
-                <option value="masculino">Masculino</option>
-                <option value="feminino">Feminino</option>
-                <option value="neutro">Neutro / Andrógino</option>
+                <option value="masculino">Masculino (F0 90-140 Hz)</option>
+                <option value="feminino">Feminino (F0 180-260 Hz)</option>
+                <option value="neutro">Neutro / Andrógino (150 Hz)</option>
               </select>
             </div>
 
             <div className="vs-form-group">
-              <label className="vs-form-label">Faixa Etária</label>
+              <label className="vs-label">Faixa Etária</label>
               <select
                 className="vs-select"
                 value={age}
                 onChange={(e) => setAge(e.target.value as "jovem" | "adulto" | "senior")}
               >
-                <option value="jovem">Jovem (20-30)</option>
-                <option value="adulto">Adulto (30-50)</option>
-                <option value="senior">Sênior (50+)</option>
+                <option value="jovem">Jovem (18-28)</option>
+                <option value="adulto">Adulto Maduro (30-50)</option>
+                <option value="senior">Sênior / Experiente (55+)</option>
               </select>
             </div>
           </div>
 
-          <div className="vs-form-row">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div className="vs-form-group">
-              <label className="vs-form-label">Timbre & Textura</label>
+              <label className="vs-label">Textura & Timbre</label>
               <select
                 className="vs-select"
                 value={timbre}
-                onChange={(e) => setTimbre(e.target.value as typeof timbre)}
+                onChange={(e) => setTimbre(e.target.value as "aveludado" | "metalico" | "rouco" | "cristalino" | "ressoante")}
               >
-                <option value="aveludado">Aveludado / Macio</option>
-                <option value="metalico">Metálico / Cortante</option>
-                <option value="rouco">Rouco / Texturizado</option>
-                <option value="cristalino">Cristalino / Nítido</option>
-                <option value="ressoante">Ressoante / Encorpado</option>
+                <option value="aveludado">Aveludado & Quente</option>
+                <option value="rouco">Rouco & Áspero</option>
+                <option value="cristalino">Cristalino & Preciso</option>
+                <option value="ressoante">Ressoante de Peito</option>
+                <option value="metalico">Metálico / Incisivo</option>
               </select>
             </div>
 
             <div className="vs-form-group">
-              <label className="vs-form-label">Arquétipo & Emoção</label>
+              <label className="vs-label">Sotaque / Cadência Regional</label>
               <select
                 className="vs-select"
-                value={archetype}
-                onChange={(e) => setArchetype(e.target.value)}
+                value={accent}
+                onChange={(e) => setAccent(e.target.value)}
               >
-                <option value="confessional">Confessional Caramelo</option>
-                <option value="epico">Narrador Épico</option>
-                <option value="didatico">Didático Tecnológico</option>
-                <option value="casual">Conversacional Casual</option>
-                <option value="humor">Humor & Ironia</option>
+                <option value="Neutro / Padrão">Neutro / Padrão</option>
+                <option value="Mineiro (BH)">Mineiro (Belo Horizonte)</option>
+                <option value="Paulista">Paulista</option>
+                <option value="Carioca">Carioca</option>
+                <option value="Nordestino">Nordestino</option>
+                <option value="Americano (EN)">Americano (EN)</option>
+                <option value="Britânico (UK)">Britânico (UK)</option>
               </select>
             </div>
           </div>
 
-          <div className="vs-sliders-block">
-            <div className="vs-slider-item">
-              <div className="vs-slider-item__header">
-                <span>Deslocamento de Pitch (Semitons)</span>
-                <strong>{pitchSemitones > 0 ? `+${pitchSemitones}` : pitchSemitones}</strong>
-              </div>
-              <input
-                type="range"
-                min="-8"
-                max="8"
-                value={pitchSemitones}
-                onChange={(e) => setPitchSemitones(parseInt(e.target.value, 10))}
-              />
+          {/* Sliders */}
+          <div className="vs-slider-group">
+            <div className="vs-slider-header">
+              <span>Altura Tonal (Pitch Offset)</span>
+              <span className="vs-slider-val">{pitchSemitones > 0 ? `+${pitchSemitones}` : pitchSemitones} semitons</span>
             </div>
+            <input
+              type="range"
+              min="-12"
+              max="12"
+              step="1"
+              value={pitchSemitones}
+              onChange={(e) => setPitchSemitones(Number(e.target.value))}
+              className="vs-slider"
+            />
+          </div>
 
-            <div className="vs-slider-item">
-              <div className="vs-slider-item__header">
-                <span>Velocidade de Fala</span>
-                <strong>{speed.toFixed(2)}x</strong>
-              </div>
-              <input
-                type="range"
-                min="0.75"
-                max="1.4"
-                step="0.05"
-                value={speed}
-                onChange={(e) => setSpeed(parseFloat(e.target.value))}
-              />
+          <div className="vs-slider-group">
+            <div className="vs-slider-header">
+              <span>Velocidade de Fala</span>
+              <span className="vs-slider-val">{speed.toFixed(2)}x</span>
             </div>
+            <input
+              type="range"
+              min="0.6"
+              max="1.6"
+              step="0.05"
+              value={speed}
+              onChange={(e) => setSpeed(Number(e.target.value))}
+              className="vs-slider"
+            />
+          </div>
 
-            <div className="vs-slider-item">
-              <div className="vs-slider-item__header">
-                <span>Respiração & Fricção Vocal</span>
-                <strong>{breathiness}%</strong>
-              </div>
-              <input
-                type="range"
-                min="5"
-                max="60"
-                value={breathiness}
-                onChange={(e) => setBreathiness(parseInt(e.target.value, 10))}
-              />
+          <div className="vs-slider-group">
+            <div className="vs-slider-header">
+              <span>Presença de Respiração (Breathiness)</span>
+              <span className="vs-slider-val">{breathiness}%</span>
             </div>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={breathiness}
+              onChange={(e) => setBreathiness(Number(e.target.value))}
+              className="vs-slider"
+            />
           </div>
         </div>
 
-        {/* Right column: Test & preview */}
+        {/* Right column: Audition & Testing */}
         <div className="vs-panel">
-          <h4 className="vs-panel__title">Audição & Validação</h4>
+          <div className="vs-panel__head">
+            <h4>
+              <Volume2 size={15} style={{ marginRight: 6, verticalAlign: "middle" }} />
+              Audição & Teste de Bancada
+            </h4>
+          </div>
 
           <div className="vs-form-group">
-            <label className="vs-form-label">Frase de Teste</label>
+            <label className="vs-label">Frase de Teste</label>
             <textarea
               className="vs-textarea"
               rows={4}
@@ -230,54 +377,48 @@ export function VoiceDesigner({ onAddVoice, onAddTake }: VoiceDesignerProps) {
             />
           </div>
 
-          <div className="vs-preview-box">
-            <div className="vs-archetype-card">
-              <div className="vs-archetype-icon">
-                <User size={18} strokeWidth={1.5} />
-              </div>
-              <div className="vs-archetype-meta">
-                <h5>{name || "Voz Paramétrica"}</h5>
-                <p>
-                  {gender} &bull; {age} &bull; Timbre {timbre}
-                </p>
-                <div className="vs-tag-row">
-                  <span className="vs-tag">{archetype}</span>
-                  <span className="vs-tag">{speed}x</span>
-                  <span className="vs-tag">{pitchSemitones} semitons</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="vs-panel-actions">
-            <button
-              type="button"
-              className="vs-btn vs-btn--outline"
-              disabled={isSynthesizing}
-              onClick={handleTestVoice}
-            >
-              <span>
-                {isSynthesizing ? (
-                  "Renderizando..."
-                ) : (
-                  <>
-                    <Play size={13} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
-                    Testar Voz Agora
-                  </>
-                )}
-              </span>
-            </button>
-
+          <div style={{ display: "flex", gap: 12, marginTop: 18 }}>
             <button
               type="button"
               className="vs-btn vs-btn--primary"
-              onClick={handleSaveToLibrary}
+              style={{ flex: 1 }}
+              onClick={handleTestVoice}
+              disabled={isSynthesizing}
             >
-              <span>
-                <Save size={14} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: "middle" }} />
-                Adicionar à Biblioteca de Vozes
-              </span>
+              <Play size={15} />
+              <span>{isSynthesizing ? "Sintetizando..." : "Ouvir Amostra"}</span>
             </button>
+
+            <button
+              type="button"
+              className="vs-btn vs-btn--secondary"
+              onClick={handleSaveToLibrary}
+              disabled={!name.trim()}
+            >
+              <Save size={15} />
+              <span>Salvar na Biblioteca</span>
+            </button>
+          </div>
+
+          {/* Persona Card Preview */}
+          <div style={{ marginTop: 24, padding: 16, borderRadius: 10, background: "#101014", border: "1px solid rgba(255, 244, 232, 0.1)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+              <div style={{ width: 42, height: 42, borderRadius: "50%", background: "linear-gradient(135deg, #7657FF, #FF701A)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, color: "#FFF4E8" }}>
+                {name.charAt(0)}
+              </div>
+              <div>
+                <h5 style={{ margin: 0, fontSize: 14, color: "#FFF4E8" }}>{name}</h5>
+                <span style={{ fontSize: 11, color: "rgba(255, 244, 232, 0.5)" }}>
+                  {gender} • {age} • {accent}
+                </span>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              <span className="vs-tag">Timbre {timbre}</span>
+              <span className="vs-tag">Pitch {pitchSemitones} st</span>
+              <span className="vs-tag">Velocidade {speed}x</span>
+              <span className="vs-tag">Respiração {breathiness}%</span>
+            </div>
           </div>
         </div>
       </div>
