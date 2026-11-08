@@ -586,6 +586,44 @@ export const TRILHA_APP = tool(TRILHA_APP_ID, "Trilha", {
   },
 });
 
+export const PELICULA_APP_ID = 22;
+
+export const PELICULA_APP = tool(PELICULA_APP_ID, "Película", {
+  slug: "pelicula",
+  available: true,
+  stage: "beta",
+  launchPath: `/library/app/${PELICULA_APP_ID}/open`,
+  publicPage: "/tools/pelicula",
+  description: "Estúdio unificado de cinema & mídia generativa IA: geração multimodal de imagem, vídeo, áudio, workflows em nós e diretor de cena local e na nuvem.",
+  assets: art("/tools/pelicula/art"),
+  store: {
+    tagline: "Do roteiro ao take final. O estúdio de cinema generativo no seu computador.",
+    eyebrow: "CINEMA & MÍDIA GENERATIVA / VIBE WORKFLOW / LAB",
+    headline: "Menos assinaturas espalhadas.\nMais estúdio no seu computador.",
+    features: [
+      { title: "Estúdio de Imagem Multimodal (600+ Modelos)", text: "Flux Dev/Schnell, SDXL, Midjourney-style e suporte a sd.cpp para geração local 100% offline via GPU." },
+      { title: "Estúdio de Vídeo Cinematográfico", text: "Text-to-Video e Image-to-Video com Veo 3, Wan 2.1, Kling e Sora. Controle de câmera, lentes métricas e Wan2GP local." },
+      { title: "Vibe Workflow Canvas (Editor de Nós)", text: "Crie pipelines visuais encadeando Prompts → Keyframes → Vídeos → Trilha Sonora → Upscale no Amplia e cortes na Montagem." },
+      { title: "Agente Diretor de Cena & Shot Cards", text: "Assistente conversacional que decupa roteiros, gera shot lists cinematográficas e aplica o Style Prefix canônico Caramelo." },
+    ],
+    steps: [
+      "Abra a Película no LAB e selecione o modo de inferência (Motor Local com GPU ou Nuvem BYOK).",
+      "Gere imagens ou vídeos cinematográficos com o Style Prefix Caramelo ou use o Agente Diretor.",
+      "Encadeie modelos no Vibe Workflow para automatizar pipelines de cena inteira.",
+      "Envie takes prontos direto para o Amplia (8K), Trilha (Música) ou Montagem (Timeline de corte).",
+    ],
+    about: [
+      ["Formato", "Estúdio de Cinema & Mídia Generativa"],
+      ["Modos", "Local GPU (sd.cpp & Wan2GP) + Nuvem BYOK"],
+      ["Pipelines", "Vibe Workflow (Canvas em Nós)"],
+      ["Vídeo", "24fps, 30fps, 4K, 9:16 e 16:9"],
+      ["Integração LAB", "Montagem, Amplia, Trilha e Prancheta"],
+    ],
+    dataNote: "Renders, projetos de nós e configurações de API ficam salvos no seu computador e navegador. Zero custo de nuvem com R2.",
+    category: "Cinema & Vídeo",
+  },
+});
+
 export const TOOL_CATALOG: readonly LibraryApp[] = [
   PROMPT_LIBRARY_APP,
   ADMIN_APP,
@@ -605,6 +643,7 @@ export const TOOL_CATALOG: readonly LibraryApp[] = [
   BRAND_GUARDIAN_APP,
   AMPLIA_APP,
   TRILHA_APP,
+  PELICULA_APP,
 ];
 
 export interface DynamicToolMeta {

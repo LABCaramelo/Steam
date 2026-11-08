@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#101014" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="description" content="Película — Estúdio Unificado de Cinema & Mídia Generativa IA no LAB · Um Cara Caramelo." />
+    <title>Película — LAB · Um Cara Caramelo</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@400;600;700;800;900&family=Outfit:wght@400;600;700;800&family=Space+Grotesk:wght@500;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <script>
+      try {
+        var t = localStorage.getItem('caramelo-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-caramelo-theme', t);
+        var p = localStorage.getItem('caramelo_platform_theme_v1');
+        if (p) {
+          var theme = JSON.parse(p);
+          if (theme && theme.colors) {
+            var c = theme.colors;
+            var s = document.documentElement.style;
+            var h2r = function(hex) {
+              var n = parseInt(hex.replace('#',''), 16);
+              return ((n>>16)&255) + ' ' + ((n>>8)&255) + ' ' + (n&255);
+            };
+            var h2rgb = function(hex) {
+              var n = parseInt(hex.replace('#',''), 16);
+              return 'rgb(' + ((n>>16)&255) + ', ' + ((n>>8)&255) + ', ' + (n&255) + ')';
+            };
+            if (c.accent) {
+              s.setProperty('--cm-accent', h2r(c.accent));
+              s.setProperty('--c-accent', h2rgb(c.accent));
+              s.setProperty('--accent-caramel', c.accent);
+              s.setProperty('--caramelo-accent', h2rgb(c.accent));
+            }
+            if (c.surface) {
+              s.setProperty('--cm-surface-1', h2r(c.surface));
+              s.setProperty('--c-chrome', h2rgb(c.surface));
+              s.setProperty('--bg-primary', c.surface);
+            }
+            if (c.stage) {
+              s.setProperty('--cm-stage', h2r(c.stage));
+              s.setProperty('--c-main', h2rgb(c.stage));
+              s.setProperty('--c-darkest', h2rgb(c.stage));
+            }
+            if (c.text) {
+              s.setProperty('--cm-fg', h2r(c.text));
+              s.setProperty('--c-text', h2rgb(c.text));
+              s.setProperty('--text-main', c.text);
+            }
+            if (c.focus) {
+              s.setProperty('--cm-focus', h2r(c.focus));
+              s.setProperty('--accent-sky', c.focus);
+            }
+            if (c.danger) {
+              s.setProperty('--cm-danger', h2r(c.danger));
+              s.setProperty('--accent-pink', c.danger);
+            }
+            if (c.warning) {
+              s.setProperty('--cm-warning', h2r(c.warning));
+              s.setProperty('--accent-yellow', c.warning);
+            }
+            if (c.violet) {
+              s.setProperty('--cm-violet', h2r(c.violet));
+              s.setProperty('--accent-violet', c.violet);
+            }
+            if (c.success) {
+              s.setProperty('--cm-success', h2r(c.success));
+            }
+            var spec = 'linear-gradient(110deg, ' + (c.accent||'#FF701A') + ' 0%, ' + (c.danger||'#FF3D8D') + ' 24%, ' + (c.violet||'#7657FF') + ' 48%, ' + (c.focus||'#25BFFF') + ' 72%, ' + (c.warning||'#FFD52A') + ' 100%)';
+            s.setProperty('--cm-spectrum-gradient', spec);
+            s.setProperty('--cm-spectrum', spec);
+            s.setProperty('--g-play', spec);
+          }
+        }
+      } catch(e) {}
+    </script>
+  </head>
+  <body class="pelicula-body">
+    <div id="root"></div>
+    <script type="module" src="/src/tools/pelicula/main.tsx"></script>
+  </body>
+</html>

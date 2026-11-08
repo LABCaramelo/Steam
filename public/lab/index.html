@@ -1402,6 +1402,16 @@
                 <td class="col-web"><span class="check-alt">Requer conexão contínua</span></td>
               </tr>
               <tr>
+                <td class="compare-feature">Estrutura de Pastas</td>
+                <td class="col-desktop"><span class="check-yes">✔ Tudo dentro da pasta do LAB (tools + projects)</span></td>
+                <td class="col-web">Não grava em pastas locais</td>
+              </tr>
+              <tr>
+                <td class="compare-feature">Inicialização com o Windows</td>
+                <td class="col-desktop"><span class="check-yes">✔ Inicia silencioso na bandeja (estilo Steam)</span></td>
+                <td class="col-web">Manual via aba do navegador</td>
+              </tr>
+              <tr>
                 <td class="compare-feature">Autenticação e Perfil de Usuário</td>
                 <td class="col-desktop"><span class="check-yes">✔ Login unificado (Supabase Auth)</span></td>
                 <td class="col-web"><span class="check-yes">✔ Login unificado (Supabase Auth)</span></td>
@@ -1627,7 +1637,18 @@
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              No aplicativo desktop, todos os projetos criados, vídeos renderizados na timeline, áudios gerados e anotações são gravados diretamente no sistema de arquivos do seu computador (por padrão em <code>Documentos\LAB</code>). Isso elimina o custo astronômico de armazenar gigabytes em servidores de nuvem como Cloudflare R2 e remove qualquer limite artificial de upload.
+              No aplicativo desktop, a arquitetura segue fielmente o modelo consagrado da Steam: todas as ferramentas instaladas (<code>\tools</code>) e seus projetos locais (<code>\projects</code>) ficam organizados diretamente dentro da pasta de instalação que você escolher (ex: <code>D:\LAB</code>). Isso permite utilizar qualquer HD ou SSD do seu PC com espaço livre abundante, eliminando o custo astronômico de armazenar gigabytes em servidores de nuvem como Cloudflare R2 e removendo qualquer limite artificial de upload.
+            </div>
+          </div>
+
+          <!-- Question 2.5 -->
+          <div class="faq-item">
+            <button type="button" class="faq-question">
+              <span>O LAB pode iniciar automaticamente ao ligar o Windows?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              Sim! O instalador já vem com a opção <em>"Iniciar o LAB automaticamente com o Windows"</em> ativada por padrão. Assim como a Steam, o LAB inicia em segundo plano na bandeja do sistema (System Tray), pronto para abrir seus projetos instantaneamente sem consumir memória ou travar a inicialização do seu PC.
             </div>
           </div>
 
@@ -1710,15 +1731,15 @@
       <div class="modal-steps">
         <div class="modal-step-item">
           <span class="num">1</span>
-          <div>Execute o <strong>LAB-Setup.exe</strong> na sua pasta de Downloads.</div>
+          <div>Execute o <strong>LAB-Setup.exe</strong> e escolha sua pasta de instalação (ex: <code>D:\LAB</code>).</div>
         </div>
         <div class="modal-step-item">
           <span class="num">2</span>
-          <div>Faça login com sua conta do LAB (o mesmo login da versão web).</div>
+          <div>A biblioteca (<code>\tools</code>) e projetos (<code>\projects</code>) serão criados dentro dela, com início automático no Windows.</div>
         </div>
         <div class="modal-step-item">
           <span class="num">3</span>
-          <div>Abra a <strong>Loja</strong> e instale as ferramentas que quiser. Seus arquivos ficarão salvos no seu disco local!</div>
+          <div>Abra a <strong>Loja</strong> e instale as ferramentas que quiser. Seus arquivos ficarão salvos 100% no seu disco local!</div>
         </div>
       </div>
 

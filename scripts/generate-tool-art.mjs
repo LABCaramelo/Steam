@@ -24,9 +24,45 @@ const tools = [
   { slug: 'caderno', name: 'Caderno', number: '18', accent: '#FF701A', category: 'SEGUNDO CÉREBRO & BASES', lines: ['Do pensamento solto', 'ao sistema estruturado.'] },
   { slug: 'stories', name: 'Stories Maker', number: '14', accent: '#FF701A', category: 'SOCIAL MEDIA / STORIES', lines: ['Menos posts genéricos.', 'Mais presença visual.'] },
   { slug: 'trilha', name: 'Trilha', number: '20', accent: '#FF701A', category: 'MÚSICA & TRILHA / ACE-STEP', lines: ['Da ideia ao arranjo.', 'Trilha com IA.'] },
+  { slug: 'pelicula', name: 'Película', number: '22', accent: '#FF701A', category: 'CINEMA & MÍDIA GENERATIVA / IA', lines: ['Do roteiro e nós', 'ao cinema final.'] },
 ];
 
 const motif = (slug, color) => {
+  if (slug === 'pelicula') {
+    return `<g transform="translate(15, 20)">
+      <rect x="30" y="30" width="380" height="240" rx="14" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="3"/>
+      <circle cx="52" cy="50" r="5" fill="#FF701A"/>
+      <circle cx="68" cy="50" r="5" fill="#25BFFF"/>
+      <circle cx="84" cy="50" r="5" fill="#FF3D8D"/>
+      <rect x="230" y="42" width="160" height="20" rx="6" fill="#101014" stroke="${color}" stroke-opacity=".4" stroke-width="1.5"/>
+      <text x="310" y="56" fill="${color}" font-size="9" font-weight="900" text-anchor="middle">CINEMA STUDIO &#8226; 4K VEO/WAN</text>
+      <g transform="translate(45, 80)">
+        <rect x="0" y="0" width="140" height="150" rx="10" fill="#101014" stroke="#FFF4E8" stroke-opacity=".2" stroke-width="2"/>
+        <circle cx="70" cy="75" r="45" fill="none" stroke="${color}" stroke-width="4"/>
+        <circle cx="70" cy="75" r="20" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".3" stroke-width="2"/>
+        <circle cx="70" cy="75" r="7" fill="${color}"/>
+        <circle cx="70" cy="45" r="5" fill="#FFF4E8"/>
+        <circle cx="70" cy="105" r="5" fill="#FFF4E8"/>
+        <circle cx="40" cy="75" r="5" fill="#FFF4E8"/>
+        <circle cx="100" cy="75" r="5" fill="#FFF4E8"/>
+      </g>
+      <g transform="translate(205, 85)">
+        <rect x="0" y="5" width="85" height="42" rx="7" fill="#101014" stroke="#25BFFF" stroke-width="2"/>
+        <text x="42" y="25" fill="#25BFFF" font-size="9" font-weight="800" text-anchor="middle">PROMPT / IA</text>
+        <text x="42" y="38" fill="#FFF4E8" font-size="8" opacity=".6" text-anchor="middle">Style Prefix</text>
+        <path d="M85 26 H110 V70 H130" fill="none" stroke="${color}" stroke-width="2" stroke-dasharray="3 3"/>
+        <rect x="0" y="75" width="85" height="42" rx="7" fill="#101014" stroke="#FF3D8D" stroke-width="2"/>
+        <text x="42" y="95" fill="#FF3D8D" font-size="9" font-weight="800" text-anchor="middle">KEYFRAME</text>
+        <text x="42" y="108" fill="#FFF4E8" font-size="8" opacity=".6" text-anchor="middle">Flux / SD.cpp</text>
+        <path d="M85 96 H110 V80 H130" fill="none" stroke="${color}" stroke-width="2"/>
+        <rect x="130" y="55" width="60" height="45" rx="8" fill="${color}" fill-opacity=".2" stroke="${color}" stroke-width="2"/>
+        <text x="160" y="78" fill="${color}" font-size="10" font-weight="900" text-anchor="middle">CENA 4K</text>
+        <text x="160" y="91" fill="#FFF4E8" font-size="7" font-weight="800" text-anchor="middle">Wan2GP / Veo</text>
+      </g>
+      <rect x="45" y="240" width="345" height="20" rx="6" fill="#101014" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="1"/>
+      <text x="217" y="253" fill="#FFF4E8" font-size="8" font-weight="700" letter-spacing="1" text-anchor="middle">MODO DESKTOP LOCAL: GPU OFFLINE + PROVEDORES NUVEM</text>
+    </g>`;
+  }
   if (slug === 'trilha') {
     return `<g transform="translate(15, 20)">
       <rect x="30" y="30" width="380" height="240" rx="14" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="3"/>
