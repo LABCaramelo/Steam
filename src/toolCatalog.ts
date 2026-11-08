@@ -182,26 +182,26 @@ export const COMUNIDADE_APP = tool(COMUNIDADE_APP_ID, "Comunidade", {
   },
 });
 
-export const CLAQUETE_APP = tool(CLAQUETE_APP_ID, "Claquete", {
+export const CLAQUETE_APP = tool(CLAQUETE_APP_ID, "Matriz", {
   slug: "claquete",
   launchPath: `/library/app/${CLAQUETE_APP_ID}/open`,
   publicPage: "/tools/claquete",
-  description: "Plataforma de cinema e vídeo com IA: canvas infinito de produção, geração multimodal e roteiro cinematográfico.",
+  description: "Canvas infinito de geração criativa com IA: crie, encadeie e transforme imagens, vídeos, áudios e prompts em um grafo visual interativo.",
   assets: art("/tools/claquete/art"),
   store: {
-    tagline: "Do roteiro ao corte final num só canvas com IA.",
-    eyebrow: "CINEMA & VÍDEO COM IA / DIREÇÃO AUDIOVISUAL",
-    headline: "Crie filmes com IA\ndo rascunho à montagem.",
+    tagline: "Do conceito ao asset final num canvas generativo multimodal com IA.",
+    eyebrow: "GERAÇÃO MULTIMODAL COM IA / CANVAS CRIATIVO",
+    headline: "Gere imagens, vídeos e áudios\ncom IA em um canvas infinito.",
     features: [
-      { title: "Canvas Infinito de Cinema", text: "Organize planos, cenas, referências, áudios e notas visuais com conexões inteligentes." },
-      { title: "20 Ações de Geração e Agente", text: "Gere imagens, planos em vídeo, diálogos e efeitos sonoros com assistência do Agente Diretor." },
-      { title: "Roteiro & Decupagem Narrativa", text: "Escreva e estruture sua história com sincronia direta entre o roteiro literário e os planos visuais." },
-      { title: "Direção Multimodal e Storyboard", text: "Geração de planos, variações visuais, dublagem e trilhas sonoras sincronizadas ao projeto." },
+      { title: "Canvas Generativo Infinito", text: "Organize prompts, referências, imagens, vídeos e áudios gerados com conexões nodais inteligentes." },
+      { title: "Geração Multimodal com IA", text: "Gere imagens foto-realistas, planos em vídeo, dublagens e trilhas com os modelos mais avançados." },
+      { title: "Controle de Estilo e Consistência", text: "Defina estilos visuais por referência, trave consistência de personagens e explore variações." },
+      { title: "Agente Criativo Copiloto", text: "Converse com o agente para criar nós, estruturar conceitos, refinar prompts e organizar o canvas automaticamente." },
     ],
-    steps: ["Adquira a Claquete e inicie um novo projeto cinematográfico.", "Monte o canvas com cenas e decupagem completa no roteiro.", "Gere planos visuais com IA, consulte o Agente Diretor e estruture seu filme."],
-    about: [["Formato", "Estúdio de cinema com IA"], ["Geração", "Higgsfield & OpenAI"], ["Exportação", "Canvas, Roteiro e Mídias R2"]],
+    steps: ["Abra a Matriz e inicie um novo projeto criativo.", "Insira prompts, referências e encadeie imagens, vídeos e vozes no canvas.", "Refine variações, explore estilos visuais e exporte seus assets gerados."],
+    about: [["Formato", "Canvas Generativo com IA"], ["Geração", "Higgsfield & OpenAI"], ["Exportação", "Canvas, Imagens, Vídeos e Áudio"]],
     dataNote: "Seus projetos, chats e decupagens ficam salvos no Supabase do LAB; mídias e renders são hospedados no Cloudflare R2.",
-    category: "Cinema",
+    category: "Geração",
   },
 });
 

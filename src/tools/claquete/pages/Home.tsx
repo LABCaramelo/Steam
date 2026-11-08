@@ -15,11 +15,11 @@ import { TEMPLATES, applyTemplate } from '../lib/templates';
 import './home.css';
 
 const PLACEHOLDERS = [
-  'Um curta-metragem sobre um soldado que volta para casa…',
-  'Um trailer de terror numa estação de trem abandonada…',
-  'Um videoclipe em animação pintada sobre o verão…',
-  'Uma propaganda de 30s para um café artesanal…',
-  'Uma fábula em massinha sobre uma raposa curiosa…',
+  'Retrato editorial 35mm com iluminação dourada e grão analógico…',
+  'Cena urbana chuvosa à noite com reflexos neon em movimento…',
+  'Ficha de personagem consistente com 3 ângulos de câmera…',
+  'Voz e locução calorosa para manifesto de marca…',
+  'Exploração de estilo visual em cel shading e pintura digital…',
 ];
 
 export const PENDING_PROMPT_KEY = 'claquete.pendingHomePrompt';

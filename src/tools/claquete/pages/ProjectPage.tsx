@@ -93,14 +93,14 @@ export function ProjectPage() {
       .then((p) => {
         if (!alive) return;
         useProject.getState().setProject(p);
-        document.title = `${p.name} — Claquete`;
+        document.title = `${p.name} — Matriz`;
         void healProjectBlobUrls(p);
       })
       .catch((e) => alive && setError(String(e.message)));
     return () => {
       alive = false;
       useProject.getState().setProject(null);
-      document.title = 'Claquete — cinema com IA';
+      document.title = 'Matriz — geração com IA';
     };
   }, [projectId]);
 

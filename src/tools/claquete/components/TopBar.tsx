@@ -35,7 +35,7 @@ export function TopBar({ view }: { view: View }) {
       d.name = n;
     });
     api.renameProject(projectId, n).catch(() => undefined);
-    document.title = `${n} — Claquete`;
+    document.title = `${n} — Matriz`;
   };
 
   return (

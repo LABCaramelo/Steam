@@ -48,10 +48,10 @@ const APPROVAL_KEY = 'claquete.approvalMode';
 const VIEW_LABEL: Record<View, string> = { canvas: 'Tela', story: 'História' };
 
 const SAMPLES = [
-  'Me mostre 4 enquadramentos para uma cena de estação de trem à noite.',
-  'Escreva uma sinopse de 1 minuto e quebre em planos.',
+  'Gere 4 variações de enquadramento para um conceito visual.',
   'Crie a ficha do personagem principal com 3 ângulos.',
-  'Organize o canvas agrupando as tomadas em seções por cena.',
+  'Proponha uma paleta de cores e gere imagens de teste no estilo.',
+  'Organize o canvas agrupando as gerações em seções temáticas.',
 ];
 
 export function ChatPanel({ view }: { view: View }) {

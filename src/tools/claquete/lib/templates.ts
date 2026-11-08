@@ -6,8 +6,8 @@ import type { MediaNode, Project, TextNode } from '../shared/types';
 // in the original bundle: "Generate your first image", "Examples", ...).
 
 export const TEMPLATES = [
-  { id: 'script', label: 'Do roteiro ao filme', name: 'Do roteiro ao filme', prompt: 'Quero transformar um roteiro em filme. Me ajude a estruturar: peça o roteiro (ou proponha um curto), faça a decupagem em cenas e planos e prepare o storyboard.' },
-  { id: 'prompt', label: 'Do prompt ao filme', name: 'Do prompt ao filme', prompt: 'Quero ir de uma ideia curta a um filme de 30 segundos. Proponha 3 conceitos diferentes e me deixe escolher.' },
+  { id: 'script', label: 'Conceito e narrativa', name: 'Conceito e narrativa', prompt: 'Quero desenvolver um conceito visual a partir de uma narrativa. Me ajude a estruturar: decupe o texto em imagens-chave e planos no canvas.' },
+  { id: 'prompt', label: 'Do prompt à geração', name: 'Exploração de prompt', prompt: 'Quero ir de uma ideia curta a um conjunto de imagens e variações em vídeo. Proponha 3 direções visuais diferentes e me deixe escolher.' },
   { id: 'chars', label: 'Criar personagens', name: 'Personagens', prompt: 'Vamos criar os personagens do meu filme. Faça perguntas rápidas sobre o tom e gere fichas de personagem (model sheets) consistentes.' },
   { id: 'style', label: 'Começar a partir de um estilo', name: 'Exploração de estilo', prompt: 'Quero começar definindo o visual do filme. Gere 4 frames de teste em estilos bem diferentes para o mesmo momento e me deixe escolher um para travar como estilo do projeto.' },
   { id: 'blank', label: 'Tela em branco', name: 'Sem título', prompt: '' },
@@ -20,7 +20,7 @@ function note(content: string, x: number, y: number, color: TextNode['data']['co
 
 export function applyTemplate(id: string, p: Project) {
   if (id !== 'tour') return;
-  const n1 = note('# 1. Gere uma imagem\n\n- Clique no nó ao lado\n- Escreva um prompt\n- Aperte **Gerar**', 0, 0);
+  const n1 = note('# 1. Gere uma imagem\n\n- Clique no nó ao lado\n- Escreva um prompt ou use o exemplo\n- Aperte **Gerar**', 0, 0);
   const img: MediaNode = {
     id: uid(),
     type: 'image',
@@ -31,14 +31,14 @@ export function applyTemplate(id: string, p: Project) {
       generationSettings: { actionType: 'Image', inputs: { model: 'soul-v2', prompt: 'A lone figure on an empty night train platform, wet concrete reflecting sodium lights, wide shot, 35mm, cinematic noir', aspect_ratio: '16:9' } },
     },
   };
-  const n2 = note('# 2. Anime em vídeo\n\n- Selecione a imagem pronta\n- Clique em **Vídeo** no menu lateral\n- Descreva o movimento de câmera', 0, 300, 'blue');
+  const n2 = note('# 2. Gere variações em vídeo\n\n- Conecte a imagem gerada ao nó de vídeo\n- Descreva a ação ou movimento de câmera\n- Aperte **Gerar**', 0, 300, 'blue');
   const vid: MediaNode = {
     id: uid(),
     type: 'video',
     position: { x: 820, y: 0 },
     data: { status: 'idle', user_input_title: 'Primeiro plano', generationSettings: { actionType: 'ImageToVideo', inputs: { model: 'kling-3.0-standard', prompt: 'Slow dolly in toward the figure, light rain begins to fall, distant train horn', duration: '5' } } },
   };
-  const n3 = note('# 3. Estruture e dirija\n\n- Organize os planos por seções e cenas\n- Abra a aba **História** para acompanhar o roteiro\n\nOu peça assistência ao Agente Diretor no painel à direita.', 0, 560, 'green');
+  const n3 = note('# 3. Estruture e expanda\n\n- Adicione notas de texto, áudios e seções\n- Abra a aba **História** para organizar conceitos e prompts\n\nOu peça assistência ao Agente Criativo no painel à direita.', 0, 560, 'green');
   for (const n of [n1, img, n2, vid, n3]) p.nodes[n.id] = n;
   p.edges.push({ id: uid(), source: img.id, target: vid.id, data: { mediaInputId: 'startFrame' } });
 }
