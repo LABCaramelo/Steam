@@ -46,6 +46,9 @@ export function createEmptyProject(name = 'Sem título', projectId = uid()): Pro
 export function normalizeProject(p: Partial<Project> & { projectId: string }): Project {
   const base = createEmptyProject(p.name ?? 'Sem título', p.projectId);
   const merged: Project = { ...base, ...p } as Project;
+  if (merged.projectSettings?.styleId && !merged.customStyles?.some((s) => s.id === merged.projectSettings.styleId)) {
+    merged.projectSettings.styleId = null;
+  }
   merged.nodes ??= {};
   merged.edges ??= [];
   merged.sections ??= {};

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Lock, Redo2, Settings, Undo2, Unlock } from 'lucide-react';
-import { STYLE_PRESETS } from '../shared/styles';
+import { Redo2, Settings, Undo2 } from 'lucide-react';
 import { ASPECT_RATIOS } from '../shared/actions';
 import { useProject, type View } from '../store/project';
 import { useUi } from '../store/ui';
@@ -23,7 +22,6 @@ export function TopBar({ view }: { view: View }) {
   const canUndo = useProject((s) => s.past.length > 0);
   const canRedo = useProject((s) => s.future.length > 0);
   const settings = useProject((s) => s.project?.projectSettings);
-  const customStyles = useProject((s) => s.project?.customStyles ?? []);
   const update = useProject((s) => s.update);
   const [draft, setDraft] = useState(name);
   useEffect(() => setDraft(name), [name]);
@@ -74,33 +72,6 @@ export function TopBar({ view }: { view: View }) {
               }
               width={160}
             />
-            <Dropdown
-              value={settings.styleId ?? ''}
-              title="Estilo do projeto"
-              options={[
-                { value: '', label: 'Sem estilo' },
-                ...customStyles.map((s) => ({ value: s.id, label: `${s.name} (salvo)`, description: s.prompt.slice(0, 80) })),
-                ...STYLE_PRESETS.map((s) => ({ value: s.id, label: s.name, description: s.prompt.slice(0, 80) + '…' })),
-              ]}
-              renderLabel={(v) => (v ? (customStyles.find((s) => s.id === v) ?? STYLE_PRESETS.find((s) => s.id === v))?.name ?? 'Estilo' : 'SEM ESTILO')}
-              onChange={(v) =>
-                update((d) => {
-                  d.projectSettings.styleId = v || null;
-                })
-              }
-              width={300}
-            />
-            <button
-              className={`icon-btn ${settings.styleLock ? 'active' : ''}`}
-              title={settings.styleLock ? 'Consistência visual travada: a memória do projeto entra em toda geração' : 'Mantenha sua consistência visual (aplica a memória do projeto em toda geração)'}
-              onClick={() =>
-                update((d) => {
-                  d.projectSettings.styleLock = !d.projectSettings.styleLock;
-                })
-              }
-            >
-              {settings.styleLock ? <Lock size={14} /> : <Unlock size={14} />}
-            </button>
           </span>
         )}
         <ProviderPill />

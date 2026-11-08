@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus, Upload, X, MousePointer2 } from 'lucide-react';
 import { ACTIONS, actionsForOutput, defaultModelId, findModel, modelSettings, modelsForAction } from '../../shared/actions';
 import { nodeTitle } from '../../shared/project';
-import { STYLE_PRESETS } from '../../shared/styles';
 import type { ActionType, MediaNode, ModelSetting } from '../../shared/types';
 import { useProject } from '../../store/project';
 import { toast } from '../../store/ui';
@@ -17,7 +16,6 @@ export function GeneratorPanel({ nodeId, x, y }: { nodeId: string; x: number; y:
   const nodes = useProject((s) => s.project?.nodes);
   const models = useProject((s) => s.models);
   const customStyles = useProject((s) => s.project?.customStyles ?? []);
-  const projectStyle = useProject((s) => s.project?.projectSettings.styleId ?? null);
   const focusPrompt = useProject((s) => s.focusPrompt);
   const update = useProject((s) => s.update);
   const taRef = useRef<HTMLTextAreaElement>(null);
@@ -153,29 +151,23 @@ export function GeneratorPanel({ nodeId, x, y }: { nodeId: string; x: number; y:
               </button>
             );
           })}
-        {hasStyle && (
+        {hasStyle && customStyles.length > 0 && (
           <Dropdown
-            value={gs.styleId ?? '__project'}
+            value={gs.styleId ?? '__none'}
             title="Estilo"
             options={[
-              { value: '__project', label: projectStyle ? `Estilo do projeto` : 'Sem estilo' },
               { value: '__none', label: 'Sem estilo' },
               ...customStyles.map((s) => ({ value: s.id, label: `${s.name} (salvo)` })),
-              ...STYLE_PRESETS.map((s) => ({ value: s.id, label: s.name })),
             ]}
             renderLabel={(v) =>
-              v === '__project'
-                ? projectStyle
-                  ? (customStyles.find((s) => s.id === projectStyle) ?? STYLE_PRESETS.find((s) => s.id === projectStyle))?.name ?? 'Estilo'
-                  : 'Sem estilo'
-                : v === '__none'
-                  ? 'Sem estilo'
-                  : (customStyles.find((s) => s.id === v) ?? STYLE_PRESETS.find((s) => s.id === v))?.name ?? v
+              v === '__none'
+                ? 'Sem estilo'
+                : (customStyles.find((s) => s.id === v))?.name ?? v
             }
             onChange={(v) =>
               update((d) => {
                 const n = d.nodes[nodeId] as MediaNode;
-                n.data.generationSettings!.styleId = v === '__project' ? undefined : v === '__none' ? null : v;
+                n.data.generationSettings!.styleId = v === '__none' ? null : v;
               })
             }
             width={240}

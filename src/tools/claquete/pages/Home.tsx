@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowUp, Copy, Ellipsis, Mic, Pencil, Plus, Settings, Trash2 } from 'lucide-react';
 import type { ProjectSummary } from '../shared/types';
-import { STYLE_PRESETS } from '../shared/styles';
 import { ASPECT_RATIOS } from '../shared/actions';
 import { api } from '../lib/api';
 import { Brand } from '../components/ui/Brand';
@@ -35,7 +34,6 @@ export function Home() {
   const [showAll, setShowAll] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [ph, setPh] = useState(0);
-  const [style, setStyle] = useState<string>('');
   const [aspect, setAspect] = useState('16:9');
   const [busy, setBusy] = useState(false);
   const [menu, setMenu] = useState<{ anchor: Anchor; p: ProjectSummary } | null>(null);
@@ -55,7 +53,7 @@ export function Home() {
     try {
       const p = await api.createProject(name ?? (text ? text.slice(0, 40) : 'Sem título'));
       p.projectSettings.aspectRatio = aspect;
-      p.projectSettings.styleId = style || null;
+      p.projectSettings.styleId = null;
       if (template) applyTemplate(template, p);
       await api.saveProject(p);
       if (text) sessionStorage.setItem(PENDING_PROMPT_KEY, JSON.stringify({ projectId: p.projectId, text }));
@@ -123,13 +121,6 @@ export function Home() {
               />
               <div className="hero-box-bar">
                 <div className="row">
-                  <Dropdown
-                    value={style}
-                    title="Estilo"
-                    options={[{ value: '', label: 'Sem estilo' }, ...STYLE_PRESETS.map((s) => ({ value: s.id, label: s.name, description: s.prompt.slice(0, 70) + '…' }))]}
-                    onChange={setStyle}
-                    renderLabel={(v) => (v ? STYLE_PRESETS.find((s) => s.id === v)?.name : 'SEM ESTILO')}
-                  />
                   <Dropdown value={aspect} title="Proporção" options={ASPECT_RATIOS.map((a) => ({ value: a, label: a }))} onChange={setAspect} />
                 </div>
                 <div className="row">
