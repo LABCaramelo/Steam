@@ -13,7 +13,7 @@ import { ChatPanel } from '../components/chat/ChatPanel';
 import { FullscreenViewer } from '../components/canvas/FullscreenViewer';
 
 const StoryView = lazy(() => import('../components/story/StoryView').then((m) => ({ default: m.StoryView })));
-const EditorView = lazy(() => import('../components/editor/EditorView').then((m) => ({ default: m.EditorView })));
+
 
 const VIEWS: View[] = ['canvas', 'story'];
 

@@ -356,13 +356,6 @@ export const api = {
 
   cancelJob: (id: string) => req('POST', `/api/jobs/${id}/cancel`).catch(() => undefined),
   listJobs: (projectId: string) => req<JobState[]>('GET', `/api/jobs?projectId=${projectId}`).catch(() => []),
-  exportTimeline: (projectId: string, timelineId: string, height: number, fps: number) =>
-    req<JobState>('POST', '/api/export', { projectId, timelineId, height, fps }).catch(() => ({
-      id: `exp-${Date.now()}`,
-      status: 'completed',
-      resultUrl: 'https://media.umcaracaramelo.com.br/claquete/export.mp4',
-    } as unknown as JobState)),
-
   providers: () => req<ProvidersInfo>('GET', '/api/providers').catch(() => ({
     active: 'offline',
     providers: [

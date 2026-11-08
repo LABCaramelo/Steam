@@ -26,7 +26,7 @@ export function NodeOverlays() {
   const node = useProject((s) => (s.selection.length === 1 ? s.project?.nodes[s.selection[0]] : undefined));
   const aspect = useProject((s) => s.project?.projectSettings.aspectRatio ?? '16:9');
   const editingText = useProject((s) => s.editingTextId);
-  
+
   if (selection.length > 1) return <MultiToolbar ids={selection} />;
   if (!node || editingText === node.id) return null;
 
@@ -47,7 +47,7 @@ export function NodeOverlays() {
   return (
     <>
       <NodeToolbar nodeId={node.id} x={left + w / 2} y={top - 26} />
-      {(hasUrl || node.type === 'text') && <SideMenu nodeId={node.id} x={sideX} y={top}  />}
+      {(hasUrl || node.type === 'text') && <SideMenu nodeId={node.id} x={sideX} y={top} />}
       {isGenerator && <GeneratorPanel nodeId={node.id} x={left + w / 2} y={top + h + 12} />}
     </>
   );
@@ -70,8 +70,90 @@ function NodeToolbar({ nodeId, x, y }: { nodeId: string; x: number; y: number })
 
   return (
     <div className="node-toolbar" style={{ left: x, top: y }} onPointerDown={(e) => e.stopPropagation()}>
-      
-          </div>
+      {media && (
+        <button
+          className="icon-btn"
+          title={media.data.favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+          onClick={() =>
+            update((d) => {
+              const n = d.nodes[nodeId] as MediaNode;
+              n.data.favorite = !n.data.favorite;
+            })
+          }
+        >
+          <Star size={13} fill={media.data.favorite ? 'currentColor' : 'none'} />
+        </button>
+      )}
+      <input className="title-input" value={title} onChange={(e) => setTitle(e.target.value)} onBlur={commitTitle} onKeyDown={(e) => (e.stopPropagation(), e.key === 'Enter' && (e.target as HTMLInputElement).blur())} />
+      {media?.data.url && (
+        <>
+          <a className="icon-btn" title="Baixar como arquivo" href={media.data.url} download={`${title || 'midia'}`}>
+            <Download size={13} />
+          </a>
+          <button className="icon-btn" title="Ver em tela cheia" onClick={() => useUi.getState().setFullscreenNode(nodeId)}>
+            <Maximize2 size={13} />
+          </button>
+        </>
+      )}
+      <button className="icon-btn" title="Anexar ao chat" onClick={() => attachToChat([nodeId])}>
+        <MessageSquarePlus size={13} />
+      </button>
+      <button className="icon-btn" title="Duplicar (Ctrl+D)" onClick={() => duplicateNodes([nodeId])}>
+        <Copy size={13} />
+      </button>
+      <button className="icon-btn" title="Excluir" onClick={() => deleteNodes([nodeId])}>
+        <Trash2 size={13} />
+      </button>
+    </div>
+  );
+}
+
+export function attachToChat(ids: string[]) {
+  const st = useProject.getState();
+  st.setChatAttachments([...new Set([...st.chatAttachments, ...ids])]);
+  useUi.getState().setChatCollapsed(false);
+  setTimeout(() => (document.querySelector('.chat-input textarea') as HTMLTextAreaElement | null)?.focus(), 50);
+}
+
+function SideMenu({ nodeId, x, y }: { nodeId: string; x: number; y: number }) {
+  const node = useProject((s) => s.project?.nodes[nodeId]);
+  if (!node) return null;
+  const media = node.type !== 'text' ? (node as MediaNode) : undefined;
+
+  const saveAsStyle = () => {
+    if (!media?.data.url) return;
+    const name = window.prompt('Nome do estilo', nodeTitle(node));
+    if (!name) return;
+    const description = window.prompt('Descreva o estilo em inglês (opcional — usado no prompt)', '') ?? '';
+    const id = uid();
+    useProject.getState().update((d) => {
+      d.customStyles.push({ id, name, prompt: description || `match the visual style of the reference image "${name}"`, thumbnail: media.data.url, referenceUrls: [media.data.url!], custom: true });
+      d.projectSettings.styleId = id;
+    });
+    toast(`Estilo "${name}" salvo e ativado.`);
+  };
+
+  return (
+    <div className="node-side-menu" style={{ left: x, top: y }} onPointerDown={(e) => e.stopPropagation()}>
+      <button className="menu-item" onClick={() => createDownstream(nodeId, 'image')}>
+        <ImageIcon size={13} /> Imagem
+      </button>
+      <button className="menu-item" onClick={() => createDownstream(nodeId, 'video')}>
+        <Video size={13} /> Vídeo
+      </button>
+      <button className="menu-item" onClick={() => createDownstream(nodeId, 'audio')}>
+        <AudioLines size={13} /> Áudio
+      </button>
+      {media && <div className="menu-sep" />}
+      {node.type === 'image' && (
+        <button className="menu-item" onClick={saveAsStyle}>
+          <Palette size={13} /> Salvar como Estilo
+        </button>
+      )}
+      <button className="menu-item" onClick={() => createSection(undefined, [nodeId])}>
+        <Frame size={13} /> Adicionar a uma seção
+      </button>
+    </div>
   );
 }
 
@@ -94,7 +176,7 @@ function MultiToolbar({ ids }: { ids: string[] }) {
       <button className="icon-btn" title="Agrupar em seção (S)" onClick={() => createSection(undefined, ids)}>
         <Frame size={13} />
       </button>
-            <button className="icon-btn" title="Anexar ao chat" onClick={() => attachToChat(ids)}>
+      <button className="icon-btn" title="Anexar ao chat" onClick={() => attachToChat(ids)}>
         <MessageSquarePlus size={13} />
       </button>
       <button className="icon-btn" title="Duplicar" onClick={() => duplicateNodes(ids)}>

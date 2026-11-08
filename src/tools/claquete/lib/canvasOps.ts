@@ -3,7 +3,6 @@ import { DEFAULT_MEDIA_WIDTH, nodeSize, nodeTitle, uid } from '../shared/project
 import type {
   ActionType,
   CanvasNode,
-  Clip,
   Edge,
   MediaKind,
   MediaNode,

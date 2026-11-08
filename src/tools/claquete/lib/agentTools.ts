@@ -334,18 +334,6 @@ export async function executeAgentTool(name: string, args: Record<string, unknow
       });
       return { ok: true, summary: 'memória atualizada' };
 
-    case 'timeline_read': {
-      const t = p.timelines[p.activeTimelineId];
-      return {
-        ok: true,
-        data: {
-          duration: timelineDuration(t),
-          tracks: t.tracks.map((tr) => ({ id: tr.id, type: tr.type })),
-          clips: Object.values(t.clips).sort((a, b) => a.start - b.start).map((c) => ({ id: c.id, nodeId: c.nodeId, label: c.label, track: c.trackId, start: c.start, duration: c.duration })),
-        },
-      };
-    }
-
     case 'inspect_media': {
       const n = p.nodes[str(args.node_id)] as MediaNode | undefined;
       if (!n?.data?.url) return { ok: false, error: 'mídia não encontrada ou ainda não gerada' };
