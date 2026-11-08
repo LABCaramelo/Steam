@@ -1,6 +1,138 @@
 {
-  "syncedAt": "2026-11-06T20:34:37.876Z",
+  "syncedAt": "2026-11-08T01:44:07.968Z",
   "items": [
+    {
+      "id": "ms-fox-couture",
+      "slug": "fox-couture",
+      "title": "Fox Couture",
+      "category": "E-commerce",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Fashion",
+        "E-commerce",
+        "fox couture"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-fox-couture.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-fox-couture.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-11-07T15:55:11.989906+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-fox-couture.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-designer-portfolio",
+      "slug": "designer-portfolio",
+      "title": "Designer Portfolio",
+      "category": "Agency & Studio",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Portfolio",
+        "Agency & Studio",
+        "designer portfolio"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-designer-portfolio.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-designer-portfolio.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-11-07T14:55:01.78839+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-designer-portfolio.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-album-flow",
+      "slug": "album-flow",
+      "title": "Album Flow",
+      "category": "Design & Criativo",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Music",
+        "Design & Criativo",
+        "album flow"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-album-flow.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-album-flow.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-11-07T12:01:32.929973+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-album-flow.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-spin-product",
+      "slug": "spin-product",
+      "title": "Spin Product",
+      "category": "E-commerce",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Fashion",
+        "E-commerce",
+        "spin product"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-spin-product.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-spin-product.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-11-07T11:42:26.08918+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-spin-product.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-trend-carousel",
+      "slug": "trend-carousel",
+      "title": "Trend Carousel",
+      "category": "Agency & Studio",
+      "type": "social-media",
+      "tags": [
+        "social-media",
+        "Agency",
+        "Agency & Studio",
+        "trend carousel"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-trend-carousel.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-trend-carousel.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-11-07T11:11:58.297088+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-trend-carousel.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
+    {
+      "id": "ms-work-ribbon",
+      "slug": "work-ribbon",
+      "title": "Work Ribbon",
+      "category": "Agency & Studio",
+      "type": "hero",
+      "tags": [
+        "hero",
+        "Portfolio",
+        "Agency & Studio",
+        "work ribbon"
+      ],
+      "thumbnail": "https://media.umcaracaramelo.com.br/assets/thumbnails/interfaces/ms-work-ribbon.webp",
+      "preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-work-ribbon.mp4",
+      "free": true,
+      "has_full_prompt": true,
+      "created_at": "2026-11-07T00:22:37.421307+00:00",
+      "author": "MotionSites",
+      "animated_preview_url": "https://media.umcaracaramelo.com.br/assets/videos/interfaces/ms-work-ribbon.mp4",
+      "animated_preview_source": "catalog",
+      "verified_count": 0
+    },
     {
       "id": "ms-card-stack",
       "slug": "card-stack",
