@@ -45,13 +45,13 @@ import './chat.css';
 type Approval = 'auto' | 'ask';
 const APPROVAL_KEY = 'claquete.approvalMode';
 
-const VIEW_LABEL: Record<View, string> = { canvas: 'Tela', story: 'História', editor: 'Editor de Vídeo' };
+const VIEW_LABEL: Record<View, string> = { canvas: 'Tela', story: 'História' };
 
 const SAMPLES = [
   'Me mostre 4 enquadramentos para uma cena de estação de trem à noite.',
   'Escreva uma sinopse de 1 minuto e quebre em planos.',
   'Crie a ficha do personagem principal com 3 ângulos.',
-  'Monte a linha do tempo com os vídeos prontos.',
+  'Organize o canvas agrupando as tomadas em seções por cena.',
 ];
 
 export function ChatPanel({ view }: { view: View }) {

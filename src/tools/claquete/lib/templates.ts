@@ -38,7 +38,7 @@ export function applyTemplate(id: string, p: Project) {
     position: { x: 820, y: 0 },
     data: { status: 'idle', user_input_title: 'Primeiro plano', generationSettings: { actionType: 'ImageToVideo', inputs: { model: 'kling-3.0-standard', prompt: 'Slow dolly in toward the figure, light rain begins to fall, distant train horn', duration: '5' } } },
   };
-  const n3 = note('# 3. Monte e exporte\n\n- Selecione o vídeo → **Adicionar à Linha do Tempo**\n- Abra o **Editor de Vídeo** e exporte\n\nOu peça tudo ao agente no painel à direita.', 0, 560, 'green');
+  const n3 = note('# 3. Estruture e dirija\n\n- Organize os planos por seções e cenas\n- Abra a aba **História** para acompanhar o roteiro\n\nOu peça assistência ao Agente Diretor no painel à direita.', 0, 560, 'green');
   for (const n of [n1, img, n2, vid, n3]) p.nodes[n.id] = n;
   p.edges.push({ id: uid(), source: img.id, target: vid.id, data: { mediaInputId: 'startFrame' } });
 }

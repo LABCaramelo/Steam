@@ -1,10 +1,9 @@
 import { ACTIONS, AGENT_GENERATION_TOOLS } from '../shared/actions';
-import { DEFAULT_MEDIA_WIDTH, nodeTitle, timelineDuration } from '../shared/project';
+import { DEFAULT_MEDIA_WIDTH, nodeTitle } from '../shared/project';
 import { findStyle } from '../shared/styles';
 import type { ActionType, CostEstimate, JobState, MediaNode, NoteColor, Project, TextNode, ToolCost, Vec2 } from '../shared/types';
 import { getProject, useProject } from '../store/project';
 import {
-  addNodesToTimeline,
   connect,
   createMediaNode,
   createSection,
@@ -47,8 +46,6 @@ export const TOOL_LABELS: Record<string, string> = {
   organize_nodes: 'Organizar canvas',
   update_story: 'Escrever na História',
   set_project_memory: 'Atualizar memória',
-  timeline_read: 'Ler linha do tempo',
-  timeline_add_clips: 'Montar linha do tempo',
   inspect_media: 'Analisar mídia',
 };
 
@@ -69,7 +66,6 @@ export function canvasSummary(p: Project, max = 60): string {
 }
 
 function fullState(p: Project) {
-  const t = p.timelines[p.activeTimelineId];
   return {
     project: p.name,
     aspectRatio: p.projectSettings.aspectRatio,
@@ -94,7 +90,6 @@ function fullState(p: Project) {
         inputs: p.edges.filter((e) => e.target === n.id).map((e) => ({ from: e.source, slot: e.data.mediaInputId })),
       };
     }),
-    timeline: { duration: timelineDuration(t), clips: Object.values(t.clips).map((c) => ({ nodeId: c.nodeId, start: c.start, duration: c.duration })) },
     story: docToMarkdown(p.story.doc).slice(0, 4000),
   };
 }
@@ -349,11 +344,6 @@ export async function executeAgentTool(name: string, args: Record<string, unknow
           clips: Object.values(t.clips).sort((a, b) => a.start - b.start).map((c) => ({ id: c.id, nodeId: c.nodeId, label: c.label, track: c.trackId, start: c.start, duration: c.duration })),
         },
       };
-    }
-
-    case 'timeline_add_clips': {
-      const n = addNodesToTimeline(arr(args.node_ids), Number(args.image_duration) || 3);
-      return n ? { ok: true, summary: `${n} clipe(s) adicionados à linha do tempo` } : { ok: false, error: 'nenhuma mídia pronta entre os nós informados' };
     }
 
     case 'inspect_media': {

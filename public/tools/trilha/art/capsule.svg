@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900" role="img" aria-labelledby="title desc"><title id="title">Trilha — Um Cara Caramelo</title><desc id="desc">MÚSICA &amp; TRILHA / ACE-STEP. Da ideia ao arranjo. Trilha com IA.</desc><defs><pattern id="dots" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#FFF4E8" opacity=".07"/></pattern></defs><rect width="600" height="900" fill="#101014"/><rect width="600" height="900" fill="url(#dots)"/><path d="M456 0H600V900H570Z" fill="#FF701A" fill-opacity=".1"/><path d="M44 245H555" stroke="#FFF4E8" stroke-opacity=".18"/><g font-family="Arial,Helvetica,sans-serif"><text x="44" y="70" fill="#FF701A" font-size="11" font-weight="700" letter-spacing="3">LAB / 20</text><text x="40" y="172" fill="#FFF4E8" font-size="72" font-weight="900" letter-spacing="-3">Trilha<tspan fill="#FF701A">.</tspan></text><text x="44" y="222" fill="#FFF4E8" fill-opacity=".6" font-size="11" letter-spacing="2">MÚSICA &amp; TRILHA / ACE-STEP</text><g transform="translate(55 340) scale(1.03)"><g transform="translate(15, 20)">
+      <rect x="30" y="30" width="380" height="240" rx="14" fill="#18181D" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="3"/>
+      <circle cx="52" cy="50" r="5" fill="#FF701A"/>
+      <circle cx="68" cy="50" r="5" fill="#25BFFF"/>
+      <circle cx="84" cy="50" r="5" fill="#FF3D8D"/>
+      <rect x="240" y="42" width="150" height="20" rx="6" fill="#101014" stroke="#FF701A" stroke-opacity=".4" stroke-width="1.5"/>
+      <text x="315" y="56" fill="#FF701A" font-size="9" font-weight="900" text-anchor="middle">ACE-STEP 1.5 &#8226; PRO</text>
+      <g transform="translate(100, 150)">
+        <circle cx="0" cy="0" r="62" fill="#101014" stroke="#FFF4E8" stroke-opacity=".2" stroke-width="2"/>
+        <circle cx="0" cy="0" r="52" fill="none" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="1.5"/>
+        <circle cx="0" cy="0" r="42" fill="none" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="1.5"/>
+        <circle cx="0" cy="0" r="32" fill="none" stroke="#FFF4E8" stroke-opacity=".1" stroke-width="1.5"/>
+        <circle cx="0" cy="0" r="24" fill="#FF701A"/>
+        <circle cx="0" cy="0" r="8" fill="#101014"/>
+        <circle cx="0" cy="0" r="3" fill="#FFF4E8"/>
+      </g>
+      <g transform="translate(200, 95)">
+        <rect x="0" y="55" width="9" height="50" rx="4" fill="#FF701A"/>
+        <rect x="15" y="25" width="9" height="80" rx="4" fill="#FF701A"/>
+        <rect x="30" y="10" width="9" height="95" rx="4" fill="#25BFFF"/>
+        <rect x="45" y="35" width="9" height="70" rx="4" fill="#25BFFF"/>
+        <rect x="60" y="18" width="9" height="87" rx="4" fill="#FFD52A"/>
+        <rect x="75" y="45" width="9" height="60" rx="4" fill="#FF3D8D"/>
+        <rect x="90" y="30" width="9" height="75" rx="4" fill="#FF701A"/>
+        <rect x="105" y="60" width="9" height="45" rx="4" fill="#25BFFF"/>
+        <rect x="120" y="20" width="9" height="85" rx="4" fill="#FF701A"/>
+        <rect x="135" y="48" width="9" height="57" rx="4" fill="#FFD52A"/>
+        <rect x="150" y="68" width="9" height="37" rx="4" fill="#FFF4E8" fill-opacity=".4"/>
+      </g>
+      <rect x="180" y="220" width="200" height="22" rx="7" fill="#101014" stroke="#FFF4E8" stroke-opacity=".15" stroke-width="1.5"/>
+      <rect x="180" y="220" width="135" height="22" rx="7" fill="#FF701A" fill-opacity=".3"/>
+      <text x="280" y="235" fill="#FFF4E8" font-size="9" font-weight="800" text-anchor="middle">FULL SONG &#8226; 128 BPM &#8226; 4/4</text>
+    </g></g><text x="44" y="790" fill="#FFF4E8" font-size="31" font-weight="800" letter-spacing="-.7">Da ideia ao arranjo.</text><text x="44" y="830" fill="#FF701A" font-size="31" font-weight="800" letter-spacing="-.7">Trilha com IA.</text><text x="44" y="875" fill="#FFF4E8" fill-opacity=".38" font-size="9" font-weight="700" letter-spacing="2">UM CARA CARAMELO®</text></g></svg>

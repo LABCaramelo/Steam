@@ -15,7 +15,7 @@ import { FullscreenViewer } from '../components/canvas/FullscreenViewer';
 const StoryView = lazy(() => import('../components/story/StoryView').then((m) => ({ default: m.StoryView })));
 const EditorView = lazy(() => import('../components/editor/EditorView').then((m) => ({ default: m.EditorView })));
 
-const VIEWS: View[] = ['canvas', 'story', 'editor'];
+const VIEWS: View[] = ['canvas', 'story'];
 
 async function healProjectBlobUrls(p: import('../shared/types').Project) {
   if (!p?.nodes) return;
@@ -197,8 +197,7 @@ export function ProjectPage() {
           {view === 'canvas' && <Canvas />}
           <Suspense fallback={<div className="empty-state" style={{ height: '100%' }}><span className="spinner" /></div>}>
             {view === 'story' && <StoryView />}
-            {view === 'editor' && <EditorView />}
-          </Suspense>
+                      </Suspense>
         </div>
         <ChatPanel view={view} />
       </div>

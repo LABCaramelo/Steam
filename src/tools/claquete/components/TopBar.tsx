@@ -13,8 +13,7 @@ import { ProviderPill } from './settings/ProviderPill';
 const TABS: { id: View; label: string }[] = [
   { id: 'story', label: 'História' },
   { id: 'canvas', label: 'Tela' },
-  { id: 'editor', label: 'Editor de Vídeo' },
-];
+  ];
 
 export function TopBar({ view }: { view: View }) {
   const [, setParams] = useSearchParams();

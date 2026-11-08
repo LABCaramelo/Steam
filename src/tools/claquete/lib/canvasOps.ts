@@ -520,50 +520,6 @@ export function zoomToFit(ids?: string[]) {
   st().setViewport({ zoom, x: el.clientWidth / 2 - (b.x + b.w / 2) * zoom, y: el.clientHeight / 2 - (b.y + b.h / 2) * zoom });
 }
 
-// ---------- timeline ----------
-
-export function addNodesToTimeline(nodeIds: string[], imageDuration = 3): number {
-  const p = getProject();
-  if (!p) return 0;
-  const t = p.timelines[p.activeTimelineId];
-  const main = t.tracks.find((tr) => tr.type === 'main')!;
-  const audioTrack = t.tracks.find((tr) => tr.type === 'audio');
-  let mainEnd = Object.values(t.clips).filter((c) => c.trackId === main.id).reduce((m, c) => Math.max(m, c.start + c.duration), 0);
-  let audioEnd = audioTrack ? Object.values(t.clips).filter((c) => c.trackId === audioTrack.id).reduce((m, c) => Math.max(m, c.start + c.duration), 0) : 0;
-  const clips: Clip[] = [];
-  for (const id of nodeIds) {
-    const n = p.nodes[id] as MediaNode | undefined;
-    if (!n || !(n.type === 'image' || n.type === 'video' || n.type === 'audio') || !n.data.url) continue;
-    const dur = n.type === 'image' ? imageDuration : n.data.duration ?? 5;
-    const isAudio = n.type === 'audio';
-    const trackId = isAudio ? audioTrack?.id ?? main.id : main.id;
-    const start = isAudio ? audioEnd : mainEnd;
-    clips.push({
-      id: uid(),
-      trackId,
-      nodeId: id,
-      mediaType: n.type,
-      url: n.data.url,
-      label: nodeTitle(n),
-      start,
-      duration: dur,
-      in: 0,
-      sourceDuration: n.type === 'image' ? undefined : n.data.duration,
-      speed: 1,
-      volume: 1,
-      fadeIn: 0,
-      fadeOut: 0,
-    });
-    if (isAudio) audioEnd += dur;
-    else mainEnd += dur;
-  }
-  if (!clips.length) return 0;
-  st().update((d) => {
-    const tl = d.timelines[d.activeTimelineId];
-    for (const c of clips) tl.clips[c.id] = c;
-  });
-  return clips.length;
-}
 
 export function nodeLabel(id: string): string {
   const p = getProject();

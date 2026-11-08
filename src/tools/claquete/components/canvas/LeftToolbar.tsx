@@ -4,7 +4,6 @@ import {
   AudioLines,
   BookOpen,
   ChevronRight,
-  Clapperboard,
   Film,
   Frame,
   Hand,
@@ -74,10 +73,7 @@ export function LeftToolbar({ zoomBy }: { zoomBy: (f: number) => void }) {
         <button className="icon-btn" title="História" onClick={() => setParams({ view: 'story' })}>
           <BookOpen size={16} />
         </button>
-        <button className="icon-btn" title="Editor de Vídeo" onClick={() => setParams({ view: 'editor' })}>
-          <Clapperboard size={16} />
-        </button>
-        <div className="sep" />
+                <div className="sep" />
         <div className="zoom-label" title="Opções de zoom" onClick={(e) => setZoomMenu(anchorRight(e.currentTarget))}>
           {Math.round(zoom * 100)}%
         </div>
