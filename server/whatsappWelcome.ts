@@ -368,6 +368,86 @@ export function getUazapiConfig(): UazapiConfig {
   };
 }
 
+// Cache em memória para deduplicação ultra-rápida no mesmo processo/container
+const memoryLocks = new Map<string, number>();
+const MEMORY_LOCK_TTL_MS = 5 * 60 * 1000; // 5 minutos
+
+export function resetMemoryLocksForTest(): void {
+  memoryLocks.clear();
+}
+
+/**
+ * Adquire um lock atômico para o envio de boas-vindas para evitar duplicatas causadas
+ * por retries do webhook da UAZAPI ou múltiplos eventos concorrentes do WhatsApp.
+ * Retorna true se o lock foi adquirido (deve enviar), ou false se já foi processado recentemente.
+ */
+export async function acquireWelcomeLock(phone: string, groupJid: string): Promise<boolean> {
+  const cleanPhone = phone.replace(/\D/g, "");
+  const cleanGroup = groupJid.split(":")[0].replace(/@.*$/, "") + "@g.us";
+  const lockKey = `welcome:${cleanPhone}:${cleanGroup}`;
+  const now = Date.now();
+
+  // 1. Verificação rápida em memória (intra-processo)
+  const lastSeen = memoryLocks.get(lockKey);
+  if (lastSeen && now - lastSeen < MEMORY_LOCK_TTL_MS) {
+    return false;
+  }
+  memoryLocks.set(lockKey, now);
+
+  // Limpeza periódica do mapa em memória
+  if (memoryLocks.size > 500) {
+    for (const [k, ts] of memoryLocks.entries()) {
+      if (now - ts > MEMORY_LOCK_TTL_MS) {
+        memoryLocks.delete(k);
+      }
+    }
+  }
+
+  // 2. Verificação atômica no Supabase (entre instâncias serverless paralelas e retries da UAZAPI)
+  const supabaseUrl = (
+    process.env.SUPABASE_URL ||
+    process.env.VITE_SUPABASE_URL ||
+    "https://fzhzpzxsttflgtassyex.supabase.co"
+  ).replace(/\/+$/, "");
+
+  const supabaseKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_ANON_KEY ||
+    process.env.VITE_SUPABASE_ANON_KEY ||
+    "";
+
+  if (!supabaseUrl || !supabaseKey) {
+    return true;
+  }
+
+  try {
+    const res = await fetch(`${supabaseUrl}/rest/v1/rpc/acquire_welcome_lock`, {
+      method: "POST",
+      headers: {
+        apikey: supabaseKey,
+        Authorization: `Bearer ${supabaseKey}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        p_phone: cleanPhone,
+        p_group_jid: cleanGroup,
+        p_ttl_minutes: 120,
+      }),
+      signal: AbortSignal.timeout(3_000),
+    });
+
+    if (res.ok) {
+      const acquired = await res.json();
+      return Boolean(acquired);
+    }
+  } catch (err) {
+    console.warn("[WhatsAppWebhook] Aviso ao verificar lock atômico no Supabase:", err);
+  }
+
+  return true;
+}
+
 export interface ResolvedMember {
   phone: string; // número limpo para menção (ex: 553188015544)
   name?: string;  // nome público de perfil se houver
@@ -617,17 +697,42 @@ export async function handleWhatsAppWebhook(req: Req, res: ServerResponse): Prom
       }
     }
 
-    console.log("[WhatsAppWebhook] Processando boas-vindas para participantes:", event.participants);
+    // Deduplicação atômica: filtra apenas participantes que ainda não receberam boas-vindas recentes
+    const pendingParticipants: string[] = [];
+    for (const p of event.participants) {
+      const locked = await acquireWelcomeLock(p, event.groupJid);
+      if (locked) {
+        pendingParticipants.push(p);
+      } else {
+        console.log(`[WhatsAppWebhook] Evento duplicado ignorado (lock ativo para ${p} no grupo ${event.groupJid})`);
+      }
+    }
+
+    if (pendingParticipants.length === 0) {
+      return replyJson(res, 200, {
+        ignored: true,
+        reason: "Boas-vindas já enviadas recentemente para o(s) participante(s).",
+        participants: event.participants,
+      });
+    }
+
+    const filteredEvent: GroupJoinEvent = {
+      ...event,
+      participants: pendingParticipants,
+      participantDetails: event.participantDetails?.filter((d) => pendingParticipants.includes(d.phone)),
+    };
+
+    console.log("[WhatsAppWebhook] Processando boas-vindas para participantes:", filteredEvent.participants);
 
     // Dispara a mensagem com menção e rotação de template
-    const result = await sendWelcomeToGroup(config, event);
+    const result = await sendWelcomeToGroup(config, filteredEvent);
     console.log("[WhatsAppWebhook] Boas-vindas enviadas com sucesso:", result);
 
     return replyJson(res, 200, {
       received: true,
       action: "welcome_sent",
       ...result,
-      participants: event.participants,
+      participants: filteredEvent.participants,
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Erro desconhecido";

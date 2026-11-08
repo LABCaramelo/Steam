@@ -6,6 +6,8 @@ import {
   parseGroupJoinEvent,
   sendWelcomeToGroup,
   handleWhatsAppWebhook,
+  acquireWelcomeLock,
+  resetMemoryLocksForTest,
 } from "./whatsappWelcome.ts";
 import type { IncomingMessage, ServerResponse } from "node:http";
 
@@ -338,6 +340,84 @@ test("handleWhatsAppWebhook responde 200 e ignora se não for o grupo correto", 
     assert.equal(parsed.ignored, true);
     assert.match(parsed.reason, /Evento pertence a outro grupo/);
   } finally {
+    process.env = prevEnv;
+  }
+});
+
+test("acquireWelcomeLock previne duplicatas imediatas para o mesmo número e grupo", async () => {
+  resetMemoryLocksForTest();
+  const phone = "5531999998888";
+  const groupJid = "120363000000000000@g.us";
+
+  const firstLock = await acquireWelcomeLock(phone, groupJid);
+  assert.equal(firstLock, true, "Primeira chamada deve adquirir o lock com sucesso");
+
+  const secondLock = await acquireWelcomeLock(phone, groupJid);
+  assert.equal(secondLock, false, "Segunda chamada imediata deve ser bloqueada pelo lock");
+});
+
+test("handleWhatsAppWebhook ignora requisições duplicadas (retry / múltiplos eventos) para o mesmo participante", async () => {
+  resetMemoryLocksForTest();
+  const prevEnv = { ...process.env };
+  process.env.UAZAPI_GROUP_JID = "120363111111111111@g.us";
+  process.env.UAZAPI_URL = "https://uazapi.test";
+  process.env.UAZAPI_TOKEN = "tok";
+
+  const originalFetch = globalThis.fetch;
+  let sendTextCalls = 0;
+  globalThis.fetch = (async (input: string | URL | Request) => {
+    const urlStr = String(input);
+    if (urlStr.endsWith("/send/text")) {
+      sendTextCalls++;
+    }
+    return new Response(JSON.stringify({ status: "success" }), { status: 200 });
+  }) as typeof fetch;
+
+  try {
+    const createReqRes = (phone: string) => {
+      let statusCode = 0;
+      let responseBody = "";
+      const req = {
+        method: "POST",
+        headers: {},
+        body: {
+          EventType: "groups",
+          event: {
+            JID: "120363111111111111@g.us",
+            Join: [`${phone}@s.whatsapp.net`],
+            Leave: null,
+          },
+        },
+        async *[Symbol.asyncIterator]() {
+          yield Buffer.from("");
+        },
+      } as unknown as IncomingMessage;
+
+      const res = {
+        set statusCode(val: number) { statusCode = val; },
+        setHeader() {},
+        end(data: string) { responseBody = data; },
+      } as unknown as ServerResponse;
+
+      return { req, res, getStatus: () => statusCode, getBody: () => JSON.parse(responseBody) };
+    };
+
+    // Primeira entrega do webhook
+    const first = createReqRes("5521977776666");
+    await handleWhatsAppWebhook(first.req, first.res);
+    assert.equal(first.getStatus(), 200);
+    assert.equal(first.getBody().action, "welcome_sent");
+    assert.equal(sendTextCalls, 1, "Deve ter disparado exatamente 1 mensagem");
+
+    // Segunda entrega do webhook (duplicata / retry)
+    const duplicate = createReqRes("5521977776666");
+    await handleWhatsAppWebhook(duplicate.req, duplicate.res);
+    assert.equal(duplicate.getStatus(), 200);
+    assert.equal(duplicate.getBody().ignored, true);
+    assert.match(duplicate.getBody().reason, /já enviadas recentemente/);
+    assert.equal(sendTextCalls, 1, "Não deve enviar mensagem duplicada");
+  } finally {
+    globalThis.fetch = originalFetch;
     process.env = prevEnv;
   }
 });
