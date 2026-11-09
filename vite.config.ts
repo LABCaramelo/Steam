@@ -252,8 +252,11 @@ function stampPublicAssets(): Plugin {
         if (!fs.existsSync(built)) continue;
         const html = fs.readFileSync(built, "utf8");
         const stamped = html.replace(
-          /(\s(?:href|src)=)(["'])([^"'?#]+)\2/g,
-          (_match, lead, quote, url) => `${lead}${quote}${stamp(built, url)}${quote}`,
+          /(\s(?:href|src)=)(["'])([^"'#]+)\2/g,
+          (_match, lead, quote, rawUrl) => {
+            const cleanUrl = rawUrl.split("?")[0];
+            return `${lead}${quote}${stamp(built, cleanUrl)}${quote}`;
+          },
         );
         if (stamped !== html) fs.writeFileSync(built, stamped);
       }

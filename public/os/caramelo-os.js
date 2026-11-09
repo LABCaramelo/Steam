@@ -333,13 +333,16 @@
 
   function applyProfile() {
     const g = guest();
-    $('#startName').textContent = g.name;
+    const startName = $('#startName');
+    if (startName) startName.textContent = g.name;
     $$('[data-guest-name]').forEach(el => { el.textContent = g.name; });
-    dogSVG($('#startAvatar'), g.coat);
-    dogSVG($('#petSprite'), g.coat, true);
+    const startAvatar = $('#startAvatar');
+    if (startAvatar) dogSVG(startAvatar, g.coat);
+    const petSprite = $('#petSprite');
+    if (petSprite) dogSVG(petSprite, g.coat, true);
     const hello = $('[data-hello]');
-    hello.textContent = profile?.name ? `Oi, ${profile.name}! Que bom te ver por aqui.` : 'Oi! Que bom que você ligou o computador.';
-    pet.setAttribute('aria-label', `${g.coat.name === 'Caramelo' ? 'Caramelo' : `Cachorro ${g.coat.name.toLowerCase()}`}: clique para fazer carinho`);
+    if (hello) hello.textContent = profile?.name ? `Oi, ${profile.name}! Que bom te ver por aqui.` : 'Oi! Que bom que você ligou o computador.';
+    if (pet) pet.setAttribute('aria-label', `${g.coat.name === 'Caramelo' ? 'Caramelo' : `Cachorro ${g.coat.name.toLowerCase()}`}: clique para fazer carinho`);
   }
 
   const coatGrid = $('#coatGrid');
@@ -749,26 +752,44 @@
     const fill = $('#bootFill'), pct = $('#bootPct'), status = $('#bootStatus'), bar = $('#bootBar');
     const total = 2600;
     const t0 = performance.now();
+    const safetyTimer = setTimeout(() => {
+      if (os && !os.classList.contains('is-on')) desktopOn();
+    }, total + 1000);
+
     const frameFn = now => {
-      const p = clamp((now - t0) / total, 0, 1);
-      const v = Math.round((p < 1 ? Math.floor(p * 24) / 24 : 1) * 100);
-      fill.style.width = `${v}%`;
-      pct.textContent = `${v}%`;
-      bar.setAttribute('aria-valuenow', v);
-      status.textContent = MSGS[Math.min(MSGS.length - 1, Math.floor(p * (MSGS.length - 1) + (p === 1 ? 1 : 0)))];
-      if (p < 1) requestAnimationFrame(frameFn);
-      else setTimeout(desktopOn, 450);
+      try {
+        const p = clamp((now - t0) / total, 0, 1);
+        const v = Math.round((p < 1 ? Math.floor(p * 24) / 24 : 1) * 100);
+        if (fill) fill.style.width = `${v}%`;
+        if (pct) pct.textContent = `${v}%`;
+        if (bar) bar.setAttribute('aria-valuenow', v);
+        if (status) status.textContent = MSGS[Math.min(MSGS.length - 1, Math.floor(p * (MSGS.length - 1) + (p === 1 ? 1 : 0)))];
+        if (p < 1) {
+          requestAnimationFrame(frameFn);
+        } else {
+          clearTimeout(safetyTimer);
+          setTimeout(desktopOn, 450);
+        }
+      } catch (err) {
+        console.error('Boot animation error:', err);
+        clearTimeout(safetyTimer);
+        desktopOn();
+      }
     };
     requestAnimationFrame(frameFn);
   }
 
   function desktopOn() {
-    boot.classList.add('is-done');
-    boot.setAttribute('aria-hidden', 'true');
-    os.inert = false;
-    os.classList.add('is-on');
-    clearTimeout(bootHideTimer);
-    bootHideTimer = setTimeout(() => { boot.hidden = true; }, reduced ? 0 : 650);
+    if (boot) {
+      boot.classList.add('is-done');
+      boot.setAttribute('aria-hidden', 'true');
+      clearTimeout(bootHideTimer);
+      bootHideTimer = setTimeout(() => { boot.hidden = true; }, reduced ? 0 : 650);
+    }
+    if (os) {
+      os.inert = false;
+      os.classList.add('is-on');
+    }
     clearInterval(petTimer);
     if (!reduced) petTimer = setInterval(petStep, 130);
     openInitial();
@@ -788,31 +809,48 @@
     const id = alias[h] || h;
     return APPS[id] ? id : null;
   }
-  addEventListener('hashchange', () => { const id = hashApp(); if (id && os.classList.contains('is-on')) openApp(id); });
+  addEventListener('hashchange', () => { const id = hashApp(); if (id && os && os.classList.contains('is-on')) openApp(id); });
 
   function restart() {
     closeStart();
     [...openWins.keys()].forEach(id => closeApp(id));
     clearInterval(petTimer);
     clearTimeout(bootHideTimer);
-    os.inert = true;
-    os.classList.remove('is-on');
-    boot.hidden = false;
-    boot.removeAttribute('aria-hidden');
-    booting = false;
-    void boot.offsetWidth;
-    boot.classList.remove('is-done');
+    if (os) {
+      os.inert = true;
+      os.classList.remove('is-on');
+    }
+    if (boot) {
+      boot.hidden = false;
+      boot.removeAttribute('aria-hidden');
+      booting = false;
+      void boot.offsetWidth;
+      boot.classList.remove('is-done');
+    }
     powerOn();
   }
-  $('#btnRestart').addEventListener('click', restart);
+  const btnRestart = $('#btnRestart');
+  if (btnRestart) btnRestart.addEventListener('click', restart);
 
-  applyProfile();
-  const params = new URLSearchParams(location.search);
-  if (reduced || params.get('boot') === 'off') {
-    boot.hidden = true;
-    booting = true;
-    desktopOn();
+  function init() {
+    try {
+      applyProfile();
+    } catch (e) {
+      console.warn('Falha ao aplicar perfil:', e);
+    }
+    const params = new URLSearchParams(location.search);
+    if (reduced || params.get('boot') === 'off') {
+      if (boot) boot.hidden = true;
+      booting = true;
+      desktopOn();
+    } else {
+      powerOn();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    powerOn();
+    init();
   }
 })();

@@ -116,12 +116,10 @@ try {
   await viewport(1440, 900);
   await send('Page.navigate', { url: baseUrl });
   await waitFor(`document.readyState === 'complete'`);
-  const boot0 = await evaluate(`({ title: document.title, power: !document.querySelector('#bootPower').hidden, inert: document.querySelector('#os').inert, h1: document.querySelectorAll('h1').length })`);
-  check('boot screen waits for power-on with the desktop inert', boot0.power && boot0.inert, boot0);
+  const boot0 = await evaluate(`({ title: document.title, booting: !document.querySelector('#boot').hidden, inert: document.querySelector('#os').inert, h1: document.querySelectorAll('h1').length })`);
+  check('boot screen starts automatically with desktop inert', boot0.booting && boot0.inert, boot0);
   check('one semantic H1 and the studio title', boot0.h1 === 1 && /Um Cara Caramelo/.test(boot0.title), boot0);
   await screenshot('os-boot.png');
-  await click('#bootPower');
-  check('splash shows after power-on', await waitFor(`!document.querySelector('#bootSplash').hidden`, 1500));
   check('desktop turns on after the loading bar', await waitFor(`document.querySelector('#os').classList.contains('is-on') && !document.querySelector('#os').inert`, 6000));
   await sleep(900);
   const first = await openWins();
@@ -249,7 +247,7 @@ try {
   await click('#startBtn');
   await click('#btnRestart');
   await sleep(300);
-  check('restart closes windows and returns to the power screen', await evaluate(`!document.querySelector('#boot').hidden && !document.querySelector('#boot').classList.contains('is-done') && !document.querySelector('#bootPower').hidden && document.querySelectorAll('.win').length === 0 && document.querySelector('#os').inert`));
+  check('restart closes windows and returns to the boot screen', await evaluate(`!document.querySelector('#boot').hidden && !document.querySelector('#boot').classList.contains('is-done') && document.querySelectorAll('.win').length === 0 && document.querySelector('#os').inert`));
 
   await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
   await send('Page.navigate', { url: baseUrl });
