@@ -733,8 +733,6 @@
   /* ---------------- Boot ---------------- */
   const boot = $('#boot');
   const os = $('#os');
-  const powerBtn = $('#bootPower');
-  const splash = $('#bootSplash');
   const MSGS = [
     'CARREGANDO CARAMELOOS 96…',
     'ABANANDO O RABO…',
@@ -748,8 +746,6 @@
   function powerOn() {
     if (booting) return;
     booting = true;
-    powerBtn.hidden = true;
-    splash.hidden = false;
     const fill = $('#bootFill'), pct = $('#bootPct'), status = $('#bootStatus'), bar = $('#bootBar');
     const total = 2600;
     const t0 = performance.now();
@@ -803,21 +799,12 @@
     os.classList.remove('is-on');
     boot.hidden = false;
     boot.removeAttribute('aria-hidden');
-    splash.hidden = true;
-    powerBtn.hidden = false;
     booting = false;
     void boot.offsetWidth;
     boot.classList.remove('is-done');
-    powerBtn.focus();
+    powerOn();
   }
   $('#btnRestart').addEventListener('click', restart);
-
-  powerBtn.addEventListener('click', powerOn);
-  document.addEventListener('keydown', e => {
-    if (!boot.hidden && !booting && !boot.classList.contains('is-done') && !e.metaKey && !e.ctrlKey && !e.altKey) {
-      if (e.key !== 'Tab') { e.preventDefault(); powerOn(); }
-    }
-  });
 
   applyProfile();
   const params = new URLSearchParams(location.search);
@@ -826,6 +813,6 @@
     booting = true;
     desktopOn();
   } else {
-    powerBtn.focus({ preventScroll: true });
+    powerOn();
   }
 })();

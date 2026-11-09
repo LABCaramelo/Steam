@@ -40,12 +40,7 @@
 
   <!-- ===== Boot ===== -->
   <div class="boot" id="boot" role="dialog" aria-modal="true" aria-label="Iniciando CarameloOS 96">
-    <button class="boot-power" id="bootPower" type="button">
-      <span class="boot-name">CARAMELOOS 96</span>
-      <span class="boot-edition">EDIÇÃO ESTÚDIO</span>
-      <span class="boot-cta">CLIQUE EM QUALQUER LUGAR PARA LIGAR<span class="caret">_</span></span>
-    </button>
-    <div class="boot-splash" id="bootSplash" hidden>
+    <div class="boot-splash" id="bootSplash">
       <div class="boot-art">
         <span class="boot-orbit" aria-hidden="true"></span>
         <img src="/caramelo/stickers/caramelo.webp" width="350" height="250" alt="">
@@ -81,7 +76,7 @@
         <li><button class="icon" type="button" data-open="ajuda"><svg><use href="#i-help"/></svg><span>Dúvidas</span></button></li>
         <li><button class="icon" type="button" data-open="contato"><svg><use href="#i-mail"/></svg><span>Contato</span></button></li>
         <li><button class="icon" type="button" data-open="recursos"><svg><use href="#i-folder"/></svg><span>Aprender &amp; Recursos</span></button></li>
-        <li><a class="icon" href="/library/home"><svg><use href="#i-link"/></svg><span>Entrar no LAB</span></a></li>
+        <li><a class="icon" href="/library/home" target="_blank" rel="noopener"><svg><use href="#i-link"/></svg><span>Entrar no LAB</span></a></li>
         <li><button class="icon" type="button" data-open="adesivos"><svg><use href="#i-photo"/></svg><span>Adesivos</span></button></li>
         <li><button class="icon" type="button" data-open="jogo"><svg><use href="#i-game"/></svg><span>Pega a Bolinha</span></button></li>
         <li><button class="icon" type="button" data-open="lixeira"><svg><use href="#i-trash"/></svg><span>Lixeira</span></button></li>
@@ -120,9 +115,9 @@
         <li><button type="button" data-open="contato"><svg><use href="#i-mail"/></svg>Contato</button></li>
         <li><button type="button" data-open="recursos"><svg><use href="#i-folder"/></svg>Aprender &amp; Recursos</button></li>
         <li><button type="button" data-open="jogo"><svg><use href="#i-game"/></svg>Pega a Bolinha</button></li>
-        <li class="sep"><a href="/library/home"><svg><use href="#i-link"/></svg>Entrar no LAB</a></li>
+        <li class="sep"><a href="/library/home" target="_blank" rel="noopener"><svg><use href="#i-link"/></svg>Entrar no LAB</a></li>
         <li><button type="button" data-open="perfil"><svg><use href="#i-dog"/></svg>Perfil de visitante</button></li>
-        <li><a href="/estudio"><svg><use href="#i-link"/></svg>Versão clássica do site</a></li>
+        <li><a href="/estudio" target="_blank" rel="noopener"><svg><use href="#i-link"/></svg>Versão clássica do site</a></li>
         <li><button type="button" id="btnRestart"><svg><use href="#i-power"/></svg>Reiniciar CarameloOS</button></li>
       </ul>
       <p class="start-foot">CarameloOS 96</p>
@@ -227,7 +222,7 @@
         <div class="drives">
           <button type="button" class="drive" data-open="projetos"><svg><use href="#i-folder"/></svg><span>Projetos (C:)</span></button>
           <button type="button" class="drive" data-open="adesivos"><svg><use href="#i-photo"/></svg><span>Adesivos (D:)</span></button>
-          <a class="drive" href="/library/home"><svg><use href="#i-link"/></svg><span>LAB (L:)</span></a>
+          <a class="drive" href="/library/home" target="_blank" rel="noopener"><svg><use href="#i-link"/></svg><span>LAB (L:)</span></a>
           <button type="button" class="drive" data-open="lixeira"><svg><use href="#i-trash"/></svg><span>Lixeira</span></button>
         </div>
       </div>
@@ -254,7 +249,7 @@
             <p>Direção que orienta quem escreve, grava e publica, com foco nos resultados do negócio.</p>
             <div class="card-btns">
               <a class="btn btn-primary" href="https://wa.me/5531985869015?text=Ol%C3%A1%21%20Gostaria%20de%20conversar%20sobre%20Head%20de%20Conte%C3%BAdo." target="_blank" rel="noopener noreferrer" data-event="whatsapp_clicked" data-source="os-servicos-conteudo">Conversar sobre conteúdo ↗</a>
-              <a class="btn" href="/head-de-conteudo">Ver como funciona a atuação ↗</a>
+              <a class="btn" href="/head-de-conteudo" target="_blank" rel="noopener">Ver como funciona a atuação ↗</a>
             </div>
             <p class="svc-foot">Atuação estratégica. Operação sob medida.</p>
           </section>
@@ -271,7 +266,7 @@
             <p>Design e código sob medida, pensados para velocidade, usabilidade e clareza.</p>
             <div class="card-btns">
               <a class="btn btn-primary" href="https://wa.me/5531985869015?text=Ol%C3%A1%21%20Gostaria%20de%20conversar%20sobre%20Sites%20e%20Experi%C3%AAncias%20Digitais." target="_blank" rel="noopener noreferrer" data-event="whatsapp_clicked" data-source="os-servicos-sites">Conversar sobre meu site ↗</a>
-              <a class="btn" href="/sites-e-experiencias">Explorar experiências digitais ↗</a>
+              <a class="btn" href="/sites-e-experiencias" target="_blank" rel="noopener">Explorar experiências digitais ↗</a>
             </div>
             <p class="svc-foot">Design e desenvolvimento sob medida para seu objetivo.</p>
           </section>
@@ -304,7 +299,7 @@
             <p>Uma marca pessoal construída a partir de storytelling, experimentação, direção criativa e um sistema editorial que conecta identificação, autoridade e comunidade.</p>
             <dl class="proj-facts"><dt>Segunda</dt><dd>Identificação</dd><dt>Quarta</dt><dd>Autoridade</dd><dt>Sexta</dt><dd>Descompressão</dd></dl>
             <p class="small muted">4 séries · 26 slides reais</p>
-            <div class="proj-actions"><a class="btn btn-primary" href="/projetos/um-cara-caramelo-conteudo">Explorar o case estratégico ↗</a></div>
+            <div class="proj-actions"><a class="btn btn-primary" href="/projetos/um-cara-caramelo-conteudo" target="_blank" rel="noopener">Explorar o case estratégico ↗</a></div>
           </section>
           <section role="tabpanel" id="proj-1" aria-labelledby="projt-1" hidden>
             <figure class="proj-media"><video muted loop playsinline preload="none" poster="/assets/images/video-posters/work-01.webp" data-src="/assets/videos/work-01.mp4" aria-label="Prévia de Banco de Prompts"></video></figure>
@@ -312,7 +307,7 @@
             <h3>Banco de Prompts</h3>
             <p>Uma biblioteca de referências para consultar e adaptar.</p>
             <dl class="proj-facts"><dt>Contexto</dt><dd>Acervo de prompts e referências integrado ao ecossistema Caramelo.</dd><dt>Desafio apresentado</dt><dd>Facilitar a consulta e a passagem de uma referência para o uso.</dd><dt>Direção criativa</dt><dd>Categorias, busca e filtros ajudam a encontrar e selecionar conteúdo.</dd><dt>Execução demonstrada</dt><dd>Interface de consulta com navegação por categorias e ações de cópia.</dd><dt>Entrega verificável</dt><dd>Biblioteca navegável de prompts e referências disponível no LAB.</dd></dl>
-            <div class="proj-actions"><button type="button" class="btn btn-primary" data-open="contato">Quer criar algo assim para sua marca? Vamos conversar. ↗</button><a class="btn" href="/library/home">Abrir no LAB ↗</a></div>
+            <div class="proj-actions"><button type="button" class="btn btn-primary" data-open="contato">Quer criar algo assim para sua marca? Vamos conversar. ↗</button><a class="btn" href="/library/home" target="_blank" rel="noopener">Abrir no LAB ↗</a></div>
           </section>
           <section role="tabpanel" id="proj-2" aria-labelledby="projt-2" hidden>
             <figure class="proj-media"><video muted loop playsinline preload="none" poster="/assets/images/video-posters/work-02.webp" data-src="/assets/videos/work-02.mp4" aria-label="Prévia de Treinamento Head com IA"></video></figure>
@@ -344,7 +339,7 @@
             <h3>Um Cara Caramelo</h3>
             <p>Estratégia, conteúdo e experiências no mesmo universo.</p>
             <dl class="proj-facts"><dt>Contexto</dt><dd>Projeto autoral que reúne serviços, conteúdo educativo e ferramentas.</dd><dt>Desafio apresentado</dt><dd>Organizar a atuação profissional e o compartilhamento de repertório com uma identidade comum.</dd><dt>Direção criativa</dt><dd>Tipografia editorial, vídeos e respostas ao gesto conectam as partes da experiência.</dd><dt>Execução demonstrada</dt><dd>Site público em HTML, CSS e JavaScript, integrado ao acesso ao LAB.</dd><dt>Entrega verificável</dt><dd>Home navegável, páginas de serviços e acesso ao ecossistema Caramelo. Você está explorando este projeto.</dd></dl>
-            <div class="proj-actions"><button type="button" class="btn btn-primary" data-open="contato">Quer criar algo assim para sua marca? Vamos conversar. ↗</button><a class="btn" href="/estudio">Ver a versão clássica do site ↗</a></div>
+            <div class="proj-actions"><button type="button" class="btn btn-primary" data-open="contato">Quer criar algo assim para sua marca? Vamos conversar. ↗</button><a class="btn" href="/estudio" target="_blank" rel="noopener">Ver a versão clássica do site ↗</a></div>
           </section>
         </div>
       </div>
@@ -446,8 +441,8 @@
         <p>Para designers, copywriters e criativos que querem ir além do operacional e dominar narrativa, repertório e direção visual. Repertório bom fica melhor quando circula.</p>
       </div>
       <ul class="files" role="list">
-        <li><a class="file" href="/workshop.html"><svg><use href="#i-wizard"/></svg><span>Workshop — Sites que se Sentem</span><small>Da ideia à experiência na tela.</small></a></li>
-        <li><a class="file" href="/library/home"><svg><use href="#i-box"/></svg><span>Arquivo de referências</span><small>Prompts, interfaces e experimentos práticos.</small></a></li>
+        <li><a class="file" href="/workshop.html" target="_blank" rel="noopener"><svg><use href="#i-wizard"/></svg><span>Workshop — Sites que se Sentem</span><small>Da ideia à experiência na tela.</small></a></li>
+        <li><a class="file" href="/library/home" target="_blank" rel="noopener"><svg><use href="#i-box"/></svg><span>Arquivo de referências</span><small>Prompts, interfaces e experimentos práticos.</small></a></li>
         <li><a class="file" href="https://chat.whatsapp.com/Ct6zFrGPh6HDC67G4SAYVm" target="_blank" rel="noopener"><svg><use href="#i-link"/></svg><span>Comunidade LAB</span><small>Espaço gratuito para compartilhar descobertas.</small></a></li>
       </ul>
       <div class="statusbar"><span>3 itens</span><span>Aprender com o Caramelo</span></div>
