@@ -134,6 +134,14 @@
       "destination": "/projetos/um-cara-caramelo-conteudo/index.html"
     },
     {
+      "source": "/estudio",
+      "destination": "/estudio.html"
+    },
+    {
+      "source": "/estudio/",
+      "destination": "/estudio.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/app.html"
     }

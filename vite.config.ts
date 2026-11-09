@@ -177,6 +177,7 @@ function siteRoutes(): Plugin {
       return res.end();
     }
     if (page === "/") req.url = `/index.html${url.search}`;
+    else if (/^\/estudio\/?$/.test(page)) req.url = `/estudio.html${url.search}`;
     else if (/^\/(?:lab|download|desktop)\/?$/.test(page)) req.url = `/lab/index.html${url.search}`;
     else if (/^\/(?:head-de-conteudo|sites-e-experiencias)\/?$/.test(page)) req.url = `/${page.split("/")[1]}/index.html${url.search}`;
     else if (/^\/projetos\/um-cara-caramelo-conteudo\/?$/.test(page)) req.url = `/projetos/um-cara-caramelo-conteudo/index.html${url.search}`;
