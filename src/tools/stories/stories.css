@@ -4,9 +4,9 @@
   --stories-bg: #09090C;
   --stories-surface: #14141A;
   --stories-surface-elevated: #1F1F28;
-  --stories-primary: #FF701A;
-  --stories-accent: #25BFFF;
-  --stories-cream: #FFF4E8;
+  --stories-primary: #FF9230;
+  --stories-accent: #0091FF;
+  --stories-cream: #F5F5F7;
   --stories-text-muted: #8E8E9F;
   --stories-border: rgba(255, 255, 255, 0.1);
   --stories-safe-zone-top: 180px;
@@ -100,7 +100,7 @@ html, body.stories-body {
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  background: rgba(16, 16, 20, 0.92);
+  background: rgba(22, 22, 23, 0.92);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--stories-border);
   z-index: 1000;
@@ -158,7 +158,7 @@ html, body.stories-body {
 }
 
 .stories-topbar__btn--tool.is-active {
-  background: rgba(255, 112, 26, 0.18);
+  background: rgba(255, 146, 48, 0.18);
   color: var(--stories-primary);
 }
 
@@ -182,20 +182,20 @@ html, body.stories-body {
 }
 
 .stories-topbar__pill-btn.is-active {
-  background: rgba(37, 191, 255, 0.15);
+  background: rgba(0, 145, 255, 0.15);
   border-color: var(--stories-accent);
   color: var(--stories-accent);
 }
 
 .stories-topbar__pill-btn--wifi {
-  background: rgba(37, 191, 255, 0.1);
-  border-color: rgba(37, 191, 255, 0.3);
+  background: rgba(0, 145, 255, 0.1);
+  border-color: rgba(0, 145, 255, 0.3);
   color: var(--stories-accent);
 }
 
 .stories-topbar__btn--export {
   background: var(--stories-primary);
-  color: #101014;
+  color: #161617;
   font-weight: 600;
   font-size: 13px;
   padding: 0 16px;
@@ -204,7 +204,7 @@ html, body.stories-body {
 }
 
 .stories-topbar__btn--export:hover {
-  background: #FF853A;
+  background: #FF9E33;
 }
 
 /* WORKSPACE & CANVAS */
@@ -239,7 +239,7 @@ html, body.stories-body {
 }
 
 .bottom-bar-layer-badge {
-  background: rgba(255, 112, 26, 0.15);
+  background: rgba(255, 146, 48, 0.15);
   color: var(--stories-primary);
   font-size: 11px;
   font-weight: 600;
@@ -277,7 +277,7 @@ html, body.stories-body {
 }
 
 .bottom-bar-action-btn--delete {
-  color: #FF3D8D;
+  color: #FF375F;
 }
 
 .bottom-bar-action-btn--close {
@@ -381,7 +381,7 @@ html, body.stories-body {
 .drawer-tab-btn.is-active {
   background: var(--stories-primary);
   border-color: var(--stories-primary);
-  color: #101014;
+  color: #161617;
 }
 
 .stories-drawer__content {
@@ -519,7 +519,7 @@ html, body.stories-body {
 .gif-add-btn {
   background: var(--stories-primary);
   border: none;
-  color: #101014;
+  color: #161617;
   font-weight: 700;
   padding: 0 18px;
   border-radius: 14px;
@@ -579,7 +579,7 @@ html, body.stories-body {
 
 .media-dropzone-btn:hover {
   border-color: var(--stories-primary);
-  background: rgba(255, 112, 26, 0.05);
+  background: rgba(255, 146, 48, 0.05);
 }
 
 .media-dropzone-btn--half {
@@ -596,7 +596,7 @@ html, body.stories-body {
 .text-editor-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(16, 16, 20, 0.94);
+  background: rgba(22, 22, 23, 0.94);
   backdrop-filter: blur(35px);
   -webkit-backdrop-filter: blur(35px);
   z-index: 3000;
@@ -640,7 +640,7 @@ html, body.stories-body {
 
 .text-editor-icon-btn.is-active {
   background: var(--stories-primary);
-  color: #101014;
+  color: #161617;
 }
 
 .text-editor-mode-btn {
@@ -661,7 +661,7 @@ html, body.stories-body {
 
 .text-editor-done-btn {
   background: #FFFFFF;
-  color: #101014;
+  color: #161617;
   border: none;
   padding: 8px 20px;
   border-radius: 24px;
@@ -759,7 +759,7 @@ html, body.stories-body {
 
 .font-pill-btn.is-selected {
   background: #FFFFFF;
-  color: #101014;
+  color: #161617;
   border-color: #FFFFFF;
   transform: scale(1.05);
 }
@@ -811,7 +811,7 @@ html, body.stories-body {
 }
 
 .brand-chip-btn.is-active {
-  background: rgba(255, 112, 26, 0.15);
+  background: rgba(255, 146, 48, 0.15);
   border-color: var(--stories-primary);
   color: var(--stories-primary);
 }
@@ -825,7 +825,7 @@ html, body.stories-body {
 .apply-brand-btn {
   width: 100%;
   background: var(--stories-primary);
-  color: #101014;
+  color: #161617;
   border: none;
   padding: 14px;
   border-radius: 16px;
@@ -962,7 +962,7 @@ html, body.stories-body {
 
 .font-upload-label {
   display: block;
-  background: rgba(255, 112, 26, 0.15);
+  background: rgba(255, 146, 48, 0.15);
   border: 1px solid var(--stories-primary);
   color: var(--stories-primary);
   padding: 12px;
@@ -974,7 +974,7 @@ html, body.stories-body {
 }
 
 .font-error-msg {
-  color: #FF3D8D;
+  color: #FF375F;
   font-size: 12px;
   margin-top: 8px;
 }
@@ -996,7 +996,7 @@ html, body.stories-body {
 
 .custom-font-item.is-selected {
   border: 1px solid var(--stories-primary);
-  background: rgba(255, 112, 26, 0.12);
+  background: rgba(255, 146, 48, 0.12);
 }
 
 .fonts-selection-grid {
@@ -1021,7 +1021,7 @@ html, body.stories-body {
 
 .font-select-card.is-active {
   border-color: var(--stories-primary);
-  background: rgba(255, 112, 26, 0.12);
+  background: rgba(255, 146, 48, 0.12);
 }
 
 .font-sample {
@@ -1032,7 +1032,7 @@ html, body.stories-body {
 /* TEMPLATES DRAWER */
 .save-current-tpl-btn {
   width: 100%;
-  background: rgba(37, 191, 255, 0.15);
+  background: rgba(0, 145, 255, 0.15);
   border: 1px solid var(--stories-accent);
   color: var(--stories-accent);
   padding: 12px;
@@ -1064,7 +1064,7 @@ html, body.stories-body {
 .save-tpl-confirm-btn {
   flex: 1;
   background: var(--stories-primary);
-  color: #101014;
+  color: #161617;
   border: none;
   padding: 10px;
   border-radius: 12px;
@@ -1127,7 +1127,7 @@ html, body.stories-body {
   top: 12px;
   right: 12px;
   background: var(--stories-primary);
-  color: #101014;
+  color: #161617;
   font-size: 11px;
   font-weight: 600;
   padding: 4px 8px;
@@ -1153,7 +1153,7 @@ html, body.stories-body {
 .delete-tpl-btn {
   background: transparent;
   border: none;
-  color: #FF3D8D;
+  color: #FF375F;
   cursor: pointer;
   padding: 4px;
 }
@@ -1221,7 +1221,7 @@ html, body.stories-body {
 
 .export-format-btn.is-active {
   border-color: var(--stories-primary);
-  background: rgba(255, 112, 26, 0.15);
+  background: rgba(255, 146, 48, 0.15);
   color: var(--stories-primary);
 }
 
@@ -1253,14 +1253,14 @@ html, body.stories-body {
 
 .duration-pill-btn.is-active {
   background: var(--stories-accent);
-  color: #101014;
+  color: #161617;
   border-color: var(--stories-accent);
 }
 
 .main-export-submit-btn {
   width: 100%;
   background: var(--stories-primary);
-  color: #101014;
+  color: #161617;
   border: none;
   padding: 16px;
   border-radius: 18px;
@@ -1294,7 +1294,7 @@ html, body.stories-body {
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #FF701A, #25BFFF);
+  background: linear-gradient(90deg, #FF9230, #0091FF);
   transition: width 0.2s ease;
 }
 
@@ -1307,8 +1307,8 @@ html, body.stories-body {
 
 .wifi-shortcut-card {
   margin-top: 20px;
-  background: rgba(37, 191, 255, 0.08);
-  border: 1px solid rgba(37, 191, 255, 0.25);
+  background: rgba(0, 145, 255, 0.08);
+  border: 1px solid rgba(0, 145, 255, 0.25);
   border-radius: 18px;
   padding: 14px 16px;
   display: flex;
@@ -1334,7 +1334,7 @@ html, body.stories-body {
 
 .wifi-open-btn {
   background: var(--stories-accent);
-  color: #101014;
+  color: #161617;
   border: none;
   padding: 8px 14px;
   border-radius: 12px;
@@ -1402,8 +1402,8 @@ html, body.stories-body {
 }
 
 .mobile-tips-card {
-  background: rgba(255, 112, 26, 0.06);
-  border: 1px solid rgba(255, 112, 26, 0.2);
+  background: rgba(255, 146, 48, 0.06);
+  border: 1px solid rgba(255, 146, 48, 0.2);
   border-radius: 16px;
   padding: 14px;
 }
@@ -1561,8 +1561,8 @@ html, body.stories-body {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 112, 26, 0.12);
-  border: 1px solid rgba(255, 112, 26, 0.3);
+  background: rgba(255, 146, 48, 0.12);
+  border: 1px solid rgba(255, 146, 48, 0.3);
   padding: 5px 10px;
   border-radius: 12px;
   flex-shrink: 0;
@@ -1734,7 +1734,7 @@ html, body.stories-body {
 }
 
 .day-tab-pill.is-active {
-  background: rgba(255, 112, 26, 0.15);
+  background: rgba(255, 146, 48, 0.15);
   border-color: var(--stories-primary);
 }
 
@@ -1791,7 +1791,7 @@ html, body.stories-body {
 }
 
 .day-count-badge {
-  background: rgba(255, 112, 26, 0.18);
+  background: rgba(255, 146, 48, 0.18);
   color: var(--stories-primary);
   font-size: 11px;
   font-weight: 700;
@@ -1959,7 +1959,7 @@ html, body.stories-body {
 
 .open-editor-pill-btn {
   background: var(--stories-primary);
-  color: #101014;
+  color: #161617;
   border: none;
   padding: 8px 14px;
   border-radius: 20px;
@@ -2044,7 +2044,7 @@ html, body.stories-body {
 }
 
 .back-to-board-btn:hover {
-  background: rgba(255, 112, 26, 0.2);
+  background: rgba(255, 146, 48, 0.2);
   border-color: var(--stories-primary);
   color: var(--stories-primary);
 }
@@ -2172,9 +2172,9 @@ html, body.stories-body {
 
 .ig-icon-btn.is-active,
 .ig-icon-btn.is-active-highlight {
-  background: rgba(255, 112, 26, 0.35);
-  border-color: #FF701A;
-  color: #FF701A;
+  background: rgba(255, 146, 48, 0.35);
+  border-color: #FF9230;
+  color: #FF9230;
 }
 
 .ig-header-right {
@@ -2215,7 +2215,7 @@ html, body.stories-body {
   border-radius: 14px;
   background: transparent;
   border: none;
-  color: #FFF4E8;
+  color: #F5F5F7;
   cursor: pointer;
   text-align: left;
   transition: background 0.15s ease;
@@ -2234,7 +2234,7 @@ html, body.stories-body {
 .dropdown-label-primary {
   font-size: 13px;
   font-weight: 700;
-  color: #FFF4E8;
+  color: #F5F5F7;
 }
 
 .dropdown-label-sub {
@@ -2310,28 +2310,28 @@ html, body.stories-body {
   border-radius: 30px;
   cursor: pointer;
   transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.18s ease;
-  color: #FFF4E8;
+  color: #F5F5F7;
   font-size: 13px;
   font-weight: 700;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 }
 
 .ig-footer-pill--download {
-  border-color: rgba(255, 112, 26, 0.4);
+  border-color: rgba(255, 146, 48, 0.4);
 }
 
 .ig-footer-pill--download:hover {
-  background: rgba(255, 112, 26, 0.25);
-  border-color: #FF701A;
+  background: rgba(255, 146, 48, 0.25);
+  border-color: #FF9230;
 }
 
 .ig-footer-pill--video {
-  border-color: rgba(37, 191, 255, 0.35);
+  border-color: rgba(0, 145, 255, 0.35);
 }
 
 .ig-footer-pill--video:hover {
-  background: rgba(37, 191, 255, 0.2);
-  border-color: #25BFFF;
+  background: rgba(0, 145, 255, 0.2);
+  border-color: #0091FF;
 }
 
 .ig-footer-pill:active {
@@ -2439,7 +2439,7 @@ html, body.stories-body {
 .drawing-mode-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(16, 16, 20, 0.94);
+  background: rgba(22, 22, 23, 0.94);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   z-index: 3500;
@@ -2494,8 +2494,8 @@ html, body.stories-body {
 
 .brush-icon-btn.is-active {
   background: var(--stories-primary);
-  color: #101014;
-  box-shadow: 0 0 0 1px #ff701a, 0 4px 12px rgba(0, 0, 0, 0.35);
+  color: #161617;
+  box-shadow: 0 0 0 1px #FF9230, 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 .drawing-topbar-right {
@@ -2524,7 +2524,7 @@ html, body.stories-body {
 
 .drawing-done-btn {
   background: #FFF;
-  color: #101014;
+  color: #161617;
   border: none;
   border-radius: 20px;
   padding: 8px 16px;
@@ -2656,14 +2656,14 @@ html, body.stories-body {
 }
 
 .filter-bubble-item.is-active .filter-bubble-preview {
-  border-color: #FF701A;
+  border-color: #FF9230;
   transform: scale(1.12);
-  box-shadow: 0 0 0 1px #ff701a, 0 4px 12px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 0 1px #FF9230, 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 .filter-bubble-check {
-  background: #FF701A;
-  color: #101014;
+  background: #FF9230;
+  color: #161617;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -2675,7 +2675,7 @@ html, body.stories-body {
 .filter-bubble-name {
   font-size: 12px;
   font-weight: 700;
-  color: #FFF4E8;
+  color: #F5F5F7;
   white-space: nowrap;
 }
 
@@ -2700,7 +2700,7 @@ html, body.stories-body {
   margin-bottom: 8px;
   font-size: 12px;
   font-weight: 600;
-  color: #FFF4E8;
+  color: #F5F5F7;
 }
 
 .intensity-label {
@@ -2710,13 +2710,13 @@ html, body.stories-body {
 }
 
 .intensity-value {
-  color: #FF701A;
+  color: #FF9230;
   font-weight: 600;
 }
 
 .filter-range-slider {
   width: 100%;
-  accent-color: #FF701A;
+  accent-color: #FF9230;
 }
 
 /* Quick Toast Feedback */
@@ -2728,8 +2728,8 @@ html, body.stories-body {
   background: rgba(20, 20, 26, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 112, 26, 0.5);
-  color: #FFF4E8;
+  border: 1px solid rgba(255, 146, 48, 0.5);
+  color: #F5F5F7;
   padding: 10px 20px;
   border-radius: 24px;
   font-size: 13px;

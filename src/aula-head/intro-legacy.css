@@ -1,8 +1,8 @@
 /* Original /aula-head homepage, recovered from index-BUn8ella.css using PostCSS. Scoped to .head-intro; the root also carries .hero-scene. No global resets or slide styles. */
 .head-intro {
   --font-display: "Bowlby One SC", "Anton", sans-serif;
-  --font-heading: "Montserrat", "Inter", sans-serif;
-  --font-body: "Inter", system-ui, sans-serif;
+  --font-heading: "Montserrat", -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, system-ui, sans-serif;
   --font-accent: "Covered By Your Grace", cursive;
   --bg-main: #4b9db4;
   --bg-light: #63b1c4;

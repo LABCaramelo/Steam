@@ -1,18 +1,18 @@
 /* Logo Motion — Caramelo Design System V1 2026 */
 
 :root {
-  --cm-ink: #101014;
+  --cm-ink: #161617;
   --cm-surface: #181820;
   --cm-surface-hover: #22222c;
-  --cm-cream: #FFF4E8;
-  --cm-orange: #FF701A;
-  --cm-orange-hover: #ff853a;
-  --cm-sky: #25BFFF;
-  --cm-pink: #FF3D8D;
-  --cm-violet: #7657FF;
-  --cm-yellow: #FFD52A;
-  --cm-border: rgba(255, 244, 232, 0.1);
-  --cm-border-hover: rgba(255, 244, 232, 0.22);
+  --cm-cream: #F5F5F7;
+  --cm-orange: #FF9230;
+  --cm-orange-hover: #FF9E33;
+  --cm-sky: #0091FF;
+  --cm-pink: #FF375F;
+  --cm-violet: #6D7CFF;
+  --cm-yellow: #FFD600;
+  --cm-border: rgba(255, 255, 255, 0.1);
+  --cm-border-hover: rgba(255, 255, 255, 0.22);
 }
 
 * {
@@ -24,7 +24,7 @@ body.logomotion-body {
   padding: 0;
   background-color: var(--cm-ink);
   color: var(--cm-cream);
-  font-family: var(--caramelo-font-sans, "Inter", sans-serif);
+  font-family: var(--caramelo-font-sans, -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif);
   overflow: hidden;
   height: calc(100vh / var(--ui-zoom, 1));
   width: calc(100vw / var(--ui-zoom, 1));
@@ -72,7 +72,7 @@ body.logomotion-body {
 
 .dia-header-status {
   font-size: 13px;
-  color: rgba(255, 244, 232, 0.6);
+  color: rgba(255, 255, 255, 0.6);
   font-family: monospace;
 }
 
@@ -118,10 +118,10 @@ body.logomotion-body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 2px dashed rgba(255, 112, 26, 0.4);
+  border: 2px dashed rgba(255, 146, 48, 0.4);
   border-radius: var(--cm-radius-xl, 16px);
   padding: 24px 16px;
-  background-color: rgba(255, 112, 26, 0.04);
+  background-color: rgba(255, 146, 48, 0.04);
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
   text-align: center;
@@ -129,7 +129,7 @@ body.logomotion-body {
 
 .dia-dropzone-rail:hover {
   border-color: var(--cm-orange);
-  background-color: rgba(255, 112, 26, 0.08);
+  background-color: rgba(255, 146, 48, 0.08);
 }
 
 .dia-dropzone-icon {
@@ -147,7 +147,7 @@ body.logomotion-body {
 
 .dia-dropzone-hint {
   font-size: 11px;
-  color: rgba(255, 244, 232, 0.5);
+  color: rgba(255, 255, 255, 0.5);
   margin-top: 4px;
 }
 
@@ -175,14 +175,14 @@ body.logomotion-body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: rgba(255, 244, 232, 0.7);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .dia-rail-tag {
   font-size: 10px;
   font-weight: 600;
   color: var(--cm-orange);
-  background-color: rgba(255, 112, 26, 0.15);
+  background-color: rgba(255, 146, 48, 0.15);
   padding: 2px 6px;
   border-radius: 6px;
 }
@@ -235,7 +235,7 @@ body.logomotion-body {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  color: rgba(255, 244, 232, 0.8);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .dia-slider-val {
@@ -247,7 +247,7 @@ body.logomotion-body {
   accent-color: var(--cm-orange);
   height: 6px;
   border-radius: 3px;
-  background: rgba(255, 244, 232, 0.15);
+  background: rgba(255, 255, 255, 0.15);
   cursor: pointer;
 }
 
@@ -264,7 +264,7 @@ body.logomotion-body {
 .dia-text-input:focus {
   outline: none;
   border-color: var(--cm-orange);
-  box-shadow: 0 0 0 2px rgba(255, 112, 26, 0.2);
+  box-shadow: 0 0 0 2px rgba(255, 146, 48, 0.2);
 }
 
 /* Brand Colors */
@@ -317,13 +317,13 @@ body.logomotion-body {
 .dia-color-label {
   flex: 1;
   font-size: 12px;
-  color: rgba(255, 244, 232, 0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .dia-color-del-btn {
   background: none;
   border: none;
-  color: rgba(255, 244, 232, 0.4);
+  color: rgba(255, 255, 255, 0.4);
   font-size: 18px;
   cursor: pointer;
 }
@@ -355,7 +355,7 @@ body.logomotion-body {
 
 .dia-audio-track-item.is-selected {
   border-color: var(--cm-sky);
-  background-color: rgba(37, 191, 255, 0.08);
+  background-color: rgba(0, 145, 255, 0.08);
 }
 
 .dia-track-name {
@@ -366,14 +366,14 @@ body.logomotion-body {
 
 .dia-track-bpm {
   font-size: 11px;
-  color: rgba(255, 244, 232, 0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .dia-track-badge {
   font-size: 10px;
   font-weight: 600;
   color: var(--cm-sky);
-  background: rgba(37, 191, 255, 0.15);
+  background: rgba(0, 145, 255, 0.15);
   padding: 2px 6px;
   border-radius: 6px;
 }
@@ -409,7 +409,7 @@ body.logomotion-body {
 
 .dia-toggle-sub {
   font-size: 11px;
-  color: rgba(255, 244, 232, 0.5);
+  color: rgba(255, 255, 255, 0.5);
   margin-top: 2px;
 }
 
@@ -464,7 +464,7 @@ body.logomotion-body {
   width: 100%;
   height: 100%;
   border-radius: var(--cm-radius-2xl, 22px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 244, 232, 0.12);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.12);
   overflow: hidden;
   background-color: #000;
   display: flex;
@@ -499,7 +499,7 @@ body.logomotion-body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(16, 16, 20, 0.75);
+  background: rgba(22, 22, 23, 0.75);
   backdrop-filter: blur(8px);
   z-index: 10;
 }
@@ -526,7 +526,7 @@ body.logomotion-body {
 
 .dia-empty-sub {
   font-size: 13px;
-  color: rgba(255, 244, 232, 0.5);
+  color: rgba(255, 255, 255, 0.5);
   margin-top: 4px;
 }
 
@@ -566,7 +566,7 @@ body.logomotion-body {
   align-items: center;
   justify-content: center;
   transition: transform 0.15s ease, background-color 0.15s ease;
-  box-shadow: 0 4px 14px rgba(255, 112, 26, 0.35);
+  box-shadow: 0 4px 14px rgba(255, 146, 48, 0.35);
 }
 
 .studio-play-btn:hover {
@@ -578,7 +578,7 @@ body.logomotion-body {
   font-family: monospace;
   font-size: 13px;
   font-weight: 700;
-  color: rgba(255, 244, 232, 0.7);
+  color: rgba(255, 255, 255, 0.7);
   white-space: nowrap;
 }
 
@@ -600,7 +600,7 @@ body.logomotion-body {
   top: 0;
   left: 0;
   bottom: 0;
-  background-color: rgba(255, 112, 26, 0.22);
+  background-color: rgba(255, 146, 48, 0.22);
   pointer-events: none;
   z-index: 2;
 }
@@ -625,7 +625,7 @@ body.logomotion-body {
 }
 
 .studio-frame-cut {
-  border-right: 1px solid rgba(255, 244, 232, 0.12);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
   height: 100%;
   transition: background-color 0.1s ease;
 }
@@ -635,12 +635,12 @@ body.logomotion-body {
 }
 
 .studio-frame-cut-active {
-  background-color: rgba(255, 112, 26, 0.35) !important;
+  background-color: rgba(255, 146, 48, 0.35) !important;
   border-color: var(--cm-orange);
 }
 
 .studio-frame-cut-inverted {
-  background-color: rgba(255, 244, 232, 0.08);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 /* Right Rail: Export & Frame Order */
@@ -649,7 +649,7 @@ body.logomotion-body {
 }
 
 .dia-caramelo-export-btn {
-  box-shadow: 0 8px 24px rgba(255, 112, 26, 0.35);
+  box-shadow: 0 8px 24px rgba(255, 146, 48, 0.35);
   font-family: var(--caramelo-font-display, "Syne", sans-serif);
   font-weight: 600;
   letter-spacing: -0.2px;
@@ -701,7 +701,7 @@ body.logomotion-body {
   background-color: var(--cm-ink);
   padding: 2px 8px;
   border-radius: 10px;
-  color: rgba(255, 244, 232, 0.6);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .dia-add-frame-wrapper {
@@ -749,7 +749,7 @@ body.logomotion-body {
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  color: rgba(255, 244, 232, 0.4);
+  color: rgba(255, 255, 255, 0.4);
   padding: 6px 8px 2px;
 }
 
@@ -766,7 +766,7 @@ body.logomotion-body {
 }
 
 .dia-menu-item:hover {
-  background-color: rgba(255, 112, 26, 0.15);
+  background-color: rgba(255, 146, 48, 0.15);
   color: var(--cm-orange);
 }
 
@@ -791,11 +791,11 @@ body.logomotion-body {
 
 .dia-frame-order-item.is-selected {
   border-color: var(--cm-orange);
-  background-color: rgba(255, 112, 26, 0.06);
+  background-color: rgba(255, 146, 48, 0.06);
 }
 
 .dia-frame-order-item.is-inverted {
-  box-shadow: inset 0 0 0 1px rgba(255, 244, 232, 0.25);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
 }
 
 .dia-frame-order-item-row {
@@ -814,7 +814,7 @@ body.logomotion-body {
 .dia-order-btn {
   background: none;
   border: none;
-  color: rgba(255, 244, 232, 0.4);
+  color: rgba(255, 255, 255, 0.4);
   font-size: 8px;
   padding: 2px 4px;
   cursor: pointer;
@@ -894,7 +894,7 @@ body.logomotion-body {
   background: none;
   border: 1px solid var(--cm-border);
   border-radius: 6px;
-  color: rgba(255, 244, 232, 0.5);
+  color: rgba(255, 255, 255, 0.5);
   font-size: 13px;
   padding: 4px 6px;
   cursor: pointer;
@@ -909,7 +909,7 @@ body.logomotion-body {
 .dia-frame-order-remove {
   background: none;
   border: none;
-  color: rgba(255, 244, 232, 0.35);
+  color: rgba(255, 255, 255, 0.35);
   cursor: pointer;
   padding: 4px;
 }

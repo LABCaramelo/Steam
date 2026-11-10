@@ -1,12 +1,12 @@
 /* Trama · Caramelo Lumen. The MCP supplies the shared semantic color roles. */
 :where(.trama-root,.trama-overlay,.trama-menu,.trama-tooltip){
-  --trama-font-display:var(--caramelo-font-display,Montserrat,Inter,sans-serif);
-  --trama-font-ui:var(--caramelo-font-sans,Inter,system-ui,sans-serif);
+  --trama-font-display:var(--caramelo-font-display,Montserrat,-apple-system, BlinkMacSystemFont, "SF Pro Text", Inter,sans-serif);
+  --trama-font-ui:var(--caramelo-font-sans,-apple-system, BlinkMacSystemFont, "SF Pro Text", Inter,system-ui,sans-serif);
   --trama-font-code:var(--caramelo-font-mono,ui-monospace,Consolas,monospace);
   --trama-radius-sm:var(--cm-radius-sm,5px);--trama-radius-md:var(--cm-radius-md,8px);--trama-radius-lg:var(--cm-radius-lg,12px);--trama-radius-xl:var(--cm-radius-xl,16px);
   --trama-duration-press:80ms;--trama-duration-hover:160ms;--trama-duration-enter:240ms;--trama-ease:var(--cm-ease-out,cubic-bezier(.16,1,.3,1));
-  --trama-shadow-panel:inset 0 1px 0 rgb(255 244 232/.035),0 8px 24px -12px rgb(0 0 0/.4);
-  --trama-shadow-float:inset 0 1px 0 rgb(255 244 232/.06),0 24px 72px -20px rgb(0 0 0/.65);
+  --trama-shadow-panel:inset 0 1px 0 rgb(255 255 255 /.035),0 8px 24px -12px rgb(0 0 0/.4);
+  --trama-shadow-float:inset 0 1px 0 rgb(255 255 255 /.06),0 24px 72px -20px rgb(0 0 0/.65);
   font-family:var(--trama-font-ui);font-size:14px;color:rgb(var(--cm-fg));-webkit-font-smoothing:antialiased;
 }
 [data-caramelo-theme="light"] :where(.trama-root,.trama-overlay,.trama-menu,.trama-tooltip){--trama-shadow-panel:inset 0 1px 0 rgb(255 255 255/.8),0 6px 20px -12px rgb(80 48 22/.18);--trama-shadow-float:inset 0 1px 0 rgb(255 255 255/.9),0 24px 64px -20px rgb(80 48 22/.24)}
@@ -31,8 +31,8 @@
 :where(.trama-root,.trama-overlay) .v-btn{min-height:40px;border-radius:var(--trama-radius-md);font:650 13px/1.2 var(--trama-font-ui);letter-spacing:0;text-transform:none}
 :where(.trama-root,.trama-overlay) .v-btn--icon{min-width:40px;width:40px;height:40px}
 :where(.trama-root,.trama-overlay) .v-btn--size-small{min-height:36px;font-size:12px}
-:where(.trama-root,.trama-overlay) .v-btn.bg-primary{background:rgb(var(--cm-accent))!important;color:rgb(var(--cm-accent-contrast))!important;border:1px solid rgb(var(--cm-accent));box-shadow:inset 0 1px 0 rgb(255 244 232/.2)}
-:where(.trama-root,.trama-overlay) .v-btn.bg-primary:hover{background:rgb(var(--cm-accent-bright))!important;box-shadow:var(--cm-spectrum-glow),inset 0 1px 0 rgb(255 244 232/.22)}
+:where(.trama-root,.trama-overlay) .v-btn.bg-primary{background:rgb(var(--cm-accent))!important;color:rgb(var(--cm-accent-contrast))!important;border:1px solid rgb(var(--cm-accent));box-shadow:inset 0 1px 0 rgb(255 255 255 /.2)}
+:where(.trama-root,.trama-overlay) .v-btn.bg-primary:hover{background:rgb(var(--cm-accent-bright))!important;box-shadow:var(--cm-spectrum-glow),inset 0 1px 0 rgb(255 255 255 /.22)}
 :where(.trama-root,.trama-overlay) .v-btn--variant-tonal{background:rgb(var(--cm-surface-2));border:1px solid rgb(var(--cm-line-strong))}
 :where(.trama-root,.trama-overlay) .v-btn--variant-text:hover{background:rgb(var(--cm-surface-2))}
 :where(.trama-root,.trama-overlay) .v-btn--disabled{opacity:.45}

@@ -11,23 +11,23 @@
   --color-obsidian-750: #181a24;
   --color-obsidian-700: #1f2230;
 
-  --color-cream: #fff4e8;
+  --color-cream: #F5F5F7;
   --color-cream-pure: #ffffff;
-  --color-cream-muted: rgba(255, 244, 232, 0.65);
-  --color-cream-subtle: rgba(255, 244, 232, 0.38);
+  --color-cream-muted: rgba(255, 255, 255, 0.65);
+  --color-cream-subtle: rgba(255, 255, 255, 0.38);
 
-  --color-caramel: #ff701a;
-  --color-sky: #25bfff;
-  --color-violet: #7657ff;
-  --color-pink: #ff3d8d;
-  --color-yellow: #ffd52a;
+  --color-caramel: #FF9230;
+  --color-sky: #0091FF;
+  --color-violet: #6D7CFF;
+  --color-pink: #FF375F;
+  --color-yellow: #FFD600;
   --color-emerald: #10b981;
 
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-prominent: rgba(255, 255, 255, 0.16);
 
   --font-editorial: Montserrat, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-ui: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", Consolas, Menlo, monospace;
 }
 
@@ -56,9 +56,9 @@ body {
   flex-direction: column;
   background-color: var(--color-obsidian-900);
   background-image:
-    radial-gradient(ellipse 90% 40% at 50% -10%, rgba(255, 112, 26, 0.08), transparent),
-    radial-gradient(circle at 90% 20%, rgba(37, 191, 255, 0.05), transparent 35%),
-    radial-gradient(circle at 10% 80%, rgba(118, 87, 255, 0.05), transparent 35%);
+    radial-gradient(ellipse 90% 40% at 50% -10%, rgba(255, 146, 48, 0.08), transparent),
+    radial-gradient(circle at 90% 20%, rgba(0, 145, 255, 0.05), transparent 35%),
+    radial-gradient(circle at 10% 80%, rgba(109, 124, 255, 0.05), transparent 35%);
 }
 
 /* ==========================================================================
@@ -452,8 +452,8 @@ body {
 }
 
 .inspector-tip-callout {
-  background: rgba(255, 112, 26, 0.08);
-  border: 1px solid rgba(255, 112, 26, 0.3);
+  background: rgba(255, 146, 48, 0.08);
+  border: 1px solid rgba(255, 146, 48, 0.3);
   border-radius: 8px;
   padding: 14px;
   display: flex;

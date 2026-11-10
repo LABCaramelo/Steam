@@ -59,10 +59,10 @@ html[data-journey] .commercial-home .community-path:focus-within .pill{box-shado
 .commercial-home .process-section[data-process-mode='stage'] .process-steps>li:focus-visible{outline:2px solid rgb(var(--cm-focus));outline-offset:10px}
 .commercial-home .cm-featured-case[data-editorial-scene='true']{height:250svh;overflow:visible;border:0;background:none;box-shadow:none}
 .commercial-home .cm-featured-case[data-editorial-scene='true']::before{display:none}
-.cm-featured-case[data-editorial-scene='true'] .cm-featured-case__inner{position:sticky;top:calc(var(--header-height) + 28px);min-height:calc(100svh - var(--header-height) - 56px);border:1px solid rgb(255 244 232 / .16);border-radius:14px;background:radial-gradient(ellipse at 90% 10%,rgb(255 112 26 / .12),transparent 50%),linear-gradient(145deg,#16161b,#1a1922 50%,#121217);padding:clamp(28px,3.4vw,48px)}
+.cm-featured-case[data-editorial-scene='true'] .cm-featured-case__inner{position:sticky;top:calc(var(--header-height) + 28px);min-height:calc(100svh - var(--header-height) - 56px);border:1px solid rgb(255 255 255 / .16);border-radius:14px;background:radial-gradient(ellipse at 90% 10%,rgb(255 146 48 / .12),transparent 50%),linear-gradient(145deg,#16161b,#1a1922 50%,#121217);padding:clamp(28px,3.4vw,48px)}
 .cm-featured-case[data-editorial-scene='true'] .cm-featured-case__content{gap:16px}
 .cm-featured-case[data-editorial-scene='true'] .cm-featured-case__title{font-size:clamp(30px,3.4vw,50px)}
 .cm-featured-case[data-editorial-scene='true'] .cm-deck-card{transition:box-shadow .3s,border-color .3s}
-.cm-featured-case[data-editorial-scene='true'] .cm-deck-card[data-editorial-active='true']{border-color:rgb(255 112 26 / .7);box-shadow:0 24px 65px rgb(0 0 0 / .6)}
+.cm-featured-case[data-editorial-scene='true'] .cm-deck-card[data-editorial-active='true']{border-color:rgb(255 146 48 / .7);box-shadow:0 24px 65px rgb(0 0 0 / .6)}
 .cm-featured-case[data-editorial-scene='true'] .cm-deck-card:focus-visible{outline:3px solid var(--sky);outline-offset:8px}
 .cm-featured-case[data-editorial-scene='true'] .editorial-reading-controls{margin-top:4px}

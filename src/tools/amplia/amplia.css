@@ -4,17 +4,17 @@
    ========================================================================== */
 
 :root {
-  --ap-bg: #101014;
+  --ap-bg: #161617;
   --ap-surface: #17171f;
   --ap-surface-hover: #1f1f2a;
-  --ap-border: rgba(255, 244, 232, 0.1);
-  --ap-border-active: #FF701A;
-  --ap-text-main: #FFF4E8;
+  --ap-border: rgba(255, 255, 255, 0.1);
+  --ap-border-active: #FF9230;
+  --ap-text-main: #F5F5F7;
   --ap-text-muted: #8e8ea6;
-  --ap-accent-caramel: #FF701A;
-  --ap-accent-sky: #25BFFF;
-  --ap-accent-pink: #FF3D8D;
-  --ap-accent-yellow: #FFD52A;
+  --ap-accent-caramel: #FF9230;
+  --ap-accent-sky: #0091FF;
+  --ap-accent-pink: #FF375F;
+  --ap-accent-yellow: #FFD600;
   --ap-radius-sm: 6px;
   --ap-radius-md: 10px;
   --ap-radius-lg: 16px;
@@ -34,7 +34,7 @@ body.amplia-body {
   display: flex;
   flex-direction: column;
   height: calc(100vh / var(--ui-zoom, 1));
-  background: radial-gradient(circle at 50% 0%, rgba(255, 112, 26, 0.05) 0%, transparent 60%), var(--ap-bg);
+  background: radial-gradient(circle at 50% 0%, rgba(255, 146, 48, 0.05) 0%, transparent 60%), var(--ap-bg);
   user-select: none;
 }
 
@@ -44,7 +44,7 @@ body.amplia-body {
 
 .amplia-header {
   border-bottom: 1px solid var(--ap-border);
-  background: rgba(16, 16, 20, 0.95);
+  background: rgba(22, 22, 23, 0.95);
   backdrop-filter: blur(12px);
   padding: 12px 24px 0 24px;
   display: flex;
@@ -69,14 +69,14 @@ body.amplia-body {
   width: 36px;
   height: 36px;
   background: var(--ap-accent-caramel);
-  color: #101014;
+  color: #161617;
   font-weight: 900;
   font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--ap-radius-sm);
-  box-shadow: 0 2px 10px rgba(255, 112, 26, 0.35);
+  box-shadow: 0 2px 10px rgba(255, 146, 48, 0.35);
 }
 
 .amplia-title-box {
@@ -100,7 +100,7 @@ body.amplia-body {
 }
 
 .amplia-tag {
-  background: rgba(255, 112, 26, 0.15);
+  background: rgba(255, 146, 48, 0.15);
   color: var(--ap-accent-caramel);
   font-size: 10px;
   font-weight: 800;
@@ -128,7 +128,7 @@ body.amplia-body {
 }
 
 .amplia-btn-preset {
-  background: rgba(255, 244, 232, 0.06);
+  background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--ap-border);
   color: var(--ap-text-main);
   padding: 6px 14px;
@@ -143,7 +143,7 @@ body.amplia-body {
 }
 
 .amplia-btn-preset:hover {
-  background: rgba(255, 112, 26, 0.12);
+  background: rgba(255, 146, 48, 0.12);
   border-color: var(--ap-accent-caramel);
 }
 
@@ -156,15 +156,15 @@ body.amplia-body {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  background: rgba(255, 244, 232, 0.05);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--ap-border);
   color: var(--ap-text-main);
   transition: all 0.2s;
 }
 
 .amplia-engine-pill.connected {
-  border-color: rgba(37, 191, 255, 0.4);
-  background: rgba(37, 191, 255, 0.08);
+  border-color: rgba(0, 145, 255, 0.4);
+  background: rgba(0, 145, 255, 0.08);
 }
 
 .amplia-engine-dot {
@@ -175,8 +175,8 @@ body.amplia-body {
 }
 
 .amplia-engine-pill.connected .amplia-engine-dot {
-  background: #25BFFF;
-  box-shadow: 0 0 8px #25BFFF;
+  background: #0091FF;
+  box-shadow: 0 0 8px #0091FF;
 }
 
 /* Tabs Navigation */
@@ -218,7 +218,7 @@ body.amplia-body {
 }
 
 .amplia-tab-badge {
-  background: rgba(255, 244, 232, 0.1);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--ap-text-main);
   font-size: 9px;
   font-weight: 800;
@@ -267,7 +267,7 @@ body.amplia-body {
 
 .amplia-drop-icon {
   font-size: 52px;
-  filter: drop-shadow(0 4px 14px rgba(255, 112, 26, 0.3));
+  filter: drop-shadow(0 4px 14px rgba(255, 146, 48, 0.3));
 }
 
 .amplia-drop-title {
@@ -286,19 +286,19 @@ body.amplia-body {
 
 .amplia-btn-upload {
   background: var(--ap-accent-caramel);
-  color: #101014;
+  color: #161617;
   font-weight: 800;
   font-size: 13.5px;
   padding: 11px 26px;
   border-radius: var(--ap-radius-md);
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 18px rgba(255, 112, 26, 0.3);
+  box-shadow: 0 4px 18px rgba(255, 146, 48, 0.3);
 }
 
 .amplia-btn-upload:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 24px rgba(255, 112, 26, 0.45);
+  box-shadow: 0 6px 24px rgba(255, 146, 48, 0.45);
 }
 
 .amplia-formats-hint {
@@ -311,7 +311,7 @@ body.amplia-body {
 
 .amplia-formats-hint code {
   color: var(--ap-accent-sky);
-  background: rgba(37, 191, 255, 0.1);
+  background: rgba(0, 145, 255, 0.1);
   padding: 3px 8px;
   border-radius: 4px;
 }
@@ -320,7 +320,7 @@ body.amplia-body {
 .amplia-stage-toolbar {
   height: 44px;
   border-bottom: 1px solid var(--ap-border);
-  background: rgba(16, 16, 20, 0.85);
+  background: rgba(22, 22, 23, 0.85);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -424,14 +424,14 @@ body.amplia-body {
 
 .badge-before {
   left: 12px;
-  background: rgba(16, 16, 20, 0.85);
+  background: rgba(22, 22, 23, 0.85);
   color: var(--ap-text-muted);
 }
 
 .badge-after {
   right: 12px;
-  background: rgba(255, 112, 26, 0.9);
-  color: #101014;
+  background: rgba(255, 146, 48, 0.9);
+  color: #161617;
 }
 
 .amplia-split-divider {
@@ -451,7 +451,7 @@ body.amplia-body {
   height: 32px;
   border-radius: 50%;
   background: var(--ap-accent-caramel);
-  color: #101014;
+  color: #161617;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -482,7 +482,7 @@ body.amplia-body {
 }
 
 .amplia-btn-clear-mask {
-  background: rgba(255, 61, 141, 0.15);
+  background: rgba(255, 55, 95, 0.15);
   border: 1px solid var(--ap-accent-pink);
   color: var(--ap-text-main);
   padding: 3px 8px;
@@ -556,7 +556,7 @@ body.amplia-body {
   padding: 10px;
   border-radius: var(--ap-radius-md);
   border: 1px solid var(--ap-border);
-  background: rgba(255, 244, 232, 0.04);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--ap-text-main);
   font-weight: 700;
   font-size: 12.5px;
@@ -566,7 +566,7 @@ body.amplia-body {
 
 .amplia-btn-ab.active {
   background: var(--ap-accent-caramel);
-  color: #101014;
+  color: #161617;
   border-color: var(--ap-accent-caramel);
 }
 
@@ -593,7 +593,7 @@ body.amplia-body {
 
 .amplia-metric-card.highlighted {
   border-color: var(--ap-accent-caramel);
-  background: rgba(255, 112, 26, 0.08);
+  background: rgba(255, 146, 48, 0.08);
 }
 
 .amplia-metric-label {
@@ -636,7 +636,7 @@ body.amplia-body {
 .amplia-panel-badge {
   font-size: 10px;
   font-weight: 700;
-  background: rgba(255, 244, 232, 0.08);
+  background: rgba(255, 255, 255, 0.08);
   padding: 2px 6px;
   border-radius: 4px;
   color: var(--ap-text-muted);
@@ -672,7 +672,7 @@ body.amplia-body {
 
 .amplia-group-btn {
   flex: 1;
-  background: rgba(255, 244, 232, 0.04);
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--ap-border);
   color: var(--ap-text-main);
   padding: 8px 10px;
@@ -685,7 +685,7 @@ body.amplia-body {
 
 .amplia-group-btn.active {
   background: var(--ap-accent-caramel);
-  color: #101014;
+  color: #161617;
   border-color: var(--ap-accent-caramel);
 }
 
@@ -764,7 +764,7 @@ body.amplia-body {
 }
 
 .amplia-lufs-btn {
-  background: rgba(255, 244, 232, 0.04);
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--ap-border);
   border-radius: var(--ap-radius-sm);
   padding: 8px 4px;
@@ -777,7 +777,7 @@ body.amplia-body {
 
 .amplia-lufs-btn.active {
   border-color: var(--ap-accent-caramel);
-  background: rgba(255, 112, 26, 0.12);
+  background: rgba(255, 146, 48, 0.12);
 }
 
 .amplia-target-name {
@@ -812,7 +812,7 @@ body.amplia-body {
 .amplia-btn-primary {
   width: 100%;
   background: var(--ap-accent-caramel);
-  color: #101014;
+  color: #161617;
   border: none;
   padding: 12px;
   border-radius: var(--ap-radius-md);
@@ -833,7 +833,7 @@ body.amplia-body {
 
 .amplia-btn-download {
   width: 100%;
-  background: rgba(37, 191, 255, 0.12);
+  background: rgba(0, 145, 255, 0.12);
   border: 1px solid var(--ap-accent-sky);
   color: var(--ap-accent-sky);
   padding: 10px;
@@ -846,7 +846,7 @@ body.amplia-body {
 .amplia-spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid #101014;
+  border: 2px solid #161617;
   border-top-color: transparent;
   border-radius: 50%;
   animation: ampliaSpin 0.7s linear infinite;
@@ -920,7 +920,7 @@ body.amplia-body {
 }
 
 .amplia-preset-card {
-  background: rgba(255, 244, 232, 0.03);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--ap-border);
   border-radius: var(--ap-radius-md);
   padding: 14px 16px;
@@ -932,7 +932,7 @@ body.amplia-body {
 }
 
 .amplia-preset-card:hover {
-  background: rgba(255, 112, 26, 0.08);
+  background: rgba(255, 146, 48, 0.08);
   border-color: var(--ap-accent-caramel);
 }
 
@@ -983,8 +983,8 @@ body.amplia-body {
 }
 
 .amplia-bridge-dot.connected {
-  background: #25BFFF;
-  box-shadow: 0 0 8px #25BFFF;
+  background: #0091FF;
+  box-shadow: 0 0 8px #0091FF;
 }
 
 .amplia-bridge-dot.disconnected {
@@ -992,7 +992,7 @@ body.amplia-body {
 }
 
 .amplia-btn-refresh-bridge {
-  background: rgba(255, 244, 232, 0.08);
+  background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--ap-border);
   color: var(--ap-text-main);
   padding: 6px 12px;
@@ -1003,7 +1003,7 @@ body.amplia-body {
 }
 
 .amplia-code-box {
-  background: #101014;
+  background: #161617;
   border: 1px solid var(--ap-border);
   border-radius: var(--ap-radius-sm);
   padding: 8px 12px;
@@ -1016,7 +1016,7 @@ body.amplia-body {
 }
 
 .amplia-btn-copy {
-  background: rgba(255, 244, 232, 0.1);
+  background: rgba(255, 255, 255, 0.1);
   border: none;
   color: var(--ap-text-main);
   padding: 4px 8px;
@@ -1045,7 +1045,7 @@ body.amplia-body {
 
 .amplia-cap-item.active {
   opacity: 1;
-  border-color: rgba(37, 191, 255, 0.4);
+  border-color: rgba(0, 145, 255, 0.4);
 }
 
 .amplia-instructions-title {

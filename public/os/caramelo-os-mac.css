@@ -551,10 +551,10 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
   font: 500 15px/1 var(--apple-font-text);
 }
 .login-input::placeholder { color: rgba(255, 255, 255, 0.45); }
-.login-input:focus { outline: none; border-color: rgba(255, 140, 50, 0.9); box-shadow: 0 0 0 3px rgba(255, 112, 26, 0.3); }
-.login-error { display: none; margin: -6px 0 0; font-size: 12px; color: #FF9F6B; }
+.login-input:focus { outline: none; border-color: rgba(255, 255, 255, 0.5); box-shadow: var(--apple-focus-ring); }
+.login-error { display: none; margin: -6px 0 0; font-size: 12px; color: var(--apple-orange); }
 .login-form.is-error .login-error { display: block; }
-.login-form.is-error .login-input { border-color: #FF7A45; }
+.login-form.is-error .login-input { border-color: var(--apple-orange); }
 .login-change, .login-hint { margin: 0; padding: 0; border: 0; background: none; font-size: 12px; color: rgba(255, 255, 255, 0.5); }
 .login-change { text-decoration: underline; cursor: pointer; }
 .login-change:hover { color: rgba(255, 255, 255, 0.8); }
@@ -569,14 +569,14 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
   box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06), 0 14px 40px rgba(0, 0, 0, 0.5);
   color: #F5F5F7; font-family: var(--apple-font-text);
 }
-.login-switch:focus-visible { outline: none; box-shadow: inset 0 3px 8px rgba(0,0,0,.7), 0 0 0 3px rgba(255, 140, 50, 0.6); }
+.login-switch:focus-visible { outline: none; box-shadow: inset 0 3px 8px rgba(0,0,0,.7), var(--apple-focus-ring); }
 .sw-on, .sw-label { position: absolute; top: 50%; transform: translateY(-50%); transition: opacity .35s ease; pointer-events: none; }
 .sw-on { left: 34px; font: 600 30px/1 var(--apple-font-display); letter-spacing: 0.02em; color: #D6D6DA; opacity: 0; }
 .sw-label { right: 20px; width: 92px; text-align: center; font: 600 12px/1.25 var(--apple-font-text); color: rgba(255, 255, 255, 0.78); }
 .sw-glow {
   position: absolute; top: 50%; left: 18px; width: 96px; height: 72px; transform: translateY(-50%);
   border-radius: 50%; pointer-events: none; opacity: 0.18;
-  background: radial-gradient(closest-side, #FF9A3C 0%, #FF6A00 48%, rgba(255, 106, 0, 0) 100%);
+  background: radial-gradient(closest-side, var(--apple-accent-hover) 0%, var(--apple-orange) 48%, rgb(var(--apple-accent-rgb) / 0) 100%);
   filter: blur(6px); transition: opacity .45s ease, left .55s cubic-bezier(.2, .8, .2, 1);
 }
 .sw-knob {
@@ -600,7 +600,7 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
 .login-switch:hover .sw-glow { opacity: 0.35; }
 .login-switch.is-on .sw-knob {
   left: calc(var(--sw-w) - var(--knob) - 5px);
-  background: linear-gradient(90deg, rgba(255, 112, 26, 0.62), rgba(255, 255, 255, 0.12) 70%);
+  background: linear-gradient(90deg, rgb(var(--apple-accent-rgb) / 0.62), rgba(255, 255, 255, 0.12) 70%);
 }
 .login-switch.is-on .sw-glow { opacity: 1; left: calc(var(--sw-w) - var(--knob) - 34px); }
 .login-switch.is-on .sw-on { opacity: 1; }
@@ -624,13 +624,13 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
   position: fixed; z-index: 9000; min-width: 220px; padding: 5px;
   background: rgba(246, 246, 246, 0.82);
   -webkit-backdrop-filter: blur(24px) saturate(1.6); backdrop-filter: blur(24px) saturate(1.6);
-  border-radius: 9px;
+  border-radius: var(--apple-radius-menu);
   box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.18), inset 0 0 0 0.5px rgba(255, 255, 255, 0.6), 0 10px 30px rgba(0, 0, 0, 0.22);
   font: 13px/1.2 var(--apple-font-text); color: #1D1D1F;
 }
 .ctx-item {
   display: block; width: 100%; padding: 4px 10px; text-align: left;
-  border: 0; border-radius: 5px; background: none; color: inherit; font: inherit; cursor: default;
+  border: 0; border-radius: var(--apple-radius-menu-item); background: none; color: inherit; font: inherit; cursor: default;
 }
 .ctx-item:hover:not(:disabled), .ctx-item:focus-visible { outline: none; box-shadow: none; background: var(--focus, #0A84FF); color: #FFFFFF; }
 .ctx-item:disabled { color: rgba(0, 0, 0, 0.3); }
@@ -655,13 +655,29 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
 .login-picker {
   display: grid; grid-template-columns: repeat(6, 56px); gap: 8px; padding: 12px;
   max-width: calc(100vw / var(--ui-zoom, 1) - 32px); overflow: auto;
-  background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 14px;
+  background: rgba(30, 30, 30, 0.48); border: 0.5px solid rgba(255, 255, 255, 0.14); border-radius: var(--apple-radius-popover);
+  -webkit-backdrop-filter: blur(var(--apple-blur-menu)); backdrop-filter: blur(var(--apple-blur-menu));
 }
 .login-picker button { width: 56px; height: 56px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; cursor: pointer; background: #1C1C1E; box-shadow: 0 0 0 2px transparent; transition: box-shadow .15s, transform .15s; }
 .login-picker button:hover { transform: scale(1.06); }
-.login-picker button[aria-pressed="true"] { box-shadow: 0 0 0 3px #FF8A3D; }
+.login-picker button[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--apple-orange); }
 .login-picker img { display: block; width: 100%; height: 100%; object-fit: cover; }
 @media (max-width: 420px) { .login-picker { grid-template-columns: repeat(5, 48px); } .login-picker button { width: 48px; height: 48px; } }
 /* Com a grade de fotos aberta, a entrada pode passar da altura da tela: rola em vez de cortar o topo. */
 .boot { display: flex; overflow-y: auto; }
 .boot-splash, .boot-login { margin: auto; }
+
+/* Tela de bloqueio do macOS: a entrada fica sobre o fundo de tela desfocado. */
+.boot { isolation: isolate; }
+.boot:has(.boot-login:not([hidden]))::before {
+  content: ""; position: fixed; inset: -40px; z-index: -1;
+  background: url("/assets/images/caramelo-os/fundo-caramelo.webp") 50% 40% / cover no-repeat;
+  filter: blur(36px) saturate(1.2) brightness(0.55);
+}
+.login-input {
+  background: rgba(255, 255, 255, 0.14);
+  border: 0.5px solid rgba(255, 255, 255, 0.28);
+  -webkit-backdrop-filter: blur(var(--apple-blur)); backdrop-filter: blur(var(--apple-blur));
+  border-radius: var(--apple-radius-capsule);
+}
+.login-arrow { -webkit-backdrop-filter: blur(var(--apple-blur)); backdrop-filter: blur(var(--apple-blur)); }

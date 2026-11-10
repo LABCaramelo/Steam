@@ -30,7 +30,7 @@
 .maker-beam[data-beam-active='true']{background:var(--orange);opacity:1}
 .maker-direction-point{position:absolute;left:calc(50% - 9px);bottom:calc(8% - 9px);width:18px;height:18px;background:var(--cream);border:4px solid var(--ink);border-radius:50%;transform:translateZ(2px)}
 .maker-signature{position:absolute;right:36px;bottom:38px;width:64px;height:64px;transform:rotate(-7deg)}
-.maker-art-line{position:absolute;left:36px;right:36px;bottom:24px;height:1px;background:rgba(255,244,232,.22)}
+.maker-art-line{position:absolute;left:36px;right:36px;bottom:24px;height:1px;background:rgba(255, 255, 255,.22)}
 .maker-section .maker-credits{display:flex;flex-wrap:wrap;gap:8px 6px;max-width:100%;margin-top:20px;font:600 11px/1.5 var(--body);letter-spacing:.025em;text-transform:uppercase;color:var(--ink)}
 .maker-separator{display:none}
 .maker-discipline{appearance:none;display:inline-flex;align-items:center;justify-content:center;position:relative;background:transparent;border:1px solid rgb(var(--cm-fg) / .35);border-radius:30px;padding:9px 13px;min-height:38px;margin:0;color:var(--ink);font:inherit;letter-spacing:inherit;line-height:1.35;white-space:nowrap;text-decoration:none;transition:background-color .18s,color .18s,border-color .18s}

@@ -1,7 +1,7 @@
 :root {
-  font-family: Inter,Arial,sans-serif;
-  color: #fff4e8;
-  background: #101014;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter,Arial,sans-serif;
+  color: #F5F5F7;
+  background: #161617;
   font-synthesis: none;
   color-scheme: dark;
 }
@@ -34,15 +34,15 @@ a {
   color: inherit;
 }
 button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,pre:focus-visible {
-  outline: 3px solid var(--accent,#ff701a);
+  outline: 3px solid var(--accent,#FF9230);
   outline-offset: 4px;
 }
 ::selection {
-  background: var(--accent,#ff701a);
-  color: #101014;
+  background: var(--accent,#FF9230);
+  color: #161617;
 }
 .presentation {
-  --accent: #ff701a;
+  --accent: #FF9230;
   max-width: 1720px;
   margin: auto;
   padding: 0 4%;
@@ -117,7 +117,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .lesson-nav>button.active {
   border-bottom-color: var(--accent);
-  color: #fff4e8;
+  color: #F5F5F7;
   background: color-mix(in srgb,var(--accent) 5%,transparent);
 }
 .lesson-number {
@@ -199,7 +199,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   background: var(--accent);
 }
 .slide-header h1 {
-  font-family: Montserrat,Inter,sans-serif;
+  font-family: Montserrat,-apple-system, BlinkMacSystemFont, "SF Pro Text", Inter,sans-serif;
   font-size: clamp(21px,2.95cqw,52px);
   font-weight: 700;
   line-height: 1.08;
@@ -223,7 +223,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   font-size: clamp(12px,1.08cqw,18px);
 }
 .experiment h2 {
-  font-family: Montserrat,Inter,sans-serif;
+  font-family: Montserrat,-apple-system, BlinkMacSystemFont, "SF Pro Text", Inter,sans-serif;
   font-weight: 600;
   letter-spacing: -.06cqw;
   font-size: 2.35cqw;
@@ -287,7 +287,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   font-variant-numeric: tabular-nums;
 }
 .page-number b {
-  color: #fff4e8;
+  color: #F5F5F7;
   font-size: 16px;
 }
 .button {
@@ -308,9 +308,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   border-color: var(--accent);
 }
 .button.primary {
-  background: var(--accent,#ff701a);
-  border-color: var(--accent,#ff701a);
-  color: #101014;
+  background: var(--accent,#FF9230);
+  border-color: var(--accent,#FF9230);
+  color: #161617;
 }
 .button.primary:hover:not(:disabled) {
   filter: brightness(1.12);
@@ -393,7 +393,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .choices>button.selected,.choices>button:hover {
   background: var(--accent);
-  color: #101014;
+  color: #161617;
   border-color: var(--accent);
 }
 .text-button {
@@ -451,11 +451,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .mini-landing {
   --system-accent: var(--accent);
   --system-font: Montserrat;
-  --system-surface: #fff4e8;
+  --system-surface: #F5F5F7;
   --system-radius: 2px;
   --system-space: 16px;
   background: var(--system-surface);
-  color: #101014;
+  color: #161617;
   text-align: left;
   border-radius: 4px;
   overflow: hidden;
@@ -470,7 +470,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   font-family: var(--system-font),sans-serif;
 }
 .mini-hero>small {
-  font-family: Inter,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter,sans-serif;
   font-size: .65cqw;
   letter-spacing: 1px;
   font-weight: 600;
@@ -491,7 +491,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   z-index: 1;
 }
 .mini-hero>p {
-  font-family: Inter,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter,sans-serif;
   font-size: .79cqw;
   width: 68%;
   line-height: 1.4;
@@ -500,11 +500,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   z-index: 1;
 }
 .fake-cta {
-  font-family: Inter,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter,sans-serif;
   font-size: .72cqw;
   display: inline-block;
   background: var(--system-accent);
-  color: #101014;
+  color: #161617;
   padding: .65cqw 1.1cqw;
   border-radius: var(--system-radius);
   font-weight: 650;
@@ -534,7 +534,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   min-height: 5cqw;
 }
 .mini-section>small {
-  font-family: Inter,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter,sans-serif;
   font-size: .58cqw;
   letter-spacing: 1px;
   display: block;
@@ -558,7 +558,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   width: 45%;
 }
 .mini-sections:not(.repeat) .section-1 {
-  background: #101014;
+  background: #161617;
   color: var(--system-surface);
   padding: 1.6cqw;
   text-align: right;
@@ -624,7 +624,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .messy .mini-hero {
   background: #273b49;
-  color: #fff4e8;
+  color: #F5F5F7;
   padding: 1.4cqw;
   min-height: 15.2cqw;
 }
@@ -665,7 +665,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   transform: rotate(-12deg);
   font-size: .85cqw;
   background: #f6cf49;
-  color: #101014;
+  color: #161617;
   padding: .5cqw;
 }
 .messy-circle {
@@ -691,7 +691,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .hotspots span {
   position: absolute;
-  background: #101014;
+  background: #161617;
   color: var(--accent);
   font-size: .7cqw;
   padding: .3cqw .5cqw;
@@ -762,11 +762,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .map-section.current {
   background: var(--accent);
-  color: #101014;
+  color: #161617;
   flex: 1.5;
 }
 .map-section.current small {
-  color: #101014;
+  color: #161617;
 }
 .decision-track {
   width: 2px;
@@ -807,8 +807,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   margin-top: 2cqw;
 }
 .section-detail {
-  background: #fff4e8;
-  color: #101014;
+  background: #F5F5F7;
+  color: #161617;
   padding: 1.5cqw 2cqw;
   margin-bottom: 1cqw;
   min-height: 9cqw;
@@ -936,10 +936,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .tool-grid>button.selected {
   background: var(--accent);
-  color: #101014;
+  color: #161617;
 }
 .tool-grid>button.selected>span,.tool-grid>button.selected>small {
-  color: #101014;
+  color: #161617;
 }
 .tool-focus {
   padding: 0;
@@ -1077,8 +1077,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   min-height: 0;
 }
 .hero-preview {
-  background: #fff4e8;
-  color: #101014;
+  background: #F5F5F7;
+  color: #161617;
   padding: 1.6cqw 2cqw;
   position: relative;
   overflow: hidden;
@@ -1136,7 +1136,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .hero-cta {
   background: var(--accent);
-  color: #101014;
+  color: #161617;
   font-weight: 700;
   padding: .8cqw 1.2cqw;
   font-size: .85cqw;
@@ -1180,7 +1180,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   background: #222126;
   border: 1px solid #ffffff30;
   border-radius: 2px;
-  color: #fff4e8;
+  color: #F5F5F7;
   padding: .7cqw;
   font-size: .85cqw;
 }
@@ -1195,8 +1195,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   bottom: .7cqw;
   left: 1cqw;
   right: 1cqw;
-  background: #101014;
-  color: #fff4e8;
+  background: #161617;
+  color: #F5F5F7;
   border-left: 3px solid var(--accent);
   padding: .8cqw;
   font-size: .85cqw;
@@ -1260,7 +1260,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   width: 24px;
   height: 24px;
   background: var(--accent);
-  color: #101014;
+  color: #161617;
   border-radius: 50%;
   text-align: center;
   line-height: 24px;
@@ -1283,7 +1283,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   background: #28272b;
   border: 1px solid #ffffff30;
   padding: 4px 6px;
-  color: #fff4e8;
+  color: #F5F5F7;
   font: inherit;
   cursor: pointer;
 }
@@ -1388,7 +1388,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   text-align: left;
   position: relative;
   background: var(--ref);
-  color: #101014;
+  color: #161617;
   overflow: hidden;
   min-height: 0;
   border: 3px solid transparent;
@@ -1398,7 +1398,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   justify-content: space-between;
 }
 .reference.selected {
-  border-color: #fff4e8;
+  border-color: #F5F5F7;
   box-shadow: 3px 3px 0 var(--accent);
 }
 .reference>span {
@@ -1418,7 +1418,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .ref-urban {
   background: linear-gradient(145deg,#b4a28d 0 25%,#242827 25% 40%,#62645b 40% 48%,#222425 48% 75%,#73644e 75%);
-  color: #fff4e8;
+  color: #F5F5F7;
 }
 .ref-urban>span {
   font-size: 1.1cqw;
@@ -1427,7 +1427,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .ref-ui>span {
   font-size: 1.5cqw;
-  font-family: Inter,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter,sans-serif;
   font-weight: 600;
   line-height: 1.15;
 }
@@ -1436,8 +1436,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   position: absolute;
   right: 1cqw;
   bottom: 2cqw;
-  background: #101014;
-  color: #fff4e8;
+  background: #161617;
+  color: #F5F5F7;
   padding: .5cqw 1cqw;
 }
 .ref-digital>span {
@@ -1531,7 +1531,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .system-flow>strong {
   padding: .6cqw 1cqw;
   background: var(--accent);
-  color: #101014;
+  color: #161617;
   letter-spacing: .5px;
 }
 .token-list {
@@ -1630,7 +1630,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   font-size: .7cqw;
 }
 .lock-option .mini-landing {
-  --system-accent: #25bfff;
+  --system-accent: #0091FF;
 }
 .lock-option .mini-hero {
   min-height: 13cqw;
@@ -1711,7 +1711,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   min-height: 0;
   flex: 1;
   scrollbar-width: thin;
-  scrollbar-color: var(--accent) #101014;
+  scrollbar-color: var(--accent) #161617;
 }
 .page-scroll .mini-hero {
   min-height: 20cqw;
@@ -1782,11 +1782,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .layer-stack>button.selected {
   background: var(--accent);
-  color: #101014;
+  color: #161617;
   border-color: var(--accent);
 }
 .layer-stack>button.selected>small {
-  color: #101014;
+  color: #161617;
 }
 .report {
   min-height: 0;
@@ -1860,8 +1860,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .chaos-grid>span {
   padding: 1cqw .8cqw;
-  background: #fff4e8;
-  color: #101014;
+  background: #F5F5F7;
+  color: #161617;
   text-align: center;
   font-family: Montserrat,sans-serif;
   font-weight: 750;
@@ -1912,7 +1912,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .motion-process>.reached b {
   background: var(--accent);
-  color: #101014;
+  color: #161617;
   border-color: var(--accent);
 }
 .motion-process>.reached span {
@@ -1941,8 +1941,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .result-motion>span {
   position: absolute;
   font-size: 1.2cqw;
-  background: #fff4e8;
-  color: #101014;
+  background: #F5F5F7;
+  color: #161617;
   padding: 1cqw;
   font-weight: 600;
 }
@@ -2016,7 +2016,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .scroll-object>span {
   font-size: 6cqw;
   line-height: 1;
-  color: #101014;
+  color: #161617;
   font-weight: 600;
 }
 .scroll-transform>.range-label {
@@ -2029,8 +2029,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   align-items: flex-start;
   justify-content: center;
   text-align: left;
-  background: #fff4e8;
-  color: #101014;
+  background: #F5F5F7;
+  color: #161617;
   padding: 1.5cqw 2.5cqw;
   width: 63%;
   border-left: .5cqw solid var(--accent);
@@ -2234,16 +2234,16 @@ textarea {
   background: #222126;
   border: 1px solid #ffffff30;
   border-radius: 2px;
-  color: #fff4e8;
+  color: #F5F5F7;
   padding: 12px;
   font-size: 14px;
   line-height: 1.5;
   width: 100%;
 }
 .modal {
-  color: #fff4e8;
+  color: #F5F5F7;
   background: #19181e;
-  --accent: #ff701a;
+  --accent: #FF9230;
   border: 1px solid #ffffff30;
   padding: 0;
   max-width: min(90vw,700px);
@@ -2344,7 +2344,7 @@ textarea {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   padding: 18px;
-  background: #101014;
+  background: #161617;
   border: 1px solid #ffffff20;
   max-height: 40dvh;
   overflow: auto;

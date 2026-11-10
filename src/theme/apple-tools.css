@@ -1,0 +1,270 @@
+/* ==========================================================================
+   Ferramentas — paletas próprias → tokens Apple
+   Cada ferramenta declara sua paleta em variáveis (--stories-*, --vs-*, --cad-*…).
+   Aqui elas apontam para os tokens do Apple Design System (public/apple/tokens.css).
+   Cada bloco vale só para a sua ferramenta (html[data-tool], posto por mountTool)
+   e vence o :root das folhas das ferramentas, que são importadas depois.
+   As cores usam tokens que já mudam entre claro e escuro, então o tema da
+   ferramenta continua funcionando.
+   ========================================================================== */
+
+html:root {
+  /* Atalhos usados abaixo */
+  --ax-stage: rgb(var(--cm-stage));
+  --ax-s1: rgb(var(--cm-surface-1));
+  --ax-s2: rgb(var(--cm-surface-2));
+  --ax-s3: rgb(var(--cm-surface-3));
+  --ax-text: rgb(var(--cm-fg));
+  --ax-text-2: var(--apple-label);
+  --ax-muted: rgb(var(--cm-fg-muted));
+  --ax-dim: rgb(var(--cm-fg-dim));
+  --ax-line: var(--apple-separator);
+  --ax-line-strong: var(--apple-separator-strong);
+  --ax-accent: var(--apple-orange);
+  --ax-accent-hover: var(--apple-accent-hover);
+  --ax-accent-soft: rgb(var(--apple-accent-rgb) / 0.16);
+}
+
+/* Stories */
+html[data-tool="stories"] {
+  --stories-bg: var(--ax-stage);
+  --stories-surface: var(--ax-s1);
+  --stories-surface-elevated: var(--ax-s2);
+  --stories-primary: var(--ax-accent);
+  --stories-accent: var(--apple-cyan);
+  --stories-cream: var(--ax-text);
+  --stories-text-muted: var(--ax-muted);
+  --stories-border: var(--ax-line);
+}
+
+/* Brand Guardian (e as páginas que usam o mesmo vocabulário) */
+html[data-tool="brand-guardian"] {
+  --bg-primary: var(--ax-s1);
+  --bg-secondary: var(--ax-s2);
+  --bg-tertiary: var(--ax-s3);
+  --bg-elevated: var(--apple-bg-control);
+  --text-main: var(--ax-text);
+  --text-muted: var(--ax-muted);
+  --text-dim: var(--ax-dim);
+  --accent-caramel: var(--ax-accent);
+  --accent-sky: var(--apple-cyan);
+  --accent-pink: var(--apple-pink);
+  --accent-yellow: var(--apple-yellow);
+  --accent-violet: var(--apple-indigo);
+  --border-subtle: var(--ax-line);
+  --border-accent: rgb(var(--apple-accent-rgb) / 0.4);
+  --radius-sm: var(--apple-radius-control);
+  --radius-md: var(--apple-radius-control-lg);
+  --radius-lg: var(--apple-radius-window);
+}
+
+/* VoiceStudio */
+html[data-tool="voicestudio"] {
+  --vs-ink: var(--ax-stage);
+  --vs-surface: var(--ax-s1);
+  --vs-surface-elevated: var(--ax-s2);
+  --vs-surface-hover: var(--ax-s3);
+  --vs-border: var(--ax-line);
+  --vs-border-strong: var(--ax-line-strong);
+  --vs-cream: var(--ax-text);
+  --vs-cream-dim: var(--ax-muted);
+  --vs-cream-faint: var(--ax-dim);
+  --vs-caramel: var(--ax-accent);
+  --vs-caramel-glow: rgb(var(--apple-accent-rgb) / 0.25);
+  --vs-sky: var(--apple-cyan);
+  --vs-pink: var(--apple-pink);
+  --vs-yellow: var(--apple-yellow);
+  --vs-violet: var(--apple-indigo);
+  --vs-mint: var(--apple-green);
+  --vs-red: var(--apple-red);
+  --vs-font-sans: var(--apple-font-text);
+  --vs-font-mono: var(--apple-font-mono);
+  --vs-radius-sm: var(--apple-radius-control);
+  --vs-radius: var(--apple-radius-control-lg);
+  --vs-radius-lg: var(--apple-radius-window);
+}
+
+/* Caderno */
+html[data-tool="caderno"] {
+  --cad-bg: var(--ax-stage);
+  --cad-surface-1: var(--ax-s1);
+  --cad-surface-2: var(--ax-s2);
+  --cad-surface-3: var(--ax-s3);
+  --cad-border: var(--ax-line-strong);
+  --cad-border-subtle: var(--ax-line);
+  --cad-text: var(--ax-text);
+  --cad-text-muted: var(--ax-muted);
+  --cad-text-dim: var(--ax-dim);
+  --cad-caramel: var(--ax-accent);
+  --cad-caramel-hover: var(--ax-accent-hover);
+  --cad-sky: var(--apple-cyan);
+  --cad-pink: var(--apple-pink);
+  --cad-violet: var(--apple-indigo);
+  --cad-yellow: var(--apple-yellow);
+}
+
+/* Amplia */
+html[data-tool="amplia"] {
+  --ap-bg: var(--ax-stage);
+  --ap-surface: var(--ax-s1);
+  --ap-surface-hover: var(--ax-s2);
+  --ap-border: var(--ax-line);
+  --ap-border-active: var(--ax-accent);
+  --ap-text-main: var(--ax-text);
+  --ap-text-muted: var(--ax-muted);
+  --ap-accent-caramel: var(--ax-accent);
+  --ap-accent-sky: var(--apple-cyan);
+  --ap-accent-pink: var(--apple-pink);
+  --ap-accent-yellow: var(--apple-yellow);
+  --ap-radius-sm: var(--apple-radius-control);
+  --ap-radius-md: var(--apple-radius-control-lg);
+  --ap-radius-lg: var(--apple-radius-window);
+}
+
+/* Creative OS */
+html[data-tool="creative-os"] {
+  --cos-bg: var(--ax-stage);
+  --cos-surface-1: var(--ax-s1);
+  --cos-surface-2: var(--ax-s2);
+  --cos-surface-3: var(--ax-s3);
+  --cos-border: var(--ax-line);
+  --cos-border-hover: var(--ax-line-strong);
+  --cos-text-primary: var(--ax-text);
+  --cos-text-secondary: var(--ax-muted);
+  --cos-text-muted: var(--ax-dim);
+  --cos-accent: var(--ax-accent);
+  --cos-accent-hover: var(--ax-accent-hover);
+  --cos-sky: var(--apple-cyan);
+  --cos-pink: var(--apple-pink);
+  --cos-violet: var(--apple-indigo);
+  --cos-yellow: var(--apple-yellow);
+  --cos-mint: var(--apple-green);
+  --cos-danger: var(--apple-red);
+  --cos-radius-sm: var(--apple-radius-menu-item);
+  --cos-radius-md: var(--apple-radius-group);
+  --cos-radius-lg: var(--apple-radius-window);
+  --cos-radius-xl: var(--apple-radius-popover);
+}
+
+/* Montagem (editor de vídeo) */
+html[data-tool="montagem"] {
+  --bg-app: var(--ax-stage);
+  --bg-panel: var(--ax-s1);
+  --bg-sidebar: var(--ax-s1);
+  --bg-card: var(--ax-s2);
+  --bg-card-hover: var(--ax-s3);
+  --border-color: var(--ax-line);
+  --border-light: var(--ax-line-strong);
+  --color-primary: var(--ax-accent);
+  --color-primary-hover: var(--ax-accent-hover);
+  --color-primary-dim: var(--ax-accent-soft);
+  --color-secondary: var(--apple-cyan);
+  --color-danger: var(--apple-red);
+  --color-warning: var(--apple-yellow);
+  --text-secondary: var(--ax-muted);
+  --playhead-color: var(--apple-red);
+  --clip-selected-border: var(--ax-accent);
+  --font-sans: var(--apple-font-text);
+  --font-mono: var(--apple-font-mono);
+}
+
+/* Comunidade (tema padrão; os temas claro, ônix e cinza continuam vencendo) */
+html[data-tool="comunidade"] {
+  --window-bg: var(--ax-stage);
+  --bg-panel: var(--ax-s1);
+  --bg-floating: var(--ax-s3);
+  --bg-input: var(--ax-s2);
+  --bg-hover: var(--apple-fill-3);
+  --bg-selected: var(--apple-fill);
+  --bg-message-hover: var(--apple-fill-4);
+  --text-normal: var(--ax-text);
+  --header-primary: var(--ax-text);
+  --header-secondary: var(--ax-text-2);
+  --interactive-normal: var(--ax-muted);
+  --interactive-hover: var(--ax-text);
+  --interactive-active: var(--apple-label-strong);
+  --interactive-muted: rgb(var(--cm-fg-faint));
+  --channel-icon: var(--ax-dim);
+  --divider: var(--ax-line);
+  --brand: var(--apple-indigo);
+  --brand-hover: #8C98FF;
+  --green: var(--apple-green);
+  --yellow: var(--apple-yellow);
+  --red: var(--apple-red);
+  --mention-bg: rgb(109 124 255 / 0.22);
+  --mention-text: var(--ax-accent);
+  --link: var(--apple-link);
+  --control-hover: var(--apple-fill-2);
+  --font-code: var(--apple-font-mono);
+}
+
+/* Prancheta (editor): azul do sistema, raio e fonte do macOS */
+html[data-tool="prancheta"] {
+  --blue: var(--apple-blue);
+  --radius: var(--apple-radius-control);
+}
+
+/* Prancheta: superfícies do macOS no claro e no escuro */
+html[data-tool="prancheta"]:not([data-theme='dark']) {
+  --selected: rgba(0, 136, 255, 0.12);
+}
+html[data-tool="prancheta"][data-theme='dark'] {
+  --bg: #1E1E1E;
+  --surface: #2A2A2C;
+  --surface-hover: #3A3A3C;
+  --input: #3A3A3C;
+  --border: rgba(255, 255, 255, 0.1);
+  --selected: rgba(0, 145, 255, 0.24);
+  --canvas-bg: #1E1E1E;
+}
+
+/* Gabinete e Creative OS forçam as cores no <body> com !important. */
+html:is([data-tool="gabinete"], [data-tool="creative-os"]) body {
+  --mc-caramel: var(--apple-orange) !important;
+  --mc-caramel-hover: var(--apple-accent-hover) !important;
+  --mc-caramel-deep: #B35200 !important;
+  --mc-sky: var(--apple-cyan);
+  --mc-pink: var(--apple-pink);
+  --mc-violet: var(--apple-indigo);
+  --mc-acid: var(--apple-yellow);
+  --mc-acid-bright: var(--apple-yellow);
+  --mc-mint: var(--apple-green);
+  --mc-danger: var(--apple-red);
+  --mc-warning: var(--apple-orange);
+  --mc-radius-xs: var(--apple-radius-control-sm);
+  --mc-radius-sm: var(--apple-radius-menu-item);
+  --mc-radius-md: var(--apple-radius-group);
+  --mc-radius-lg: var(--apple-radius-window);
+  --mc-radius-xl: var(--apple-radius-popover);
+  --mc-radius-pill: var(--apple-radius-capsule);
+  --mc-shadow-sm: var(--cm-elev-1);
+  --mc-shadow-lg: var(--apple-shadow-window);
+  --mc-font-sans: var(--apple-font-text);
+  --mc-font-mono: var(--apple-font-mono);
+}
+html:is([data-tool="gabinete"], [data-tool="creative-os"]):not([data-caramelo-theme="light"]) body {
+  --cm-stage: 22 22 23 !important;
+  --cm-fg: 245 245 247 !important;
+  --cm-fg-2: 218 218 222 !important;
+  --cm-surface-1: 30 30 30 !important;
+  --cm-surface-2: 42 42 44 !important;
+  --cm-surface-3: 58 58 60 !important;
+  --cm-line: 56 56 58 !important;
+  --cm-line-strong: 72 72 74 !important;
+  --mc-ink: #161617 !important;
+  --mc-ink-surface: #1E1E1E !important;
+  --mc-ink-surface-subtle: #232325 !important;
+  --mc-ink-surface-card: #2A2A2C !important;
+  --mc-ink-border: rgba(255, 255, 255, 0.1) !important;
+  --mc-ink-border-hover: rgba(255, 255, 255, 0.2) !important;
+  --mc-ink-border-soft: rgba(255, 255, 255, 0.05) !important;
+  --mc-sidebar-bg: #1C1C1E !important;
+  --mc-sidebar-border: rgba(255, 255, 255, 0.08) !important;
+  --mc-sidebar-active: rgba(255, 255, 255, 0.1) !important;
+  --mc-cream: #F5F5F7 !important;
+  --mc-cream-muted: rgba(255, 255, 255, 0.55) !important;
+  --mc-text-title: #F5F5F7 !important;
+  --mc-text-body: rgba(255, 255, 255, 0.85) !important;
+  --mc-text-muted: rgba(255, 255, 255, 0.55) !important;
+  --mc-text-dim: rgba(255, 255, 255, 0.35) !important;
+}

@@ -1,66 +1,41 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import {
-  DEFAULT_PLATFORM_COLORS,
-  PLATFORM_THEME_PRESETS,
-  PLATFORM_THEME_STORAGE_KEY,
-  PLATFORM_THEME_CHANNEL,
-  hexToRgbValues,
-  rgbToHex,
-} from "../src/theme/platformTheme.ts";
+import { installPlatformThemeSync } from "../src/theme/platformTheme.ts";
 
-describe("LAB Caramelo — Motor de Customização Dinâmica de Cores", () => {
-  test("Constantes e paleta canônica padrão V2 estão íntegras", () => {
-    assert.equal(DEFAULT_PLATFORM_COLORS.accent, "#FF701A");
-    assert.equal(DEFAULT_PLATFORM_COLORS.surface, "#101014");
-    assert.equal(DEFAULT_PLATFORM_COLORS.stage, "#0A0A0D");
-    assert.equal(DEFAULT_PLATFORM_COLORS.text, "#FFF4E8");
-    assert.equal(DEFAULT_PLATFORM_COLORS.focus, "#25BFFF");
-    assert.equal(DEFAULT_PLATFORM_COLORS.danger, "#FF3D8D");
-    assert.equal(DEFAULT_PLATFORM_COLORS.warning, "#FFD52A");
-    assert.equal(DEFAULT_PLATFORM_COLORS.violet, "#7657FF");
-    assert.equal(DEFAULT_PLATFORM_COLORS.success, "#3DDC97");
-
-    assert.equal(PLATFORM_THEME_STORAGE_KEY, "caramelo_platform_theme_v1");
-    assert.equal(PLATFORM_THEME_CHANNEL, "caramelo_platform_theme_sync");
-  });
-
-  test("Presets de tema estão íntegros e contêm todas as cores obrigatórias", () => {
-    assert.ok(PLATFORM_THEME_PRESETS.length >= 7);
-    const requiredKeys = ["accent", "surface", "stage", "text", "focus", "danger", "warning", "violet", "success"] as const;
-
-    for (const preset of PLATFORM_THEME_PRESETS) {
-      assert.ok(preset.id, "Preset deve possuir id");
-      assert.ok(preset.name, "Preset deve possuir nome");
-      assert.ok(preset.description, "Preset deve possuir descrição");
-
-      for (const k of requiredKeys) {
-        assert.ok(preset.colors[k], `Preset ${preset.id} deve definir ${k}`);
-        assert.match(preset.colors[k], /^#[0-9A-Fa-f]{6}$/, `Cor ${k} de ${preset.id} deve ser um HEX válido`);
+// O LAB segue o Apple Design System e não tem mais presets nem paleta personalizada.
+// installPlatformThemeSync só apaga o que o motor antigo deixou para trás.
+describe("LAB — limpeza do tema de plataforma antigo", () => {
+  test("remove o cache local e as variáveis inline gravadas pelo motor antigo", () => {
+    const store = new Map<string, string>([["caramelo_platform_theme_v1", "{\"version\":1}"], ["outra-chave", "fica"]]);
+    const removed: string[] = [];
+    const g = globalThis as Record<string, unknown>;
+    const previous = { localStorage: g.localStorage, document: g.document };
+    g.localStorage = { removeItem: (k: string) => store.delete(k) };
+    g.document = { documentElement: { style: { removeProperty: (p: string) => removed.push(p) } } };
+    try {
+      const stop = installPlatformThemeSync();
+      assert.equal(typeof stop, "function");
+      assert.equal(store.has("caramelo_platform_theme_v1"), false);
+      assert.equal(store.get("outra-chave"), "fica");
+      for (const prop of ["--cm-accent", "--cm-stage", "--cm-fg", "--c-accent", "--accent-caramel", "--g-play"]) {
+        assert.ok(removed.includes(prop), `deveria limpar ${prop}`);
       }
+    } finally {
+      g.localStorage = previous.localStorage;
+      g.document = previous.document;
     }
   });
 
-  test("hexToRgbValues converte com precisão", () => {
-    const caramel = hexToRgbValues("#FF701A");
-    assert.equal(caramel.r, 255);
-    assert.equal(caramel.g, 112);
-    assert.equal(caramel.b, 26);
-
-    const ink = hexToRgbValues("#101014");
-    assert.equal(ink.r, 16);
-    assert.equal(ink.g, 16);
-    assert.equal(ink.b, 20);
-
-    const shortHex = hexToRgbValues("#FFF");
-    assert.equal(shortHex.r, 255);
-    assert.equal(shortHex.g, 255);
-    assert.equal(shortHex.b, 255);
-  });
-
-  test("rgbToHex formata em hexadecimal maiúsculo com zero padding", () => {
-    assert.equal(rgbToHex(255, 112, 26), "#FF701A");
-    assert.equal(rgbToHex(16, 16, 20), "#101014");
-    assert.equal(rgbToHex(0, 0, 0), "#000000");
+  test("funciona sem localStorage (navegação privada ou bloqueada)", () => {
+    const g = globalThis as Record<string, unknown>;
+    const previous = { localStorage: g.localStorage, document: g.document };
+    g.localStorage = { removeItem: () => { throw new Error("bloqueado"); } };
+    g.document = undefined;
+    try {
+      assert.doesNotThrow(() => installPlatformThemeSync());
+    } finally {
+      g.localStorage = previous.localStorage;
+      g.document = previous.document;
+    }
   });
 });

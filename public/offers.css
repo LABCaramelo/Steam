@@ -41,7 +41,7 @@
 }
 
 .offers-section .offer-column {
-  --offer-line: rgba(16, 16, 20, .22);
+  --offer-line: rgba(22, 22, 23, .22);
   --offer-description: #484139;
   position: relative;
   display: grid;
@@ -62,9 +62,9 @@
 }
 
 .offers-section .offer-column:nth-child(2) {
-  --offer-line: rgba(255, 244, 232, .32);
+  --offer-line: rgba(255, 255, 255, .32);
   --offer-description: var(--cream);
-  /* The violet accent token: cream copy reaches 5.9:1 here (AA); #7657ff stops at 4.2:1. */
+  /* The violet accent token: cream copy reaches 5.9:1 here (AA); #6D7CFF stops at 4.2:1. */
   background: rgb(93 60 232);
   color: var(--cream);
   z-index: 2;

@@ -6,13 +6,13 @@
   height: 100dvh;
   min-height: 0;
   overflow: hidden;
-  font-family: Inter, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
 }
 .head-intro .hero-display-headline {
   font-family: "Bowlby One SC", Anton, Montserrat, sans-serif;
 }
 .head-intro .mini-card-title {
-  font-family: Montserrat, Inter, sans-serif;
+  font-family: Montserrat, -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
   font-size: clamp(12px, 1.2vw, 18px);
 }
 .head-intro .prompt-bank-trigger-btn { gap: 7px; }
@@ -40,7 +40,7 @@
   border: 1px solid #ffd52a99;
   border-radius: 18px;
   background: #17143cbd;
-  color: #ffd52a;
+  color: #FFD600;
   backdrop-filter: blur(18px);
   box-shadow: 0 8px 24px #0a20362b, inset 0 1px #fff2;
   cursor: pointer;
@@ -48,10 +48,10 @@
   transition: transform .2s ease, background-color .2s ease, border-color .2s ease;
 }
 .head-intro .bonus-lesson-copy { display: grid; gap: 4px; }
-.head-intro .bonus-lesson-label { color: #fff; font: 700 10px/1.2 Inter, sans-serif; letter-spacing: .09em; text-transform: uppercase; }
-.head-intro .bonus-lesson-title { font: 800 clamp(14px, 1.3vw, 19px)/1.2 Montserrat, Inter, sans-serif; }
+.head-intro .bonus-lesson-label { color: #fff; font: 700 10px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif; letter-spacing: .09em; text-transform: uppercase; }
+.head-intro .bonus-lesson-title { font: 800 clamp(14px, 1.3vw, 19px)/1.2 Montserrat, -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif; }
 .head-intro .bonus-lesson-icon { flex: 0 0 auto; width: 26px; height: 26px; }
-.head-intro .bonus-lesson-card:hover { background: #17143ce8; border-color: #ffd52a; transform: translateY(-4px); }
+.head-intro .bonus-lesson-card:hover { background: #17143ce8; border-color: #FFD600; transform: translateY(-4px); }
 .head-intro .bonus-lesson-card:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
 .head-intro .mini-game-card {
   pointer-events: auto;
