@@ -121,23 +121,23 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
   gap: 6px;
 }
 .icon svg {
-  width: 48px; height: 48px; padding: 4px;
-  border-radius: 11px;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.22));
+  width: 54px; height: 54px; padding: 3px;
+  border-radius: 10px;
+  filter: drop-shadow(0 1.5px 2px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.25));
 }
+/* Rótulo do Finder: texto branco com sombra, sem fundo; a seleção pinta só o rótulo de azul. */
 .icon span {
   font: var(--apple-weight-medium) 12px/1.25 var(--apple-font-text);
   color: #FFFFFF;
-  background: rgba(0, 0, 0, 0.32);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  padding: 1px 6px;
-  border-radius: 5px;
+  background: transparent;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75), 0 0 1px rgba(0, 0, 0, 0.6);
+  padding: 1px 5px;
+  border-radius: 4px;
 }
 .icon:hover { background: transparent; border-color: transparent; }
-.icon:hover svg, .icon.is-selected svg { background: rgba(0, 0, 0, 0.16); }
+.icon.is-selected svg { background: rgba(0, 0, 0, 0.22); }
 .icon.is-selected { background: transparent; border-color: transparent; }
-.icon.is-selected span { background: var(--focus); color: #FFFFFF; }
+.icon.is-selected span { background: var(--focus); color: #FFFFFF; text-shadow: none; }
 .icon:focus-visible { outline: none; box-shadow: none; }
 .icon:focus-visible span { box-shadow: var(--apple-focus-ring); }
 
@@ -439,10 +439,11 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
   color: var(--mac-label);
 }
 .task svg {
-  width: 44px; height: 44px; padding: 6px;
-  background: #FFFFFF;
+  width: 50px; height: 50px; padding: 0;
+  background: transparent;
   border-radius: var(--apple-radius-icon);
-  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
   transition: transform .18s var(--apple-spring);
 }
 .task:hover { background: transparent; }
