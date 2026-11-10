@@ -1,0 +1,553 @@
+/* ==========================================================================
+   CarameloOS — skin macOS (Apple Design System)
+   Carregada depois de caramelo-os.css. Mantém o DOM, os ids e o comportamento
+   do CarameloOS; troca a estética retrô pela do macOS:
+   barra de menus de vidro, Dock flutuante, janelas com semáforo, menus e
+   controles com as medidas e cores do design system (ver /apple/tokens.css).
+   Os apps que imitam outros sites (ex.: Carakut) mantêm o próprio visual,
+   como uma página aberta dentro da janela.
+   ========================================================================== */
+
+:root {
+  /* Janelas no modo claro do macOS; destaque no laranja do sistema. */
+  color-scheme: light;
+  --ink: #1D1D1F;
+  --ink-2: #1E1E1E;
+  --caramel: #FF8D28;
+  --caramel-hi: #FF9E33;
+  --caramel-lo: #B35200;
+  --caramel-deep: #8A3E00;
+  --cream: #F5F5F7;
+  --cream-2: #F2F2F2;
+  --cream-3: #E5E5E5;
+  --paper: #FFFFFF;
+  --line: #D1D1D6;
+  --line-dark: #C7C7CC;
+  --muted: #6E6E73;
+  --focus: #0088FF;
+  --taskbar-h: 76px;
+  --menubar-h: 28px;
+  --font-ui: var(--apple-font-text);
+  --font-mono: var(--apple-font-mono);
+  --ease: var(--apple-ease-out);
+
+  --mac-window: #FFFFFF;
+  --mac-chrome: #F6F6F6;
+  --mac-sidebar: rgba(246, 246, 246, 0.84);
+  --mac-separator: rgba(0, 0, 0, 0.1);
+  --mac-selection: rgba(0, 0, 0, 0.11);
+  --mac-label: rgba(0, 0, 0, 0.85);
+  --mac-label-2: rgba(0, 0, 0, 0.5);
+}
+
+body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-tracking-body); }
+:focus-visible { outline: none; box-shadow: var(--apple-focus-ring); }
+
+/* ================= BOOT: logo, barra fina, fundo preto ================= */
+.boot { background: #000; color: #F5F5F7; font-family: var(--apple-font-text); }
+.boot-orbit { display: none; }
+.boot-art { width: min(150px, 40vw); }
+.boot-art img { filter: none; }
+.boot-logo {
+  margin-top: 18px;
+  font: 600 28px/1.1 var(--apple-font-display);
+  letter-spacing: -0.02em;
+  color: #F5F5F7;
+  text-shadow: none;
+}
+.boot-logo span, .boot-logo sup { color: inherit; }
+.boot-logo sup { font-size: 0.55em; font-weight: 400; opacity: 0.6; }
+.boot-sub { margin-top: 6px; font-size: 12px; letter-spacing: 0; color: rgba(255, 255, 255, 0.55); }
+.boot-status { margin: 48px 0 12px; font-size: 11px; letter-spacing: 0; color: rgba(255, 255, 255, 0.55); text-transform: none; }
+.boot-bar {
+  width: min(200px, 60vw); height: 5px; padding: 0;
+  border: 0; border-radius: var(--apple-radius-capsule);
+  background: rgba(255, 255, 255, 0.22);
+  overflow: hidden;
+}
+.boot-fill { background: #F5F5F7; border-radius: inherit; transition: width .25s linear; }
+.boot-pct { display: none; }
+
+/* ================= ÁREA DE TRABALHO ================= */
+.crt { display: none; }
+.desktop { inset: var(--menubar-h) 0 var(--taskbar-h) 0; }
+
+/* Barra de menus (vidro, no topo) */
+.menubar {
+  position: absolute; inset: 0 0 auto 0; z-index: 6000;
+  height: var(--menubar-h);
+  display: flex; align-items: center; gap: 2px;
+  padding: 0 210px 0 10px;
+  background: rgba(246, 246, 246, 0.6);
+  -webkit-backdrop-filter: saturate(180%) blur(30px);
+  backdrop-filter: saturate(180%) blur(30px);
+  box-shadow: 0 0.5px 0 rgba(0, 0, 0, 0.12);
+  color: var(--mac-label);
+  font: 400 13px/1 var(--apple-font-text);
+  overflow: hidden;
+}
+.menubar-logo { width: 16px; height: 16px; margin: 0 8px 0 4px; flex: none; }
+.menubar-app { font-weight: var(--apple-weight-bold); padding: 0 8px; white-space: nowrap; }
+.menubar-item {
+  height: 22px; padding: 0 9px;
+  border: 0; border-radius: 5px; background: transparent;
+  font: inherit; color: inherit; white-space: nowrap;
+}
+.menubar-item:hover, .menubar-item:focus-visible { background: rgba(0, 0, 0, 0.1); box-shadow: none; }
+
+/* Relógio e atalho do Meu Computador vão para a direita da barra de menus. */
+.tray {
+  position: fixed; top: 0; right: 10px; z-index: 6001;
+  height: var(--menubar-h); gap: 4px;
+}
+.tray-btn {
+  width: 28px; height: 22px; padding: 3px;
+  border: 0; border-radius: 5px;
+}
+.tray-btn:hover { background: rgba(0, 0, 0, 0.1); border: 0; }
+.tray-clock {
+  height: 22px; padding: 0 8px;
+  background: transparent; border: 0; border-radius: 5px;
+  color: var(--mac-label);
+  font: var(--apple-weight-medium) 13px/1 var(--apple-font-text);
+  font-variant-numeric: tabular-nums;
+}
+.tray-dot { display: none; }
+
+/* Ícones da mesa */
+.icons { padding: 14px 10px; grid-template-rows: repeat(auto-fill, 96px); grid-auto-columns: 96px; gap: 4px 6px; }
+.icon {
+  width: 92px; height: 92px; padding: 6px 2px 4px;
+  border: 0; border-radius: var(--apple-radius-menu-item);
+  gap: 6px;
+}
+.icon svg {
+  width: 48px; height: 48px; padding: 4px;
+  border-radius: 11px;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.22));
+}
+.icon span {
+  font: var(--apple-weight-medium) 12px/1.25 var(--apple-font-text);
+  color: #FFFFFF;
+  background: rgba(0, 0, 0, 0.32);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  padding: 1px 6px;
+  border-radius: 5px;
+}
+.icon:hover { background: transparent; border-color: transparent; }
+.icon:hover svg, .icon.is-selected svg { background: rgba(0, 0, 0, 0.16); }
+.icon.is-selected { background: transparent; border-color: transparent; }
+.icon.is-selected span { background: var(--focus); color: #FFFFFF; }
+.icon:focus-visible { outline: none; box-shadow: none; }
+.icon:focus-visible span { box-shadow: var(--apple-focus-ring); }
+
+/* Post-it vira um Stickies */
+.postit {
+  top: 18px; right: 22px; width: 190px; padding: 26px 16px 14px;
+  background: #FFF59A;
+  border-radius: 4px;
+  transform: rotate(1deg);
+  box-shadow: var(--apple-shadow-window);
+}
+.postit::before {
+  top: 0; left: 0; right: 0; width: auto; height: 16px; transform: none;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 4px 4px 0 0;
+}
+
+/* ================= JANELAS ================= */
+.win {
+  background: var(--mac-window);
+  border: 0;
+  border-radius: var(--apple-radius-window);
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.18), 0 22px 70px rgba(0, 0, 0, 0.35), 0 5px 20px rgba(0, 0, 0, 0.15);
+  padding: 0;
+}
+.win:not(.is-active) { box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 10px 30px rgba(0, 0, 0, 0.2); }
+.win.is-max { border-radius: 0; }
+
+.win-title {
+  position: relative;
+  height: 38px; padding: 0 12px; gap: 8px;
+  background: var(--mac-chrome);
+  border: 0; border-bottom: 0.5px solid var(--mac-separator);
+  border-radius: 0;
+  color: var(--mac-label);
+  box-shadow: none;
+  cursor: default;
+}
+.win-title:active { cursor: default; }
+.win:not(.is-active) .win-title {
+  background: var(--mac-chrome);
+  border-color: var(--mac-separator);
+  color: rgba(0, 0, 0, 0.35);
+  box-shadow: none;
+}
+.win-icon { display: none; }
+.win-name {
+  position: absolute; left: 84px; right: 84px;
+  text-align: center;
+  font: var(--apple-weight-bold) 13px/16px var(--apple-font-text);
+  letter-spacing: var(--apple-tracking-tight);
+  text-shadow: none;
+}
+
+/* Semáforo: fechar, minimizar, zoom à esquerda (a ordem no DOM continua a do Windows). */
+.win-ctrls { order: -1; gap: 8px; }
+.win-btn {
+  width: 12px; height: 12px; padding: 0;
+  border: 0.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: 50%;
+  font-size: 0; color: transparent;
+  box-shadow: none;
+  position: relative;
+}
+.win-btn[data-act="close"] { order: 1; background: var(--apple-window-close); }
+.win-btn[data-act="min"] { order: 2; background: var(--apple-window-minimize); }
+.win-btn[data-act="max"] { order: 3; background: var(--apple-window-zoom); }
+.win-close:hover, .win-btn:hover { background: inherit; }
+.win-btn[data-act="close"]:hover { background: var(--apple-window-close); }
+.win-btn[data-act="min"]:hover { background: var(--apple-window-minimize); }
+.win-btn[data-act="max"]:hover { background: var(--apple-window-zoom); }
+.win-btn:active { transform: none; filter: brightness(0.85); }
+.win:not(.is-active) .win-btn { background: #DDDDDD; border-color: rgba(0, 0, 0, 0.08); }
+/* Os símbolos aparecem ao passar o mouse sobre o grupo, como no macOS. */
+.win-btn::after {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font: 700 10px/1 var(--apple-font-text);
+  color: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+}
+.win-btn[data-act="close"]::after { content: "×"; font-size: 12px; }
+.win-btn[data-act="min"]::after { content: "−"; }
+.win-btn[data-act="max"]::after { content: "+"; }
+.win-ctrls:hover .win-btn::after, .win-btn:focus-visible::after { opacity: 1; }
+.win-ctrls:hover .win-btn[data-act="close"] { background: var(--apple-window-close); }
+.win-ctrls:hover .win-btn[data-act="min"] { background: var(--apple-window-minimize); }
+.win-ctrls:hover .win-btn[data-act="max"] { background: var(--apple-window-zoom); }
+
+.win-body { background: var(--mac-window); border: 0; }
+
+/* ================= CONTROLES DENTRO DOS APPS ================= */
+.statusbar,
+.pad-bar,
+.addr,
+.photos-bar,
+.mail-bar,
+.game-bar,
+.wiz-foot {
+  background: var(--mac-chrome);
+  border-color: var(--mac-separator);
+  color: var(--mac-label-2);
+}
+
+/* Push buttons (Buttons: 6px de raio, sombra fina) */
+.btn {
+  min-height: 28px; padding: 4px 14px;
+  background: #FFFFFF;
+  border: 0;
+  border-radius: var(--apple-radius-control);
+  font: var(--apple-weight-medium) 13px/1.2 var(--apple-font-text);
+  color: var(--mac-label);
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 0.5px 2.5px rgba(0, 0, 0, 0.18);
+}
+.btn:hover { background: #FAFAFA; border-color: transparent; }
+.btn:active { transform: none; background: #EDEDED; box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.14); }
+.btn-primary {
+  background: linear-gradient(180deg, var(--caramel-hi) 0%, var(--caramel) 100%);
+  color: #1D1D1F;
+  box-shadow: 0 0 0 0.5px rgba(150, 70, 0, 0.35), 0 0.5px 2.5px rgba(0, 0, 0, 0.2), inset 0 0.5px 0 rgba(255, 255, 255, 0.4);
+}
+.btn-primary:hover { background: linear-gradient(180deg, #FFAA4D 0%, var(--caramel-hi) 100%); }
+.addr .btn { min-height: 22px; font-size: 12px; }
+
+/* Campos de texto */
+.pad-bar input,
+.addr-field,
+.mail-row input, .mail-grid input, .mail-grid select, .app-mail textarea, .field {
+  background: #FFFFFF;
+  border: 0;
+  border-radius: var(--apple-radius-control);
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.15), inset 0 0.5px 1px rgba(0, 0, 0, 0.06);
+  font-family: var(--apple-font-text);
+  color: var(--mac-label);
+}
+.mail-row input:focus, .mail-grid input:focus, .mail-grid select:focus, .app-mail textarea:focus, .field:focus, .pad-bar input:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.5px rgba(0, 136, 255, 0.6), var(--apple-focus-ring);
+}
+.app-mail textarea { font-family: var(--apple-font-text); }
+.consent input { accent-color: var(--focus); }
+
+/* Tipos */
+.eyebrow, .sys-label, .wiz-k, .proj-tag, .forwho h4, .pass small {
+  font-family: var(--apple-font-text);
+  font-size: 11px;
+  font-weight: var(--apple-weight-semibold);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--mac-label-2);
+}
+.muted, .statusbar, .file small, .explorer-intro p, .trash-msg p, .devices p, .sys-note, .card p { color: var(--mac-label-2); }
+
+/* Cartões e listas (Boxes, Lists) */
+.card, .devices li, .drive, .chips li, .coat, .photo-grid button {
+  background: #FFFFFF;
+  border: 0;
+  border-radius: var(--apple-radius-group);
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.card-num { color: var(--caramel-lo); }
+.drive:hover, .photo-grid button:hover, .coat:hover { background: #FAFAFA; box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.1); }
+.photo-grid button[aria-pressed="true"], .coat[aria-checked="true"] {
+  background: rgba(0, 136, 255, 0.08);
+  box-shadow: 0 0 0 2px var(--focus);
+}
+.ok { background: var(--apple-green); border: 0; color: #FFFFFF; }
+.forwho { background: rgba(0, 0, 0, 0.03); border-left: 0; border-radius: var(--apple-radius-group); }
+.tip { background: rgba(0, 0, 0, 0.03); border: 0; border-radius: var(--apple-radius-group); }
+.pass {
+  background: linear-gradient(135deg, #FFF1E3, #FFFFFF);
+  border: 0;
+  border-radius: var(--apple-radius-window);
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.pass-avatar, .start-avatar { background: #FFFFFF; border: 0; border-radius: var(--apple-radius-icon); box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12); }
+.pass-num { color: rgba(179, 82, 0, 0.3); }
+
+/* Ícones de arquivo no Finder */
+.file { border: 0; border-radius: var(--apple-radius-menu-item); }
+.file:hover { background: rgba(0, 0, 0, 0.05); border-color: transparent; }
+
+/* Sidebars (Ajuda, Projetos): fundo de material e seleção cinza */
+.help-list, .proj-list {
+  background: var(--mac-sidebar);
+  border-color: var(--mac-separator);
+  padding: 10px 8px;
+}
+.help-list button, .proj-list button {
+  border: 0; border-radius: var(--apple-radius-menu-item);
+  font-size: 13px; color: var(--mac-label);
+}
+.help-list button::before { background: var(--focus); color: #FFFFFF; }
+.help-list button:hover, .proj-list button:hover { background: rgba(0, 0, 0, 0.05); }
+.help-list button[aria-selected="true"], .proj-list button[aria-selected="true"] {
+  background: var(--mac-selection);
+  border-color: transparent;
+  font-weight: var(--apple-weight-semibold);
+}
+.help-list button[aria-selected="true"]::before { background: var(--focus); color: #FFFFFF; }
+.proj-list button[aria-selected="true"] small { color: var(--mac-label-2); }
+.proj-media { border: 0; border-radius: var(--apple-radius-group); background: #000; }
+
+/* Assistente: barra lateral de vidro e barra de progresso fina */
+.wiz-side {
+  background: linear-gradient(180deg, rgba(255, 141, 40, 0.18), rgba(255, 141, 40, 0.06)), var(--mac-sidebar);
+  border-right: 0.5px solid var(--mac-separator);
+  color: var(--mac-label);
+}
+.wiz-side img { filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18)); }
+.wiz-progress { height: 6px; padding: 0; border: 0; border-radius: var(--apple-radius-capsule); background: rgba(0, 0, 0, 0.1); overflow: hidden; }
+.wiz-progress span { background: var(--focus); border-radius: inherit; }
+
+/* Bloco de notas */
+.pad-text { background: #FFFFFF; background-image: none; padding-left: 22px; color: var(--mac-label); font-family: var(--apple-font-text); font-size: 14px; }
+.pad-mark { background: rgba(255, 214, 0, 0.45); box-shadow: 0 0 0 2px rgba(255, 214, 0, 0.45); border-radius: 2px; }
+.pad-photo { background: var(--mac-sidebar); border-color: var(--mac-separator); }
+.pad-photo img { border-radius: var(--apple-radius-control-lg); border: 0; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18); }
+
+/* Fotos e jogo */
+.photo-view { border-color: var(--mac-separator); }
+.photo-view figcaption { background: #FFFFFF; border: 0; border-radius: var(--apple-radius-capsule); padding: 3px 10px; box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12); }
+.game-stage { background: #1E1E1E; }
+#gameCanvas { border: 0; border-radius: var(--apple-radius-control-lg); box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.12), 0 8px 24px rgba(0, 0, 0, 0.4); }
+.game-overlay {
+  background: rgba(30, 30, 30, 0.78);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 0.5px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--apple-radius-window);
+  font-family: var(--apple-font-text);
+  color: #F5F5F7;
+}
+
+/* Mensageiro (Contato) */
+.chat { background: #FFFFFF; }
+.chat-head { border-color: var(--mac-separator); }
+.chat-head img { border: 0; }
+.chat-head span { color: #248A3D; }
+.bubble {
+  background: #E9E9EB;
+  border: 0;
+  border-radius: 18px 18px 18px 4px;
+  box-shadow: none;
+  color: #1D1D1F;
+}
+
+/* Balão do cachorro: tooltip do macOS */
+.pet-bubble {
+  background: rgba(246, 246, 246, 0.86);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 4px 14px rgba(0, 0, 0, 0.18);
+  font: var(--apple-weight-medium) 12px/1.3 var(--apple-font-text);
+}
+.pet-bubble::after { border-top-color: rgba(246, 246, 246, 0.86); }
+
+/* ================= DOCK ================= */
+.taskbar {
+  left: 0; right: 0; bottom: 8px;
+  width: fit-content; max-width: calc(100% - 16px);
+  height: 64px; margin-inline: auto;
+  gap: 4px; padding: 6px 8px;
+  background: rgba(246, 246, 246, 0.42);
+  -webkit-backdrop-filter: saturate(180%) blur(30px);
+  backdrop-filter: saturate(180%) blur(30px);
+  border: 0.5px solid rgba(255, 255, 255, 0.5);
+  border-top: 0.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 22px;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 8px 40px rgba(0, 0, 0, 0.22), inset 0 0.5px 0 rgba(255, 255, 255, 0.5);
+}
+/* O vidro do Dock não pode prender o relógio (position: fixed) da barra de menus. */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .taskbar { -webkit-backdrop-filter: none; backdrop-filter: none; isolation: isolate; }
+  .taskbar::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    border-radius: inherit;
+    -webkit-backdrop-filter: saturate(180%) blur(30px);
+    backdrop-filter: saturate(180%) blur(30px);
+  }
+}
+
+/* Botão Iniciar = primeiro ícone do Dock (o isotipo como ícone de app) */
+.start-btn {
+  height: 52px; width: 52px; padding: 0; justify-content: center;
+  background: transparent; border: 0; border-radius: 12px;
+  box-shadow: none;
+  position: relative;
+}
+.start-btn svg { width: 48px; height: 48px; border-radius: var(--apple-radius-icon); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22); }
+.start-btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.start-btn:hover { filter: none; }
+.start-btn:hover svg { transform: translateY(-3px); transition: transform .18s var(--apple-spring); }
+.start-btn[aria-expanded="true"] { filter: none; box-shadow: none; }
+.start-btn[aria-expanded="true"]::after,
+.task.is-active::after,
+.task::after {
+  content: ""; position: absolute; bottom: -4px; left: 50%;
+  width: 4px; height: 4px; margin-left: -2px; border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.task-list {
+  flex: 0 1 auto; gap: 4px;
+  padding-left: 8px; margin-left: 4px;
+  border-left: 0.5px solid rgba(0, 0, 0, 0.18);
+  overflow: visible;
+}
+.task-list:empty { display: none; }
+.task {
+  position: relative;
+  flex: none; width: 52px; height: 52px; padding: 0; justify-content: center;
+  background: transparent; border: 0; border-radius: 12px;
+  color: var(--mac-label);
+}
+.task svg {
+  width: 44px; height: 44px; padding: 6px;
+  background: #FFFFFF;
+  border-radius: var(--apple-radius-icon);
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform .18s var(--apple-spring);
+}
+.task:hover { background: transparent; }
+.task:hover svg { transform: translateY(-3px); }
+.task.is-active { background: transparent; border: 0; box-shadow: none; }
+.task.is-active::after { background: rgba(0, 0, 0, 0.75); }
+/* Nome do app: tooltip acima do ícone, como no Dock */
+.task span {
+  position: absolute; bottom: calc(100% + 10px); left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  background: rgba(246, 246, 246, 0.86);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 7px;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 4px 14px rgba(0, 0, 0, 0.18);
+  font: var(--apple-weight-medium) 12px/1.2 var(--apple-font-text);
+  opacity: 0; pointer-events: none;
+  transition: opacity .12s;
+}
+.task:hover span, .task:focus-visible span { opacity: 1; }
+.task:focus-visible { box-shadow: none; }
+.task:focus-visible svg { box-shadow: var(--apple-focus-ring); }
+
+/* Menu Iniciar = menu do macOS que abre acima do Dock */
+.start-menu {
+  left: 50%; bottom: calc(var(--taskbar-h) + 8px);
+  width: 280px; margin-left: -140px;
+  max-height: calc(100% - var(--taskbar-h) - var(--menubar-h) - 24px);
+  padding: 5px;
+  background: rgba(246, 246, 246, 0.8);
+  -webkit-backdrop-filter: saturate(180%) blur(var(--apple-blur-menu));
+  backdrop-filter: saturate(180%) blur(var(--apple-blur-menu));
+  border: 0.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--apple-radius-menu);
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.15), 0 0 2px rgba(0, 0, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+.start-head {
+  gap: 10px; padding: 8px 9px 10px;
+  background: transparent;
+  border-bottom: 0.5px solid var(--mac-separator);
+  color: var(--mac-label);
+}
+.start-head strong { font: var(--apple-weight-bold) 14px/1.2 var(--apple-font-text); }
+.start-head small { font-size: 11px; color: var(--mac-label-2); opacity: 1; }
+.start-num { display: none; }
+.start-menu ul { padding: 5px 0 0; }
+.start-menu li.sep { border-color: var(--mac-separator); margin-top: 5px; padding-top: 5px; }
+.start-menu li > button, .start-menu li > a {
+  gap: 8px; padding: 4px 9px; min-height: 26px;
+  border-radius: 6px;
+  font: 400 13px/1.2 var(--apple-font-text);
+  color: var(--mac-label);
+}
+.start-menu li svg { width: 18px; height: 18px; }
+.start-menu li > button:hover, .start-menu li > a:hover, .start-menu li > :focus-visible {
+  background: var(--focus);
+  color: #FFFFFF;
+  box-shadow: none;
+}
+.start-foot { background: transparent; border-top: 0.5px solid var(--mac-separator); margin-top: 5px; padding: 6px 9px 2px; text-align: left; font-size: 11px; color: var(--mac-label-2); }
+
+/* ================= RESPONSIVO ================= */
+@media (max-width: 760px) {
+  :root { --taskbar-h: 72px; }
+  .menubar { padding-right: 90px; }
+  .menubar-item { display: none; }
+  .tray-btn { display: none; }
+  .icon { width: 100%; height: auto; min-height: 88px; }
+  .icon span { font-size: 11px; }
+  .win { left: 6px !important; top: 6px !important; width: calc(100% - 12px) !important; height: calc(100% - 12px) !important; }
+  .win-title { height: 40px; }
+  .win-btn { width: 14px; height: 14px; }
+  .win-btn[data-act="max"] { display: none; }
+  .win-name { left: 70px; right: 70px; }
+  .taskbar { height: 60px; padding: 5px 6px; }
+  .start-btn, .task { width: 46px; height: 46px; }
+  .start-btn svg { width: 42px; height: 42px; }
+  .task svg { width: 40px; height: 40px; }
+  .task span { display: none; }
+  .start-menu { left: 8px; right: 8px; width: auto; margin-left: 0; }
+  .help-list, .proj-list { border-bottom: 0.5px solid var(--mac-separator); }
+  .game-pad { background: var(--mac-chrome); border-color: var(--mac-separator); }
+  .game-pad button { background: #FFFFFF; border: 0; border-radius: var(--apple-radius-control-lg); box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 0.5px 2.5px rgba(0, 0, 0, 0.18); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .menubar, .taskbar::before, .start-menu, .icon span, .task span { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .menubar { background: #F6F6F6; }
+  .taskbar, .start-menu { background: #ECECEC; }
+}

@@ -1,0 +1,300 @@
+/* ==========================================================================
+   Apple Design System — tokens (macOS)
+   Fonte: github.com/alex-yelisieiev/apple-design-system (Colors, Materials,
+   Text Styles, Buttons, Windows, Menus, Text Fields, Popovers, Sheets).
+
+   Este arquivo tem duas partes:
+   1. --apple-*: os valores do design system, em claro e escuro.
+   2. Ponte para os tokens --cm-* do Caramelo: as páginas que já usam
+      --cm-* passam a usar as cores, fontes e raios da Apple sem reescrever
+      cada folha de estilo. O destaque é o laranja do sistema Apple.
+
+   Carregue depois de /caramelo/styles.css e /caramelo-tokens.css.
+   ========================================================================== */
+
+:root {
+  /* ---- Tipografia: SF Pro pela pilha do sistema; Inter é a reserva no Windows. */
+  --apple-font-text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", "Helvetica Neue", Inter, "Segoe UI", system-ui, sans-serif;
+  --apple-font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro", "Helvetica Neue", Inter, "Segoe UI", system-ui, sans-serif;
+  --apple-font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif;
+  --apple-font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Text Styles (macOS). Pesos do SF: 400 regular, 510 medium, 590 semibold, 700 bold. */
+  --apple-text-large-title: 400 26px/32px var(--apple-font-display);
+  --apple-text-title-1: 400 22px/26px var(--apple-font-display);
+  --apple-text-title-2: 400 17px/22px var(--apple-font-text);
+  --apple-text-title-3: 400 15px/20px var(--apple-font-text);
+  --apple-text-headline: 700 13px/16px var(--apple-font-text);
+  --apple-text-body: 400 13px/16px var(--apple-font-text);
+  --apple-text-callout: 400 12px/15px var(--apple-font-text);
+  --apple-text-subheadline: 400 11px/14px var(--apple-font-text);
+  --apple-text-footnote: 400 10px/13px var(--apple-font-text);
+  --apple-text-caption: 510 10px/13px var(--apple-font-text);
+  --apple-weight-medium: 510;
+  --apple-weight-semibold: 590;
+  --apple-weight-bold: 700;
+  --apple-tracking-tight: -0.02em;
+  --apple-tracking-body: -0.008em;
+
+  /* ---- Raios */
+  --apple-radius-control-sm: 5px;   /* controles mini/pequenos */
+  --apple-radius-control: 6px;      /* push button, text field */
+  --apple-radius-control-lg: 9px;   /* controles grandes */
+  --apple-radius-menu-item: 8px;    /* linha selecionada de menu e sidebar */
+  --apple-radius-group: 12px;       /* group box */
+  --apple-radius-menu: 13px;        /* menus */
+  --apple-radius-window: 15px;      /* janelas e painéis */
+  --apple-radius-notification: 16px;
+  --apple-radius-popover: 20px;
+  --apple-radius-sheet: 26px;       /* janela grande / sheet */
+  --apple-radius-glass: 34px;       /* liquid glass grande */
+  --apple-radius-capsule: 1000px;
+  --apple-radius-icon: 22.5%;       /* squircle de ícone de app */
+
+  /* ---- Controles */
+  --apple-control-sm: 20px;
+  --apple-control: 24px;
+  --apple-control-lg: 28px;
+  --apple-control-xl: 36px;
+
+  /* ---- Janela: botões de semáforo */
+  --apple-window-close: #FF736A;
+  --apple-window-minimize: #FEBC2E;
+  --apple-window-zoom: #19C332;
+
+  /* ---- Movimento */
+  --apple-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --apple-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --apple-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+  --apple-blur: 15px;
+  --apple-blur-menu: 40px;
+}
+
+/* ---------- Escuro (padrão do site) ---------- */
+:root {
+  color-scheme: dark;
+
+  /* Cores do sistema (Opaque Tint Colors, escuro) */
+  --apple-red: #FF4245;
+  --apple-orange: #FF9230;
+  --apple-yellow: #FFD600;
+  --apple-green: #30D158;
+  --apple-mint: #00DAC3;
+  --apple-teal: #00D2E0;
+  --apple-cyan: #3CD3FE;
+  --apple-blue: #0091FF;
+  --apple-indigo: #6D7CFF;
+  --apple-purple: #DB34F2;
+  --apple-pink: #FF375F;
+  --apple-brown: #B78A66;
+  --apple-gray: #98989F;
+
+  /* Texto (labels) */
+  --apple-label: rgba(255, 255, 255, 0.85);
+  --apple-label-2: rgba(255, 255, 255, 0.55);
+  --apple-label-3: rgba(255, 255, 255, 0.25);
+  --apple-label-4: rgba(255, 255, 255, 0.1);
+  --apple-label-strong: #F5F5F7;
+
+  /* Fills e separadores */
+  --apple-fill: rgba(255, 255, 255, 0.1);
+  --apple-fill-2: rgba(255, 255, 255, 0.08);
+  --apple-fill-3: rgba(255, 255, 255, 0.05);
+  --apple-fill-4: rgba(255, 255, 255, 0.03);
+  --apple-separator: rgba(255, 255, 255, 0.1);
+  --apple-separator-strong: rgba(255, 255, 255, 0.2);
+
+  /* Fundos */
+  --apple-bg: #161617;
+  --apple-bg-window: #1E1E1E;
+  --apple-bg-elevated: #2A2A2C;
+  --apple-bg-control: #3A3A3C;
+
+  /* Materiais (vidro) */
+  --apple-material-ultrathin: rgba(30, 30, 30, 0.36);
+  --apple-material-thin: rgba(30, 30, 30, 0.48);
+  --apple-material: rgba(30, 30, 30, 0.6);
+  --apple-material-thick: rgba(30, 30, 30, 0.72);
+  --apple-material-ultrathick: rgba(30, 30, 30, 0.84);
+  --apple-glass-edge: rgba(255, 255, 255, 0.14);
+  --apple-glass-highlight: inset 0 0.5px 0 rgba(255, 255, 255, 0.22);
+
+  /* Sombras */
+  --apple-shadow-control: 0 0.5px 1px rgba(0, 0, 0, 0.35), inset 0 0.5px 0 rgba(255, 255, 255, 0.14);
+  --apple-shadow-menu: 0 0 2px rgba(0, 0, 0, 0.4), 0 0 25px rgba(0, 0, 0, 0.36);
+  --apple-shadow-window: 0 0 0 0.5px rgba(0, 0, 0, 0.6), 0 5px 20px rgba(0, 0, 0, 0.45);
+  --apple-shadow-sheet: 0 0 0 1px rgba(0, 0, 0, 0.5), 0 16px 48px rgba(0, 0, 0, 0.55);
+  --apple-shadow-glass: 0 8px 40px rgba(0, 0, 0, 0.35);
+  --apple-focus-ring: 0 0 0 3.5px rgba(0, 145, 255, 0.45);
+
+  /* Destaque: laranja do sistema */
+  --apple-accent: var(--apple-orange);
+  --apple-accent-rgb: 255 146 48;
+  --apple-accent-hover: #FF9E33;
+  --apple-on-accent: #1D1D1F;
+  --apple-link: #3EA6FF;
+}
+
+/* ---------- Claro ---------- */
+[data-caramelo-theme="light"] {
+  color-scheme: light;
+
+  --apple-red: #FF383C;
+  --apple-orange: #FF8D28;
+  --apple-yellow: #FFCC00;
+  --apple-green: #34C759;
+  --apple-mint: #00C8B3;
+  --apple-teal: #00C3D0;
+  --apple-cyan: #00C0E8;
+  --apple-blue: #0088FF;
+  --apple-indigo: #6155F5;
+  --apple-purple: #CB30E0;
+  --apple-pink: #FF2D55;
+  --apple-brown: #AC7F5E;
+  --apple-gray: #8E8E93;
+
+  --apple-label: rgba(0, 0, 0, 0.85);
+  --apple-label-2: rgba(0, 0, 0, 0.5);
+  --apple-label-3: rgba(0, 0, 0, 0.25);
+  --apple-label-4: rgba(0, 0, 0, 0.1);
+  --apple-label-strong: #1D1D1F;
+
+  --apple-fill: rgba(0, 0, 0, 0.1);
+  --apple-fill-2: rgba(0, 0, 0, 0.08);
+  --apple-fill-3: rgba(0, 0, 0, 0.05);
+  --apple-fill-4: rgba(0, 0, 0, 0.03);
+  --apple-separator: rgba(0, 0, 0, 0.1);
+  --apple-separator-strong: rgba(0, 0, 0, 0.2);
+
+  --apple-bg: #F5F5F7;
+  --apple-bg-window: #FFFFFF;
+  --apple-bg-elevated: #FFFFFF;
+  --apple-bg-control: #E6E6E6;
+
+  --apple-material-ultrathin: rgba(246, 246, 246, 0.36);
+  --apple-material-thin: rgba(246, 246, 246, 0.48);
+  --apple-material: rgba(246, 246, 246, 0.6);
+  --apple-material-thick: rgba(246, 246, 246, 0.72);
+  --apple-material-ultrathick: rgba(246, 246, 246, 0.84);
+  --apple-glass-edge: rgba(0, 0, 0, 0.08);
+  --apple-glass-highlight: inset 0 0.5px 1px 0.5px rgba(255, 255, 255, 0.5);
+
+  --apple-shadow-control: 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 0.5px 2.5px rgba(0, 0, 0, 0.18);
+  --apple-shadow-menu: 0 0 2px rgba(0, 0, 0, 0.1), 0 0 25px rgba(0, 0, 0, 0.16);
+  --apple-shadow-window: 0 0 0 0.5px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(0, 0, 0, 0.3);
+  --apple-shadow-sheet: 0 0 0 1px rgba(0, 0, 0, 0.23), 0 16px 48px rgba(0, 0, 0, 0.35);
+  --apple-shadow-glass: 0 8px 40px rgba(0, 0, 0, 0.12);
+  --apple-focus-ring: 0 0 0 3.5px rgba(0, 122, 255, 0.25);
+
+  --apple-accent: var(--apple-orange);
+  --apple-accent-rgb: 255 141 40;
+  --apple-accent-hover: #F58625;
+  --apple-on-accent: #1D1D1F;
+  --apple-link: #0071E3;
+}
+
+/* ==========================================================================
+   Ponte: tokens --cm-* do Caramelo → valores Apple.
+   Os tokens --cm-* guardam canais RGB ("r g b") para uso em rgb(var(--x) / a).
+   ========================================================================== */
+:root {
+  --cm-stage: 22 22 23;
+  --cm-surface-1: 30 30 30;
+  --cm-surface-2: 42 42 44;
+  --cm-surface-3: 58 58 60;
+  --cm-line-soft: 38 38 40;
+  --cm-line: 56 56 58;
+  --cm-line-strong: 72 72 74;
+  --cm-fg: 245 245 247;
+  --cm-fg-2: 218 218 222;
+  --cm-fg-muted: 152 152 157;
+  --cm-fg-dim: 142 142 147;
+  --cm-fg-faint: 99 99 102;
+
+  --cm-accent: 255 146 48;
+  --cm-accent-bright: 255 158 51;
+  --cm-accent-ink: 255 146 48;
+  --cm-accent-soft: 51 31 10;
+  --cm-accent-contrast: 29 29 31;
+
+  --cm-focus: 0 145 255;
+  --cm-info: 0 145 255;
+  --cm-info-soft: 0 36 64;
+  --cm-success: 48 209 88;
+  --cm-success-soft: 10 46 20;
+  --cm-warning: 255 214 0;
+  --cm-warning-soft: 51 43 0;
+  --cm-danger: 255 66 69;
+  --cm-danger-soft: 56 13 14;
+  --cm-violet: 109 124 255;
+  --cm-on-status: 29 29 31;
+  --caramelo-color-ink: #161617;
+
+  --cm-spectrum-gradient: linear-gradient(110deg, #FF9230 0%, #FF375F 24%, #6D7CFF 48%, #3CD3FE 72%, #FFD600 100%);
+  --cm-spectrum: var(--cm-spectrum-gradient);
+  --cm-spectrum-soft: linear-gradient(110deg, #FFB874 0%, #FF8FA6 24%, #A9B2FF 48%, #8DE4FF 72%, #FFE77A 100%);
+  --cm-spectrum-glow: 0 8px 40px rgba(0, 0, 0, 0.35);
+  --cm-spectrum-glow-strong: 0 8px 40px rgba(255, 146, 48, 0.28), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --cm-glow-sm: var(--cm-spectrum-glow);
+  --cm-glow: var(--cm-spectrum-glow-strong);
+  --cm-focus-ring: var(--apple-focus-ring);
+
+  --cm-radius-xs: 5px;
+  --cm-radius-sm: 6px;
+  --cm-radius-md: 9px;
+  --cm-radius-lg: 12px;
+  --cm-radius-xl: 15px;
+  --cm-radius-2xl: 26px;
+  --cm-radius-pill: 1000px;
+
+  --cm-ease-out: var(--apple-ease-out);
+  --cm-ease-spring: var(--apple-spring);
+
+  --caramelo-font-sans: var(--apple-font-text);
+  --caramelo-font-mono: var(--apple-font-mono);
+  /* --caramelo-font-display (Montserrat) e --caramelo-font-handwriting continuam: são a marca. */
+}
+
+[data-caramelo-theme="light"] {
+  --cm-stage: 245 245 247;
+  --cm-surface-1: 255 255 255;
+  --cm-surface-2: 242 242 247;
+  --cm-surface-3: 229 229 234;
+  --cm-line-soft: 229 229 234;
+  --cm-line: 209 209 214;
+  --cm-line-strong: 199 199 204;
+  --cm-fg: 29 29 31;
+  --cm-fg-2: 38 38 40;
+  --cm-fg-muted: 110 110 115;
+  --cm-fg-dim: 110 110 115;
+  --cm-fg-faint: 174 174 178;
+
+  --cm-accent: 255 141 40;
+  --cm-accent-bright: 245 134 37;
+  --cm-accent-ink: 179 82 0;
+  --cm-accent-soft: 255 238 222;
+  --cm-accent-contrast: 29 29 31;
+
+  --cm-focus: 0 113 227;
+  --cm-info: 0 113 227;
+  --cm-info-soft: 230 242 255;
+  --cm-success: 36 138 61;
+  --cm-success-soft: 231 248 236;
+  --cm-warning: 160 90 0;
+  --cm-warning-soft: 255 248 224;
+  --cm-danger: 215 0 21;
+  --cm-danger-soft: 255 235 236;
+  --cm-violet: 97 85 245;
+  --cm-on-status: 255 255 255;
+
+  --cm-spectrum-glow: 0 8px 40px rgba(0, 0, 0, 0.12);
+  --cm-spectrum-glow-strong: 0 8px 40px rgba(255, 141, 40, 0.3), 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* Os acentos alternativos do Caramelo apontam para as cores do sistema Apple. */
+[data-cm-accent="caramel"] { --cm-accent: 255 146 48; --cm-accent-bright: 255 158 51; --cm-accent-ink: 255 146 48; --cm-accent-soft: 51 31 10; --cm-accent-contrast: 29 29 31; }
+[data-caramelo-theme="light"] [data-cm-accent="caramel"], [data-caramelo-theme="light"][data-cm-accent="caramel"] { --cm-accent: 255 141 40; --cm-accent-bright: 245 134 37; --cm-accent-ink: 179 82 0; --cm-accent-soft: 255 238 222; --cm-accent-contrast: 29 29 31; }
+[data-cm-accent="sky"] { --cm-accent: 60 211 254; --cm-accent-bright: 120 224 255; --cm-accent-ink: 60 211 254; --cm-accent-soft: 8 42 51; --cm-accent-contrast: 29 29 31; }
+[data-cm-accent="pink"] { --cm-accent: 255 55 95; --cm-accent-bright: 255 105 135; --cm-accent-ink: 255 55 95; --cm-accent-soft: 56 12 21; --cm-accent-contrast: 29 29 31; }
+[data-cm-accent="violet"] { --cm-accent: 109 124 255; --cm-accent-bright: 140 152 255; --cm-accent-ink: 160 170 255; --cm-accent-soft: 22 25 56; --cm-accent-contrast: 255 255 255; }
+[data-cm-accent="yellow"] { --cm-accent: 255 214 0; --cm-accent-bright: 255 224 20; --cm-accent-ink: 255 214 0; --cm-accent-soft: 51 43 0; --cm-accent-contrast: 29 29 31; }

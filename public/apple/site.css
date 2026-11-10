@@ -1,0 +1,365 @@
+/* ==========================================================================
+   Apple Design System — componentes das páginas do estúdio
+   (/estudio, /head-de-conteudo, /sites-e-experiencias, /lab, /workshop)
+
+   Carregue por último, depois de /apple/tokens.css e das folhas da página.
+   As variáveis locais das páginas (--ink, --cream, --orange…) são remapeadas
+   com html:root para vencer os :root e <style> declarados depois.
+   ========================================================================== */
+
+/* ---------- Variáveis locais das páginas → tokens Apple ---------- */
+html:root {
+  /* editorial.css, landing-copy.css, workshop.css */
+  --ink: rgb(var(--cm-stage));
+  --cream: rgb(var(--cm-fg));
+  --orange: var(--apple-orange);
+  --sky: var(--apple-blue);
+  --violet: var(--apple-indigo);
+  --line: var(--apple-separator-strong);
+  --muted: rgb(var(--cm-fg-dim));
+  --body: var(--apple-font-text);
+
+  /* /lab (estilos embutidos na página) */
+  --bg-stage: rgb(var(--cm-stage));
+  --bg-surface-1: rgb(var(--cm-surface-1));
+  --bg-surface-2: rgb(var(--cm-surface-2));
+  --bg-surface-3: rgb(var(--cm-surface-3));
+  --border-subtle: var(--apple-separator);
+  --border-strong: var(--apple-separator-strong);
+  --text-main: rgb(var(--cm-fg));
+  --text-muted: rgb(var(--cm-fg-muted));
+  --text-dim: rgb(var(--cm-fg-faint));
+  --accent-caramel: var(--apple-orange);
+  --accent-sky: var(--apple-cyan);
+  --accent-pink: var(--apple-pink);
+  --accent-violet: var(--apple-indigo);
+  --accent-yellow: var(--apple-yellow);
+  --accent-mint: var(--apple-green);
+  --spectrum: var(--cm-spectrum-gradient);
+  --glow-spectrum: var(--apple-shadow-glass);
+  --font-body: var(--apple-font-text);
+}
+
+/* Seções claras dentro do tema escuro e as colunas de ofertas usam a versão clara dos tokens. */
+body [data-caramelo-theme="light"],
+.offers-section .offer-column-expanded {
+  --ink: #1D1D1F;
+  --cream: #F5F5F7;
+  --orange: #FF8D28;
+  --line: rgba(0, 0, 0, 0.12);
+  --muted: #6E6E73;
+}
+
+/* ---------- Base ---------- */
+body {
+  font-family: var(--apple-font-text);
+  letter-spacing: var(--apple-tracking-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: rgb(var(--apple-accent-rgb) / 0.35); color: inherit; }
+
+/* Foco: o anel continua o contorno de editorial.css, agora no azul do sistema (--sky). */
+
+.muted { color: var(--apple-label-2); }
+.section-meta { font-family: var(--apple-font-text); font-weight: var(--apple-weight-semibold); letter-spacing: 0.06em; }
+
+/* ---------- Cabeçalho: material de vidro (Toolbars / Materials) ---------- */
+.site-header,
+.ws-header,
+.lab-nav {
+  background: var(--apple-material-thick);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid var(--apple-separator);
+}
+.site-header.scrolled { border-color: var(--apple-separator-strong); }
+.nav-desktop a { font-size: 13px; font-weight: var(--apple-weight-medium); }
+.mobile-drawer {
+  background: var(--apple-material-ultrathick);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid var(--apple-separator);
+}
+
+/* ---------- Botões (Buttons) ----------
+   .pill            → botão preenchido com a cor do texto (alto contraste)
+   .pill-accent     → botão padrão/preferido: laranja do sistema com brilho de vidro
+   .pill-outline    → botão com borda, secundário
+   .pill-dark       → botão neutro sobre fundos claros */
+.pill {
+  min-height: 44px;
+  padding: 12px 22px;
+  gap: 12px;
+  border-radius: var(--apple-radius-capsule);
+  font-family: var(--apple-font-text);
+  font-size: 15px;
+  font-weight: var(--apple-weight-semibold);
+  letter-spacing: var(--apple-tracking-tight);
+  box-shadow: var(--apple-shadow-control);
+}
+.pill span, .pill .cm-arrow { font-size: 17px; }
+.pill:hover { box-shadow: var(--apple-shadow-control), 0 0 0 4px rgb(var(--apple-accent-rgb) / 0.22); }
+.pill-small { min-height: 32px; padding: 6px 14px; font-size: 13px; }
+
+.pill-accent {
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 45%),
+    linear-gradient(180deg, var(--apple-accent-hover) 0%, var(--apple-orange) 100%);
+  color: var(--apple-on-accent);
+  border: 0.5px solid rgba(255, 255, 255, 0.24);
+  box-shadow:
+    0 6px 24px rgb(var(--apple-accent-rgb) / 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 -1px 0 rgba(120, 50, 0, 0.2);
+}
+.pill-accent:hover {
+  box-shadow:
+    0 8px 32px rgb(var(--apple-accent-rgb) / 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 -1px 0 rgba(120, 50, 0, 0.2);
+}
+.pill-accent { --cm-btn-fill: #1D1D1F; --cm-btn-fill-fg: #F5F5F7; }
+.pill-dark { --cm-btn-fill: var(--apple-orange); --cm-btn-fill-fg: #1D1D1F; }
+
+.pill-outline {
+  background: var(--apple-fill-3);
+  border: 0.5px solid var(--apple-separator-strong);
+  -webkit-backdrop-filter: blur(var(--apple-blur));
+  backdrop-filter: blur(var(--apple-blur));
+}
+.pill-outline:hover { background: var(--apple-fill); }
+
+/* Botões redondos de passo e de navegação: controles circulares do macOS. */
+.method-controls button,
+.journey-step-button,
+.media-open {
+  font-family: var(--apple-font-rounded);
+  box-shadow: var(--apple-shadow-control);
+}
+.method-controls button { border: 0.5px solid var(--apple-separator-strong); background: var(--apple-fill-3); }
+
+/* ---------- Superfícies e cartões (Boxes, Windows, Sheets) ---------- */
+.project-media,
+.service-page .service-case img,
+.lesson-art { border-radius: var(--apple-radius-group); }
+
+.interacao-demo-box {
+  background: rgb(var(--cm-surface-1));
+  border: 0.5px solid var(--apple-separator-strong);
+  border-radius: var(--apple-radius-window);
+  box-shadow: var(--apple-shadow-window);
+}
+.choice-canvas { border-radius: var(--apple-radius-control-lg); }
+.demo-choice-row button {
+  border-radius: var(--apple-radius-menu-item);
+  border: 0.5px solid var(--apple-separator-strong);
+  background: var(--apple-fill-3);
+  font-size: 13px;
+}
+.demo-choice-row button.selected { background: rgb(var(--apple-accent-rgb) / 0.14); }
+.lab-meta, #demo-response-text, .offer-list li > span, .offer-list p,
+.method-copy p, .method-hint, .faq-list details p { color: var(--apple-label-2); }
+
+.door-panel,
+.offers-section .offer-column,
+.iarp-stage-box { border-radius: var(--apple-radius-sheet); }
+.door-panel { box-shadow: var(--apple-shadow-glass); }
+.door-panel:hover, .doors-split.hover-work #door-work { background: #FFFFFF; }
+.door-panel.learn:hover, .doors-split.hover-learn #door-learn { background: #7D8BFF; }
+.offers-section .offer-column:nth-child(2) { background: var(--apple-indigo); }
+.offer-column:nth-child(2) .offer-symbol { color: var(--apple-indigo); }
+
+.metodo-scroll-track,
+.curriculum { background: rgb(var(--cm-surface-1)); }
+
+/* Lista de dúvidas: disclosure (Disclosure Controls / Lists) */
+.faq-list summary { font-size: 15px; font-weight: var(--apple-weight-medium); }
+.faq-list summary span { color: var(--apple-label-2); transition: transform 0.2s var(--apple-ease); }
+.faq-list details p { font-size: 14px; }
+
+/* Diálogo: sheet do macOS */
+.dialog-backdrop {
+  background: rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.dialog-window {
+  background: rgb(var(--cm-surface-1));
+  border: 0.5px solid var(--apple-separator-strong);
+  border-radius: var(--apple-radius-sheet);
+  box-shadow: var(--apple-shadow-sheet);
+}
+.dialog-window p { color: var(--apple-label-2); }
+.dialog-close {
+  width: 28px; height: 28px; top: 16px; right: 16px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--apple-fill);
+  font-size: 18px; line-height: 1;
+}
+
+/* Casos (case-caramelo.css): cartões com fundo de janela e raio do macOS */
+.cm-featured-case,
+.cm-head-preview-case,
+.cm-case-metadata-grid,
+.cm-journey-diagram,
+.cm-pillar-card,
+.cm-method-diagram-box,
+.cm-series-item,
+.cm-competency-card,
+.cm-whatsapp-card {
+  background: rgb(var(--cm-surface-1));
+  border-color: var(--apple-separator);
+  border-radius: var(--apple-radius-window);
+}
+.cm-head-preview-card,
+.cm-journey-node,
+.cm-progression-step,
+.cm-cv-fact-card,
+.cm-cv-thumb-btn {
+  background: rgb(var(--cm-surface-2));
+  border-radius: var(--apple-radius-control-lg);
+}
+.cm-case-section--highlight,
+.cm-cv-container,
+.cm-cv-strategic-panel { background: rgb(var(--cm-surface-1)); }
+.cm-cv-topbar,
+.cm-cv-footer {
+  background: var(--apple-material-thick);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+.cm-cv-backdrop { background: rgba(0, 0, 0, 0.72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.cm-cv-container { border-radius: var(--apple-radius-sheet); box-shadow: var(--apple-shadow-sheet); }
+.cm-series-item__media, .cm-cv-stage, .cm-cv-media-inner { background: rgb(var(--cm-stage)); }
+.cm-whatsapp-number-box, .cm-cv-mode-toggle { background: rgb(var(--cm-surface-2)); border-radius: var(--apple-radius-control-lg); }
+.cm-deck-badge, .cm-series-item__slides-count, .cm-cv-thumb-num, .cm-cv-nav-btn {
+  background: var(--apple-material-thick);
+  -webkit-backdrop-filter: blur(var(--apple-blur));
+  backdrop-filter: blur(var(--apple-blur));
+}
+.cm-cv-dot--orange { background: var(--apple-orange); }
+.cm-cv-dot--sky { background: var(--apple-cyan); }
+.cm-cv-dot--violet { background: var(--apple-indigo); }
+.cm-cv-dot--yellow { background: var(--apple-yellow); }
+
+/* ---------- Campos de formulário (Text Fields / Pop-up Buttons) ---------- */
+:is(.commercial-home, .service-page) .form-field :is(input, select, textarea) {
+  border: 0;
+  border-radius: var(--apple-radius-control-lg);
+  background: var(--apple-fill-3);
+  box-shadow: 0 0 0 1px var(--apple-separator-strong);
+  font-family: var(--apple-font-text);
+  font-size: 15px;
+  transition: box-shadow 0.15s var(--apple-ease);
+}
+:is(.commercial-home, .service-page) .form-field :is(input, select, textarea):focus,
+:is(.commercial-home, .service-page) .form-field :is(input, select, textarea):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px rgb(var(--cm-focus)), var(--apple-focus-ring);
+}
+:is(.commercial-home, .service-page) .contact-preview { border-radius: var(--apple-radius-window); }
+
+/* Barras de progresso finas (Progress Indicators) */
+.process-reading-progress,
+.offers-section[data-offers-mode='reading'] .offer-reading-progress { border-radius: 2px; overflow: hidden; }
+.offers-section[data-offers-mode='reading'] .offer-reading-nav button { border-radius: var(--apple-radius-control); }
+
+/* ==========================================================================
+   /lab
+   ========================================================================== */
+/* :root aumenta a especificidade: o /lab declara seus estilos num <style> depois desta folha. */
+:root .ambient-glow { opacity: 0.6; }
+:root .brand-isotype { border-radius: var(--apple-radius-icon); }
+:root .brand-badge { border-radius: var(--apple-radius-capsule); font-family: var(--apple-font-text); }
+:root .hero-eyebrow { font-family: var(--apple-font-text); font-weight: var(--apple-weight-semibold); background: rgb(var(--apple-accent-rgb) / 0.12); }
+:root .btn-download-top,
+:root .btn-download-primary,
+:root .btn-web-secondary,
+:root .btn-web-ghost,
+:root .card-btn {
+  font-family: var(--apple-font-text);
+  font-weight: var(--apple-weight-semibold);
+  letter-spacing: var(--apple-tracking-tight);
+  border-radius: var(--apple-radius-capsule);
+}
+:root .btn-download-top,
+:root .btn-download-primary,
+:root .card-btn.open {
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 45%),
+    linear-gradient(180deg, var(--apple-accent-hover) 0%, var(--apple-orange) 100%);
+  color: var(--apple-on-accent);
+  box-shadow: 0 6px 24px rgb(var(--apple-accent-rgb) / 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+}
+:root .btn-web-secondary { background: var(--apple-fill); box-shadow: var(--apple-shadow-control); }
+:root .btn-web-secondary:hover { background: var(--apple-separator-strong); }
+:root .client-mockup {
+  background: rgb(var(--cm-surface-1));
+  border-radius: var(--apple-radius-window);
+  box-shadow: var(--apple-shadow-window);
+}
+:root .mockup-titlebar { background: var(--apple-material-thick); }
+:root .mockup-body { background: rgb(var(--cm-stage)); }
+:root .mockup-dot { width: 12px; height: 12px; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.1); }
+:root .mockup-dot.close { background: var(--apple-window-close); }
+:root .mockup-dot.min { background: var(--apple-window-minimize); }
+:root .mockup-dot.max { background: var(--apple-window-zoom); }
+:root .mockup-banner { border-radius: var(--apple-radius-group); background: linear-gradient(135deg, rgb(var(--apple-accent-rgb) / 0.16) 0%, rgba(0, 145, 255, 0.08) 100%), rgb(var(--cm-surface-2)); }
+:root .mockup-card { border-radius: var(--apple-radius-control-lg); }
+:root .card-tag,
+:root .banner-badge,
+:root .mockup-status { border-radius: var(--apple-radius-capsule); }
+:root .pillar-card,
+:root .compare-wrap,
+:root .tool-box,
+:root .faq-item {
+  border-radius: var(--apple-radius-window);
+  border-color: var(--apple-separator);
+}
+:root .tool-badge-pill { border-radius: var(--apple-radius-capsule); }
+:root .compare-table th { font-family: var(--apple-font-text); font-weight: var(--apple-weight-semibold); }
+
+/* ==========================================================================
+   /workshop
+   ========================================================================== */
+.button {
+  border-radius: var(--apple-radius-capsule);
+  font-family: var(--apple-font-text);
+  font-weight: var(--apple-weight-semibold);
+  box-shadow: var(--apple-shadow-control);
+}
+.button:hover { background: #FFFFFF; box-shadow: var(--apple-shadow-control), 0 0 0 4px rgb(var(--apple-accent-rgb) / 0.22); }
+.eyebrow > i { box-shadow: 0 0 0 5px rgb(var(--apple-accent-rgb) / 0.1); }
+.hero-browser { border-radius: var(--apple-radius-window); border-color: var(--apple-separator-strong); box-shadow: var(--apple-shadow-window); }
+.browser-bar { background: var(--apple-material-thick); }
+.browser-bar > span { width: 12px; height: 12px; }
+.browser-bar > span:nth-child(1) { background: var(--apple-window-close); }
+.browser-bar > span:nth-child(2) { background: var(--apple-window-minimize); }
+.browser-bar > span:nth-child(3) { background: var(--apple-window-zoom); }
+.comparison { border-radius: var(--apple-radius-sheet); border-color: rgb(var(--apple-accent-rgb) / 0.5); }
+.comparison-after { background: var(--apple-orange); color: #1D1D1F; }
+.insight-grid > div { background: rgb(var(--cm-surface-1)); border-radius: var(--apple-radius-group); }
+.comparison-section .insight-grid > div { background: color-mix(in srgb, rgb(var(--cm-surface-1)), var(--apple-orange) calc(var(--experience, .5) * 12%)); }
+.manifesto { background: rgb(var(--cm-stage)); border-color: var(--apple-separator); }
+.curriculum-sidebar nav a { border-radius: var(--apple-radius-menu-item); color: var(--apple-label-2); }
+.curriculum-sidebar nav a[aria-current] { background: var(--apple-fill); color: var(--apple-label-strong); }
+.floating-tag { border-radius: var(--apple-radius-control-lg); background: var(--apple-material-thick); -webkit-backdrop-filter: blur(var(--apple-blur)); backdrop-filter: blur(var(--apple-blur)); }
+
+@media (max-width: 999px) {
+  .pill { min-height: 44px; font-size: 14px; }
+}
+@media (max-width: 650px) {
+  .door-panel, .offers-section .offer-column, .iarp-stage-box { border-radius: 22px; }
+  .dialog-window { border-radius: 22px; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .site-header, .ws-header, .lab-nav, .mobile-drawer, .pill-outline, .cm-cv-topbar, .cm-cv-footer {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgb(var(--cm-surface-1));
+  }
+}

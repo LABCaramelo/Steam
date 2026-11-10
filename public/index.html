@@ -6,7 +6,7 @@
 <script>if(/(?:^|[#?&])(?:access_token|refresh_token|code|error_description)=/.test(location.search+location.hash))location.replace('/library/home'+location.search+location.hash);</script>
 <title>Um Cara Caramelo® — Estúdio criativo, conteúdo e experiências digitais</title>
 <meta name="description" content="Direção estratégica de conteúdo e criação de sites e experiências digitais para especialistas, infoprodutores e marcas. Conheça o Estúdio e converse sobre seu projeto.">
-<meta name="theme-color" content="#101014"><link rel="canonical" href="https://www.umcaracaramelo.com.br/">
+<meta name="theme-color" content="#F6F6F6"><link rel="canonical" href="https://www.umcaracaramelo.com.br/">
 <meta property="og:type" content="website"><meta property="og:locale" content="pt_BR"><meta property="og:site_name" content="Um Cara Caramelo"><meta property="og:title" content="Sua marca tem boas ideias. Eu ajudo a dar direção a elas."><meta property="og:description" content="Estúdio criativo · Direção de conteúdo + experiências digitais. Cada projeto começa com uma conversa."><meta property="og:url" content="https://www.umcaracaramelo.com.br/"><meta property="og:image" content="https://www.umcaracaramelo.com.br/assets/images/video-posters/work-02.webp"><meta property="og:image:alt" content="Universo visual do Um Cara Caramelo">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Um Cara Caramelo — Estúdio criativo"><meta name="twitter:description" content="Conteúdo e experiências digitais com direção, estratégia e personalidade."><meta name="twitter:image" content="https://www.umcaracaramelo.com.br/assets/images/video-posters/work-02.webp">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.umcaracaramelo.com.br/#studio","name":"Um Cara Caramelo","url":"https://www.umcaracaramelo.com.br/","logo":"https://www.umcaracaramelo.com.br/assets/icons/caramelo-mark.svg","description":"Estúdio criativo de direção de conteúdo e experiências digitais."},{"@type":"WebSite","@id":"https://www.umcaracaramelo.com.br/#website","url":"https://www.umcaracaramelo.com.br/","name":"Um Cara Caramelo","inLanguage":"pt-BR","publisher":{"@id":"https://www.umcaracaramelo.com.br/#studio"}}]}</script>
@@ -14,6 +14,8 @@
 <link rel="preload" href="/assets/images/caramelo-os/wallpaper.jpg" as="image">
 <link rel="stylesheet" href="/fonts.css">
 <link rel="stylesheet" href="/os/caramelo-os.css">
+<link rel="stylesheet" href="/apple/tokens.css">
+<link rel="stylesheet" href="/os/caramelo-os-mac.css">
 <script defer src="/os/caramelo-os.js"></script>
 </head>
 <body>
@@ -61,6 +63,16 @@
       <img src="/assets/images/caramelo-os/wallpaper.jpg" alt="" width="1920" height="1080">
     </div>
     <div class="crt" aria-hidden="true"></div>
+    <!-- Barra de menus (macOS) -->
+    <nav class="menubar" aria-label="Barra de menus">
+      <svg class="menubar-logo" aria-hidden="true"><use href="#i-isotipo"/></svg>
+      <span class="menubar-app">Um Cara Caramelo</span>
+      <button class="menubar-item" type="button" data-open="servicos">Serviços</button>
+      <button class="menubar-item" type="button" data-open="projetos">Projetos</button>
+      <button class="menubar-item" type="button" data-open="processo">Como Trabalho</button>
+      <button class="menubar-item" type="button" data-open="ajuda">Dúvidas</button>
+      <button class="menubar-item" type="button" data-open="contato">Contato</button>
+    </nav>
 
     <main class="desktop" id="desktop" aria-label="Área de trabalho do CarameloOS">
       <h1 class="sr-only">Um Cara Caramelo® — estúdio criativo de direção de conteúdo e experiências digitais</h1>
