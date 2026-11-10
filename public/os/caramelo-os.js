@@ -46,6 +46,48 @@
   // Tamanho da área das janelas em px de layout, os mesmos de style.left/top.
   function areaRect() { return { width: layer.offsetWidth, height: layer.offsetHeight }; }
 
+  /* ---------------- Animações das janelas, como no macOS ---------------- */
+  // Abrir: cresce a partir do ícone no Dock. Fechar: encolhe e some. Minimizar: é sugada
+  // para o Dock (efeito "gênio" aproximado) e volta pelo mesmo caminho. Maximizar: expande.
+  const canAnimate = () => !reduced && typeof Element.prototype.animate === 'function';
+  const EASE_OPEN = 'cubic-bezier(.2, .8, .2, 1)';
+  function boxTransform(from, to) {
+    // transform que faz a caixa `to` parecer a caixa `from` (origem no centro)
+    const sx = Math.max(from.width / to.width, 0.02), sy = Math.max(from.height / to.height, 0.02);
+    const dx = (from.left + from.width / 2) - (to.left + to.width / 2);
+    const dy = (from.top + from.height / 2) - (to.top + to.height / 2);
+    return { dx, dy, sx, sy, css: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` };
+  }
+  // O estado não pode depender só do fim da animação: em aba de fundo o navegador pausa as
+  // animações. Quem vier primeiro (fim da animação ou o tempo dela) conclui a ação.
+  function afterAnim(anim, ms, fn) {
+    let done = false;
+    const go = () => { if (!done) { done = true; fn(); } };
+    anim.finished.then(go, go);
+    setTimeout(go, ms + 80);
+  }
+  function dockBox(rec) {
+    const r = rec.task.getBoundingClientRect();
+    return r.width ? r : null;
+  }
+  function animateWin(rec, keyframes, options) {
+    rec.anim?.cancel();
+    const anim = rec.win.animate(keyframes, options);
+    rec.anim = anim;
+    anim.finished.then(() => { if (rec.anim === anim) rec.anim = null; }, () => {});
+    return anim;
+  }
+  function animateFromDock(rec, duration = 380) {
+    if (!canAnimate()) return;
+    const from = dockBox(rec);
+    if (!from) return;
+    const t = boxTransform(from, rec.win.getBoundingClientRect());
+    animateWin(rec, [
+      { transform: t.css, opacity: 0.15 },
+      { transform: 'none', opacity: 1 }
+    ], { duration, easing: EASE_OPEN });
+  }
+
   function openApp(id, opts = {}) {
     const app = APPS[id];
     if (!app) return;
@@ -83,7 +125,7 @@
       task.lastElementChild.textContent = app.task || app.title;
       task.setAttribute('aria-label', app.task || app.title);
       task.addEventListener('click', () => {
-        if (win.hidden) { win.hidden = false; focusWin(id, true); }
+        if (win.hidden) { restoreWin(id); }
         else if (activeId === id) minimize(id);
         else focusWin(id, true);
       });
@@ -104,10 +146,21 @@
 
       rec = { win, task, wrap };
       openWins.set(id, rec);
-    }
+      focusWin(id, true);
+      animateFromDock(rec);
+    } else if (rec.win.hidden) {
+      restoreWin(id);
+    } else focusWin(id, true);
+    hooks.open[id]?.(opts);
+  }
+
+  function restoreWin(id) {
+    const rec = openWins.get(id);
+    if (!rec) return;
+    rec.pendingHide = false;
     rec.win.hidden = false;
     focusWin(id, true);
-    hooks.open[id]?.(opts);
+    animateFromDock(rec, 340);
   }
 
   function focusWin(id, moveFocus = false) {
@@ -136,8 +189,19 @@
 
   function minimize(id) {
     const rec = openWins.get(id);
-    if (!rec) return;
-    rec.win.hidden = true;
+    if (!rec || rec.win.hidden) return;
+    const to = canAnimate() ? dockBox(rec) : null;
+    if (to) {
+      const t = boxTransform(to, rec.win.getBoundingClientRect());
+      // "Gênio" aproximado: estreita e desce primeiro, depois é sugada para o ícone.
+      animateWin(rec, [
+        { transform: 'none', opacity: 1 },
+        { offset: 0.45, transform: `translate(${t.dx * 0.2}px, ${t.dy * 0.35}px) scale(${0.55 + t.sx * 0.1}, 0.92)`, opacity: 1 },
+        { transform: t.css, opacity: 0.2 }
+      ], { duration: 460, easing: 'cubic-bezier(.45, 0, .55, 1)' });
+      rec.pendingHide = true;
+      afterAnim(rec.anim, 460, () => { if (rec.pendingHide) { rec.pendingHide = false; rec.win.hidden = true; } });
+    } else rec.win.hidden = true;
     rec.task.classList.remove('is-active');
     rec.task.setAttribute('aria-pressed', 'false');
     hooks.close[id]?.('min');
@@ -149,7 +213,12 @@
   function toggleMax(id) {
     const rec = openWins.get(id);
     if (!rec || isCompact()) return;
+    const before = rec.win.getBoundingClientRect();
     const on = rec.win.classList.toggle('is-max');
+    if (canAnimate()) {
+      const t = boxTransform(before, rec.win.getBoundingClientRect());
+      animateWin(rec, [{ transform: t.css }, { transform: 'none' }], { duration: 320, easing: EASE_OPEN });
+    }
     const btn = $('[data-act="max"]', rec.win);
     btn.setAttribute('aria-label', on ? 'Restaurar' : 'Maximizar');
     btn.firstElementChild.textContent = on ? '❐' : '□';
@@ -161,12 +230,21 @@
     hooks.close[id]?.('close');
     openWins.delete(id);
     const finish = () => {
-      appStore.append($(`#app-${id}`, rec.win));
+      if (!rec.win.isConnected) return;
+      const app = $(`#app-${id}`, rec.win);
+      if (app) appStore.append(app);
       rec.win.remove();
     };
     rec.wrap.remove();
-    if (reduced) finish();
-    else { rec.win.classList.add('is-closing'); setTimeout(finish, 160); }
+    if (!canAnimate()) finish();
+    else {
+      rec.win.style.pointerEvents = 'none';
+      animateWin(rec, [
+        { transform: 'none', opacity: 1 },
+        { transform: 'scale(0.9)', opacity: 0 }
+      ], { duration: 190, easing: 'cubic-bezier(.4, 0, 1, 1)' });
+      afterAnim(rec.anim, 190, finish);
+    }
     if (activeId === id) {
       activeId = null;
       const next = topVisible(id);
@@ -214,7 +292,7 @@
       e.preventDefault();
       e.stopPropagation();
       start = { dir: h.dataset.dir, x: e.clientX, y: e.clientY, l: win.offsetLeft, t: win.offsetTop, w: win.offsetWidth, h: win.offsetHeight, handle: h };
-      h.setPointerCapture(e.pointerId);
+      try { h.setPointerCapture(e.pointerId); } catch { /* ponteiro sem captura */ }
       win.classList.add('is-resizing');
     });
     win.addEventListener('pointermove', e => {
@@ -320,7 +398,7 @@
         if (Math.hypot(dx, dy) < 5) return;
         freeIcons();
         drag.l = li.offsetLeft; drag.t = li.offsetTop; drag.moved = true;
-        icon.setPointerCapture(drag.pid);
+        try { icon.setPointerCapture(drag.pid); } catch { /* ponteiro sem captura */ }
         icon.classList.add('is-dragging');
         selectIcon(icon);
       }
@@ -1163,73 +1241,42 @@
     };
   })();
 
-  /* ---------------- Caramelo ilustrado único (foto de quem entra) ---------------- */
-  // Cada pessoa recebe um código aleatório; dele saem pelagem (cor contínua), orelhas, manchas,
-  // língua, acessório e fundo. Dois códigos diferentes quase nunca dão o mesmo cachorro.
-  function seededRandom(seed) {
-    let h = 1779033703 ^ seed.length;
-    for (let i = 0; i < seed.length; i++) { h = Math.imul(h ^ seed.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
-    let a = h >>> 0;
-    return () => {
-      a = (a + 0x6D2B79F5) | 0;
-      let t = Math.imul(a ^ (a >>> 15), 1 | a);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-  function caramelSVG(seed) {
-    const r = seededRandom(String(seed));
-    const pick = arr => arr[Math.floor(r() * arr.length)];
-    const between = (a, b) => a + (b - a) * r();
-    const n = v => v.toFixed(1);
-    const hsl = (h, s, l) => `hsl(${n(h)} ${n(s)}% ${n(l)}%)`;
-    const hue = between(22, 38), sat = between(55, 80), lig = between(42, 58);
-    const coat = hsl(hue, sat, lig);
-    const dark = hsl(hue - 4, sat, lig - between(12, 20));
-    const light = hsl(hue + 4, Math.max(30, sat - 22), Math.min(93, lig + between(26, 36)));
-    const ink = '#2B1A10';
-    const bg = pick(['#FDE7D3', '#E3EEFB', '#E8F5E1', '#F6E3F3', '#FFF3C4', '#E0F4F4', '#EDE7FB', '#FBE3E1']);
-    const ears = pick(['floppy', 'floppy', 'up', 'mixed']);
-    const blaze = r() < 0.5, chest = r() < 0.5, brows = r() < 0.6, tongue = r() < 0.6;
-    const patch = r() < 0.3 ? pick([-1, 1]) : 0;
-    const acc = pick(['collar', 'collar', 'bandana', 'bow', 'glasses', 'none']);
-    const accColor = pick(['#E5484D', '#3E63DD', '#30A46C', '#F76B15', '#8E4EC6', '#0090FF', '#E93D82', '#FFC53D']);
-    const tilt = between(-7, 7), gap = between(12, 15), eyeR = between(4.2, 5.6);
-
-    const floppy = side => { const x = side < 0 ? 30 : 90; return `<ellipse cx="${x}" cy="56" rx="${n(between(11, 14))}" ry="${n(between(22, 27))}" transform="rotate(${n(side * between(18, 30))} ${x} 56)" fill="${dark}"/>`; };
-    const up = side => { const x = side < 0 ? 36 : 84; return `<path d="M${x - side * 14} 52 L${x + side * 2} ${n(between(14, 22))} L${x + side * 16} 46 Z" fill="${dark}"/>`; };
-    const ear = side => (ears === 'up' || (ears === 'mixed' && side > 0)) ? up(side) : floppy(side);
-    const eye = side => {
-      const cx = 60 + side * gap;
-      return `<circle cx="${n(cx)}" cy="62" r="${n(eyeR)}" fill="${ink}"/><circle cx="${n(cx + 1.6)}" cy="60.4" r="1.4" fill="#fff"/>`;
-    };
-    let body = `<path d="M26 124 Q32 92 60 90 Q88 92 94 124 Z" fill="${coat}"/>`;
-    if (chest) body += `<ellipse cx="60" cy="114" rx="14" ry="12" fill="${light}"/>`;
-    let head = ear(-1) + ear(1) + `<ellipse cx="60" cy="64" rx="34" ry="31" fill="${coat}"/>`;
-    if (blaze) head += `<path d="M60 35 C55 46 54 60 56 71 L64 71 C66 60 65 46 60 35 Z" fill="${light}"/>`;
-    if (patch) head += `<ellipse cx="${n(60 + patch * gap)}" cy="61" rx="10" ry="9" fill="${dark}"/>`;
-    head += `<ellipse cx="60" cy="81" rx="21" ry="15" fill="${light}"/>`;
-    if (brows) head += `<ellipse cx="${n(60 - gap)}" cy="52" rx="3" ry="2" fill="${light}"/><ellipse cx="${n(60 + gap)}" cy="52" rx="3" ry="2" fill="${light}"/>`;
-    head += eye(-1) + eye(1);
-    head += `<path d="M53 72 Q60 68 67 72 Q66 79 60 80 Q54 79 53 72 Z" fill="${ink}"/><ellipse cx="57.5" cy="72.6" rx="2.2" ry="1.2" fill="#fff" opacity=".55"/>`;
-    if (tongue) head += `<path d="M56 87 Q56 97 60 97 Q64 97 64 87 Z" fill="#F07C8C"/><path d="M60 89 V95" stroke="#D85C6E" stroke-width="1"/>`;
-    head += `<path d="M60 80 V85 M51 85 Q60 93 69 85" stroke="${ink}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
-    let extra = '';
-    if (acc === 'collar') extra = `<path d="M37 97 Q60 107 83 97 L83 103 Q60 113 37 103 Z" fill="${accColor}"/><circle cx="60" cy="110" r="4" fill="#F5C542" stroke="#B88A10" stroke-width="1"/>`;
-    if (acc === 'bandana') extra = `<path d="M36 97 Q60 105 84 97 L60 120 Z" fill="${accColor}"/><circle cx="54" cy="104" r="1.6" fill="#fff" opacity=".8"/><circle cx="64" cy="108" r="1.6" fill="#fff" opacity=".8"/><circle cx="60" cy="101" r="1.6" fill="#fff" opacity=".8"/>`;
-    if (acc === 'bow') extra = `<g transform="translate(78 34) rotate(18)"><path d="M0 0 L-11 -7 L-11 7 Z M0 0 L11 -7 L11 7 Z" fill="${accColor}"/><circle r="3.2" fill="${accColor}" stroke="rgba(0,0,0,.2)"/></g>`;
-    if (acc === 'glasses') extra = `<g fill="rgba(255,255,255,.18)" stroke="#1A1A1A" stroke-width="2.4"><circle cx="${n(60 - gap)}" cy="62" r="9"/><circle cx="${n(60 + gap)}" cy="62" r="9"/></g><path d="M${n(60 - gap + 9)} 61 Q60 57 ${n(60 + gap - 9)} 61" stroke="#1A1A1A" stroke-width="2.4" fill="none"/>`;
-    return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Caramelo"><rect width="120" height="120" fill="${bg}"/><g transform="rotate(${n(tilt)} 60 72)">${body}${head}${acc === 'glasses' || acc === 'bow' ? extra : ''}</g>${acc === 'collar' || acc === 'bandana' ? `<g transform="rotate(${n(tilt)} 60 72)">${extra}</g>` : ''}</svg>`;
+  /* ---------------- Fotos de caramelo de quem entra ---------------- */
+  // 30 caramelos em public/assets/images/caramelo-os/avatares/01.webp…30.webp.
+  // Visitante novo recebe a próxima foto da fila do Supabase (os_avatar_next): os 30 primeiros
+  // não repetem e depois a fila recomeça por igual. Sem rede, sorteia. A pessoa pode trocar.
+  const AVATAR_COUNT = 30;
+  const avatarSrc = n => `/assets/images/caramelo-os/avatares/${String(n).padStart(2, '0')}.webp`;
+  const validAvatar = n => Number.isInteger(n) && n >= 1 && n <= AVATAR_COUNT;
+  const hashAvatar = text => { let h = 0; for (const ch of String(text)) h = (h * 31 + ch.codePointAt(0)) >>> 0; return (h % AVATAR_COUNT) + 1; };
+  async function nextAvatar() {
+    const saved = store.get('cos.avatar', null);
+    if (validAvatar(saved)) return saved;
+    let n = null;
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 3000);
+      const res = await fetch(`${SB_URL}/rest/v1/rpc/os_avatar_next`, {
+        method: 'POST', signal: ctrl.signal,
+        headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_total: AVATAR_COUNT })
+      });
+      clearTimeout(timer);
+      if (res.ok) n = Number(await res.json());
+    } catch { /* sem a fila: sorteia */ }
+    if (!validAvatar(n)) n = Math.floor(Math.random() * AVATAR_COUNT) + 1;
+    store.set('cos.avatar', n);
+    return n;
   }
 
   /* ---------------- Quem está usando o CarameloOS ---------------- */
-  // Nome e caramelo ficam no navegador. Quem já entrou no LAB usa o nome e a foto de lá.
+  // Nome e foto ficam no navegador. Quem tem login no LAB entra com o nome e a foto da conta.
   const USER_KEY = 'cos.user';
   let user = null;
-  const newSeed = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
   function savedUser() {
     const u = store.get(USER_KEY, null);
-    return u && typeof u.name === 'string' && u.name.trim() ? { name: u.name.trim().slice(0, 24), seed: u.seed || newSeed(), lab: false } : null;
+    if (!u || typeof u.name !== 'string' || !u.name.trim()) return null;
+    return { name: u.name.trim().slice(0, 24), avatar: validAvatar(u.avatar) ? u.avatar : null, lab: false };
   }
   async function labUser() {
     let s = null;
@@ -1238,7 +1285,7 @@
     if (!u || !u.id) return null;
     const meta = u.user_metadata || {};
     let name = meta.nickname || meta.name || meta.full_name || '';
-    let avatar = meta.avatar_url || '';
+    let photo = meta.avatar_url || '';
     if (s.access_token && (s.expires_at || 0) * 1000 > Date.now()) {
       try {
         const ctrl = new AbortController();
@@ -1249,30 +1296,31 @@
         clearTimeout(timer);
         if (res.ok) {
           const [p] = await res.json();
-          if (p) { name = p.nickname || p.name || name; avatar = p.avatar_url || avatar; }
+          if (p) { name = p.nickname || p.name || name; photo = p.avatar_url || photo; }
         }
       } catch { /* sem rede: fica com o que a sessão guardou */ }
     }
     if (!name) name = String(u.email || '').split('@')[0];
     if (!name) return null;
-    return { name: String(name).trim().slice(0, 24), seed: u.id, avatar, lab: true };
+    // Conta sem foto: um caramelo fixo para aquela conta.
+    return { name: String(name).trim().slice(0, 24), photo, avatar: hashAvatar(u.id), lab: true };
   }
   function paintAvatar(el, who) {
     if (!el) return;
-    if (who && who.avatar) {
-      const img = document.createElement('img');
-      img.alt = '';
-      img.src = who.avatar;
-      img.onerror = () => { el.innerHTML = caramelSVG(who.seed); };
-      el.replaceChildren(img);
-    } else el.innerHTML = caramelSVG(who ? who.seed : 'visitante');
+    const img = document.createElement('img');
+    img.alt = '';
+    img.decoding = 'async';
+    const fallback = avatarSrc(who && validAvatar(who.avatar) ? who.avatar : 1);
+    img.src = who && who.photo ? who.photo : fallback;
+    img.onerror = () => { if (img.src !== new URL(fallback, location.href).href) img.src = fallback; };
+    el.replaceChildren(img);
   }
   function applyUser(who) {
     user = who;
     const name = who ? who.name : 'Um Cara Caramelo';
     $$('.menubar-app').forEach(el => { el.textContent = name; });
     const startName = $('#startName');
-    if (startName) startName.textContent = who ? who.name : 'Um Cara Caramelo';
+    if (startName) startName.textContent = name;
     paintAvatar($('#startAvatar'), who);
     document.dispatchEvent(new CustomEvent('cos:user', { detail: who }));
   }
@@ -1282,15 +1330,51 @@
   const loginForm = $('#loginForm');
   const loginInput = $('#loginInput');
   const loginGo = $('#loginGo');
+  const picker = $('#loginPicker');
   let entering = false;
+  let draft = null; // quem vai entrar: { name?, avatar, photo?, lab }
+  function paintDraft() {
+    paintAvatar($('#loginAvatar'), draft);
+    const canPick = draft && !draft.lab;
+    $$('.login-arrow').forEach(b => { b.hidden = !canPick; });
+    $('#loginPick').hidden = !canPick;
+    if (picker) $$('button', picker).forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.avatar === draft.avatar)));
+  }
+  function pickAvatar(n) {
+    if (!draft || draft.lab) return;
+    draft.avatar = ((n - 1 + AVATAR_COUNT) % AVATAR_COUNT) + 1;
+    store.set('cos.avatar', draft.avatar);
+    paintDraft();
+  }
+  if (picker) {
+    for (let n = 1; n <= AVATAR_COUNT; n++) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.avatar = n;
+      b.setAttribute('aria-label', `Caramelo ${n}`);
+      b.innerHTML = `<img src="${avatarSrc(n)}" alt="" loading="lazy" width="72" height="72">`;
+      b.addEventListener('click', () => { pickAvatar(n); picker.hidden = true; $('#loginPick').setAttribute('aria-expanded', 'false'); loginGo.focus({ preventScroll: true }); });
+      picker.append(b);
+    }
+  }
+  $('#loginPrev')?.addEventListener('click', () => pickAvatar(draft.avatar - 1));
+  $('#loginNext')?.addEventListener('click', () => pickAvatar(draft.avatar + 1));
+  $('#loginPick')?.addEventListener('click', () => {
+    picker.hidden = !picker.hidden;
+    $('#loginPick').setAttribute('aria-expanded', String(!picker.hidden));
+    if (!picker.hidden) picker.querySelector('[aria-pressed="true"]')?.focus({ preventScroll: true });
+  });
   async function showLogin() {
     if (!login) { desktopOn(); return; }
     $('#bootSplash').hidden = true;
     login.hidden = false;
     entering = false;
     loginGo.classList.remove('is-on');
+    if (picker) picker.hidden = true;
     const who = (await labUser()) || savedUser();
-    paintAvatar($('#loginAvatar'), who || { seed: store.get('cos.seed', null) || (() => { const s = newSeed(); store.set('cos.seed', s); return s; })() });
+    draft = who ? { ...who } : { avatar: await nextAvatar(), lab: false };
+    if (!draft.lab && !validAvatar(draft.avatar)) draft.avatar = await nextAvatar();
+    paintDraft();
     const known = !!who;
     $('#loginName').hidden = !known;
     $('#loginName').textContent = who ? who.name : '';
@@ -1298,17 +1382,12 @@
     $('#loginLab').hidden = !(who && who.lab);
     loginInput.hidden = known;
     loginInput.value = '';
-    login.dataset.who = known ? JSON.stringify(who) : '';
     (known ? loginGo : loginInput).focus({ preventScroll: true });
-  }
-  function typedUser() {
-    const name = loginInput.value.trim().replace(/\s+/g, ' ').slice(0, 24);
-    return name ? { name, seed: store.get('cos.seed', null) || newSeed(), lab: false } : null;
   }
   loginInput && loginInput.addEventListener('input', () => { loginForm.classList.remove('is-error'); });
   $('#loginChange') && $('#loginChange').addEventListener('click', () => {
     store.set(USER_KEY, null);
-    login.dataset.who = '';
+    if (draft) delete draft.name;
     $('#loginName').hidden = true;
     $('#loginChange').hidden = true;
     loginInput.hidden = false;
@@ -1316,19 +1395,18 @@
   });
   loginForm && loginForm.addEventListener('submit', e => {
     e.preventDefault();
-    if (entering) return;
-    const who = login.dataset.who ? JSON.parse(login.dataset.who) : typedUser();
-    if (!who) {
-      loginForm.classList.add('is-error');
-      loginInput.focus();
-      return;
+    if (entering || !draft) return;
+    if (!draft.name) {
+      const name = loginInput.value.trim().replace(/\s+/g, ' ').slice(0, 24);
+      if (!name) { loginForm.classList.add('is-error'); loginInput.focus(); return; }
+      draft.name = name;
     }
     entering = true;
     // Tela cheia precisa sair direto do clique, antes de qualquer espera.
     const root = document.documentElement;
     if (root.requestFullscreen && !document.fullscreenElement) root.requestFullscreen({ navigationUI: 'hide' }).catch(() => {});
-    if (!who.lab) { store.set(USER_KEY, { name: who.name, seed: who.seed }); store.set('cos.seed', who.seed); }
-    applyUser(who);
+    if (!draft.lab) store.set(USER_KEY, { name: draft.name, avatar: draft.avatar });
+    applyUser({ ...draft });
     loginGo.classList.add('is-on');
     setTimeout(desktopOn, reduced ? 0 : 650);
   });

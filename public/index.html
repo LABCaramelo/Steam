@@ -60,7 +60,13 @@
 
     <!-- Entrada: foto, nome e o interruptor para iniciar -->
     <div class="boot-login" id="bootLogin" hidden>
-      <div class="login-avatar" id="loginAvatar"></div>
+      <div class="login-face">
+        <button type="button" class="login-arrow" id="loginPrev" aria-label="Caramelo anterior">‹</button>
+        <div class="login-avatar" id="loginAvatar"></div>
+        <button type="button" class="login-arrow" id="loginNext" aria-label="Próximo caramelo">›</button>
+      </div>
+      <button type="button" class="login-pick" id="loginPick" aria-controls="loginPicker" aria-expanded="false">Escolher outra foto</button>
+      <div class="login-picker" id="loginPicker" role="group" aria-label="Fotos de caramelo" hidden></div>
       <p class="login-name" id="loginName" hidden></p>
       <p class="login-lab" id="loginLab" hidden>Conectado pelo LAB</p>
       <form class="login-form" id="loginForm" novalidate>

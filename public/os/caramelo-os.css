@@ -158,12 +158,9 @@ a { color: inherit; }
     0 2px 0 rgba(16,16,20,.12), 6px 14px 32px rgba(16,16,20,.35);
   padding: 3px;
   overflow: hidden;
-  animation: win-in .22s var(--ease);
+  /* Abrir, fechar, minimizar e maximizar são animados em caramelo-os.js (Web Animations). */
 }
-@keyframes win-in { from { opacity: 0; transform: scale(.96) translateY(6px); } }
 .win:focus { outline: none; }
-.win.is-closing { animation: win-out .16s ease forwards; }
-@keyframes win-out { to { opacity: 0; transform: scale(.97) translateY(4px); } }
 .win.is-max {
   left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important;
   max-width: none; max-height: none; border-radius: 0; resize: none;
@@ -522,6 +519,7 @@ a { color: inherit; }
   background: var(--paper); border: 1px solid var(--line-dark); border-radius: 6px 6px 3px 3px;
   box-shadow: 6px 10px 30px rgba(16,16,20,.45); animation: win-in .18s var(--ease);
 }
+@keyframes win-in { from { opacity: 0; transform: scale(.96) translateY(6px); } }
 .start-head {
   display: flex; align-items: center; gap: 10px; padding: 12px;
   background: linear-gradient(180deg, var(--caramel-hi), var(--caramel-lo)); color: var(--ink);
