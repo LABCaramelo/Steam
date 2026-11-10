@@ -161,6 +161,9 @@ export function ToolGate({ tool, children, allowAnonymous }: { tool: ToolInfo; c
     let authTimer = 0;
     let readyToken: string | null = null;
     const clearExpiry = () => { window.clearTimeout(expiryTimer); expiryTimer = 0; };
+    // The access is checked again on every focus and every minute; the tool only re-renders when the person changed.
+    const ready = (user: ToolUser) => setState((prev) =>
+      prev.kind === "ready" && JSON.stringify(prev.user) === JSON.stringify(user) ? prev : { kind: "ready", user });
     const signedOut = () => {
       ++request;
       clearExpiry();
@@ -199,14 +202,14 @@ export function ToolGate({ tool, children, allowAnonymous }: { tool: ToolInfo; c
       const admin = (!adminRes.error && adminRes.data === true) || (!legacyAdminRes.error && legacyAdminRes.data === true) || profRes?.data?.role === "admin";
       if (admin) {
         readyToken = session.access_token;
-        setState({ kind: "ready", user: toUser(verified, true, profRes?.error ? null : profRes?.data) });
+        ready(toUser(verified, true, profRes?.error ? null : profRes?.data));
       } else if (error) {
         setState(MISSING.has(error.code) ? { kind: "unconfigured" } : { kind: "error", message: "Não foi possível abrir a ferramenta agora." });
       } else if (data !== true || tool.slug === "admin") {
         setState({ kind: "locked" });
       } else {
         readyToken = session.access_token;
-        setState({ kind: "ready", user: toUser(verified, false, profRes?.error ? null : profRes?.data) });
+        ready(toUser(verified, false, profRes?.error ? null : profRes?.data));
       }
     };
     const refresh = () => {

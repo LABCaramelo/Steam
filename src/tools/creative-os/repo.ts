@@ -53,6 +53,8 @@ export interface CreativeOsRepository {
   createProject(data: Partial<Project> & { workspace_id: string; client_id: string; name: string }): Promise<Project>;
   updateProjectStatus(id: string, status: ProjectStatus): Promise<void>;
   getTasks(projectId: string): Promise<Task[]>;
+  /** Every task of the workspace in one query (the dashboard used to ask once per project). */
+  getWorkspaceTasks(workspaceId: string): Promise<Task[]>;
   createTask(data: Partial<Task> & { workspace_id: string; project_id: string; title: string }): Promise<Task>;
   updateTask(id: string, data: Partial<Task>): Promise<void>;
   deleteTask(id: string): Promise<void>;
@@ -367,6 +369,16 @@ export const supabaseCreativeOs: CreativeOsRepository = {
       .from("creative_os_tasks")
       .select("*")
       .eq("project_id", projectId)
+      .order("position", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as Task[];
+  },
+
+  async getWorkspaceTasks(workspaceId) {
+    const { data, error } = await supabase
+      .from("creative_os_tasks")
+      .select("*")
+      .eq("workspace_id", workspaceId)
       .order("position", { ascending: true });
     if (error) throw error;
     return (data ?? []) as Task[];

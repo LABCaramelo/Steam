@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import { createDownloadSession, downloadReducer, type DownloadSession, type RunState } from "./downloads";
 import fallbackSnapshot from "./fallbackSnapshot.json";
 import type { Achievement, ArtKind, LibraryApp, LibrarySnapshot, UserCollection } from "./types";
@@ -71,6 +71,7 @@ function saveLocal(c: UserCollection[]) {
 
 export function LibraryProvider({ children }: { children: ReactNode }) {
   const { user, profile } = useAuth();
+  const userId = user?.id ?? null;
   const entitlements = useEntitlements();
   const [source, setSource] = useState<LibrarySnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -100,7 +101,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   const [toolActivities, setToolActivities] = useState<Record<string, { last_played_unix: number; playtime_minutes: number }>>({});
 
   const refreshActivities = useCallback(() => {
-    if (!user) {
+    if (!userId) {
       setToolActivities({});
       return;
     }
@@ -119,10 +120,10 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       },
       () => {},
     );
-  }, [user]);
+  }, [userId]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!userId) return;
     let alive = true;
     supabase.rpc("get_my_achievement_summary").then(
       ({ data }) => {
@@ -132,7 +133,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
     );
     refreshActivities();
     return () => { alive = false; };
-  }, [user, refreshActivities]);
+  }, [userId, refreshActivities]);
 
   useEffect(() => {
     void syncCustomToolAssets();
@@ -171,7 +172,16 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
     }
   });
 
+  // /api/library only exists on the local dev/preview server (vite.config.ts), which reads the Steam
+  // installation. In production the first request fails and the LAB stays on the bundled snapshot.
+  const localApi = useRef(false);
+  const collectionsLoaded = useRef(false);
   const load = useCallback((fresh: boolean) => {
+    const applyCollections = (fromSnapshot: UserCollection[]) => {
+      if (collectionsLoaded.current) return;
+      collectionsLoaded.current = true;
+      setCollections(loadLocal() ?? fromSnapshot);
+    };
     fetch(`/api/library${fresh ? "?refresh" : ""}`)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -179,22 +189,25 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       })
       .then((s: LibrarySnapshot) => {
         if (!s || !Array.isArray(s.apps)) throw new Error("Invalid snapshot format");
+        localApi.current = true;
         setSource(s);
         setError(null);
-        setCollections(loadLocal() ?? s.collections);
+        applyCollections(s.collections);
       })
       .catch(() => {
         // Fallback resiliente para o snapshot embutido quando servido sem backend local (Vercel)
+        if (localApi.current) return;
         const fallback = fallbackSnapshot as unknown as LibrarySnapshot;
         setSource(fallback);
         setError(null);
-        setCollections(loadLocal() ?? fallback.collections);
+        applyCollections(fallback.collections);
       });
   }, []);
 
   useEffect(() => {
     load(false);
-    const id = setInterval(() => load(false), 20_000);
+    // Only the local Steam data changes on its own; the bundled snapshot never does.
+    const id = setInterval(() => { if (localApi.current) load(false); }, 20_000);
     return () => clearInterval(id);
   }, [load]);
 

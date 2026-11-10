@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 
@@ -71,6 +71,11 @@ function sessionDeadline(session: Session): number {
   } catch { return 0; }
 }
 
+/** Same data from the server: the LAB keeps the object it has, so a revalidation re-renders nothing. */
+function sameData(a: unknown, b: unknown): boolean {
+  return a === b || JSON.stringify(a) === JSON.stringify(b);
+}
+
 async function fetchUserProfile(userId: string): Promise<UserProfile | null> {
   try {
     const { data, error } = await supabase
@@ -135,9 +140,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (deadline <= Date.now()) { clearAuth(); return false; }
     current.token = candidate.access_token;
     current.userId = verified.id;
-    setSession({ ...candidate, user: verified });
-    setUser(verified);
-    setProfile(prof);
+    // Runs on every focus and every minute; the objects only change when the data does.
+    setSession((prev) => (prev?.access_token === candidate.access_token && sameData(prev.user, verified) ? prev : { ...candidate, user: verified }));
+    setUser((prev) => (sameData(prev, verified) ? prev : verified));
+    setProfile((prev) => (sameData(prev, prof) ? prev : prof));
     setIsLoading(false);
     return true;
   }, [clearAuth]);
@@ -385,27 +391,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Apenas e estritamente sessões reais ativas do Supabase concedem autenticação
   const isAuthenticated = Boolean(session?.user);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        isAuthenticated,
-        isLoading,
-        user,
-        session,
-        profile,
-        loginWithPassword,
-        signUp,
-        loginWithOtp,
-        logout,
-        login,
-        updateProfile,
-        uploadAvatar,
-        refreshProfile,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo<AuthContextType>(
+    () => ({
+      isAuthenticated,
+      isLoading,
+      user,
+      session,
+      profile,
+      loginWithPassword,
+      signUp,
+      loginWithOtp,
+      logout,
+      login,
+      updateProfile,
+      uploadAvatar,
+      refreshProfile,
+    }),
+    [isAuthenticated, isLoading, user, session, profile, loginWithPassword, signUp, loginWithOtp, logout, login, updateProfile, uploadAvatar, refreshProfile],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextType {
