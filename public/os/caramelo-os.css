@@ -777,6 +777,8 @@ a.drive { text-decoration: none; color: inherit; }
 .kut-comm-tile img { width: 48px; height: 48px; }
 .kut-comm-tile .kut-comm-label b { font-size: 12px; font-weight: 700; }
 .kut-comm-card img { aspect-ratio: 1; object-fit: contain; padding: 14px; background: var(--kut-soft); }
+/* Capas que são fotos preenchem o quadro (adesivos ficam centralizados com respiro). */
+.kut-comm-item img.is-photo, .kut-comm-tile img.is-photo, .kut-comm-card img.is-photo { object-fit: cover; padding: 0; }
 .kut-comm-name { margin: 8px 0 2px; font: 400 15px/1.25 "Trebuchet MS", Verdana, sans-serif; color: #222; }
 .kut-comm-members { margin: 0 0 8px; font-size: 11px; font-style: italic; color: #666; }
 .kut-comm-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; }

@@ -851,9 +851,9 @@
       { id: 'acordar-cedo', name: 'Eu Odeio Acordar Cedo', members: 6106962, sticker: 'caneca',
         info: { idioma: 'Português (Brasil)', categoria: 'Outros', tipo: 'público', 'criada em': '23/05/2004', local: 'Rio de Janeiro, RJ, Brasil' },
         desc: 'Para quem aperta a soneca cinco vezes e ainda acha cedo demais.' },
-      { id: 'passado-negro', name: 'Meu passado é negro...', members: 10371, sticker: 'coroa',
-        info: { idioma: 'Português', categoria: 'Pessoas', tipo: 'público' },
-        desc: 'Hoje não nego mais.' },
+      { id: 'geladeira', name: 'Eu abro a geladeira pra pensar', members: null, sticker: 'lata',
+        info: { idioma: 'Português (Brasil)', categoria: 'Hobbies e Trabalhos Manuais', tipo: 'público', 'visível por': 'apenas membros', local: 'Brasil' },
+        desc: 'Para quem abre a geladeira, olha tudo, fecha e volta cinco minutos depois esperando que algo novo tenha aparecido.' },
       { id: 'pega-no-olho', name: 'Imagina se pega no olho?', members: 34743, sticker: 'olho',
         info: { idioma: 'Português (Brasil)', categoria: 'Saúde, Bem-estar e Fitness', tipo: 'público', 'criada em': '15/03/2005', local: 'Brasil' },
         desc: 'Para quem cresceu ouvindo a tia avisar do perigo diante de qualquer coisa minimamente pontuda.' },
@@ -868,7 +868,9 @@
         desc: 'Para quem tem certeza de que nem a morte livra da bronca da mãe.' }
     ];
     const joined = new Set(store.get('cos.orkut.comunidades', []));
-    const art = c => `/caramelo/stickers/${c.sticker}.webp`;
+    // Capa: foto da comunidade (public/assets/images/orkut/comunidades/<id>.webp) ou um adesivo do site.
+    const COVERS = new Set(['acordar-cedo', 'pega-no-olho', 'duplas']);
+    const art = c => COVERS.has(c.id) ? `/assets/images/orkut/comunidades/${c.id}.webp` : `/caramelo/stickers/${c.sticker}.webp`;
     const count = c => c.members == null ? null : c.members + (joined.has(c.id) ? 1 : 0);
     const membersText = c => count(c) == null ? '' : `${count(c).toLocaleString('pt-BR')} membros`;
 
@@ -879,6 +881,7 @@
       b.dataset.comm = c.id;
       b.innerHTML = '<img alt="" loading="lazy" width="48" height="48"><span class="kut-comm-label"><b></b><small></small></span>';
       $('img', b).src = art(c);
+      $('img', b).classList.toggle('is-photo', COVERS.has(c.id));
       $('b', b).textContent = c.name;
       $('small', b).textContent = membersText(c);
       return b;
@@ -895,6 +898,7 @@
       const isIn = joined.has(c.id);
       $('#kutCommTitle').textContent = c.name;
       $('#kutCommImg').src = art(c);
+      $('#kutCommImg').classList.toggle('is-photo', COVERS.has(c.id));
       $('#kutCommImg').alt = '';
       $('#kutCommName').textContent = c.name;
       $('#kutCommMembers').textContent = membersText(c);
