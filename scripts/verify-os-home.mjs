@@ -233,11 +233,24 @@ try {
   const running = await evaluate(`document.querySelector('#gameOverlay').hidden`);
   check('game starts and ends when the dog hits the wall', running && await waitFor(`!document.querySelector('#gameOverlay').hidden && /Fim de jogo/.test(document.querySelector('#gameOverlay').textContent)`, 5000), { running });
 
-  /* ---- 8. Carakut: nome próprio no lugar do perfil ---- */
-  await click('.icon[data-open="scraps"]');
+  /* ---- 8. Orkut: nome próprio, comunidades e participar ---- */
+  await click('.icon[data-open="scraps"]', 2);
   await sleep(300);
   await evaluate(`(() => { const i = document.querySelector('#kutName'); i.value = 'QA'; i.dispatchEvent(new Event('input', { bubbles: true })); })()`);
-  check('Carakut asks for a name and paints an avatar from it', await evaluate(`document.querySelectorAll('#kutAvatar rect').length > 20 && !!document.querySelector('#kutName')`));
+  check('Orkut asks for a name and paints an avatar from it', await evaluate(`document.querySelectorAll('#kutAvatar rect').length > 20 && !!document.querySelector('#kutName')`));
+  const orkut = await evaluate(`({ label: document.querySelector('.icon[data-open="scraps"] span').textContent, logo: !!document.querySelector('.kut-logo')?.complete, comms: [...document.querySelectorAll('#kutComms [data-comm] b')].map(b => b.textContent) })`);
+  check('Orkut has its name, logo and the six classic communities', orkut.label === 'Orkut' && orkut.logo && orkut.comms.length === 6 && orkut.comms.includes('Eu Odeio Acordar Cedo'), orkut);
+  await evaluate(`document.querySelector('#kutComms [data-comm="acordar-cedo"]').click()`);
+  await sleep(200);
+  const page = await evaluate(`({ home: document.querySelector('#kutViewHome').hidden, title: document.querySelector('#kutCommTitle').textContent, members: document.querySelector('#kutCommMembers').textContent, notice: document.querySelector('#kutNotice').textContent })`);
+  check('a community opens its own page as a private community', page.home && page.title === 'Eu Odeio Acordar Cedo' && /6\.106\.962 membros/.test(page.members) && /Comunidade particular/.test(page.notice), page);
+  await evaluate(`document.querySelector('#kutJoin').click()`);
+  await sleep(150);
+  const joinedState = await evaluate(`({ pressed: document.querySelector('#kutJoin').getAttribute('aria-pressed'), members: document.querySelector('#kutCommMembers').textContent, saved: localStorage.getItem('cos.orkut.comunidades') })`);
+  check('joining a community counts the visitor and is remembered', joinedState.pressed === 'true' && /6\.106\.963/.test(joinedState.members) && /acordar-cedo/.test(joinedState.saved), joinedState);
+  await click('.kut-nav [data-kut="home"]');
+  await sleep(150);
+  check('Home goes back to the scrap wall', await evaluate(`!document.querySelector('#kutViewHome').hidden && document.querySelector('#kutViewComm').hidden`));
 
   /* ---- 9. Link direto, reinício e movimento reduzido ---- */
   await send('Page.navigate', { url: `${baseUrl}?boot=off#como-trabalho` });
@@ -245,8 +258,9 @@ try {
   await sleep(300);
   check('/#como-trabalho (used by other pages) skips nothing else and opens Como Trabalho', await evaluate(`document.querySelector('#boot').hidden && document.querySelector('.win.is-active')?.dataset.app === 'processo'`));
   await click('#startBtn');
+  await waitFor(`!document.querySelector('#startMenu').hidden`, 2000);
   await click('#btnRestart');
-  await sleep(300);
+  await waitFor(`!document.querySelector('#boot').hidden && document.querySelectorAll('.win').length === 0`, 2000);
   check('restart closes windows and returns to the boot screen', await evaluate(`!document.querySelector('#boot').hidden && !document.querySelector('#boot').classList.contains('is-done') && document.querySelectorAll('.win').length === 0 && document.querySelector('#os').inert`));
 
   await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
@@ -262,10 +276,11 @@ try {
   await waitFor(`document.querySelector('#os').classList.contains('is-on')`, 4000);
   await sleep(500);
   await evaluate(`document.querySelectorAll('.win [data-act="close"]').forEach(b => b.click())`);
-  await sleep(300);
+  await waitFor(`document.querySelectorAll('.win').length === 0`, 3000);
+  await sleep(150);
   await click('.icon[data-open="servicos"]');
-  await sleep(400);
-  const mobile = await evaluate(`(() => { const w = document.querySelector('.win[data-app="servicos"]'); const r = w?.getBoundingClientRect(); return { open: !!w, left: r && Math.round(r.left), right: r && Math.round(r.right), scrollWidth: document.documentElement.scrollWidth, innerWidth }; })()`);
+  await waitFor(`!!document.querySelector('.win[data-app="servicos"]')`, 2000);
+  const mobile = await evaluate(`(() => { const w = document.querySelector('.win[data-app="servicos"]'); const r = w?.getBoundingClientRect(); return { open: !!w, left: r && Math.round(r.left), right: r && Math.round(r.right), scrollWidth: document.documentElement.scrollWidth, innerWidth, coarse: matchMedia('(pointer: coarse)').matches, wins: [...document.querySelectorAll('.win')].map(x => x.dataset.app), selected: document.querySelector('.icon.is-selected')?.dataset.open }; })()`);
   check('mobile: a single tap opens a full-width window without horizontal scroll', mobile.open && mobile.left >= 0 && mobile.right <= mobile.innerWidth && mobile.scrollWidth <= mobile.innerWidth, mobile);
   await screenshot('os-mobile.png');
 
