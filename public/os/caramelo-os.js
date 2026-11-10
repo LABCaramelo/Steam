@@ -1,4 +1,4 @@
-/* CarameloOS 96 — página inicial do Um Cara Caramelo® (Steam/LAB) */
+/* CarameloOS — página inicial do Um Cara Caramelo® (Steam/LAB) */
 (() => {
   'use strict';
 
@@ -823,11 +823,11 @@
   const boot = $('#boot');
   const os = $('#os');
   const MSGS = [
-    'CARREGANDO CARAMELOOS 96…',
+    'CARREGANDO CARAMELOOS…',
     'ABANANDO O RABO…',
     'ESCONDENDO OS TEMPLATES GENÉRICOS…',
     'DANDO DIREÇÃO ÀS BOAS IDEIAS…',
-    'BEM-VINDO AO CARAMELOOS 96'
+    'BEM-VINDO AO CARAMELOOS'
   ];
   let booting = false;
   let bootHideTimer = 0;
