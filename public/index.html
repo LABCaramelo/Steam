@@ -541,7 +541,7 @@
         <img class="kut-logo" src="/assets/images/orkut/orkut-logo.webp" alt="orkut" width="420" height="130">
         <nav class="kut-nav" aria-label="Orkut">
           <button type="button" data-kut="home" class="is-on">Home</button>
-          <button type="button" data-open="sobre">Perfil</button>
+          <button type="button" data-kut="perfil">Perfil</button>
           <button type="button" data-kut="scraps">scraps</button>
           <button type="button" data-kut="comunidades">Comunidades</button>
         </nav>
@@ -555,9 +555,11 @@
               <p class="kut-who">» Luiz</p>
               <p class="kut-meta">Um Cara Caramelo<br>masculino · Brasil</p>
               <ul class="kut-links" role="list">
-                <li><button type="button" data-open="sobre">perfil</button></li>
+                <li><button type="button" data-kut="perfil">perfil</button></li>
+                <li><button type="button" data-kut="scraps">recados</button></li>
                 <li><button type="button" data-open="adesivos">fotos</button></li>
-                <li><button type="button" data-open="projetos">projetos</button></li>
+                <li><button type="button" data-open="projetos">vídeos</button></li>
+                <li><button type="button" data-kut="comunidades">comunidades</button></li>
                 <li><button type="button" data-open="contato">mandar mensagem</button></li>
               </ul>
             </div>
@@ -573,16 +575,55 @@
           </aside>
 
           <section class="kut-col kut-main" id="kutViewHome" aria-labelledby="kutTitle">
-            <div class="kut-card kut-head">
-              <h3 class="kut-title" id="kutTitle">» Página de recados do Luiz</h3>
-              <p class="kut-status">“Primeiro a intenção. Depois, o jeito de fazer.”</p>
+            <div class="kut-card kut-head kut-perfil" id="kutPerfil">
+              <h3 class="kut-title" id="kutTitle">Luiz</h3>
+              <p class="kut-crumb"><span id="kutCrumbMe">Visitante</span> <span aria-hidden="true">›</span> <b>Luiz</b></p>
+              <p class="kut-status">Primeiro a intenção. Depois, o jeito de fazer.</p>
               <dl class="kut-stats">
-                <div><dt>recados</dt><dd id="kutCount">–</dd></div>
-                <div><dt>fotos</dt><dd id="kutPhotos">–</dd></div>
-                <div><dt>confiável</dt><dd class="kut-rate" aria-label="3 de 3"><i></i><i></i><i></i></dd></div>
+                <div><dt>recados</dt><dd><svg class="kut-ico" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2.5h10v7H6l-3 2.5v-2.5H2z" fill="#fff" stroke="currentColor"/><path d="M4 5h6M4 7h4" stroke="currentColor"/></svg><span id="kutCount">–</span></dd></div>
+                <div><dt>fotos</dt><dd><svg class="kut-ico" viewBox="0 0 14 14" aria-hidden="true"><rect x="1.5" y="4" width="11" height="8" rx="1" fill="#fff" stroke="currentColor"/><path d="M5 4l1-1.5h2L9 4" fill="none" stroke="currentColor"/><circle cx="7" cy="8" r="2" fill="none" stroke="currentColor"/></svg><span id="kutPhotos">–</span></dd></div>
+                <div><dt>vídeos</dt><dd><svg class="kut-ico" viewBox="0 0 14 14" aria-hidden="true"><rect x="1.5" y="3" width="11" height="8" rx="1" fill="#fff" stroke="currentColor"/><path d="M6 5.2v3.6L9 7z" fill="currentColor"/></svg><span>4</span></dd></div>
+                <div><dt>comunidades</dt><dd><svg class="kut-ico" viewBox="0 0 14 14" aria-hidden="true"><circle cx="5" cy="5" r="2" fill="#fff" stroke="currentColor"/><circle cx="9.5" cy="5.5" r="1.7" fill="#fff" stroke="currentColor"/><path d="M1.5 12c0-2.2 1.6-3.6 3.5-3.6S8.5 9.8 8.5 12M8 9c.5-.4 1-.6 1.5-.6 1.7 0 3 1.3 3 3.3" fill="none" stroke="currentColor"/></svg><span id="kutCommsCount">6</span></dd></div>
+                <div><dt>confiável</dt><dd class="kut-rate is-smile" aria-label="3 de 3"><i></i><i></i><i></i></dd></div>
                 <div><dt>legal</dt><dd class="kut-rate is-blue" aria-label="3 de 3"><i></i><i></i><i></i></dd></div>
                 <div><dt>criativo</dt><dd class="kut-rate is-heart" aria-label="3 de 3"><i></i><i></i><i></i></dd></div>
               </dl>
+
+              <div class="kut-tabs" role="tablist" aria-label="Perfil do Luiz">
+                <button type="button" role="tab" id="kutTab-social" aria-selected="true" aria-controls="kutPane-social" data-kut-tab="social">social</button>
+                <button type="button" role="tab" id="kutTab-profissional" aria-selected="false" aria-controls="kutPane-profissional" data-kut-tab="profissional" tabindex="-1">profissional</button>
+                <button type="button" role="tab" id="kutTab-pessoal" aria-selected="false" aria-controls="kutPane-pessoal" data-kut-tab="pessoal" tabindex="-1">pessoal</button>
+              </div>
+              <div class="kut-pane" role="tabpanel" id="kutPane-social" aria-labelledby="kutTab-social">
+                <table class="kut-table"><tbody>
+                  <tr><th scope="row">sexo:</th><td>masculino</td></tr>
+                  <tr><th scope="row">país:</th><td>Brasil</td></tr>
+                  <tr><th scope="row">idiomas que falo:</th><td>Português (Brasil)</td></tr>
+                  <tr><th scope="row">estou aqui para:</th><td>scraps, comunidades e boas ideias</td></tr>
+                  <tr><th scope="row">quem sou eu:</th><td><p>Sou Luiz. O cara por trás do Caramelo.</p><p>Sou Head de Conteúdo e criador de experiências digitais. Uno repertório visual, escrita estratégica e tecnologia para resolver um problema simples: fazer boas marcas serem percebidas como merecem.</p></td></tr>
+                  <tr><th scope="row">paixões:</th><td>repertório visual, escrita estratégica e tecnologia</td></tr>
+                  <tr><th scope="row">mascote:</th><td>um vira-lata caramelo (deixe um scrap e ganhe o seu)</td></tr>
+                  <tr><th scope="row">página da web:</th><td><a href="https://www.umcaracaramelo.com.br/">www.umcaracaramelo.com.br</a></td></tr>
+                </tbody></table>
+              </div>
+              <div class="kut-pane" role="tabpanel" id="kutPane-profissional" aria-labelledby="kutTab-profissional" hidden>
+                <table class="kut-table"><tbody>
+                  <tr><th scope="row">profissão:</th><td>Head de Conteúdo e criador de experiências digitais</td></tr>
+                  <tr><th scope="row">empresa:</th><td>Um Cara Caramelo® · estúdio criativo</td></tr>
+                  <tr><th scope="row">o que faço:</th><td>Conteúdo e experiências digitais com direção, estratégia e personalidade.</td></tr>
+                  <tr><th scope="row">como trabalho:</th><td>Descoberta, direção, criação, entrega e evolução. <button type="button" class="kut-inline" data-open="processo">ver processo »</button></td></tr>
+                  <tr><th scope="row">projetos:</th><td>Banco de Prompts, Treinamento Head com IA, Conselho Head, Beat Borges. <button type="button" class="kut-inline" data-open="projetos">ver projetos »</button></td></tr>
+                  <tr><th scope="row">contato:</th><td>atendimento direto com Luiz, sem robô. <button type="button" class="kut-inline" data-open="contato">mandar mensagem »</button></td></tr>
+                </tbody></table>
+              </div>
+              <div class="kut-pane" role="tabpanel" id="kutPane-pessoal" aria-labelledby="kutTab-pessoal" hidden>
+                <table class="kut-table"><tbody>
+                  <tr><th scope="row">frase:</th><td>Curiosidade dá a ideia. Direção escolhe o caminho.</td></tr>
+                  <tr><th scope="row">meu lema:</th><td>Primeiro a intenção. Depois, o jeito de fazer.</td></tr>
+                  <tr><th scope="row">não acredito em:</th><td>fórmulas prontas nem em criatividade que fica só no discurso.</td></tr>
+                  <tr><th scope="row">meu foco:</th><td>tirar ideias do campo abstrato e transformá-las em narrativas consistentes e sites que as pessoas realmente sentem vontade de navegar.</td></tr>
+                </tbody></table>
+              </div>
             </div>
 
             <form class="kut-card kut-form" id="kutForm" novalidate>

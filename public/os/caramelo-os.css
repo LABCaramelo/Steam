@@ -711,6 +711,48 @@ a.drive { text-decoration: none; color: inherit; }
 .kut-rate i { width: 11px; height: 11px; border-radius: 50%; background: #F5C542; border: 1px solid #B88A10; }
 .kut-rate.is-blue i { border-radius: 2px; background: #A8CBEF; border-color: #5D8CC0; }
 .kut-rate.is-heart i { width: 10px; height: 10px; border-radius: 0 50% 50% 50%; transform: rotate(-135deg) scale(.85); background: var(--kut-pink); border-color: #A83D72; }
+/* Confiável: carinhas amarelas, como no Orkut clássico. */
+.kut-rate.is-smile i {
+  width: 12px; height: 12px;
+  background:
+    radial-gradient(circle at 34% 40%, #5A3E00 0 .9px, transparent 1.3px),
+    radial-gradient(circle at 66% 40%, #5A3E00 0 .9px, transparent 1.3px),
+    radial-gradient(ellipse 3.2px 2px at 50% 62%, transparent 0 60%, #5A3E00 62% 82%, transparent 86%) 0 1px / 100% 100% no-repeat,
+    #F5C542;
+}
+
+/* Perfil clássico: nome, caminho de amigos, status, números e abas */
+.kut-perfil .kut-title { font-size: 22px; }
+.kut-crumb { margin: 2px 0 8px; font-size: 11px; color: #777; }
+.kut-crumb span:first-child { color: var(--kut-link); }
+.kut-crumb b { font-weight: 400; color: #333; }
+.kut-perfil .kut-status { margin-top: 0; background: #F8FAFD; font-style: italic; }
+.kut-perfil .kut-stats { gap: 6px 0; }
+.kut-perfil .kut-stats > div { padding: 0 9px; border-left: 1px solid var(--kut-line); }
+.kut-perfil .kut-stats > div:first-child { padding-left: 0; border-left: 0; }
+.kut-perfil .kut-stats dd { display: flex; align-items: center; gap: 4px; }
+.kut-ico { width: 14px; height: 14px; flex: none; color: var(--kut-blue-2); }
+.kut-tabs { display: flex; gap: 3px; margin: 14px 0 0; padding-left: 6px; border-bottom: 3px solid var(--kut-blue-2); }
+.kut-tabs button {
+  padding: 4px 14px 3px; border: 0; border-radius: 5px 5px 0 0; background: #D9E3F2;
+  color: var(--kut-blue); font: 700 11.5px/1.3 Verdana, Tahoma, sans-serif; cursor: pointer;
+}
+.kut-tabs button:hover { background: #C7D5EC; }
+.kut-tabs button[aria-selected="true"] { background: var(--kut-blue-2); color: #fff; }
+.kut-tabs button:focus-visible { outline: 2px solid var(--kut-blue); outline-offset: 1px; }
+.kut-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.kut-table tr:nth-child(odd) { background: #E5ECF6; }
+.kut-table tr:nth-child(even) { background: #F4F7FB; }
+.kut-table th {
+  width: 30%; padding: 6px 10px; text-align: right; vertical-align: top;
+  font-weight: 400; color: #555; white-space: nowrap;
+}
+.kut-table td { padding: 6px 10px; color: #222; line-height: 1.5; overflow-wrap: anywhere; }
+.kut-table td p { margin: 0 0 6px; }
+.kut-table td p:last-child { margin: 0; }
+.kut-table a, .kut-inline { color: var(--kut-link); text-decoration: underline; }
+.kut-inline { padding: 0; border: 0; background: none; font: inherit; cursor: pointer; white-space: nowrap; }
+.kut-inline:hover, .kut-table a:hover { color: var(--kut-blue); }
 
 .kut-form { display: grid; gap: 8px; background: var(--kut-soft); }
 .kut-as { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #444; }
@@ -809,5 +851,10 @@ a.drive { text-decoration: none; color: inherit; }
   .kut-links { grid-column: 2; display: flex; flex-wrap: wrap; gap: 4px 10px; }
   .kut-right { grid-template-columns: minmax(0, 1fr); }
   .kut-title { font-size: 17px; }
+  .kut-perfil .kut-stats > div { padding: 0 8px; }
+  .kut-table th { width: auto; white-space: normal; }
+  .kut-table tr { display: grid; }
+  .kut-table th { text-align: left; padding-bottom: 0; font-weight: 700; }
+  .kut-table td { padding-top: 2px; }
 }
 @media (prefers-reduced-motion: reduce) { .kut-scrap.is-new { transition: none; } }
