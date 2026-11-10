@@ -29,7 +29,7 @@
     recursos:   { title: 'Aprender & Recursos', icon: 'i-folder', w: 620, h: 400 },
     lixeira:    { title: 'Lixeira', icon: 'i-trash', w: 620, h: 470 },
     jogo:       { title: 'Pega a Bolinha', icon: 'i-game', w: 420, h: 530 },
-    scraps:     { title: 'Carakut — Página de recados', task: 'Carakut', icon: 'i-kut', w: 900, h: 640 }
+    scraps:     { title: 'Orkut — Página de recados', task: 'Orkut', icon: 'i-orkut', w: 920, h: 660 }
   };
 
   const layer = $('#windows');
@@ -330,15 +330,15 @@
   }
   const coatById = id => COATS.find(c => c.id === id) || COATS[0];
 
-  /* ---------------- Nome de quem escreve no Carakut ---------------- */
-  // Não há perfil de visitante: o nome vem do campo do Carakut e o caramelo sai do nome.
+  /* ---------------- Nome de quem escreve no Orkut ---------------- */
+  // Não há perfil de visitante: o nome vem do campo do Orkut e o caramelo sai do nome.
   const coatForName = name => {
     let h = 0;
     for (const ch of name.toLowerCase()) h = (h * 31 + ch.codePointAt(0)) >>> 0;
     return COATS[h % COATS.length];
   };
 
-  /* ---------------- Carakut (scraps) ---------------- */
+  /* ---------------- Orkut: recados (scraps) ---------------- */
   // Mural público no Supabase. O navegador só chama as funções de supabase/os-scraps.sql.
   (() => {
     const SB_URL = 'https://fzhzpzxsttflgtassyex.supabase.co';
@@ -371,9 +371,9 @@
       return data;
     }
     const offline = err => ['PGRST202', '42P01', '42883', '404'].includes(err?.code);
-    const friendly = err => offline(err) ? 'O mural do carakut ainda não está no ar.'
+    const friendly = err => offline(err) ? 'O mural do orkut ainda não está no ar.'
       : (err?.code === '22023' || err?.code === '54000') ? err.message
-      : 'Não deu para falar com o carakut agora. Tente de novo.';
+      : 'Não deu para falar com o orkut agora. Tente de novo.';
 
     const fmtDay = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short' });
     const fmtTime = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -452,9 +452,9 @@
         total = Number(count) || 0;
         loadedAt = Date.now();
         renderList();
-        status.textContent = 'Conectado ao carakut';
+        status.textContent = 'Conectado ao orkut';
       } catch (err) {
-        console.warn('carakut:', err);
+        console.warn('orkut:', err);
         status.textContent = friendly(err);
         if (!scraps.length) {
           list.replaceChildren();
@@ -532,6 +532,120 @@
       if (!loadedAt || Date.now() - loadedAt > 60000) load();
     };
     updateLeft();
+  })();
+
+  /* ---------------- Orkut: comunidades e navegação ---------------- */
+  // Comunidades clássicas do Orkut. Fotos trocadas por adesivos do site; descrições próprias.
+  (() => {
+    const app = $('#app-scraps');
+    if (!app) return;
+    const COMMS = [
+      { id: 'acordar-cedo', name: 'Eu Odeio Acordar Cedo', members: 6106962, sticker: 'caneca',
+        info: { idioma: 'Português (Brasil)', categoria: 'Outros', tipo: 'público', 'criada em': '23/05/2004', local: 'Rio de Janeiro, RJ, Brasil' },
+        desc: 'Para quem aperta a soneca cinco vezes e ainda acha cedo demais.' },
+      { id: 'passado-negro', name: 'Meu passado é negro...', members: 10371, sticker: 'coroa',
+        info: { idioma: 'Português', categoria: 'Pessoas', tipo: 'público' },
+        desc: 'Hoje não nego mais.' },
+      { id: 'pega-no-olho', name: 'Imagina se pega no olho?', members: 34743, sticker: 'olho',
+        info: { idioma: 'Português (Brasil)', categoria: 'Saúde, Bem-estar e Fitness', tipo: 'público', 'criada em': '15/03/2005', local: 'Brasil' },
+        desc: 'Para quem cresceu ouvindo a tia avisar do perigo diante de qualquer coisa minimamente pontuda.' },
+      { id: 'tampinha-danone', name: 'Eu lambo a tampinha de danone', members: null, sticker: 'copo',
+        info: { idioma: 'Português (Brasil)', categoria: 'Atividades', tipo: 'público', 'criada em': '23/11/2004', local: 'Japão' },
+        desc: 'A melhor parte do iogurte fica na tampa. Todo mundo sabe, pouca gente admite.' },
+      { id: 'duplas', name: 'Não sei individualizar duplas', members: 20511, sticker: 'violao',
+        info: { idioma: 'Português (Brasil)', categoria: 'Pessoas', tipo: 'público', 'criada em': '02/04/2007', local: 'Brasil' },
+        desc: 'Para quem nunca soube direito qual é qual na dupla sertaneja.' },
+      { id: 'mae-me-mata', name: 'Se eu Morrer Minha Mãe me Mata', members: null, sticker: 'chinelo',
+        info: { idioma: 'Português (Brasil)', categoria: 'Outros', tipo: 'público', 'criada em': '28/03/2005', local: 'Brasil' },
+        desc: 'Para quem tem certeza de que nem a morte livra da bronca da mãe.' }
+    ];
+    const joined = new Set(store.get('cos.orkut.comunidades', []));
+    const art = c => `/caramelo/stickers/${c.sticker}.webp`;
+    const count = c => c.members == null ? null : c.members + (joined.has(c.id) ? 1 : 0);
+    const membersText = c => count(c) == null ? '' : `${count(c).toLocaleString('pt-BR')} membros`;
+
+    function commButton(c, cls) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = cls;
+      b.dataset.comm = c.id;
+      b.innerHTML = '<img alt="" loading="lazy" width="48" height="48"><span class="kut-comm-label"><b></b><small></small></span>';
+      $('img', b).src = art(c);
+      $('b', b).textContent = c.name;
+      $('small', b).textContent = membersText(c);
+      return b;
+    }
+    function renderLists() {
+      $('#kutComms').replaceChildren(...COMMS.map(c => { const li = document.createElement('li'); li.append(commButton(c, 'kut-comm-item')); return li; }));
+      $('#kutCommGrid').replaceChildren(...COMMS.map(c => { const li = document.createElement('li'); li.append(commButton(c, 'kut-comm-tile')); return li; }));
+      $('#kutCommsN').textContent = `(${COMMS.length})`;
+    }
+
+    let current = null;
+    function renderComm() {
+      const c = current;
+      const isIn = joined.has(c.id);
+      $('#kutCommTitle').textContent = c.name;
+      $('#kutCommImg').src = art(c);
+      $('#kutCommImg').alt = '';
+      $('#kutCommName').textContent = c.name;
+      $('#kutCommMembers').textContent = membersText(c);
+      const join = $('#kutJoin');
+      join.innerHTML = isIn ? '<span aria-hidden="true">✓</span> Você participa' : '<span aria-hidden="true">+</span> Participar da comunidade';
+      join.setAttribute('aria-pressed', String(isIn));
+      const notice = $('#kutNotice');
+      notice.classList.toggle('is-in', isIn);
+      notice.innerHTML = isIn
+        ? '<strong>Você agora faz parte desta comunidade.</strong><span>Os tópicos e enquetes ficaram guardados no Orkut de 2014.</span>'
+        : '<strong>Comunidade particular</strong><span>Você tem que participar desta comunidade para ler e criar tópicos e enquetes.</span>';
+      const info = $('#kutInfo');
+      info.replaceChildren(...Object.entries(c.info).map(([k, v]) => {
+        const row = document.createElement('div');
+        row.innerHTML = '<dt></dt><dd></dd>';
+        row.firstChild.textContent = `${k}:`;
+        row.lastChild.textContent = v;
+        return row;
+      }));
+      $('#kutDesc').textContent = c.desc;
+    }
+
+    const views = { home: $('#kutViewHome'), comunidades: $('#kutViewComunidades'), comm: $('#kutViewComm') };
+    function show(view, commId) {
+      if (view === 'comm') {
+        current = COMMS.find(c => c.id === commId) || COMMS[0];
+        renderComm();
+      }
+      Object.entries(views).forEach(([k, el]) => { el.hidden = k !== view; });
+      $('#kutLeftProfile').hidden = view === 'comm';
+      $('#kutLeftComm').hidden = view !== 'comm';
+      $$('.kut-nav [data-kut]', app).forEach(b => {
+        const on = b.dataset.kut === view || (view === 'comm' && b.dataset.kut === 'comunidades') || (view === 'home' && b.dataset.kut === 'home');
+        b.classList.toggle('is-on', on);
+      });
+      $('#kutScroll').scrollTop = 0;
+    }
+
+    app.addEventListener('click', e => {
+      const comm = e.target.closest('[data-comm]');
+      if (comm) { show('comm', comm.dataset.comm); return; }
+      const nav = e.target.closest('[data-kut]');
+      if (!nav) return;
+      if (nav.dataset.kut === 'scraps') {
+        show('home');
+        $('#kutBody').focus({ preventScroll: true });
+        $('#kutForm').scrollIntoView({ block: 'start' });
+      } else show(nav.dataset.kut);
+    });
+    $('#kutJoin').addEventListener('click', () => {
+      if (joined.has(current.id)) joined.delete(current.id); else joined.add(current.id);
+      store.set('cos.orkut.comunidades', [...joined]);
+      renderComm();
+      renderLists();
+    });
+
+    renderLists();
+    const openScraps = hooks.open.scraps;
+    hooks.open.scraps = opts => { show('home'); openScraps?.(opts); };
   })();
 
   /* ---------------- Assistente de projeto ---------------- */

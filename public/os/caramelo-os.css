@@ -653,25 +653,27 @@ a.icon { text-decoration: none; }
 
 a.drive { text-decoration: none; color: inherit; }
 
-/* ================= CARAKUT (scraps) ================= */
+/* ================= ORKUT (recados e comunidades) ================= */
 .app-scraps {
   --kut-bg: #D4DDED; --kut-top: #A5BCE5; --kut-blue: #315C99; --kut-blue-2: #6D84B4;
   --kut-line: #C3D0E8; --kut-soft: #EEF3FB; --kut-pink: #E26EA6;
+  --kut-pill: #89B1D6; --kut-pill-hi: #779FC5; --kut-link: #3C88CF;
   background: var(--kut-bg); font-family: Verdana, Tahoma, var(--font-ui); font-size: 12px; color: #222;
   container-type: inline-size;
 }
 .kut-top {
-  display: flex; align-items: center; gap: 16px; flex: none;
-  padding: 6px 14px; background: linear-gradient(180deg, #C8D7F2, var(--kut-top));
-  border-bottom: 1px solid #8DA5D3;
+  display: flex; align-items: center; gap: 18px; flex: none;
+  padding: 8px 14px; background: linear-gradient(180deg, #D8E3F5, #BFD0EA);
+  border-bottom: 1px solid #A9BEE0;
 }
-.kut-logo {
-  font: 700 22px/1 "Trebuchet MS", Verdana, sans-serif; letter-spacing: -.04em;
-  color: var(--caramel); text-shadow: 0 1px 0 #fff;
+.kut-logo { display: block; width: auto; height: 34px; flex: none; }
+.kut-nav { display: flex; flex-wrap: wrap; gap: 6px; }
+.kut-nav button {
+  padding: 5px 12px; border: 0; border-radius: 4px; background: var(--kut-pill);
+  color: #fff; font: 700 12px/1.2 Arial, Helvetica, sans-serif; transition: background .2s linear;
 }
-.kut-logo sup { font-size: 9px; letter-spacing: 0; color: var(--kut-blue); margin-left: 2px; vertical-align: super; }
-.kut-nav { display: flex; gap: 14px; font-size: 11.5px; color: var(--kut-blue); }
-.kut-nav .is-on { font-weight: 700; text-decoration: underline; }
+.kut-nav button:hover, .kut-nav button.is-on { background: var(--kut-pill-hi); }
+.kut-nav button.is-on { box-shadow: inset 0 -2px 0 rgba(0,0,0,.12); }
 .kut-me { margin-left: auto; font-size: 11.5px; color: var(--kut-blue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .kut-scroll { flex: 1; min-height: 0; overflow: auto; padding: 12px; }
 .kut-grid { display: grid; grid-template-columns: 170px minmax(0, 1fr) 190px; gap: 12px; align-items: start; }
@@ -745,22 +747,48 @@ a.drive { text-decoration: none; color: inherit; }
 .kut-friends svg { width: 100%; max-width: 50px; aspect-ratio: 5 / 3; background: var(--kut-soft); border: 1px solid var(--kut-line); border-radius: 3px; padding: 3px; }
 .kut-friends span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .kut-friends .kut-none { grid-column: 1 / -1; color: #777; }
-.kut-comms { margin: 0; padding: 0; list-style: none; display: grid; gap: 7px; }
-.kut-comms li { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--kut-blue); line-height: 1.3; }
-.kut-comm { width: 26px; height: 26px; flex: none; border-radius: 3px; border: 1px solid var(--kut-line); }
-.kut-comm.c1 { background: linear-gradient(135deg, #E8892F 50%, #F6C68E 50%); }
-.kut-comm.c2 { background: repeating-linear-gradient(45deg, #ddd 0 4px, #fff 4px 8px); }
-.kut-comm.c3 { background: radial-gradient(circle at 50% 55%, #6B3E1F 40%, #F3E3CF 42%); }
-.kut-comm.c4 { background: linear-gradient(180deg, #A5BCE5 30%, #fff 30%); }
-.kut-comm.c5 { background: conic-gradient(#FF701A, #F5C542, #7FA3D6, #E26EA6, #FF701A); }
-.kut-comm.c6 { background: linear-gradient(90deg, #FF701A 50%, #101014 50%); }
+/* Comunidades: lista lateral, grade e página */
+.kut-comms, .kut-comm-grid { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.kut-comm-item, .kut-comm-tile {
+  display: flex; align-items: center; gap: 8px; width: 100%; padding: 3px; text-align: left;
+  border: 0; border-radius: 4px; background: none; color: var(--kut-link); font: inherit; cursor: pointer;
+}
+.kut-comm-item:hover, .kut-comm-tile:hover { background: var(--kut-soft); }
+.kut-comm-item img, .kut-comm-tile img {
+  width: 30px; height: 30px; flex: none; object-fit: contain; padding: 2px;
+  background: var(--kut-soft); border: 1px solid var(--kut-line); border-radius: 3px;
+}
+.kut-comm-label { display: grid; min-width: 0; line-height: 1.3; }
+.kut-comm-label b { font-size: 11px; font-weight: 400; overflow-wrap: anywhere; }
+.kut-comm-label small { font-size: 10px; color: #888; }
+.kut-comm-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; margin-top: 10px; }
+.kut-comm-tile { padding: 6px; border: 1px solid var(--kut-line); }
+.kut-comm-tile img { width: 48px; height: 48px; }
+.kut-comm-tile .kut-comm-label b { font-size: 12px; font-weight: 700; }
+.kut-comm-card img { aspect-ratio: 1; object-fit: contain; padding: 14px; background: var(--kut-soft); }
+.kut-comm-name { margin: 8px 0 2px; font: 400 15px/1.25 "Trebuchet MS", Verdana, sans-serif; color: #222; }
+.kut-comm-members { margin: 0 0 8px; font-size: 11px; font-style: italic; color: #666; }
+.kut-comm-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.kut-join { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; color: #333; font-weight: 400; }
+.kut-join span { font-weight: 700; color: #777; }
+.kut-join[aria-pressed="true"] span { color: #2E6B2E; }
+.kut-notice { display: grid; gap: 4px; margin: 12px 0; padding: 12px 14px; background: #FBF7BE; border-radius: 2px; font-size: 12px; color: #333; }
+.kut-notice strong { font-size: 13px; color: #222; }
+.kut-notice.is-in { background: #E3F1DC; }
+.kut-info { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 18px; margin: 0 0 12px; }
+.kut-info div { display: flex; gap: 6px; min-width: 0; }
+.kut-info dt { font-weight: 700; color: #222; white-space: nowrap; }
+.kut-info dd { margin: 0; color: #333; }
+.kut-desc { margin: 0; padding-top: 10px; border-top: 1px solid var(--kut-line); line-height: 1.55; color: #333; }
 
 @container (max-width: 760px) {
   .kut-grid { grid-template-columns: 150px minmax(0, 1fr); }
   .kut-right { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; }
 }
 @container (max-width: 540px) {
-  .kut-nav { display: none; }
+  .kut-top { flex-wrap: wrap; gap: 8px; }
+  .kut-me { display: none; }
+  .kut-info { grid-template-columns: minmax(0, 1fr); }
   .kut-grid { grid-template-columns: minmax(0, 1fr); }
   .kut-left .kut-profile { display: grid; grid-template-columns: 72px 1fr; gap: 0 10px; align-items: start; }
   .kut-left .kut-profile img { grid-row: span 3; }
