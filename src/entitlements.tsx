@@ -67,7 +67,9 @@ export function EntitlementsProvider({ children }: { children: ReactNode }) {
           setStatus(MISSING.has(error.code) ? "unconfigured" : "error");
           return;
         }
-        setOwned(new Set((data ?? []).map((row) => row.tool_slug as string)));
+        const next = new Set((data ?? []).map((row) => row.tool_slug as string));
+        // Refetched on every focus: keep the same set when nothing changed, so the library does not rebuild.
+        setOwned((prev) => (prev.size === next.size && [...next].every((slug) => prev.has(slug)) ? prev : next));
         setStatus("ready");
       });
     return () => {

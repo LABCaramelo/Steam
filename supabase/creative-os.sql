@@ -146,6 +146,9 @@ create table if not exists public.creative_os_briefings (
   updated_at timestamptz not null default now()
 );
 
+create index if not exists idx_creative_os_briefing_templates_workspace on public.creative_os_briefing_templates (workspace_id);
+create index if not exists idx_creative_os_briefings_client on public.creative_os_briefings (client_id, created_at desc);
+
 -- 10. Propostas Comerciais
 create table if not exists public.creative_os_proposals (
   id uuid primary key default gen_random_uuid(),
@@ -176,6 +179,7 @@ create table if not exists public.creative_os_projects (
 );
 
 create index if not exists idx_creative_os_projects_client on public.creative_os_projects(client_id);
+create index if not exists idx_creative_os_projects_workspace on public.creative_os_projects (workspace_id, created_at desc);
 
 -- 12. Tarefas Operacionais
 create table if not exists public.creative_os_tasks (
@@ -195,6 +199,7 @@ create table if not exists public.creative_os_tasks (
 );
 
 create index if not exists idx_creative_os_tasks_project on public.creative_os_tasks(project_id);
+create index if not exists idx_creative_os_tasks_workspace on public.creative_os_tasks (workspace_id, position);
 
 -- 13. Entregas Editoriais (Peças de Conteúdo)
 create table if not exists public.creative_os_deliverables (
@@ -214,6 +219,7 @@ create table if not exists public.creative_os_deliverables (
 
 create index if not exists idx_creative_os_deliverables_project on public.creative_os_deliverables(project_id);
 create index if not exists idx_creative_os_deliverables_client on public.creative_os_deliverables(client_id);
+create index if not exists idx_creative_os_deliverables_workspace on public.creative_os_deliverables (workspace_id, created_at desc);
 
 -- 14. Versões de Entregas (Imutáveis)
 create table if not exists public.creative_os_deliverable_versions (
@@ -244,6 +250,7 @@ create table if not exists public.creative_os_approvals (
 );
 
 create index if not exists idx_creative_os_approvals_version on public.creative_os_approvals(version_id);
+create index if not exists idx_creative_os_approvals_deliverable on public.creative_os_approvals (deliverable_id);
 
 -- 16. Comentários (Internos vs Visíveis ao Cliente)
 create table if not exists public.creative_os_comments (
@@ -272,6 +279,7 @@ create table if not exists public.creative_os_client_shares (
 );
 
 create index if not exists idx_creative_os_shares_token on public.creative_os_client_shares(token);
+create index if not exists idx_creative_os_shares_client on public.creative_os_client_shares (client_id, created_at desc);
 
 -- 18. Controle Financeiro Leve
 create table if not exists public.creative_os_financial_entries (

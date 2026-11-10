@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { CreativeOsRepository } from "./repo";
 import type {
   Client,
@@ -28,6 +28,12 @@ export const EditorialCalendarView: React.FC<Props> = ({
 }) => {
   const [selectedDeliverable, setSelectedDeliverable] = useState<Deliverable | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  // The open piece follows the list that onRefresh reloads, so it shows new versions and comments
+  // without fetching the deliverables a second time.
+  useEffect(() => {
+    setSelectedDeliverable((open) => (open ? deliverables.find((d) => d.id === open.id) ?? open : open));
+  }, [deliverables]);
   const [newVersionModalOpen, setNewVersionModalOpen] = useState(false);
 
   // New Deliverable Form
@@ -94,10 +100,6 @@ export const EditorialCalendarView: React.FC<Props> = ({
       setSlideBody("");
       setNewVersionModalOpen(false);
       onRefresh();
-      // Atualiza o item aberto
-      const updatedList = await repo.getDeliverables(workspace.id);
-      const found = updatedList.find((d) => d.id === selectedDeliverable.id);
-      if (found) setSelectedDeliverable(found);
     } catch (err: any) {
       alert(err?.message || "Erro ao adicionar versão");
     }
@@ -115,9 +117,6 @@ export const EditorialCalendarView: React.FC<Props> = ({
       });
       setCommentText("");
       onRefresh();
-      const updatedList = await repo.getDeliverables(workspace.id);
-      const found = updatedList.find((d) => d.id === selectedDeliverable.id);
-      if (found) setSelectedDeliverable(found);
     } catch (err: any) {
       alert(err?.message || "Erro ao adicionar comentário");
     }

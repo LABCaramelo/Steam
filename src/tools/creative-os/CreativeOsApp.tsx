@@ -60,22 +60,17 @@ export const CreativeOsApp: React.FC<Props> = ({ repo }) => {
 
   const loadWorkspaceData = async (wsId: string) => {
     try {
-      const [cList, pList, dList] = await Promise.all([
+      // Tasks carry workspace_id, so they load in the same round as the rest instead of one query per project.
+      const [cList, pList, dList, tList] = await Promise.all([
         repo.getClients(wsId),
         repo.getProjects(wsId),
         repo.getDeliverables(wsId),
+        repo.getWorkspaceTasks(wsId),
       ]);
       setClients(cList);
       setProjects(pList);
       setDeliverables(dList);
-
-      // Load tasks across projects
-      if (pList.length > 0) {
-        const allTasks = await Promise.all(pList.map((p) => repo.getTasks(p.id)));
-        setTasks(allTasks.flat());
-      } else {
-        setTasks([]);
-      }
+      setTasks(tList);
     } catch (err) {
       console.error("Erro ao carregar dados do workspace:", err);
     }

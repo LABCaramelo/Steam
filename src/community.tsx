@@ -314,25 +314,24 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
 
   const totalUnread = useMemo(() => Object.values(unread).reduce((a, b) => a + b, 0), [unread]);
 
-  return (
-    <Ctx.Provider
-      value={{
-        status,
-        selfId,
-        online,
-        offline,
-        member,
-        conversations: stored.conversations,
-        unread,
-        totalUnread,
-        activeChat,
-        openChat,
-        send,
-      }}
-    >
-      {children}
-    </Ctx.Provider>
+  const value = useMemo<CommunityState>(
+    () => ({
+      status,
+      selfId,
+      online,
+      offline,
+      member,
+      conversations: stored.conversations,
+      unread,
+      totalUnread,
+      activeChat,
+      openChat,
+      send,
+    }),
+    [status, selfId, online, offline, member, stored.conversations, unread, totalUnread, activeChat, openChat, send],
   );
+
+  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
 export function useCommunity(): CommunityState {

@@ -42,6 +42,7 @@ function clientFixture(path: string) {
     createContext: () => ({ Provider: "provider" }),
     useContext() {},
     useCallback: (fn: unknown) => fn,
+    useMemo: (fn: () => unknown) => fn(),
     useRef: (initial: any) => { const index = refCursor++; return refs[index] ??= { current: initial }; },
     useState: (initial: any) => {
       const index = stateCursor++;
