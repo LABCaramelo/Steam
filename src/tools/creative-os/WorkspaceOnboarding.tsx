@@ -118,7 +118,7 @@ export const WorkspaceOnboarding: React.FC<Props> = ({ repo, onWorkspaceCreated 
                 value={serviceType}
                 onChange={(e) => setServiceType(e.target.value)}
               >
-                <option value="head_de_conteudo">Head de Conteúdo Externo</option>
+                <option value="head_de_conteudo">Head de Conteúdo</option>
                 <option value="estudio_criativo">Estúdio Criativo & Audiovisual</option>
                 <option value="estrategista">Estrategista de Posicionamento</option>
                 <option value="outro">Consultoria ou Outro</option>

@@ -30,7 +30,8 @@
     recursos:   { title: 'Aprender & Recursos', icon: 'i-folder', w: 620, h: 400 },
     lixeira:    { title: 'Lixeira', icon: 'i-trash', w: 620, h: 470 },
     jogo:       { title: 'Pega a Bolinha', icon: 'i-game', w: 420, h: 530 },
-    scraps:     { title: 'Orkut — Perfil do Luiz', task: 'Orkut', icon: 'i-orkut', w: 920, h: 660 }
+    scraps:     { title: 'Orkut — Perfil do Luiz', task: 'Orkut', icon: 'i-orkut', w: 920, h: 660 },
+    navegador:  { title: 'Navegador', icon: 'i-web', w: 1040, h: 720 }
   };
 
   const layer = $('#windows');
@@ -533,6 +534,13 @@
 
   // Qualquer [data-open] fora dos ícones abre com um clique
   document.addEventListener('click', e => {
+    // Links [data-browse] abrem a página do site no Navegador, dentro do CarameloOS.
+    const page = e.target.closest('a[data-browse]');
+    if (page && !(e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1)) {
+      e.preventDefault();
+      openApp('navegador', { url: page.getAttribute('href') });
+      return;
+    }
     const el = e.target.closest('[data-open]');
     if (el && !el.classList.contains('icon')) {
       openApp(el.dataset.open, { servico: el.dataset.servico });
@@ -1048,6 +1056,112 @@
     renderLists();
     const openScraps = hooks.open.scraps;
     hooks.open.scraps = opts => { show('home'); openScraps?.(opts); };
+  })();
+
+  /* ---------------- Navegador: páginas do site dentro do CarameloOS ---------------- */
+  // Abre só páginas do próprio site (mesma origem). O histórico é próprio: as trocas de página usam
+  // location.replace, para não misturar com o voltar do navegador de verdade. Links para fora vão
+  // para uma aba nova; links para a home ("/#servicos") abrem a janela certa do OS em vez de um OS dentro do outro.
+  (() => {
+    const frame = $('#webFrame');
+    if (!frame) return;
+    const urlBox = $('#webUrl'), back = $('#webBack'), fwd = $('#webFwd'), reload = $('#webReload');
+    const out = $('#webOut'), status = $('#webStatus'), progress = $('#webProgress');
+    const HOST = 'www.umcaracaramelo.com.br';
+    const isHome = u => u.pathname === '/' || u.pathname === '/index.html';
+    let stack = [];
+    let pos = -1;
+
+    const shown = u => `${HOST}${u.pathname.replace(/\/(index\.html)?$/, '')}${u.search}${u.hash}`;
+    function sync(u) {
+      if (u) { urlBox.value = shown(u); out.href = u.pathname + u.search + u.hash; }
+      back.disabled = pos <= 0;
+      fwd.disabled = pos >= stack.length - 1;
+    }
+    function openHome(u) {
+      const id = decodeURIComponent(u.hash.slice(1));
+      if (!id) return;
+      location.hash = '';
+      location.hash = id;
+    }
+    function go(href, push = true) {
+      const u = new URL(href, location.origin);
+      if (u.origin !== location.origin) { window.open(u.href, '_blank', 'noopener'); return; }
+      if (isHome(u)) { openHome(u); return; }
+      if (push) { stack = stack.slice(0, pos + 1); stack.push(u.href); pos = stack.length - 1; }
+      progress.hidden = false;
+      status.textContent = `Abrindo ${shown(u)}…`;
+      try { frame.contentWindow.location.replace(u.href); } catch { frame.src = u.href; }
+      sync(u);
+    }
+
+    function onFrameClick(e) {
+      if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+      const a = e.target.closest?.('a[href]');
+      if (!a || a.hasAttribute('download') || /^\s*javascript:/i.test(a.getAttribute('href'))) return;
+      const u = new URL(a.href);
+      if (!/^https?:$/.test(u.protocol)) return; // mailto:, tel:… seguem normais
+      e.preventDefault();
+      if (u.origin !== location.origin) { window.open(u.href, '_blank', 'noopener'); return; }
+      const cur = new URL(frame.contentWindow.location.href);
+      if (u.pathname === cur.pathname && u.search === cur.search && u.hash) {
+        // Âncora na mesma página: só rola.
+        frame.contentDocument.getElementById(decodeURIComponent(u.hash.slice(1)))?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+        return;
+      }
+      go(u.href);
+    }
+
+    frame.addEventListener('load', () => {
+      let doc, loc;
+      try { doc = frame.contentDocument; loc = frame.contentWindow.location; } catch { progress.hidden = true; return; }
+      if (!loc || loc.href === 'about:blank') return;
+      progress.hidden = true;
+      const u = new URL(loc.href);
+      if (isHome(u)) { // a página levou para a home sozinha: volta e abre a janela pedida
+        if (pos >= 0) go(stack[pos], false);
+        openHome(u);
+        return;
+      }
+      if (u.href !== stack[pos]) { stack = stack.slice(0, pos + 1); stack.push(u.href); pos = stack.length - 1; }
+      const title = (doc.title || shown(u)).trim();
+      status.textContent = title;
+      const name = $('#wt-navegador');
+      if (name) name.textContent = title;
+      sync(u);
+      doc.addEventListener('click', onFrameClick);
+      // Clicar dentro da página também traz a janela para a frente.
+      doc.addEventListener('pointerdown', () => focusWin('navegador'));
+    });
+
+    back.addEventListener('click', () => { if (pos > 0) { pos -= 1; go(stack[pos], false); } });
+    fwd.addEventListener('click', () => { if (pos < stack.length - 1) { pos += 1; go(stack[pos], false); } });
+    reload.addEventListener('click', () => { if (pos >= 0) go(stack[pos], false); });
+    urlBox.addEventListener('focus', () => urlBox.select());
+    $('#webBar').addEventListener('submit', e => {
+      e.preventDefault();
+      const v = urlBox.value.trim();
+      if (!v) return;
+      const bare = v.replace(/^https?:\/\//i, '');
+      const mine = bare.match(/^(?:www\.)?umcaracaramelo\.com\.br(\/.*)?$/i) || (bare.startsWith(location.host) && [null, bare.slice(location.host.length)]);
+      if (v.startsWith('/')) go(v);
+      else if (mine) go(mine[1] || '/');
+      else window.open(`https://${bare}`, '_blank', 'noopener');
+      urlBox.blur();
+    });
+
+    hooks.open.navegador = opts => {
+      if (opts && opts.url) go(opts.url);
+      else if (pos < 0) { urlBox.value = ''; status.textContent = 'Digite um endereço do site'; sync(); }
+    };
+    // Fechar a janela tira o iframe do lugar (ele recarrega em branco): o histórico recomeça.
+    hooks.close.navegador = why => {
+      if (why !== 'close') return;
+      stack = [];
+      pos = -1;
+      progress.hidden = true;
+      status.textContent = 'Pronto';
+    };
   })();
 
   /* ---------------- Assistente de projeto ---------------- */
