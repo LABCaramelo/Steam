@@ -10,10 +10,11 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* sem storage */ } }
   };
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // Papel de parede em vídeo: parado em quem pede menos movimento.
-  if (reduced) document.querySelector('.wallpaper video')?.pause();
   const isCompact = () => matchMedia('(max-width: 760px)').matches;
   const isCoarse = () => matchMedia('(pointer: coarse)').matches;
+  // Supabase do site: só a chave pública (anon). O Orkut e a tela de entrada usam.
+  const SB_URL = 'https://fzhzpzxsttflgtassyex.supabase.co';
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6aHpwenhzdHRmbGd0YXNzeWV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNTU2NTIsImV4cCI6MjEwNDkzMTY1Mn0.rWO90rI-O8XVOWAlvuylkFWMNpjkocC0HRHBNbmrJj4';
 
   /* ---------------- Programas ---------------- */
   const APPS = {
@@ -99,6 +100,7 @@
       const title = $('.win-title', win);
       title.addEventListener('dblclick', e => { if (!e.target.closest('.win-btn')) toggleMax(id); });
       makeDraggable(win, title);
+      makeResizable(win);
 
       rec = { win, task, wrap };
       openWins.set(id, rec);
@@ -195,6 +197,42 @@
     handle.addEventListener('pointercancel', end);
   }
 
+  // Redimensionar pelas bordas e cantos, como num computador.
+  const MIN_W = 300, MIN_H = 200;
+  function makeResizable(win) {
+    ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'].forEach(dir => {
+      const h = document.createElement('span');
+      h.className = `win-rs win-rs-${dir}`;
+      h.dataset.dir = dir;
+      h.setAttribute('aria-hidden', 'true');
+      win.append(h);
+    });
+    let start = null;
+    win.addEventListener('pointerdown', e => {
+      const h = e.target.closest('.win-rs');
+      if (!h || e.button !== 0 || isCompact() || win.classList.contains('is-max')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      start = { dir: h.dataset.dir, x: e.clientX, y: e.clientY, l: win.offsetLeft, t: win.offsetTop, w: win.offsetWidth, h: win.offsetHeight, handle: h };
+      h.setPointerCapture(e.pointerId);
+      win.classList.add('is-resizing');
+    });
+    win.addEventListener('pointermove', e => {
+      if (!start) return;
+      const area = areaRect();
+      const dx = e.clientX - start.x, dy = e.clientY - start.y;
+      let { l, t, w, h } = start;
+      if (start.dir.includes('e')) w = clamp(start.w + dx, MIN_W, area.width - start.l);
+      if (start.dir.includes('s')) h = clamp(start.h + dy, MIN_H, area.height - start.t);
+      if (start.dir.includes('w')) { w = clamp(start.w - dx, MIN_W, start.l + start.w); l = start.l + start.w - w; }
+      if (start.dir.includes('n')) { h = clamp(start.h - dy, MIN_H, start.t + start.h); t = start.t + start.h - h; }
+      Object.assign(win.style, { left: `${l}px`, top: `${t}px`, width: `${w}px`, height: `${h}px` });
+    });
+    const end = () => { if (!start) return; start = null; win.classList.remove('is-resizing'); };
+    win.addEventListener('pointerup', end);
+    win.addEventListener('pointercancel', end);
+  }
+
   addEventListener('resize', () => {
     const area = areaRect();
     openWins.forEach(({ win }) => {
@@ -225,6 +263,195 @@
   $('#desktop').addEventListener('pointerdown', e => {
     if (!e.target.closest('.icon')) selectIcon(null);
   });
+
+  /* ---------------- Ícones livres: arraste para qualquer lugar ---------------- */
+  // Na primeira vez que um ícone é arrastado, todos saem da grade mantendo o lugar.
+  // As posições ficam no navegador; "Organizar ícones" (botão direito) volta para a grade.
+  const desk = $('#desktop');
+  const iconList = $('.icons');
+  const ICON_KEY = 'cos.icons';
+  const iconId = icon => icon.dataset.open || icon.getAttribute('href') || '';
+  let suppressIconClick = false;
+  function gridPositions() {
+    const base = desk.getBoundingClientRect();
+    const pos = {};
+    icons.forEach(icon => { const r = icon.parentElement.getBoundingClientRect(); pos[iconId(icon)] = { x: r.left - base.left, y: r.top - base.top }; });
+    return pos;
+  }
+  function placeIcons(pos) {
+    iconList.classList.add('is-free');
+    icons.forEach(icon => {
+      const li = icon.parentElement, p = pos[iconId(icon)];
+      if (!p) return;
+      li.style.left = `${clamp(p.x, 0, Math.max(0, desk.clientWidth - li.offsetWidth))}px`;
+      li.style.top = `${clamp(p.y, 0, Math.max(0, desk.clientHeight - li.offsetHeight))}px`;
+    });
+  }
+  function saveIcons() {
+    const pos = {};
+    icons.forEach(icon => { const li = icon.parentElement; pos[iconId(icon)] = { x: li.offsetLeft, y: li.offsetTop }; });
+    store.set(ICON_KEY, pos);
+  }
+  function freeIcons() {
+    if (iconList.classList.contains('is-free')) return;
+    placeIcons(gridPositions());
+  }
+  function arrangeIcons() {
+    store.set(ICON_KEY, null);
+    iconList.classList.remove('is-free');
+    icons.forEach(icon => { icon.parentElement.style.left = ''; icon.parentElement.style.top = ''; });
+  }
+  function restoreIcons() {
+    const saved = store.get(ICON_KEY, null);
+    if (!saved || isCompact()) return;
+    placeIcons({ ...gridPositions(), ...saved });
+  }
+  icons.forEach(icon => {
+    let drag = null;
+    icon.addEventListener('pointerdown', e => {
+      if (e.button !== 0 || isCompact() || isCoarse()) return;
+      drag = { x: e.clientX, y: e.clientY, moved: false, pid: e.pointerId };
+    });
+    icon.addEventListener('pointermove', e => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      const li = icon.parentElement;
+      if (!drag.moved) {
+        if (Math.hypot(dx, dy) < 5) return;
+        freeIcons();
+        drag.l = li.offsetLeft; drag.t = li.offsetTop; drag.moved = true;
+        icon.setPointerCapture(drag.pid);
+        icon.classList.add('is-dragging');
+        selectIcon(icon);
+      }
+      li.style.left = `${clamp(drag.l + dx, 0, desk.clientWidth - li.offsetWidth)}px`;
+      li.style.top = `${clamp(drag.t + dy, 0, desk.clientHeight - li.offsetHeight)}px`;
+    });
+    const end = () => {
+      if (drag && drag.moved) {
+        icon.classList.remove('is-dragging');
+        suppressIconClick = true;
+        setTimeout(() => { suppressIconClick = false; }, 0);
+        saveIcons();
+      }
+      drag = null;
+    };
+    icon.addEventListener('pointerup', end);
+    icon.addEventListener('pointercancel', end);
+    // Soltar depois de arrastar não conta como clique (nem abre o link do LAB).
+    icon.addEventListener('click', e => { if (suppressIconClick) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+  });
+  addEventListener('resize', () => {
+    if (isCompact()) { iconList.classList.remove('is-free'); return; }
+    const saved = store.get(ICON_KEY, null);
+    if (saved) placeIcons({ ...gridPositions(), ...saved });
+  });
+
+  /* ---------------- Menu do botão direito (como no Mac) ---------------- */
+  const ctx = document.createElement('div');
+  ctx.className = 'ctx-menu';
+  ctx.setAttribute('role', 'menu');
+  ctx.hidden = true;
+  document.body.append(ctx);
+  let ctxReturn = null;
+  function closeCtx() {
+    if (ctx.hidden) return;
+    ctx.hidden = true;
+    ctxReturn?.focus?.({ preventScroll: true });
+    ctxReturn = null;
+  }
+  function openCtx(x, y, items) {
+    ctx.replaceChildren(...items.map(item => {
+      if (item === '-') { const hr = document.createElement('div'); hr.className = 'ctx-sep'; hr.setAttribute('role', 'separator'); return hr; }
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ctx-item';
+      b.setAttribute('role', 'menuitem');
+      b.textContent = item.label;
+      if (item.disabled) b.disabled = true;
+      b.addEventListener('click', () => { closeCtx(); item.run(); });
+      return b;
+    }));
+    ctxReturn = document.activeElement;
+    ctx.hidden = false;
+    ctx.style.left = `${clamp(x, 4, innerWidth - ctx.offsetWidth - 4)}px`;
+    ctx.style.top = `${clamp(y, 4, innerHeight - ctx.offsetHeight - 4)}px`;
+    ctx.querySelector('.ctx-item:not(:disabled)')?.focus({ preventScroll: true });
+  }
+  const isFull = () => !!document.fullscreenElement;
+  function toggleFull() {
+    if (isFull()) document.exitFullscreen?.().catch(() => {});
+    else document.documentElement.requestFullscreen?.({ navigationUI: 'hide' }).catch(() => {});
+  }
+  function desktopItems() {
+    const items = [
+      { label: 'Sobre este computador', run: () => openApp('computador') },
+      '-',
+      ...(photoOk ? [{ label: currentWallpaper() === 'foto' ? 'Usar o vídeo como fundo' : 'Usar a foto como fundo', run: () => setWallpaper(currentWallpaper() === 'foto' ? 'video' : 'foto') }] : []),
+      { label: 'Organizar ícones', run: arrangeIcons, disabled: !iconList.classList.contains('is-free') },
+      { label: 'Limpar a mesa', run: () => [...openWins.keys()].forEach(id => minimize(id)), disabled: openWins.size === 0 },
+      '-',
+      { label: isFull() ? 'Sair da tela cheia' : 'Entrar em tela cheia', run: toggleFull, disabled: !document.documentElement.requestFullscreen },
+      { label: 'Trocar usuário…', run: () => $('#btnSwitchUser')?.click() },
+      { label: 'Reiniciar…', run: () => $('#btnRestart')?.click() }
+    ];
+    return items;
+  }
+  function iconItems(icon) {
+    const open = () => { if (icon.dataset.open) openApp(icon.dataset.open); else icon.click(); };
+    return [
+      { label: 'Abrir', run: open },
+      '-',
+      { label: 'Organizar ícones', run: arrangeIcons, disabled: !iconList.classList.contains('is-free') }
+    ];
+  }
+  desk.addEventListener('contextmenu', e => {
+    // Dentro das janelas fica o menu normal do navegador (copiar, colar…).
+    if (e.target.closest('.win') || isCompact()) return;
+    e.preventDefault();
+    const icon = e.target.closest('.icon');
+    if (icon) selectIcon(icon);
+    openCtx(e.clientX, e.clientY, icon ? iconItems(icon) : desktopItems());
+  });
+  document.addEventListener('pointerdown', e => { if (!ctx.hidden && !ctx.contains(e.target)) closeCtx(); }, true);
+  ctx.addEventListener('keydown', e => {
+    const items = $$('.ctx-item:not(:disabled)', ctx);
+    const i = items.indexOf(document.activeElement);
+    if (e.key === 'Escape') { e.preventDefault(); closeCtx(); }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const next = items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length];
+      next?.focus();
+    }
+  });
+  addEventListener('blur', closeCtx);
+  addEventListener('resize', closeCtx);
+
+  /* ---------------- Fundo da mesa: foto ou vídeo ---------------- */
+  const WALL_KEY = 'cos.wallpaper';
+  let photoOk = true;
+  const wallVideo = $('.wallpaper video');
+  const wallPhoto = $('.wallpaper img');
+  const currentWallpaper = () => (store.get(WALL_KEY, 'foto') === 'video' && wallVideo ? 'video' : 'foto');
+  function setWallpaper(kind) {
+    store.set(WALL_KEY, kind);
+    const video = kind === 'video';
+    if (wallPhoto) wallPhoto.hidden = video;
+    if (wallVideo) {
+      wallVideo.hidden = !video;
+      if (video && !reduced) wallVideo.play?.().catch(() => {});
+      else wallVideo.pause?.();
+    }
+  }
+  setWallpaper(currentWallpaper());
+  // Sem a foto (arquivo ausente ou com erro), o fundo volta para o vídeo.
+  const photoFailed = () => { photoOk = false; if (currentWallpaper() === 'foto') { wallPhoto.hidden = true; if (wallVideo) { wallVideo.hidden = false; if (!reduced) wallVideo.play?.().catch(() => {}); } } };
+  if (wallPhoto) {
+    wallPhoto.addEventListener('error', photoFailed);
+    // O erro pode ter acontecido antes deste script rodar.
+    if (wallPhoto.complete && !wallPhoto.naturalWidth) photoFailed();
+  }
+  restoreIcons();
 
   // Qualquer [data-open] fora dos ícones abre com um clique
   document.addEventListener('click', e => {
@@ -341,8 +568,6 @@
   /* ---------------- Orkut: recados (scraps) ---------------- */
   // Mural público no Supabase. O navegador só chama as funções de supabase/os-scraps.sql.
   (() => {
-    const SB_URL = 'https://fzhzpzxsttflgtassyex.supabase.co';
-    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6aHpwenhzdHRmbGd0YXNzeWV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNTU2NTIsImV4cCI6MjEwNDkzMTY1Mn0.rWO90rI-O8XVOWAlvuylkFWMNpjkocC0HRHBNbmrJj4';
     const PAGE = 20;
     const MAX = 500;
     const list = $('#kutList'), empty = $('#kutEmpty'), more = $('#kutMore');
@@ -522,6 +747,11 @@
     }
 
     const kutName = $('#kutName');
+    document.addEventListener('cos:user', e => {
+      const who = e.detail;
+      $('.kut-me').textContent = who ? `Olá, ${who.name}` : 'Olá, visitante';
+      if (who && !kutName.value.trim()) { kutName.value = who.name; kutName.dispatchEvent(new Event('input')); }
+    });
     const paintAvatar = () => dogSVG($('#kutAvatar'), coatForName(kutName.value.trim() || 'Visitante'));
     kutName.value = store.get('cos96.kutName', '') || '';
     kutName.addEventListener('input', paintAvatar);
@@ -933,6 +1163,176 @@
     };
   })();
 
+  /* ---------------- Caramelo ilustrado único (foto de quem entra) ---------------- */
+  // Cada pessoa recebe um código aleatório; dele saem pelagem (cor contínua), orelhas, manchas,
+  // língua, acessório e fundo. Dois códigos diferentes quase nunca dão o mesmo cachorro.
+  function seededRandom(seed) {
+    let h = 1779033703 ^ seed.length;
+    for (let i = 0; i < seed.length; i++) { h = Math.imul(h ^ seed.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    let a = h >>> 0;
+    return () => {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function caramelSVG(seed) {
+    const r = seededRandom(String(seed));
+    const pick = arr => arr[Math.floor(r() * arr.length)];
+    const between = (a, b) => a + (b - a) * r();
+    const n = v => v.toFixed(1);
+    const hsl = (h, s, l) => `hsl(${n(h)} ${n(s)}% ${n(l)}%)`;
+    const hue = between(22, 38), sat = between(55, 80), lig = between(42, 58);
+    const coat = hsl(hue, sat, lig);
+    const dark = hsl(hue - 4, sat, lig - between(12, 20));
+    const light = hsl(hue + 4, Math.max(30, sat - 22), Math.min(93, lig + between(26, 36)));
+    const ink = '#2B1A10';
+    const bg = pick(['#FDE7D3', '#E3EEFB', '#E8F5E1', '#F6E3F3', '#FFF3C4', '#E0F4F4', '#EDE7FB', '#FBE3E1']);
+    const ears = pick(['floppy', 'floppy', 'up', 'mixed']);
+    const blaze = r() < 0.5, chest = r() < 0.5, brows = r() < 0.6, tongue = r() < 0.6;
+    const patch = r() < 0.3 ? pick([-1, 1]) : 0;
+    const acc = pick(['collar', 'collar', 'bandana', 'bow', 'glasses', 'none']);
+    const accColor = pick(['#E5484D', '#3E63DD', '#30A46C', '#F76B15', '#8E4EC6', '#0090FF', '#E93D82', '#FFC53D']);
+    const tilt = between(-7, 7), gap = between(12, 15), eyeR = between(4.2, 5.6);
+
+    const floppy = side => { const x = side < 0 ? 30 : 90; return `<ellipse cx="${x}" cy="56" rx="${n(between(11, 14))}" ry="${n(between(22, 27))}" transform="rotate(${n(side * between(18, 30))} ${x} 56)" fill="${dark}"/>`; };
+    const up = side => { const x = side < 0 ? 36 : 84; return `<path d="M${x - side * 14} 52 L${x + side * 2} ${n(between(14, 22))} L${x + side * 16} 46 Z" fill="${dark}"/>`; };
+    const ear = side => (ears === 'up' || (ears === 'mixed' && side > 0)) ? up(side) : floppy(side);
+    const eye = side => {
+      const cx = 60 + side * gap;
+      return `<circle cx="${n(cx)}" cy="62" r="${n(eyeR)}" fill="${ink}"/><circle cx="${n(cx + 1.6)}" cy="60.4" r="1.4" fill="#fff"/>`;
+    };
+    let body = `<path d="M26 124 Q32 92 60 90 Q88 92 94 124 Z" fill="${coat}"/>`;
+    if (chest) body += `<ellipse cx="60" cy="114" rx="14" ry="12" fill="${light}"/>`;
+    let head = ear(-1) + ear(1) + `<ellipse cx="60" cy="64" rx="34" ry="31" fill="${coat}"/>`;
+    if (blaze) head += `<path d="M60 35 C55 46 54 60 56 71 L64 71 C66 60 65 46 60 35 Z" fill="${light}"/>`;
+    if (patch) head += `<ellipse cx="${n(60 + patch * gap)}" cy="61" rx="10" ry="9" fill="${dark}"/>`;
+    head += `<ellipse cx="60" cy="81" rx="21" ry="15" fill="${light}"/>`;
+    if (brows) head += `<ellipse cx="${n(60 - gap)}" cy="52" rx="3" ry="2" fill="${light}"/><ellipse cx="${n(60 + gap)}" cy="52" rx="3" ry="2" fill="${light}"/>`;
+    head += eye(-1) + eye(1);
+    head += `<path d="M53 72 Q60 68 67 72 Q66 79 60 80 Q54 79 53 72 Z" fill="${ink}"/><ellipse cx="57.5" cy="72.6" rx="2.2" ry="1.2" fill="#fff" opacity=".55"/>`;
+    if (tongue) head += `<path d="M56 87 Q56 97 60 97 Q64 97 64 87 Z" fill="#F07C8C"/><path d="M60 89 V95" stroke="#D85C6E" stroke-width="1"/>`;
+    head += `<path d="M60 80 V85 M51 85 Q60 93 69 85" stroke="${ink}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+    let extra = '';
+    if (acc === 'collar') extra = `<path d="M37 97 Q60 107 83 97 L83 103 Q60 113 37 103 Z" fill="${accColor}"/><circle cx="60" cy="110" r="4" fill="#F5C542" stroke="#B88A10" stroke-width="1"/>`;
+    if (acc === 'bandana') extra = `<path d="M36 97 Q60 105 84 97 L60 120 Z" fill="${accColor}"/><circle cx="54" cy="104" r="1.6" fill="#fff" opacity=".8"/><circle cx="64" cy="108" r="1.6" fill="#fff" opacity=".8"/><circle cx="60" cy="101" r="1.6" fill="#fff" opacity=".8"/>`;
+    if (acc === 'bow') extra = `<g transform="translate(78 34) rotate(18)"><path d="M0 0 L-11 -7 L-11 7 Z M0 0 L11 -7 L11 7 Z" fill="${accColor}"/><circle r="3.2" fill="${accColor}" stroke="rgba(0,0,0,.2)"/></g>`;
+    if (acc === 'glasses') extra = `<g fill="rgba(255,255,255,.18)" stroke="#1A1A1A" stroke-width="2.4"><circle cx="${n(60 - gap)}" cy="62" r="9"/><circle cx="${n(60 + gap)}" cy="62" r="9"/></g><path d="M${n(60 - gap + 9)} 61 Q60 57 ${n(60 + gap - 9)} 61" stroke="#1A1A1A" stroke-width="2.4" fill="none"/>`;
+    return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Caramelo"><rect width="120" height="120" fill="${bg}"/><g transform="rotate(${n(tilt)} 60 72)">${body}${head}${acc === 'glasses' || acc === 'bow' ? extra : ''}</g>${acc === 'collar' || acc === 'bandana' ? `<g transform="rotate(${n(tilt)} 60 72)">${extra}</g>` : ''}</svg>`;
+  }
+
+  /* ---------------- Quem está usando o CarameloOS ---------------- */
+  // Nome e caramelo ficam no navegador. Quem já entrou no LAB usa o nome e a foto de lá.
+  const USER_KEY = 'cos.user';
+  let user = null;
+  const newSeed = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
+  function savedUser() {
+    const u = store.get(USER_KEY, null);
+    return u && typeof u.name === 'string' && u.name.trim() ? { name: u.name.trim().slice(0, 24), seed: u.seed || newSeed(), lab: false } : null;
+  }
+  async function labUser() {
+    let s = null;
+    try { s = JSON.parse(localStorage.getItem('sb-fzhzpzxsttflgtassyex-auth-token') || 'null'); } catch { return null; }
+    const u = s && s.user;
+    if (!u || !u.id) return null;
+    const meta = u.user_metadata || {};
+    let name = meta.nickname || meta.name || meta.full_name || '';
+    let avatar = meta.avatar_url || '';
+    if (s.access_token && (s.expires_at || 0) * 1000 > Date.now()) {
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 4000);
+        const res = await fetch(`${SB_URL}/rest/v1/profiles?select=name,nickname,avatar_url&id=eq.${encodeURIComponent(u.id)}`, {
+          headers: { apikey: SB_KEY, Authorization: `Bearer ${s.access_token}` }, signal: ctrl.signal
+        });
+        clearTimeout(timer);
+        if (res.ok) {
+          const [p] = await res.json();
+          if (p) { name = p.nickname || p.name || name; avatar = p.avatar_url || avatar; }
+        }
+      } catch { /* sem rede: fica com o que a sessão guardou */ }
+    }
+    if (!name) name = String(u.email || '').split('@')[0];
+    if (!name) return null;
+    return { name: String(name).trim().slice(0, 24), seed: u.id, avatar, lab: true };
+  }
+  function paintAvatar(el, who) {
+    if (!el) return;
+    if (who && who.avatar) {
+      const img = document.createElement('img');
+      img.alt = '';
+      img.src = who.avatar;
+      img.onerror = () => { el.innerHTML = caramelSVG(who.seed); };
+      el.replaceChildren(img);
+    } else el.innerHTML = caramelSVG(who ? who.seed : 'visitante');
+  }
+  function applyUser(who) {
+    user = who;
+    const name = who ? who.name : 'Um Cara Caramelo';
+    $$('.menubar-app').forEach(el => { el.textContent = name; });
+    const startName = $('#startName');
+    if (startName) startName.textContent = who ? who.name : 'Um Cara Caramelo';
+    paintAvatar($('#startAvatar'), who);
+    document.dispatchEvent(new CustomEvent('cos:user', { detail: who }));
+  }
+
+  /* ---------------- Tela de entrada ---------------- */
+  const login = $('#bootLogin');
+  const loginForm = $('#loginForm');
+  const loginInput = $('#loginInput');
+  const loginGo = $('#loginGo');
+  let entering = false;
+  async function showLogin() {
+    if (!login) { desktopOn(); return; }
+    $('#bootSplash').hidden = true;
+    login.hidden = false;
+    entering = false;
+    loginGo.classList.remove('is-on');
+    const who = (await labUser()) || savedUser();
+    paintAvatar($('#loginAvatar'), who || { seed: store.get('cos.seed', null) || (() => { const s = newSeed(); store.set('cos.seed', s); return s; })() });
+    const known = !!who;
+    $('#loginName').hidden = !known;
+    $('#loginName').textContent = who ? who.name : '';
+    $('#loginChange').hidden = !known || who.lab;
+    $('#loginLab').hidden = !(who && who.lab);
+    loginInput.hidden = known;
+    loginInput.value = '';
+    login.dataset.who = known ? JSON.stringify(who) : '';
+    (known ? loginGo : loginInput).focus({ preventScroll: true });
+  }
+  function typedUser() {
+    const name = loginInput.value.trim().replace(/\s+/g, ' ').slice(0, 24);
+    return name ? { name, seed: store.get('cos.seed', null) || newSeed(), lab: false } : null;
+  }
+  loginInput && loginInput.addEventListener('input', () => { loginForm.classList.remove('is-error'); });
+  $('#loginChange') && $('#loginChange').addEventListener('click', () => {
+    store.set(USER_KEY, null);
+    login.dataset.who = '';
+    $('#loginName').hidden = true;
+    $('#loginChange').hidden = true;
+    loginInput.hidden = false;
+    loginInput.focus();
+  });
+  loginForm && loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    if (entering) return;
+    const who = login.dataset.who ? JSON.parse(login.dataset.who) : typedUser();
+    if (!who) {
+      loginForm.classList.add('is-error');
+      loginInput.focus();
+      return;
+    }
+    entering = true;
+    // Tela cheia precisa sair direto do clique, antes de qualquer espera.
+    const root = document.documentElement;
+    if (root.requestFullscreen && !document.fullscreenElement) root.requestFullscreen({ navigationUI: 'hide' }).catch(() => {});
+    if (!who.lab) { store.set(USER_KEY, { name: who.name, seed: who.seed }); store.set('cos.seed', who.seed); }
+    applyUser(who);
+    loginGo.classList.add('is-on');
+    setTimeout(desktopOn, reduced ? 0 : 650);
+  });
+
   /* ---------------- Boot ---------------- */
   const boot = $('#boot');
   const os = $('#os');
@@ -949,11 +1349,14 @@
   function powerOn() {
     if (booting) return;
     booting = true;
+    const splash = $('#bootSplash');
+    if (splash) splash.hidden = false;
+    if (login) login.hidden = true;
     const fill = $('#bootFill'), pct = $('#bootPct'), status = $('#bootStatus'), bar = $('#bootBar');
     const total = 2600;
     const t0 = performance.now();
     const safetyTimer = setTimeout(() => {
-      if (os && !os.classList.contains('is-on')) desktopOn();
+      if (os && !os.classList.contains('is-on') && login && login.hidden) showLogin();
     }, total + 1000);
 
     const frameFn = now => {
@@ -968,12 +1371,12 @@
           requestAnimationFrame(frameFn);
         } else {
           clearTimeout(safetyTimer);
-          setTimeout(desktopOn, 450);
+          setTimeout(showLogin, 450);
         }
       } catch (err) {
         console.error('Boot animation error:', err);
         clearTimeout(safetyTimer);
-        desktopOn();
+        showLogin();
       }
     };
     requestAnimationFrame(frameFn);
@@ -1026,13 +1429,20 @@
   }
   const btnRestart = $('#btnRestart');
   if (btnRestart) btnRestart.addEventListener('click', restart);
+  const btnSwitchUser = $('#btnSwitchUser');
+  if (btnSwitchUser) btnSwitchUser.addEventListener('click', () => { store.set(USER_KEY, null); applyUser(null); restart(); });
 
   function init() {
     const params = new URLSearchParams(location.search);
-    if (reduced || params.get('boot') === 'off') {
+    applyUser(savedUser());
+    labUser().then(u => { if (u) applyUser(u); }).catch(() => {});
+    if (params.get('boot') === 'off') {
       if (boot) boot.hidden = true;
       booting = true;
       desktopOn();
+    } else if (reduced) {
+      booting = true;
+      showLogin();
     } else {
       powerOn();
     }

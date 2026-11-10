@@ -11,7 +11,7 @@
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Um Cara Caramelo — Estúdio criativo"><meta name="twitter:description" content="Conteúdo e experiências digitais com direção, estratégia e personalidade."><meta name="twitter:image" content="https://www.umcaracaramelo.com.br/assets/images/video-posters/work-02.webp">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.umcaracaramelo.com.br/#studio","name":"Um Cara Caramelo","url":"https://www.umcaracaramelo.com.br/","logo":"https://www.umcaracaramelo.com.br/assets/icons/caramelo-mark.svg","description":"Estúdio criativo de direção de conteúdo e experiências digitais."},{"@type":"WebSite","@id":"https://www.umcaracaramelo.com.br/#website","url":"https://www.umcaracaramelo.com.br/","name":"Um Cara Caramelo","inLanguage":"pt-BR","publisher":{"@id":"https://www.umcaracaramelo.com.br/#studio"}}]}</script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="preload" href="/assets/images/caramelo-os/hero-poster.jpg" as="image">
+<link rel="preload" href="/assets/images/caramelo-os/fundo-caramelo.webp" as="image">
 <link rel="stylesheet" href="/fonts.css">
 <link rel="stylesheet" href="/os/caramelo-os.css">
 <link rel="stylesheet" href="/apple/tokens.css">
@@ -57,12 +57,33 @@
       </div>
       <span class="boot-pct" id="bootPct">0%</span>
     </div>
+
+    <!-- Entrada: foto, nome e o interruptor para iniciar -->
+    <div class="boot-login" id="bootLogin" hidden>
+      <div class="login-avatar" id="loginAvatar"></div>
+      <p class="login-name" id="loginName" hidden></p>
+      <p class="login-lab" id="loginLab" hidden>Conectado pelo LAB</p>
+      <form class="login-form" id="loginForm" novalidate>
+        <label class="sr-only" for="loginInput">Seu nome</label>
+        <input class="login-input" id="loginInput" maxlength="24" placeholder="Seu nome" autocomplete="nickname" spellcheck="false">
+        <p class="login-error" role="alert">Escreva seu nome para entrar.</p>
+        <button type="submit" class="login-switch" id="loginGo" aria-label="Iniciar o sistema">
+          <span class="sw-on" aria-hidden="true">ON</span>
+          <span class="sw-label" aria-hidden="true">Iniciar o sistema</span>
+          <span class="sw-glow" aria-hidden="true"></span>
+          <span class="sw-knob" aria-hidden="true"><span class="sw-dots"></span><span class="sw-lens"></span></span>
+        </button>
+        <button type="button" class="login-change" id="loginChange" hidden>Não é você? Trocar nome</button>
+      </form>
+      <p class="login-hint">O sistema abre em tela cheia. Aperte Esc para sair.</p>
+    </div>
   </div>
 
   <!-- ===== Desktop ===== -->
   <div class="os" id="os" inert>
     <div class="wallpaper" aria-hidden="true">
-      <video src="/assets/videos/caramelo-os-hero.mp4" poster="/assets/images/caramelo-os/hero-poster.jpg" width="1920" height="1080" autoplay muted loop playsinline preload="auto" disablepictureinpicture tabindex="-1"></video>
+      <img src="/assets/images/caramelo-os/fundo-caramelo.webp" alt="" width="1920" height="1080" decoding="async">
+      <video src="/assets/videos/caramelo-os-hero.mp4" poster="/assets/images/caramelo-os/hero-poster.jpg" width="1920" height="1080" muted loop playsinline preload="none" disablepictureinpicture tabindex="-1" hidden></video>
     </div>
     <div class="crt" aria-hidden="true"></div>
     <!-- Barra de menus (macOS) -->
@@ -109,9 +130,9 @@
     <!-- Menu Iniciar -->
     <nav class="start-menu" id="startMenu" aria-label="Menu Iniciar" hidden>
       <div class="start-head">
-        <svg class="start-avatar" aria-hidden="true"><use href="#i-isotipo"/></svg>
+        <span class="start-avatar" id="startAvatar" aria-hidden="true"></span>
         <div>
-          <strong>Um Cara Caramelo</strong>
+          <strong id="startName">Um Cara Caramelo</strong>
           <small>Estúdio criativo · CarameloOS</small>
         </div>
       </div>
@@ -128,6 +149,7 @@
         <li><button type="button" data-open="scraps"><svg><use href="#i-orkut"/></svg>Orkut — scraps</button></li>
         <li class="sep"><a href="/library/home" target="_blank" rel="noopener"><svg><use href="#i-link"/></svg>Entrar no LAB</a></li>
         <li><a href="/estudio" target="_blank" rel="noopener"><svg><use href="#i-link"/></svg>Versão clássica do site</a></li>
+        <li><button type="button" id="btnSwitchUser"><svg><use href="#i-link"/></svg>Trocar usuário</button></li>
         <li><button type="button" id="btnRestart"><svg><use href="#i-power"/></svg>Reiniciar CarameloOS</button></li>
       </ul>
       <p class="start-foot">CarameloOS</p>

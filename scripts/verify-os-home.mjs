@@ -122,14 +122,22 @@ try {
   check('boot screen starts automatically with desktop inert', boot0.booting && boot0.inert, boot0);
   check('one semantic H1 and the studio title', boot0.h1 === 1 && /Um Cara Caramelo/.test(boot0.title), boot0);
   await screenshot('os-boot.png');
-  check('desktop turns on after the loading bar', await waitFor(`document.querySelector('#os').classList.contains('is-on') && !document.querySelector('#os').inert`, 6000));
+  check('the loading bar ends on the sign-in screen with a unique caramelo, a name field and the start switch', await waitFor(`!document.querySelector('#bootLogin').hidden && !document.querySelector('#loginInput').hidden && !!document.querySelector('#loginAvatar svg') && !!document.querySelector('#loginGo')`, 7000));
+  await screenshot('os-login.png');
+  await click('#loginGo');
+  check('starting without a name asks for one', await waitFor(`document.querySelector('#loginForm').classList.contains('is-error') && document.querySelector('#os').inert`, 1500));
+  await evaluate(`(() => { const i = document.querySelector('#loginInput'); i.value = 'Ana QA'; i.dispatchEvent(new Event('input', { bubbles: true })); })()`);
+  await click('#loginGo');
+  check('desktop turns on after the start switch', await waitFor(`document.querySelector('#os').classList.contains('is-on') && !document.querySelector('#os').inert`, 4000));
+  const signed = await evaluate(`({ menubar: document.querySelector('.menubar-app').textContent, start: document.querySelector('#startName').textContent, saved: JSON.parse(localStorage.getItem('cos.user') || 'null') })`);
+  check('the visitor name replaces "Um Cara Caramelo" in the top bar and is saved in the browser', signed.menubar === 'Ana QA' && signed.start === 'Ana QA' && signed.saved?.name === 'Ana QA' && !!signed.saved?.seed, signed);
   await sleep(900);
   const first = await openWins();
   check('first visit opens only Leia-me (no visitor profile, no walking pet)', first.join() === 'leiame', first);
 
   /* ---- 2. Fundo em vídeo, post-it e escala ---- */
-  const look = await evaluate(`(() => { const v = document.querySelector('.wallpaper video'); return { video: !!v && v.muted && v.loop && !!v.poster, pet: !!document.querySelector('#pet'), profile: !!document.querySelector('#app-perfil'), postit: document.querySelector('.postit p').textContent, zoom: getComputedStyle(document.documentElement).zoom, scale: getComputedStyle(document.documentElement).getPropertyValue('--ui-zoom').trim() }; })()`);
-  check('desktop background is the looping hero video and the pet/profile are gone', look.video && !look.pet && !look.profile, look);
+  const look = await evaluate(`(() => { const v = document.querySelector('.wallpaper video'), img = document.querySelector('.wallpaper img'); return { video: !!v && v.muted && v.loop && !!v.poster, shown: img && !img.hidden && img.naturalWidth > 0 ? 'foto' : (!v.hidden ? 'video' : 'nenhum'), pet: !!document.querySelector('#pet'), profile: !!document.querySelector('#app-perfil'), postit: document.querySelector('.postit p').textContent, zoom: getComputedStyle(document.documentElement).zoom, scale: getComputedStyle(document.documentElement).getPropertyValue('--ui-zoom').trim() }; })()`);
+  check('desktop background shows the photo (or the looping video while it is missing) and the pet/profile are gone', look.video && look.shown !== 'nenhum' && !look.pet && !look.profile, look);
   check('post-it asks the audience about their landing page', /landing page/i.test(look.postit), look.postit);
   check('large screens render at 80% scale', look.zoom === '0.8' && look.scale === '0.8', look);
   await screenshot('os-desktop.png');
@@ -252,6 +260,35 @@ try {
   await sleep(150);
   check('Home goes back to the scrap wall', await evaluate(`!document.querySelector('#kutViewHome').hidden && document.querySelector('#kutViewComm').hidden`));
 
+  /* ---- 8b. Ícones livres, menu do botão direito e redimensionar ---- */
+  await evaluate(`document.querySelectorAll('.win [data-act="close"]').forEach(b => b.click())`);
+  await waitFor(`document.querySelectorAll('.win').length === 0`, 3000);
+  const ic = await center('.icon[data-open="lixeira"]');
+  await mouse('mousePressed', ic.x, ic.y);
+  await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: ic.x + 30, y: ic.y + 10, button: 'left', buttons: 1 });
+  await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: ic.x + 400, y: ic.y + 150, button: 'left', buttons: 1 });
+  await mouse('mouseReleased', ic.x + 400, ic.y + 150);
+  await sleep(150);
+  const iconMoved = await evaluate(`({ free: document.querySelector('.icons').classList.contains('is-free'), saved: JSON.parse(localStorage.getItem('cos.icons') || 'null')?.lixeira, opened: document.querySelectorAll('.win').length })`);
+  check('an icon can be dragged anywhere, stays there and does not open on drop', iconMoved.free && iconMoved.saved && iconMoved.saved.x > 200 && iconMoved.opened === 0, iconMoved);
+  const spot = await evaluate(`(() => { const r = document.querySelector('#desktop').getBoundingClientRect(); const z = window.__uiScale ? window.__uiScale.zoom : 1; return { x: (r.left + r.width * 0.55) * z, y: (r.top + 60) * z }; })()`);
+  await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: spot.x, y: spot.y, button: 'right', buttons: 2, clickCount: 1 });
+  await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: spot.x, y: spot.y, button: 'right', buttons: 0, clickCount: 1 });
+  await sleep(150);
+  const ctxMenu = await evaluate(`({ open: !document.querySelector('.ctx-menu').hidden, items: [...document.querySelectorAll('.ctx-menu .ctx-item')].map(b => b.textContent) })`);
+  check('right click on the desktop opens a Mac-style menu', ctxMenu.open && ctxMenu.items.includes('Organizar ícones') && ctxMenu.items.includes('Reiniciar…'), ctxMenu);
+  await evaluate(`[...document.querySelectorAll('.ctx-menu .ctx-item')].find(b => b.textContent === 'Organizar ícones').click()`);
+  check('"Organizar ícones" puts the icons back in the grid', await evaluate(`!document.querySelector('.icons').classList.contains('is-free') && localStorage.getItem('cos.icons') === 'null' && document.querySelector('.ctx-menu').hidden`));
+  await click('.icon[data-open="leiame"]', 2);
+  await sleep(300);
+  const rs0 = await evaluate(`(() => { const w = document.querySelector('.win[data-app="leiame"]'); return { w: w.offsetWidth, h: w.offsetHeight }; })()`);
+  const corner = await center('.win[data-app="leiame"] .win-rs-se');
+  await mouse('mousePressed', corner.x, corner.y);
+  await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: corner.x - 80, y: corner.y - 60, button: 'left', buttons: 1 });
+  await mouse('mouseReleased', corner.x - 80, corner.y - 60);
+  const rs1 = await evaluate(`(() => { const w = document.querySelector('.win[data-app="leiame"]'); return { w: w.offsetWidth, h: w.offsetHeight }; })()`);
+  check('windows resize from their edges and corners', rs1.w < rs0.w - 50 && rs1.h < rs0.h - 30, { rs0, rs1 });
+
   /* ---- 9. Link direto, reinício e movimento reduzido ---- */
   await send('Page.navigate', { url: `${baseUrl}?boot=off#como-trabalho` });
   await waitFor(`document.querySelector('#os').classList.contains('is-on')`, 4000);
@@ -267,7 +304,7 @@ try {
   await send('Page.navigate', { url: baseUrl });
   await waitFor(`document.readyState === 'complete'`);
   await sleep(300);
-  check('reduced motion skips the boot animation', await evaluate(`document.querySelector('#boot').hidden && document.querySelector('#os').classList.contains('is-on')`));
+  check('reduced motion skips the loading bar and goes straight to sign-in with the saved name', await evaluate(`!document.querySelector('#bootLogin').hidden && document.querySelector('#bootSplash').hidden && document.querySelector('#loginName').textContent === 'Ana QA' && document.querySelector('#loginInput').hidden`));
   await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
 
   /* ---- 10. Celular ---- */
