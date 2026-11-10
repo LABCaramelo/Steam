@@ -62,7 +62,7 @@ export const ClientPortalView: React.FC<Props> = ({ token, repo }) => {
 
   if (loading) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#101014", color: "#fff4e8" }}>
+      <div style={{ minHeight: "calc(100vh / var(--ui-zoom, 1))", display: "flex", alignItems: "center", justifyContent: "center", background: "#101014", color: "#fff4e8" }}>
         <p>Carregando portal de aprovação seguro…</p>
       </div>
     );
@@ -70,7 +70,7 @@ export const ClientPortalView: React.FC<Props> = ({ token, repo }) => {
 
   if (error || !portalData) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#101014", color: "#fff4e8", flexDirection: "column" }}>
+      <div style={{ minHeight: "calc(100vh / var(--ui-zoom, 1))", display: "flex", alignItems: "center", justifyContent: "center", background: "#101014", color: "#fff4e8", flexDirection: "column" }}>
         <h2>Link não encontrado ou expirado</h2>
         <p style={{ opacity: 0.6 }}>{error || "Peça ao seu Head de Conteúdo um novo link de aprovação."}</p>
       </div>
@@ -80,7 +80,7 @@ export const ClientPortalView: React.FC<Props> = ({ token, repo }) => {
   const { client, workspace, deliverables } = portalData;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#101014", color: "#fff4e8", fontFamily: "Inter, sans-serif", padding: "24px 16px" }}>
+    <div style={{ minHeight: "calc(100vh / var(--ui-zoom, 1))", background: "#101014", color: "#fff4e8", fontFamily: "Inter, sans-serif", padding: "24px 16px" }}>
       <div style={{ maxWidth: 840, margin: "0 auto", display: "flex", flexDirection: "column", gap: 24 }}>
         {/* Header do Portal */}
         <header

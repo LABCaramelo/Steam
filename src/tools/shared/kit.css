@@ -111,7 +111,7 @@ a {
 
 .tk-gate__title {
   margin: 0;
-  font: 900 clamp(28px, 5vw, 40px) / 1 var(--caramelo-font-display);
+  font: 900 clamp(28px, calc(5vw / var(--ui-zoom, 1)), 40px) / 1 var(--caramelo-font-display);
   letter-spacing: -0.05em;
 }
 
@@ -399,7 +399,7 @@ a {
   display: grid;
   /* Ancorado no topo: a janela cresce para baixo sem mudar de lugar enquanto o conteúdo muda. */
   place-items: start center;
-  padding: max(16px, 7vh) 16px 16px;
+  padding: max(16px, calc(7vh / var(--ui-zoom, 1))) 16px 16px;
   overflow-y: auto;
   background: rgb(10 10 13 / 0.62);
   -webkit-backdrop-filter: blur(6px);
@@ -408,7 +408,7 @@ a {
 
 .tk-modal {
   position: relative;
-  max-height: calc(100vh - max(16px, 7vh) - 16px);
+  max-height: calc(calc(100vh / var(--ui-zoom, 1)) - max(16px, calc(7vh / var(--ui-zoom, 1))) - 16px);
   display: flex;
   flex-direction: column;
   padding: 24px 24px 20px;
@@ -467,7 +467,7 @@ a {
 }
 
 .tk-toast {
-  max-width: min(380px, calc(100vw - 32px));
+  max-width: min(380px, calc(calc(100vw / var(--ui-zoom, 1)) - 32px));
   padding: 11px 14px;
   font-size: 13px;
   line-height: 1.45;

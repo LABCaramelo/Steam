@@ -32,7 +32,7 @@
 .hero h1 {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: clamp(32px, 4.4vw, 52px);
+  font-size: clamp(32px, calc(4.4vw / var(--ui-zoom, 1)), 52px);
   line-height: 0.98;
   letter-spacing: -0.065em;
   margin: 0 0 10px;

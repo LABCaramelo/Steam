@@ -79,7 +79,7 @@ body {
 /* Base Shell */
 .mc-shell {
   display: flex;
-  min-height: 100vh;
+  min-height: calc(100vh / var(--ui-zoom, 1));
   background-color: #0c0e14 !important;
   color: #fff4e8 !important;
   font-family: var(--mc-font-sans);
@@ -95,7 +95,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100vh;
+  height: calc(100vh / var(--ui-zoom, 1));
   position: sticky;
   top: 0;
   z-index: 40;
@@ -274,7 +274,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh / var(--ui-zoom, 1));
   overflow-y: auto;
   position: relative;
   background-color: #0c0e14 !important;
@@ -733,7 +733,7 @@ button.mc-btn--secondary:hover {
   border-radius: var(--mc-radius-lg);
   width: 100%;
   max-width: 600px;
-  max-height: 90vh;
+  max-height: calc(90vh / var(--ui-zoom, 1));
   display: flex;
   flex-direction: column;
   overflow: hidden;

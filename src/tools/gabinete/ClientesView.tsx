@@ -147,7 +147,7 @@ export const ClientesView: React.FC<Props> = ({
           </div>
 
           {/* Lista */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: "65vh", overflowY: "auto" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: "calc(65vh / var(--ui-zoom, 1))", overflowY: "auto" }}>
             {filteredClients.length === 0 ? (
               <div style={{ textAlign: "center", padding: "30px 12px", color: "var(--mc-text-muted)", fontSize: 13 }}>
                 <p style={{ margin: 0 }}>Nenhum cliente encontrado.</p>

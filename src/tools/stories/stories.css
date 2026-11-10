@@ -22,7 +22,7 @@ html, body.stories-body {
   overflow: hidden;
   height: 100%;
   width: 100%;
-  max-width: 100vw;
+  max-width: calc(100vw / var(--ui-zoom, 1));
   position: fixed;
   inset: 0;
   -webkit-font-smoothing: antialiased;
@@ -36,7 +36,7 @@ html, body.stories-body {
 #root {
   width: 100%;
   height: 100%;
-  max-width: 100vw;
+  max-width: calc(100vw / var(--ui-zoom, 1));
   overflow: hidden;
   position: fixed;
   inset: 0;
@@ -61,7 +61,7 @@ html, body.stories-body {
   inset: 0;
   width: 100%;
   height: 100%;
-  max-width: 100vw;
+  max-width: calc(100vw / var(--ui-zoom, 1));
   background: #000000;
   overflow: hidden;
   display: block;
@@ -224,7 +224,7 @@ html, body.stories-body {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  max-width: 90vw;
+  max-width: calc(90vw / var(--ui-zoom, 1));
   background: rgba(20, 20, 26, 0.95);
   backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -301,7 +301,7 @@ html, body.stories-body {
   background: #14141A;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 28px 28px 0 0;
-  max-height: 85dvh;
+  max-height: calc(85dvh / var(--ui-zoom, 1));
   display: flex;
   flex-direction: column;
   box-shadow: 0 -15px 50px rgba(0, 0, 0, 0.8);
@@ -1489,8 +1489,8 @@ html, body.stories-body {
 .figma-board-root {
   display: flex;
   flex-direction: column;
-  width: 100vw;
-  height: 100dvh;
+  width: calc(100vw / var(--ui-zoom, 1));
+  height: calc(100dvh / var(--ui-zoom, 1));
   background-color: #121217;
   background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1.2px, transparent 1.2px);
   background-size: 24px 24px;
@@ -2574,8 +2574,8 @@ html, body.stories-body {
 }
 
 .drawing-render-canvas {
-  max-width: 90vw;
-  max-height: 70vh;
+  max-width: calc(90vw / var(--ui-zoom, 1));
+  max-height: calc(70vh / var(--ui-zoom, 1));
   aspect-ratio: 9 / 16;
   touch-action: none;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);

@@ -83,7 +83,8 @@ try {
   };
   const waitFor = async (expression, ms = 6000) => {
     const t0 = Date.now();
-    while (Date.now() - t0 < ms) { if (await evaluate(expression)) return true; await sleep(100); }
+    // Durante a navegação o elemento pode ainda não existir: erro conta como "ainda não".
+    while (Date.now() - t0 < ms) { if (await evaluate(expression).catch(() => false)) return true; await sleep(100); }
     return false;
   };
   const screenshot = async name => {
@@ -94,7 +95,8 @@ try {
     await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile });
     await send('Emulation.setTouchEmulationEnabled', mobile ? { enabled: true, maxTouchPoints: 1 } : { enabled: false });
   };
-  const center = async selector => evaluate(`(() => { const el = document.querySelector(${JSON.stringify(selector)}); if (!el) return null; const r = el.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; })()`);
+  // getBoundingClientRect vem em px de layout (public/ui-scale.js); o clique do CDP espera px de tela.
+  const center = async selector => evaluate(`(() => { const el = document.querySelector(${JSON.stringify(selector)}); if (!el) return null; const r = el.getBoundingClientRect(); const z = window.__uiScale ? window.__uiScale.zoom : 1; return { x: (r.x + r.width / 2) * z, y: (r.y + r.height / 2) * z }; })()`);
   const mouse = async (type, x, y, clickCount = 1) => send('Input.dispatchMouseEvent', { type, x, y, button: 'left', buttons: type === 'mousePressed' ? 1 : 0, clickCount });
   const click = async (selector, count = 1) => {
     const p = await center(selector);
@@ -123,15 +125,13 @@ try {
   check('desktop turns on after the loading bar', await waitFor(`document.querySelector('#os').classList.contains('is-on') && !document.querySelector('#os').inert`, 6000));
   await sleep(900);
   const first = await openWins();
-  check('first visit opens Leia-me and the visitor profile', first.includes('leiame') && first.includes('perfil'), first);
+  check('first visit opens only Leia-me (no visitor profile, no walking pet)', first.join() === 'leiame', first);
 
-  /* ---- 2. Perfil ---- */
-  await evaluate(`(() => { const i = document.querySelector('#guestName'); i.value = 'QA'; i.dispatchEvent(new Event('input', { bubbles: true })); })()`);
-  await click('#coatGrid [data-coat="pretinho"]');
-  await click('#btnSaveProfile');
-  await sleep(400);
-  const prof = await evaluate(`({ stored: localStorage.getItem('cos96.profile'), start: document.querySelector('#startName').textContent, hello: document.querySelector('[data-hello]').textContent, pet: document.querySelectorAll('#petSprite rect').length, open: [...document.querySelectorAll('.win')].map(w => w.dataset.app) })`);
-  check('profile saves name and coat, updates greeting and pet', /"QA"/.test(prof.stored) && /pretinho/.test(prof.stored) && prof.start === 'QA' && /QA/.test(prof.hello) && prof.pet > 20 && !prof.open.includes('perfil'), prof);
+  /* ---- 2. Fundo em vídeo, post-it e escala ---- */
+  const look = await evaluate(`(() => { const v = document.querySelector('.wallpaper video'); return { video: !!v && v.muted && v.loop && !!v.poster, pet: !!document.querySelector('#pet'), profile: !!document.querySelector('#app-perfil'), postit: document.querySelector('.postit p').textContent, zoom: getComputedStyle(document.documentElement).zoom, scale: getComputedStyle(document.documentElement).getPropertyValue('--ui-zoom').trim() }; })()`);
+  check('desktop background is the looping hero video and the pet/profile are gone', look.video && !look.pet && !look.profile, look);
+  check('post-it asks the audience about their landing page', /landing page/i.test(look.postit), look.postit);
+  check('large screens render at 80% scale', look.zoom === '0.8' && look.scale === '0.8', look);
   await screenshot('os-desktop.png');
 
   /* ---- 3. Cada ícone abre seu programa ---- */
@@ -159,7 +159,9 @@ try {
   await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: t.x + 120, y: t.y + 70, button: 'left', buttons: 1 });
   await mouse('mouseReleased', t.x + 120, t.y + 70);
   const after = await evaluate(`(() => { const w = document.querySelector('.win[data-app="sobre"]'); return { x: w.offsetLeft, y: w.offsetTop }; })()`);
-  check('window drags by its title bar', after.x - before.x === 120 && after.y - before.y === 70, { before, after });
+  // O mouse anda em px de tela; com a escala de 80% a janela anda o equivalente em px de layout.
+  const dragZoom = await evaluate(`window.__uiScale ? window.__uiScale.zoom : 1`);
+  check('window drags by its title bar, following the mouse at any scale', Math.abs(after.x - before.x - 120 / dragZoom) <= 1 && Math.abs(after.y - before.y - 70 / dragZoom) <= 1, { before, after, dragZoom });
   await click('.win[data-app="sobre"] [data-act="max"]');
   const maxed = await evaluate(`document.querySelector('.win[data-app="sobre"]').getBoundingClientRect().width >= innerWidth - 2`);
   await click('.win[data-app="sobre"] [data-act="max"]');
@@ -231,13 +233,11 @@ try {
   const running = await evaluate(`document.querySelector('#gameOverlay').hidden`);
   check('game starts and ends when the dog hits the wall', running && await waitFor(`!document.querySelector('#gameOverlay').hidden && /Fim de jogo/.test(document.querySelector('#gameOverlay').textContent)`, 5000), { running });
 
-  /* ---- 8. Pet ---- */
-  const x0 = await evaluate(`document.querySelector('#pet').style.transform`);
-  await sleep(1200);
-  const x1 = await evaluate(`document.querySelector('#pet').style.transform`);
-  await click('#pet');
-  await sleep(150);
-  check('pet walks and answers a click with a speech bubble', await evaluate(`document.querySelector('#petBubble').classList.contains('is-on') && document.querySelector('#petBubble').textContent.length > 1`), { x0, x1 });
+  /* ---- 8. Carakut: nome próprio no lugar do perfil ---- */
+  await click('.icon[data-open="scraps"]');
+  await sleep(300);
+  await evaluate(`(() => { const i = document.querySelector('#kutName'); i.value = 'QA'; i.dispatchEvent(new Event('input', { bubbles: true })); })()`);
+  check('Carakut asks for a name and paints an avatar from it', await evaluate(`document.querySelectorAll('#kutAvatar rect').length > 20 && !!document.querySelector('#kutName')`));
 
   /* ---- 9. Link direto, reinício e movimento reduzido ---- */
   await send('Page.navigate', { url: `${baseUrl}?boot=off#como-trabalho` });

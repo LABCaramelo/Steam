@@ -41,7 +41,7 @@
 .cos-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(100vh / var(--ui-zoom, 1));
   background-color: var(--cos-bg);
   color: var(--cos-text-primary);
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -493,7 +493,7 @@
   border-radius: var(--cos-radius-lg);
   max-width: 650px;
   width: 100%;
-  max-height: 90vh;
+  max-height: calc(90vh / var(--ui-zoom, 1));
   overflow-y: auto;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
   display: flex;

@@ -287,7 +287,7 @@ a {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   padding: 4px;
-  max-height: 70vh;
+  max-height: calc(70vh / var(--ui-zoom, 1));
   overflow: auto;
   animation: cm-menu-in var(--quick) var(--cm-ease-drawer);
 }
@@ -364,7 +364,7 @@ a {
   overflow: hidden;
   animation: cm-modal-in var(--quick) var(--cm-ease-drawer);
   width: min(760px, 100%);
-  max-height: calc(100vh - 48px);
+  max-height: calc(calc(100vh / var(--ui-zoom, 1)) - 48px);
   display: flex;
   flex-direction: column;
 }

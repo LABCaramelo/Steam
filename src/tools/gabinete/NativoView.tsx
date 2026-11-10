@@ -221,7 +221,7 @@ export const NativoView: React.FC<Props> = ({
               </p>
             </div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 14, overflowY: "auto", maxHeight: "65vh" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, overflowY: "auto", maxHeight: "calc(65vh / var(--ui-zoom, 1))" }}>
               <h4 style={{ margin: 0, color: "var(--mc-caramel)", fontSize: 15 }}>{generatedResult.title}</h4>
 
               {generatedResult.type === "carrossel" && (

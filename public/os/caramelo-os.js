@@ -10,6 +10,8 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* sem storage */ } }
   };
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Papel de parede em vídeo: parado em quem pede menos movimento.
+  if (reduced) document.querySelector('.wallpaper video')?.pause();
   const isCompact = () => matchMedia('(max-width: 760px)').matches;
   const isCoarse = () => matchMedia('(pointer: coarse)').matches;
 
@@ -27,7 +29,6 @@
     recursos:   { title: 'Aprender & Recursos', icon: 'i-folder', w: 620, h: 400 },
     lixeira:    { title: 'Lixeira', icon: 'i-trash', w: 620, h: 470 },
     jogo:       { title: 'Pega a Bolinha', icon: 'i-game', w: 420, h: 530 },
-    perfil:     { title: 'Perfil de visitante', icon: 'i-dog', w: 500, h: 620 },
     scraps:     { title: 'Carakut — Página de recados', task: 'Carakut', icon: 'i-kut', w: 900, h: 640 }
   };
 
@@ -41,7 +42,8 @@
   let activeId = null;
   const hooks = { open: {}, close: {} };
 
-  function areaRect() { return layer.getBoundingClientRect(); }
+  // Tamanho da área das janelas em px de layout, os mesmos de style.left/top.
+  function areaRect() { return { width: layer.offsetWidth, height: layer.offsetHeight }; }
 
   function openApp(id, opts = {}) {
     const app = APPS[id];
@@ -328,74 +330,13 @@
   }
   const coatById = id => COATS.find(c => c.id === id) || COATS[0];
 
-  /* ---------------- Perfil ---------------- */
-  let profile = store.get('cos96.profile', null);
-  const guest = () => ({ name: profile?.name || 'Visitante', coat: coatById(profile?.coat) });
-
-  function applyProfile() {
-    const g = guest();
-    const startName = $('#startName');
-    if (startName) startName.textContent = g.name;
-    $$('[data-guest-name]').forEach(el => { el.textContent = g.name; });
-    const startAvatar = $('#startAvatar');
-    if (startAvatar) dogSVG(startAvatar, g.coat);
-    const kutAvatar = $('#kutAvatar');
-    if (kutAvatar) dogSVG(kutAvatar, g.coat);
-    const petSprite = $('#petSprite');
-    if (petSprite) dogSVG(petSprite, g.coat, true);
-    const hello = $('[data-hello]');
-    if (hello) hello.textContent = profile?.name ? `Oi, ${profile.name}! Que bom te ver por aqui.` : 'Oi! Que bom que você ligou o computador.';
-    if (pet) pet.setAttribute('aria-label', `${g.coat.name === 'Caramelo' ? 'Caramelo' : `Cachorro ${g.coat.name.toLowerCase()}`}: clique para fazer carinho`);
-  }
-
-  const coatGrid = $('#coatGrid');
-  coatGrid.setAttribute('role', 'radiogroup');
-  let draftCoat = guest().coat.id;
-  COATS.forEach(coat => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'coat';
-    b.setAttribute('role', 'radio');
-    b.dataset.coat = coat.id;
-    b.innerHTML = '<svg aria-hidden="true"></svg><span></span>';
-    b.lastElementChild.textContent = coat.name;
-    dogSVG(b.firstElementChild, coat);
-    b.addEventListener('click', () => { draftCoat = coat.id; renderDraft(); });
-    b.addEventListener('keydown', e => {
-      const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
-      if (!step) return;
-      e.preventDefault();
-      const i = COATS.findIndex(c => c.id === coat.id);
-      draftCoat = COATS[(i + step + COATS.length) % COATS.length].id;
-      renderDraft();
-      $(`[data-coat="${draftCoat}"]`, coatGrid).focus();
-    });
-    coatGrid.append(b);
-  });
-  const nameInput = $('#guestName');
-  function renderDraft() {
-    $$('.coat', coatGrid).forEach(b => {
-      const on = b.dataset.coat === draftCoat;
-      b.setAttribute('aria-checked', String(on));
-      b.tabIndex = on ? 0 : -1;
-    });
-    dogSVG($('#passAvatar'), coatById(draftCoat));
-    $('#passName').textContent = nameInput.value.trim() || 'Visitante';
-  }
-  nameInput.addEventListener('input', renderDraft);
-  nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') $('#btnSaveProfile').click(); });
-  hooks.open.perfil = () => {
-    draftCoat = guest().coat.id;
-    nameInput.value = profile?.name || '';
-    renderDraft();
+  /* ---------------- Nome de quem escreve no Carakut ---------------- */
+  // Não há perfil de visitante: o nome vem do campo do Carakut e o caramelo sai do nome.
+  const coatForName = name => {
+    let h = 0;
+    for (const ch of name.toLowerCase()) h = (h * 31 + ch.codePointAt(0)) >>> 0;
+    return COATS[h % COATS.length];
   };
-  $('#btnSaveProfile').addEventListener('click', () => {
-    profile = { name: nameInput.value.trim().slice(0, 24), coat: draftCoat };
-    store.set('cos96.profile', profile);
-    applyProfile();
-    closeApp('perfil');
-    say(profile.name ? `Oi, ${profile.name}!` : 'Au!');
-  });
 
   /* ---------------- Carakut (scraps) ---------------- */
   // Mural público no Supabase. O navegador só chama as funções de supabase/os-scraps.sql.
@@ -546,11 +487,12 @@
       const text = body.value.trim();
       if (!text) { note('Escreva alguma coisa antes de postar.', true); body.focus(); return; }
       if (/(https?:\/\/|www\.)/i.test(text)) { note('Scraps não aceitam links.', true); return; }
-      const g = guest();
+      const name = kutName.value.trim().replace(/\s+/g, ' ').slice(0, 24) || 'Visitante';
+      store.set('cos96.kutName', name === 'Visitante' ? '' : name);
       send.disabled = true;
       note('Enviando…');
       try {
-        const s = await rpc('os_scrap_post', { p_name: g.name, p_coat: g.coat.id, p_body: text });
+        const s = await rpc('os_scrap_post', { p_name: name, p_coat: coatForName(name).id, p_body: text });
         scraps = [s, ...scraps.filter(x => x.id !== s.id)];
         if (total != null) total += 1;
         renderList();
@@ -559,8 +501,7 @@
         setTimeout(() => fresh?.classList.remove('is-new'), 2500);
         body.value = '';
         updateLeft();
-        note('Scrap enviado! Valeu pela visita.');
-        say(`Au! Valeu pelo scrap${profile?.name ? `, ${profile.name}` : ''}!`);
+        note(`Scrap enviado! Valeu pela visita${name === 'Visitante' ? '' : `, ${name}`}.`);
       } catch (err) {
         note(friendly(err), true);
       } finally {
@@ -580,66 +521,18 @@
       } catch { photosCounted = false; }
     }
 
+    const kutName = $('#kutName');
+    const paintAvatar = () => dogSVG($('#kutAvatar'), coatForName(kutName.value.trim() || 'Visitante'));
+    kutName.value = store.get('cos96.kutName', '') || '';
+    kutName.addEventListener('input', paintAvatar);
+    paintAvatar();
+
     hooks.open.scraps = () => {
-      dogSVG($('#kutAvatar'), guest().coat);
       countPhotos();
       if (!loadedAt || Date.now() - loadedAt > 60000) load();
     };
     updateLeft();
   })();
-
-  /* ---------------- Pet andando ---------------- */
-  const pet = $('#pet');
-  const bubble = $('#petBubble');
-  let px = 140, dir = 1, frame = 0, sitUntil = 0, bubbleTimer = 0;
-  function petBounds() { return Math.max(10, $('#desktop').clientWidth - 70); }
-  function petStep() {
-    const now = Date.now();
-    const sprite = $('#petSprite');
-    const ga = sprite.querySelector('[data-f="a"]');
-    const gb = sprite.querySelector('[data-f="b"]');
-    if (now < sitUntil || reduced) {
-      if (ga && gb) { ga.style.display = ''; gb.style.display = 'none'; }
-      return;
-    }
-    px += dir * 3;
-    const max = petBounds();
-    if (px >= max) { px = max; dir = -1; }
-    if (px <= 10) { px = 10; dir = 1; }
-    if (Math.random() < 0.006) sitUntil = now + 1800 + Math.random() * 2600;
-    else if (Math.random() < 0.004) dir *= -1;
-    frame ^= 1;
-    if (ga && gb) { ga.style.display = frame ? 'none' : ''; gb.style.display = frame ? '' : 'none'; }
-    pet.style.transform = `translateX(${px}px)`;
-    pet.classList.toggle('is-left', dir < 0);
-  }
-  pet.style.transform = `translateX(${px}px)`;
-  let petTimer = 0;
-  function say(text) {
-    bubble.textContent = text;
-    bubble.classList.add('is-on');
-    clearTimeout(bubbleTimer);
-    bubbleTimer = setTimeout(() => bubble.classList.remove('is-on'), 2400);
-  }
-  const LINES = [
-    'Au!',
-    'Au au! Já abriu o Leia-me?',
-    'Carinho aceito.',
-    'Psiu: tem coisa na Lixeira.',
-    'Trabalho bom não deveria parecer comum.',
-    'Joga o Pega a Bolinha comigo?',
-    'Primeiro a intenção. Depois, o jeito de fazer.',
-    'Já passou no LAB?'
-  ];
-  let lineIdx = 0;
-  pet.addEventListener('click', () => {
-    sitUntil = Date.now() + 2600;
-    pet.classList.remove('is-hop');
-    void pet.offsetWidth;
-    pet.classList.add('is-hop');
-    say(lineIdx === 0 && profile?.name ? `Au! Oi, ${profile.name}!` : LINES[lineIdx % LINES.length]);
-    lineIdx++;
-  });
 
   /* ---------------- Assistente de projeto ---------------- */
   (() => {
@@ -765,7 +658,6 @@
   })();
 
   /* ---------------- Contato (WhatsApp) ---------------- */
-  $('#waContact').addEventListener('click', () => say('Au! Te espero no WhatsApp.'));
 
   /* ---------------- Projetos (lista + prévia) ---------------- */
   (() => {
@@ -984,17 +876,13 @@
       os.inert = false;
       os.classList.add('is-on');
     }
-    clearInterval(petTimer);
-    if (!reduced) petTimer = setInterval(petStep, 130);
     openInitial();
   }
 
   function openInitial() {
     const fromHash = hashApp();
     openApp('leiame');
-    if (!profile && !fromHash) setTimeout(() => openApp('perfil'), reduced ? 0 : 500);
     if (fromHash) openApp(fromHash);
-    else setTimeout(() => say(profile?.name ? `Oi, ${profile.name}!` : 'Au! Bem-vindo.'), 900);
   }
 
   function hashApp() {
@@ -1008,7 +896,6 @@
   function restart() {
     closeStart();
     [...openWins.keys()].forEach(id => closeApp(id));
-    clearInterval(petTimer);
     clearTimeout(bootHideTimer);
     if (os) {
       os.inert = true;
@@ -1027,11 +914,6 @@
   if (btnRestart) btnRestart.addEventListener('click', restart);
 
   function init() {
-    try {
-      applyProfile();
-    } catch (e) {
-      console.warn('Falha ao aplicar perfil:', e);
-    }
     const params = new URLSearchParams(location.search);
     if (reduced || params.get('boot') === 'off') {
       if (boot) boot.hidden = true;

@@ -586,7 +586,7 @@ textarea {
   background: rgba(0, 0, 0, 0.7);
 }
 .modal {
-  width: min(440px, calc(100vw - 32px));
+  width: min(440px, calc(calc(100vw / var(--ui-zoom, 1)) - 32px));
   padding: 24px 16px 16px;
   border-radius: 8px;
   background: var(--bg-primary);
@@ -3402,8 +3402,8 @@ a.attachment-file-name:hover {
    Modal de Perfil do Usuário no Chat da Comunidade (Caramelo / Steam / Discord)
    ========================================================================== */
 .modal.dialog.user-profile-card {
-  width: min(460px, calc(100vw - 32px));
-  max-height: 90vh;
+  width: min(460px, calc(calc(100vw / var(--ui-zoom, 1)) - 32px));
+  max-height: calc(90vh / var(--ui-zoom, 1));
   border-radius: 12px;
   background: var(--bg-primary);
   border: 1px solid var(--divider);
@@ -3488,7 +3488,7 @@ a.attachment-file-name:hover {
   flex-direction: column;
   gap: 14px;
   overflow-y: auto;
-  max-height: calc(90vh - 170px);
+  max-height: calc(calc(90vh / var(--ui-zoom, 1)) - 170px);
 }
 
 .user-profile-ident {
@@ -4256,7 +4256,7 @@ a.attachment-file-name:hover {
   padding: 12px;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--divider);
-  max-height: 52vh;
+  max-height: calc(52vh / var(--ui-zoom, 1));
   overflow-y: auto;
 }
 

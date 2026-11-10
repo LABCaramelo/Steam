@@ -614,7 +614,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   font-weight: 600;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
-.toast { position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%); padding: 11px 17px; background: #2c2c2c; color: #fff; border-radius: 8px; box-shadow: var(--shadow); z-index: 2000; max-width: calc(100vw - 32px); }
+.toast { position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%); padding: 11px 17px; background: #2c2c2c; color: #fff; border-radius: 8px; box-shadow: var(--shadow); z-index: 2000; max-width: calc(calc(100vw / var(--ui-zoom, 1)) - 32px); }
 /* Floating Toolbar */
 .toolbar {
   position: absolute;
@@ -915,7 +915,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 }
 .quick-actions-modal {
   width: 520px;
-  max-width: 90vw;
+  max-width: calc(90vw / var(--ui-zoom, 1));
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -971,8 +971,8 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 /* Shortcuts Modal */
 .shortcuts-modal {
   width: 680px;
-  max-width: 92vw;
-  max-height: 82vh;
+  max-width: calc(92vw / var(--ui-zoom, 1));
+  max-height: calc(82vh / var(--ui-zoom, 1));
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -1059,8 +1059,8 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 }
 
 @media (max-width: 1000px) { :root { --panel-width: 220px; } .file-location, .local-badge { display: none; } .app-header { gap: 6px; } }
-@media (max-width: 760px) { :root { --panel-width: 200px; } .right-panel { display: none; } .file-name { max-width: 40vw; } .save-copy { font-size: 10px; padding: 6px 8px; } }
-@media (max-width: 520px) { .left-panel { display: none; } .header-divider { display: none; } .app-header > .icon-btn { display: none; } .file-name { max-width: 48vw; } }
+@media (max-width: 760px) { :root { --panel-width: 200px; } .right-panel { display: none; } .file-name { max-width: calc(40vw / var(--ui-zoom, 1)); } .save-copy { font-size: 10px; padding: 6px 8px; } }
+@media (max-width: 520px) { .left-panel { display: none; } .header-divider { display: none; } .app-header > .icon-btn { display: none; } .file-name { max-width: calc(48vw / var(--ui-zoom, 1)); } }
 
 .pr-editor-beta-tag { font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--cm-accent, 255 112 26)); background: rgb(var(--cm-accent, 255 112 26) / 0.12); border: 1px solid rgb(var(--cm-accent, 255 112 26) / 0.35); border-radius: 6px; padding: 1px 6px; display: inline-flex; align-items: center; line-height: 1.4; }
 

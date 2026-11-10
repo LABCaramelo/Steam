@@ -401,7 +401,7 @@ export const OnboardingGuide: React.FC<Props> = ({ onNavigate }) => {
             bottom: 32,
             left: "50%",
             transform: "translateX(-50%)",
-            width: "min(560px, calc(100vw - 32px))",
+            width: "min(560px, calc(calc(100vw / var(--ui-zoom, 1)) - 32px))",
             background: "var(--mc-ink-surface)",
             border: "1px solid var(--mc-caramel)",
             borderRadius: "var(--mc-radius-lg)",
@@ -510,7 +510,7 @@ export const OnboardingGuide: React.FC<Props> = ({ onNavigate }) => {
         <div className="mc-modal-backdrop" onClick={() => setIsModalOpen(false)}>
           <div
             className="mc-modal"
-            style={{ maxWidth: 720, maxHeight: "88vh" }}
+            style={{ maxWidth: 720, maxHeight: "calc(88vh / var(--ui-zoom, 1))" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mc-modal__header" style={{ paddingBottom: 16 }}>
@@ -569,7 +569,7 @@ export const OnboardingGuide: React.FC<Props> = ({ onNavigate }) => {
                 flexDirection: "column",
                 gap: 8,
                 padding: 20,
-                maxHeight: "56vh",
+                maxHeight: "calc(56vh / var(--ui-zoom, 1))",
                 overflowY: "auto",
               }}
             >
