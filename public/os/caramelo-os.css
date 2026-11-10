@@ -696,3 +696,115 @@ a.icon { text-decoration: none; }
 }
 
 a.drive { text-decoration: none; color: inherit; }
+
+/* ================= CARAKUT (scraps) ================= */
+.app-scraps {
+  --kut-bg: #D4DDED; --kut-top: #A5BCE5; --kut-blue: #315C99; --kut-blue-2: #6D84B4;
+  --kut-line: #C3D0E8; --kut-soft: #EEF3FB; --kut-pink: #E26EA6;
+  background: var(--kut-bg); font-family: Verdana, Tahoma, var(--font-ui); font-size: 12px; color: #222;
+  container-type: inline-size;
+}
+.kut-top {
+  display: flex; align-items: center; gap: 16px; flex: none;
+  padding: 6px 14px; background: linear-gradient(180deg, #C8D7F2, var(--kut-top));
+  border-bottom: 1px solid #8DA5D3;
+}
+.kut-logo {
+  font: 700 22px/1 "Trebuchet MS", Verdana, sans-serif; letter-spacing: -.04em;
+  color: var(--caramel); text-shadow: 0 1px 0 #fff;
+}
+.kut-logo sup { font-size: 9px; letter-spacing: 0; color: var(--kut-blue); margin-left: 2px; vertical-align: super; }
+.kut-nav { display: flex; gap: 14px; font-size: 11.5px; color: var(--kut-blue); }
+.kut-nav .is-on { font-weight: 700; text-decoration: underline; }
+.kut-me { margin-left: auto; font-size: 11.5px; color: var(--kut-blue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kut-scroll { flex: 1; min-height: 0; overflow: auto; padding: 12px; }
+.kut-grid { display: grid; grid-template-columns: 170px minmax(0, 1fr) 190px; gap: 12px; align-items: start; }
+.kut-col { display: grid; gap: 12px; min-width: 0; }
+.kut-card { background: #fff; border: 1px solid var(--kut-line); border-radius: 10px; padding: 10px 12px; }
+
+.kut-profile img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; border-radius: 4px; border: 1px solid var(--kut-line); }
+.kut-who { margin: 8px 0 2px; font-weight: 700; font-size: 13px; color: var(--kut-blue); }
+.kut-meta { margin: 0 0 8px; font-size: 11px; color: #666; }
+.kut-links { margin: 0; padding: 8px 0 0; list-style: none; border-top: 1px solid var(--kut-line); display: grid; gap: 3px; }
+.kut-links button, .kut-link {
+  padding: 0; border: 0; background: none; font-size: 11.5px; color: var(--kut-blue); text-decoration: underline; cursor: pointer;
+}
+.kut-links button::before { content: '» '; text-decoration: none; display: inline-block; margin-right: 3px; color: var(--kut-blue-2); }
+.kut-links button:hover, .kut-link:hover { color: var(--caramel-lo); }
+
+.kut-title { margin: 0; font: 400 21px/1.2 "Trebuchet MS", Verdana, sans-serif; color: #222; }
+.kut-status { margin: 6px 0 10px; padding: 6px 8px; border: 1px solid var(--kut-line); font-size: 12px; color: #333; }
+.kut-stats { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; }
+.kut-stats div { display: grid; gap: 1px; }
+.kut-stats dt { font-size: 10.5px; color: #666; }
+.kut-stats dd { margin: 0; font-size: 11.5px; color: var(--kut-blue); font-weight: 700; min-height: 14px; }
+.kut-rate { display: flex; gap: 2px; align-items: center; }
+.kut-rate i { width: 11px; height: 11px; border-radius: 50%; background: #F5C542; border: 1px solid #B88A10; }
+.kut-rate.is-blue i { border-radius: 2px; background: #A8CBEF; border-color: #5D8CC0; }
+.kut-rate.is-heart i { width: 10px; height: 10px; border-radius: 0 50% 50% 50%; transform: rotate(-135deg) scale(.85); background: var(--kut-pink); border-color: #A83D72; }
+
+.kut-form { display: grid; gap: 8px; background: var(--kut-soft); }
+.kut-as { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #444; }
+.kut-avatar { width: 40px; height: 24px; flex: none; }
+.kut-as .kut-avatar { width: 34px; height: 20px; }
+.kut-form textarea {
+  width: 100%; min-height: 70px; resize: vertical; padding: 6px 8px;
+  background: #fff; border: 1px solid #9DB2D8; border-radius: 2px; font: 12.5px/1.5 Verdana, Tahoma, sans-serif;
+}
+.kut-form textarea:focus { outline: 2px solid var(--kut-blue-2); outline-offset: 0; }
+.kut-form-foot { display: flex; align-items: center; gap: 10px; }
+.kut-left { font-size: 10.5px; color: #777; min-width: 3ch; }
+.kut-left.is-low { color: #B3261E; font-weight: 700; }
+.kut-msg { flex: 1; margin: 0; font-size: 11.5px; color: #2E6B2E; }
+.kut-msg.is-error { color: #B3261E; }
+.kut-btn {
+  padding: 4px 14px; border: 1px solid #5D7AB0; border-radius: 3px;
+  background: linear-gradient(180deg, #fff, #D9E3F4); color: var(--kut-blue); font-size: 11.5px; font-weight: 700;
+}
+.kut-btn:hover { background: #fff; }
+.kut-btn:disabled { opacity: .5; cursor: default; }
+
+.kut-sub { margin: 0 0 8px; font-size: 13px; font-weight: 700; color: #222; }
+.kut-sub span { color: var(--kut-blue); font-weight: 400; }
+.kut-list { margin: 0; padding: 0; list-style: none; }
+.kut-scrap { display: flex; gap: 10px; padding: 10px 6px; border-top: 1px solid var(--kut-line); border-radius: 6px; transition: background 1.5s ease; }
+.kut-scrap:first-child { border-top: 0; padding-top: 6px; }
+.kut-scrap.is-new { background: #FFF6D6; transition: none; }
+.kut-scrap-body { min-width: 0; flex: 1; }
+.kut-scrap-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 0 0 3px; }
+.kut-scrap-head b { color: var(--kut-blue); font-size: 12px; }
+.kut-scrap-head time { font-size: 10.5px; color: #888; }
+.kut-scrap-text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; }
+.kut-empty { margin: 4px 0; color: #666; font-size: 12px; }
+.kut-more { display: block; margin: 8px 0 0 auto; padding: 0; border: 0; background: none; color: var(--kut-blue); font-size: 11.5px; text-decoration: underline; }
+
+.kut-friends { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 6px; margin: 0; padding: 0; list-style: none; }
+.kut-friends li { display: grid; justify-items: center; gap: 3px; text-align: center; font-size: 10.5px; color: var(--kut-blue); min-width: 0; }
+.kut-friends svg { width: 100%; max-width: 50px; aspect-ratio: 5 / 3; background: var(--kut-soft); border: 1px solid var(--kut-line); border-radius: 3px; padding: 3px; }
+.kut-friends span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kut-friends .kut-none { grid-column: 1 / -1; color: #777; }
+.kut-comms { margin: 0; padding: 0; list-style: none; display: grid; gap: 7px; }
+.kut-comms li { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--kut-blue); line-height: 1.3; }
+.kut-comm { width: 26px; height: 26px; flex: none; border-radius: 3px; border: 1px solid var(--kut-line); }
+.kut-comm.c1 { background: linear-gradient(135deg, #E8892F 50%, #F6C68E 50%); }
+.kut-comm.c2 { background: repeating-linear-gradient(45deg, #ddd 0 4px, #fff 4px 8px); }
+.kut-comm.c3 { background: radial-gradient(circle at 50% 55%, #6B3E1F 40%, #F3E3CF 42%); }
+.kut-comm.c4 { background: linear-gradient(180deg, #A5BCE5 30%, #fff 30%); }
+.kut-comm.c5 { background: conic-gradient(#FF701A, #F5C542, #7FA3D6, #E26EA6, #FF701A); }
+.kut-comm.c6 { background: linear-gradient(90deg, #FF701A 50%, #101014 50%); }
+
+@container (max-width: 760px) {
+  .kut-grid { grid-template-columns: 150px minmax(0, 1fr); }
+  .kut-right { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; }
+}
+@container (max-width: 540px) {
+  .kut-nav { display: none; }
+  .kut-grid { grid-template-columns: minmax(0, 1fr); }
+  .kut-left .kut-profile { display: grid; grid-template-columns: 72px 1fr; gap: 0 10px; align-items: start; }
+  .kut-left .kut-profile img { grid-row: span 3; }
+  .kut-left .kut-who { margin-top: 0; }
+  .kut-links { grid-column: 2; display: flex; flex-wrap: wrap; gap: 4px 10px; }
+  .kut-right { grid-template-columns: minmax(0, 1fr); }
+  .kut-title { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) { .kut-scrap.is-new { transition: none; } }
