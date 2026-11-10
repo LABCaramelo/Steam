@@ -55,8 +55,7 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
   color: #F5F5F7;
   text-shadow: none;
 }
-.boot-logo span, .boot-logo sup { color: inherit; }
-.boot-logo sup { font-size: 0.55em; font-weight: 400; opacity: 0.6; }
+.boot-logo span { color: inherit; }
 .boot-sub { margin-top: 6px; font-size: 12px; letter-spacing: 0; color: rgba(255, 255, 255, 0.55); }
 .boot-status { margin: 48px 0 12px; font-size: 11px; letter-spacing: 0; color: rgba(255, 255, 255, 0.55); text-transform: none; }
 .boot-bar {
@@ -213,16 +212,18 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
 .win-btn:active { transform: none; filter: brightness(0.85); }
 .win:not(.is-active) .win-btn { background: #DDDDDD; border-color: rgba(0, 0, 0, 0.08); }
 /* Os símbolos aparecem ao passar o mouse sobre o grupo, como no macOS. */
+/* Traços desenhados com gradientes (e não caracteres de texto), para ficarem no centro exato. */
 .win-btn::after {
+  content: "";
   position: absolute; inset: 0;
-  display: grid; place-items: center;
-  font: 700 10px/1 var(--apple-font-text);
   color: rgba(0, 0, 0, 0.55);
+  --bar-h: linear-gradient(currentColor, currentColor) center / 6px 1.5px no-repeat;
+  --bar-v: linear-gradient(currentColor, currentColor) center / 1.5px 6px no-repeat;
   opacity: 0;
 }
-.win-btn[data-act="close"]::after { content: "×"; font-size: 12px; }
-.win-btn[data-act="min"]::after { content: "−"; }
-.win-btn[data-act="max"]::after { content: "+"; }
+.win-btn[data-act="close"]::after { background: var(--bar-h), var(--bar-v); transform: rotate(45deg); }
+.win-btn[data-act="min"]::after { background: var(--bar-h); }
+.win-btn[data-act="max"]::after { background: var(--bar-h), var(--bar-v); }
 .win-ctrls:hover .win-btn::after, .win-btn:focus-visible::after { opacity: 1; }
 .win-ctrls:hover .win-btn[data-act="close"] { background: var(--apple-window-close); }
 .win-ctrls:hover .win-btn[data-act="min"] { background: var(--apple-window-minimize); }
@@ -487,7 +488,6 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
 }
 .start-head strong { font: var(--apple-weight-bold) 14px/1.2 var(--apple-font-text); }
 .start-head small { font-size: 11px; color: var(--mac-label-2); opacity: 1; }
-.start-num { display: none; }
 .start-menu ul { padding: 5px 0 0; }
 .start-menu li.sep { border-color: var(--mac-separator); margin-top: 5px; padding-top: 5px; }
 .start-menu li > button, .start-menu li > a {

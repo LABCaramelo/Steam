@@ -1,4 +1,4 @@
-// QA ao vivo da página inicial CarameloOS 96 (public/index.html) em Edge headless via CDP.
+// QA ao vivo da página inicial CarameloOS (public/index.html) em Edge headless via CDP.
 // Uso: npm run dev (porta 5180) e, em outro terminal, node scripts/verify-os-home.mjs (ou HOME_QA_URL=...).
 // A landing anterior continua em /estudio (public/estudio.html).
 import { spawn } from 'node:child_process';

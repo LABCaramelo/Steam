@@ -1,4 +1,4 @@
--- Carakut (CarameloOS 96): mural de scraps público da página inicial.
+-- Carakut (CarameloOS): mural de scraps público da página inicial.
 -- Rode no SQL Editor do Supabase (projeto fzhzpzxsttflgtassyex). Pode ser rodado de novo.
 --
 -- Como funciona (public/os/caramelo-os.js, app "scraps"):
