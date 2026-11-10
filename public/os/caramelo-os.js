@@ -968,7 +968,7 @@
       $('#kutLeftProfile').hidden = view === 'comm';
       $('#kutLeftComm').hidden = view !== 'comm';
       $$('.kut-nav [data-kut]', app).forEach(b => {
-        const on = b.dataset.kut === navKey || (view === 'comm' && b.dataset.kut === 'comunidades');
+        const on = b.dataset.kut === navKey || (view === 'home' && b.dataset.kut === 'perfil') || (view === 'comm' && b.dataset.kut === 'comunidades');
         b.classList.toggle('is-on', on);
       });
       $('#kutScroll').scrollTop = 0;
