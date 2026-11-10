@@ -27,7 +27,8 @@
     recursos:   { title: 'Aprender & Recursos', icon: 'i-folder', w: 620, h: 400 },
     lixeira:    { title: 'Lixeira', icon: 'i-trash', w: 620, h: 470 },
     jogo:       { title: 'Pega a Bolinha', icon: 'i-game', w: 420, h: 530 },
-    perfil:     { title: 'Perfil de visitante', icon: 'i-dog', w: 500, h: 620 }
+    perfil:     { title: 'Perfil de visitante', icon: 'i-dog', w: 500, h: 620 },
+    scraps:     { title: 'Carakut — Página de recados', task: 'Carakut', icon: 'i-kut', w: 900, h: 640 }
   };
 
   const layer = $('#windows');
@@ -338,6 +339,8 @@
     $$('[data-guest-name]').forEach(el => { el.textContent = g.name; });
     const startAvatar = $('#startAvatar');
     if (startAvatar) dogSVG(startAvatar, g.coat);
+    const kutAvatar = $('#kutAvatar');
+    if (kutAvatar) dogSVG(kutAvatar, g.coat);
     const petSprite = $('#petSprite');
     if (petSprite) dogSVG(petSprite, g.coat, true);
     const hello = $('[data-hello]');
@@ -393,6 +396,197 @@
     closeApp('perfil');
     say(profile.name ? `Oi, ${profile.name}!` : 'Au!');
   });
+
+  /* ---------------- Carakut (scraps) ---------------- */
+  // Mural público no Supabase. O navegador só chama as funções de supabase/os-scraps.sql.
+  (() => {
+    const SB_URL = 'https://fzhzpzxsttflgtassyex.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6aHpwenhzdHRmbGd0YXNzeWV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzNTU2NTIsImV4cCI6MjEwNDkzMTY1Mn0.rWO90rI-O8XVOWAlvuylkFWMNpjkocC0HRHBNbmrJj4';
+    const PAGE = 20;
+    const MAX = 500;
+    const list = $('#kutList'), empty = $('#kutEmpty'), more = $('#kutMore');
+    const form = $('#kutForm'), body = $('#kutBody'), send = $('#kutSend');
+    const msg = $('#kutMsg'), left = $('#kutLeft'), status = $('#kutStatus');
+    if (!list || !form) return;
+
+    let scraps = [];
+    let total = null;
+    let loading = false;
+    let loadedAt = 0;
+    let exhausted = false;
+
+    async function rpc(fn, args = {}) {
+      const res = await fetch(`${SB_URL}/rest/v1/rpc/${fn}`, {
+        method: 'POST',
+        headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(args)
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        const err = new Error(data?.message || `Erro ${res.status}`);
+        err.code = data?.code || String(res.status);
+        throw err;
+      }
+      return data;
+    }
+    const offline = err => ['PGRST202', '42P01', '42883', '404'].includes(err?.code);
+    const friendly = err => offline(err) ? 'O mural do carakut ainda não está no ar.'
+      : (err?.code === '22023' || err?.code === '54000') ? err.message
+      : 'Não deu para falar com o carakut agora. Tente de novo.';
+
+    const fmtDay = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short' });
+    const fmtTime = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    function when(iso) {
+      const d = new Date(iso);
+      const mins = Math.round((Date.now() - d) / 60000);
+      if (mins < 1) return 'agora mesmo';
+      if (mins < 60) return `há ${mins} min`;
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      if (d >= today) return `hoje, ${fmtTime.format(d)}`;
+      if (d >= new Date(today - 86400000)) return `ontem, ${fmtTime.format(d)}`;
+      return fmtDay.format(d).replace('.', '');
+    }
+
+    function scrapItem(s) {
+      const li = document.createElement('li');
+      li.className = 'kut-scrap';
+      li.innerHTML = '<svg class="kut-avatar" aria-hidden="true"></svg><div class="kut-scrap-body"><p class="kut-scrap-head"><b></b><time></time></p><p class="kut-scrap-text"></p></div>';
+      dogSVG(li.firstElementChild, coatById(s.coat));
+      $('b', li).textContent = s.name;
+      const t = $('time', li);
+      t.dateTime = s.created_at;
+      t.textContent = when(s.created_at);
+      $('.kut-scrap-text', li).textContent = s.body;
+      return li;
+    }
+
+    function renderCount() {
+      $('#kutCount').textContent = total == null ? '–' : String(total);
+      $('#kutCountSmall').textContent = total == null ? '' : `(${total})`;
+    }
+
+    function renderFriends() {
+      const seen = new Map();
+      scraps.forEach(s => { const k = s.name.toLowerCase(); if (!seen.has(k)) seen.set(k, s); });
+      const friends = [...seen.values()].slice(0, 9);
+      const ul = $('#kutFriends');
+      ul.replaceChildren(...friends.map(s => {
+        const li = document.createElement('li');
+        li.innerHTML = '<svg aria-hidden="true"></svg><span></span>';
+        dogSVG(li.firstElementChild, coatById(s.coat));
+        li.lastElementChild.textContent = s.name;
+        return li;
+      }));
+      $('#kutFriendsN').textContent = seen.size ? `(${seen.size})` : '';
+      if (!friends.length) {
+        const li = document.createElement('li');
+        li.className = 'kut-none';
+        li.textContent = 'Ninguém passou por aqui ainda.';
+        ul.append(li);
+      }
+    }
+
+    function renderList() {
+      list.replaceChildren(...scraps.map(scrapItem));
+      empty.hidden = scraps.length > 0;
+      if (!scraps.length) empty.textContent = 'Nenhum recado ainda. Seja a primeira visita a deixar um scrap!';
+      more.hidden = exhausted;
+      renderCount();
+      renderFriends();
+    }
+
+    async function load(older = false) {
+      if (loading) return;
+      loading = true;
+      more.disabled = true;
+      if (!older) status.textContent = 'Carregando recados…';
+      try {
+        const before = older && scraps.length ? scraps[scraps.length - 1].created_at : null;
+        const [rows, count] = await Promise.all([
+          rpc('os_scraps_list', { p_limit: PAGE, p_before: before }),
+          older ? Promise.resolve(total) : rpc('os_scraps_count')
+        ]);
+        scraps = older ? scraps.concat(rows) : rows;
+        exhausted = rows.length < PAGE;
+        total = Number(count) || 0;
+        loadedAt = Date.now();
+        renderList();
+        status.textContent = 'Conectado ao carakut';
+      } catch (err) {
+        console.warn('carakut:', err);
+        status.textContent = friendly(err);
+        if (!scraps.length) {
+          list.replaceChildren();
+          empty.hidden = false;
+          empty.textContent = friendly(err);
+          renderFriends();
+        }
+      } finally {
+        loading = false;
+        more.disabled = false;
+      }
+    }
+
+    function updateLeft() {
+      const n = MAX - body.value.length;
+      left.textContent = String(n);
+      left.classList.toggle('is-low', n < 40);
+    }
+    function note(text, isError = false) {
+      msg.textContent = text;
+      msg.classList.toggle('is-error', isError);
+    }
+    body.addEventListener('input', () => { updateLeft(); note(''); });
+    body.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); form.requestSubmit(); }
+    });
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const text = body.value.trim();
+      if (!text) { note('Escreva alguma coisa antes de postar.', true); body.focus(); return; }
+      if (/(https?:\/\/|www\.)/i.test(text)) { note('Scraps não aceitam links.', true); return; }
+      const g = guest();
+      send.disabled = true;
+      note('Enviando…');
+      try {
+        const s = await rpc('os_scrap_post', { p_name: g.name, p_coat: g.coat.id, p_body: text });
+        scraps = [s, ...scraps.filter(x => x.id !== s.id)];
+        if (total != null) total += 1;
+        renderList();
+        const fresh = list.firstElementChild;
+        fresh?.classList.add('is-new');
+        setTimeout(() => fresh?.classList.remove('is-new'), 2500);
+        body.value = '';
+        updateLeft();
+        note('Scrap enviado! Valeu pela visita.');
+        say(`Au! Valeu pelo scrap${profile?.name ? `, ${profile.name}` : ''}!`);
+      } catch (err) {
+        note(friendly(err), true);
+      } finally {
+        send.disabled = false;
+      }
+    });
+
+    more.addEventListener('click', () => load(true));
+
+    let photosCounted = false;
+    async function countPhotos() {
+      if (photosCounted) return;
+      photosCounted = true;
+      try {
+        const data = await (await fetch('/caramelo/stickers/manifest.json')).json();
+        $('#kutPhotos').textContent = String((data.stickers || []).length);
+      } catch { photosCounted = false; }
+    }
+
+    hooks.open.scraps = () => {
+      dogSVG($('#kutAvatar'), guest().coat);
+      countPhotos();
+      if (!loadedAt || Date.now() - loadedAt > 60000) load();
+    };
+    updateLeft();
+  })();
 
   /* ---------------- Pet andando ---------------- */
   const pet = $('#pet');
@@ -805,7 +999,7 @@
 
   function hashApp() {
     const h = decodeURIComponent(location.hash.slice(1)).toLowerCase();
-    const alias = { faq: 'ajuda', duvidas: 'ajuda', portfolio: 'projetos', 'como-trabalho': 'processo', infoprodutores: 'servicos', 'quem-sou': 'sobre', aprender: 'recursos' };
+    const alias = { faq: 'ajuda', duvidas: 'ajuda', portfolio: 'projetos', 'como-trabalho': 'processo', infoprodutores: 'servicos', 'quem-sou': 'sobre', aprender: 'recursos', carakut: 'scraps', orkut: 'scraps', recados: 'scraps', scrap: 'scraps' };
     const id = alias[h] || h;
     return APPS[id] ? id : null;
   }
