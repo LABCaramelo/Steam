@@ -683,8 +683,8 @@
 }
 .fullscreen-viewer img,
 .fullscreen-viewer video {
-  max-width: 92vw;
-  max-height: 88vh;
+  max-width: calc(92vw / var(--ui-zoom, 1));
+  max-height: calc(88vh / var(--ui-zoom, 1));
 }
 .fullscreen-viewer .fs-close {
   position: absolute;

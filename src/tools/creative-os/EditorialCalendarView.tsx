@@ -230,7 +230,7 @@ export const EditorialCalendarView: React.FC<Props> = ({
               </button>
             </div>
 
-            <div className="cos-modal__body" style={{ maxHeight: "70vh", overflowY: "auto" }}>
+            <div className="cos-modal__body" style={{ maxHeight: "calc(70vh / var(--ui-zoom, 1))", overflowY: "auto" }}>
               {/* Status Bar */}
               <div
                 style={{

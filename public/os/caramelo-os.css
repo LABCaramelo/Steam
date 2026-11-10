@@ -54,7 +54,7 @@ a { color: inherit; }
 .boot.is-done { opacity: 0; visibility: hidden; }
 
 .boot-splash { display: grid; justify-items: center; text-align: center; padding: 16px; }
-.boot-art { position: relative; width: min(300px, 70vw); }
+.boot-art { position: relative; width: min(300px, calc(70vw / var(--ui-zoom, 1))); }
 .boot-art img { width: 100%; height: auto; position: relative; filter: drop-shadow(0 12px 40px rgba(255,112,26,.35)); }
 .boot-orbit {
   position: absolute; inset: 22% -14%; border: 2px solid rgba(255,112,26,.55);
@@ -67,7 +67,7 @@ a { color: inherit; }
 }
 @keyframes orbit { to { offset-distance: 100%; } }
 .boot-logo {
-  margin: 14px 0 0; font: 900 clamp(44px, 9vw, 76px)/.95 var(--font-display);
+  margin: 14px 0 0; font: 900 clamp(44px, calc(9vw / var(--ui-zoom, 1)), 76px)/.95 var(--font-display);
   letter-spacing: -.03em; color: var(--cream);
   text-shadow: 0 2px 0 var(--caramel-lo), 0 0 30px rgba(255,112,26,.25);
 }
@@ -76,7 +76,7 @@ a { color: inherit; }
 .boot-sub { margin: 10px 0 0; font-size: 12px; letter-spacing: .14em; color: #B9A797; }
 .boot-status { margin: 46px 0 12px; font-size: 13px; letter-spacing: .14em; min-height: 1.5em; }
 .boot-bar {
-  width: min(320px, 80vw); height: 16px; padding: 2px;
+  width: min(320px, calc(80vw / var(--ui-zoom, 1))); height: 16px; padding: 2px;
   border: 2px solid var(--caramel); display: flex;
 }
 .boot-fill {
@@ -89,7 +89,7 @@ a { color: inherit; }
 .os { position: fixed; inset: 0; opacity: 0; transition: opacity .5s ease; }
 .os.is-on { opacity: 1; }
 .wallpaper { position: absolute; inset: 0; background: #EFE7DD; }
-.wallpaper img {
+.wallpaper img, .wallpaper video {
   width: 100%; height: 100%; object-fit: cover; object-position: 72% 30%;
   filter: saturate(1.05) contrast(1.02);
 }
@@ -232,7 +232,7 @@ a { color: inherit; }
   text-transform: uppercase; color: var(--caramel-lo);
 }
 .display {
-  margin: 0 0 14px; font: 900 clamp(22px, 2.6vw, 30px)/1.02 var(--font-display);
+  margin: 0 0 14px; font: 900 clamp(22px, calc(2.6vw / var(--ui-zoom, 1)), 30px)/1.02 var(--font-display);
   letter-spacing: -.02em; text-transform: uppercase; color: var(--ink); text-wrap: balance;
 }
 .muted { color: var(--muted); }
@@ -462,50 +462,9 @@ a { color: inherit; }
 }
 .game-pad { display: none; }
 
-/* Perfil */
-.profile-title { margin: 0 0 4px; font: 900 26px/1.05 var(--font-display); letter-spacing: -.02em; }
-.pass {
-  display: flex; align-items: center; gap: 12px; margin: 14px 0; padding: 12px;
-  background: linear-gradient(135deg, #FFE7D2, var(--cream)); border: 1px solid var(--line); border-radius: 4px;
-}
-.pass-avatar, .start-avatar { width: 54px; height: 54px; flex: none; background: var(--paper); border: 1px solid var(--line); border-radius: 3px; padding: 6px; }
-.pass small { display: block; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--caramel-lo); font-weight: 700; }
-.pass strong { display: block; font: 900 20px/1.1 var(--font-display); }
-.pass span { font-size: 11.5px; color: var(--muted); }
-.pass-num, .start-num { margin-left: auto; font: 900 30px/1 var(--font-display); color: rgba(201,80,12,.35); }
-.coats { border: 0; padding: 0; margin: 0 0 14px; }
-.coats legend { font-weight: 700; font-size: 12.5px; margin-bottom: 8px; padding: 0; }
-.coat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 6px; }
-.coat {
-  display: grid; justify-items: center; gap: 4px; padding: 8px 4px 6px;
-  background: #fff; border: 1px solid var(--cream-3); border-radius: 3px; font-size: 11px;
-}
-.coat svg { width: 40px; height: 32px; }
-.coat:hover { border-color: var(--caramel); }
-.coat[aria-checked="true"] { background: var(--cream); border-color: var(--caramel-deep); box-shadow: inset 0 0 0 2px var(--caramel); font-weight: 700; }
+.start-avatar { width: 54px; height: 54px; flex: none; background: var(--paper); border: 1px solid var(--line); border-radius: 3px; padding: 6px; }
+.start-num { margin-left: auto; font: 900 30px/1 var(--font-display); color: rgba(201,80,12,.35); }
 .field-label { display: block; font-weight: 700; font-size: 12.5px; margin-bottom: 6px; }
-.profile-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--cream-3); }
-
-/* ================= PET ================= */
-.pet {
-  position: absolute; left: 0; bottom: 4px; z-index: 5000;
-  width: 60px; height: 40px; padding: 0; border: 0; background: transparent;
-  will-change: transform;
-}
-.pet-sprite { width: 60px; height: 39px; overflow: visible; }
-.pet.is-left .pet-sprite { transform: scaleX(-1); }
-.pet.is-hop .pet-sprite { animation: hop .45s ease; }
-@keyframes hop { 40% { translate: 0 -12px; } }
-.pet-bubble {
-  position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 6px;
-  padding: 4px 9px; white-space: nowrap; background: #fff; border: 1px solid var(--ink); border-radius: 10px;
-  font: 600 11.5px/1.3 var(--font-ui); color: var(--ink); opacity: 0; pointer-events: none; transition: opacity .2s;
-}
-.pet-bubble::after {
-  content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px;
-  border: 5px solid transparent; border-top-color: var(--ink);
-}
-.pet-bubble.is-on { opacity: 1; }
 
 /* ================= TASKBAR ================= */
 .taskbar {
@@ -611,7 +570,7 @@ a { color: inherit; }
   .game-pad [data-dir="left"] { grid-column: 1; grid-row: 2; }
   .game-pad [data-dir="down"] { grid-column: 2; grid-row: 2; }
   .game-pad [data-dir="right"] { grid-column: 3; grid-row: 2; }
-  .wallpaper img { object-position: 68% 40%; }
+  .wallpaper img, .wallpaper video { object-position: 68% 40%; }
 }
 @media (max-width: 380px) {
   .icons { grid-template-columns: repeat(3, 1fr); }
@@ -726,11 +685,11 @@ a.drive { text-decoration: none; color: inherit; }
 .kut-who { margin: 8px 0 2px; font-weight: 700; font-size: 13px; color: var(--kut-blue); }
 .kut-meta { margin: 0 0 8px; font-size: 11px; color: #666; }
 .kut-links { margin: 0; padding: 8px 0 0; list-style: none; border-top: 1px solid var(--kut-line); display: grid; gap: 3px; }
-.kut-links button, .kut-link {
+.kut-links button {
   padding: 0; border: 0; background: none; font-size: 11.5px; color: var(--kut-blue); text-decoration: underline; cursor: pointer;
 }
 .kut-links button::before { content: '» '; text-decoration: none; display: inline-block; margin-right: 3px; color: var(--kut-blue-2); }
-.kut-links button:hover, .kut-link:hover { color: var(--caramel-lo); }
+.kut-links button:hover { color: var(--caramel-lo); }
 
 .kut-title { margin: 0; font: 400 21px/1.2 "Trebuchet MS", Verdana, sans-serif; color: #222; }
 .kut-status { margin: 6px 0 10px; padding: 6px 8px; border: 1px solid var(--kut-line); font-size: 12px; color: #333; }
@@ -747,6 +706,12 @@ a.drive { text-decoration: none; color: inherit; }
 .kut-as { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #444; }
 .kut-avatar { width: 40px; height: 24px; flex: none; }
 .kut-as .kut-avatar { width: 34px; height: 20px; }
+.kut-as label { font-weight: 700; color: #333; white-space: nowrap; }
+.kut-name {
+  flex: 1; min-width: 0; max-width: 220px; min-height: 26px; padding: 3px 8px;
+  background: #fff; border: 1px solid #9DB2D8; border-radius: 2px; font: 12px Verdana, Tahoma, sans-serif; color: #222;
+}
+.kut-name:focus { outline: 2px solid var(--kut-blue-2); outline-offset: 0; }
 .kut-form textarea {
   width: 100%; min-height: 70px; resize: vertical; padding: 6px 8px;
   background: #fff; border: 1px solid #9DB2D8; border-radius: 2px; font: 12.5px/1.5 Verdana, Tahoma, sans-serif;

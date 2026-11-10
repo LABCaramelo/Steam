@@ -423,7 +423,7 @@ export function Modal({
         aria-modal="true"
         aria-labelledby={labelledBy ?? (title ? "tk-modal-title" : undefined)}
         tabIndex={-1}
-        style={{ width: `min(${width}px, calc(100vw - 32px))` }}
+        style={{ width: `min(${width}px, calc(calc(100vw / var(--ui-zoom, 1)) - 32px))` }}
       >
         <button className="tk-iconbtn tk-modal__close" onClick={onClose} aria-label="Fechar">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">

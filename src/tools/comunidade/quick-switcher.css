@@ -1,6 +1,6 @@
 .quick-switcher {
-  width: min(600px, calc(100vw - 32px));
-  max-height: calc(100dvh - 48px);
+  width: min(600px, calc(calc(100vw / var(--ui-zoom, 1)) - 32px));
+  max-height: calc(calc(100dvh / var(--ui-zoom, 1)) - 48px);
   margin: auto;
   padding: 20px 12px 12px;
   border: 1px solid var(--divider);

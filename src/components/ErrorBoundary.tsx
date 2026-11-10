@@ -40,7 +40,7 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div
           style={{
-            minHeight: "100vh",
+            minHeight: "calc(100vh / var(--ui-zoom, 1))",
             backgroundColor: "#101014",
             color: "#FFF4E8",
             display: "flex",

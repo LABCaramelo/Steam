@@ -43,7 +43,7 @@
   position: fixed;
   z-index: 1200;
   width: 290px;
-  max-width: calc(100vw - 20px);
+  max-width: calc(calc(100vw / var(--ui-zoom, 1)) - 20px);
   background: #15151a;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;

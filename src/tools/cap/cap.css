@@ -6,8 +6,8 @@
 .cap-root {
   display: flex;
   flex-direction: column;
-  width: 100vw;
-  height: 100vh;
+  width: calc(100vw / var(--ui-zoom, 1));
+  height: calc(100vh / var(--ui-zoom, 1));
   background-color: rgb(var(--cm-stage));
   color: rgb(var(--cm-fg));
   font-family: var(--caramelo-font-sans, "Inter", sans-serif);
@@ -208,8 +208,8 @@
 .cap-recorder-stage {
   position: relative;
   width: 100%;
-  max-width: min(calc(100% - 32px), calc((100vh - 190px) * (16 / 9)), 1600px);
-  max-height: calc(100vh - 190px);
+  max-width: min(calc(100% - 32px), calc((calc(100vh / var(--ui-zoom, 1)) - 190px) * (16 / 9)), 1600px);
+  max-height: calc(calc(100vh / var(--ui-zoom, 1)) - 190px);
   aspect-ratio: 16 / 9;
   background: rgb(var(--cm-surface-1));
   border-radius: var(--cm-radius-xl);

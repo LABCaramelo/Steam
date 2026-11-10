@@ -468,9 +468,9 @@ export function RecorderView({
         ref={stageRef}
         style={{
           aspectRatio: `${stageRatio}`,
-          maxWidth: `min(calc(100% - 32px), calc((100vh - 190px) * ${stageRatio}), 1600px)`,
-          maxHeight: "calc(100vh - 190px)",
-          height: `min(calc(100vh - 190px), calc((100vw - 64px) / ${stageRatio}))`,
+          maxWidth: `min(calc(100% - 32px), calc((calc(100vh / var(--ui-zoom, 1)) - 190px) * ${stageRatio}), 1600px)`,
+          maxHeight: "calc(calc(100vh / var(--ui-zoom, 1)) - 190px)",
+          height: `min(calc(calc(100vh / var(--ui-zoom, 1)) - 190px), calc((calc(100vw / var(--ui-zoom, 1)) - 64px) / ${stageRatio}))`,
           width: "100%",
         }}
       >

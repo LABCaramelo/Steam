@@ -5,8 +5,8 @@
 .admin-shell {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 32px clamp(16px, 4vw, 48px) 80px;
-  min-height: 100vh;
+  padding: 32px clamp(16px, calc(4vw / var(--ui-zoom, 1)), 48px) 80px;
+  min-height: calc(100vh / var(--ui-zoom, 1));
   color: rgb(var(--cm-fg));
   font-family: var(--caramelo-font-sans, system-ui, sans-serif);
 }
@@ -37,7 +37,7 @@
 }
 
 .admin-header__title {
-  font-size: clamp(24px, 3.5vw, 36px);
+  font-size: clamp(24px, calc(3.5vw / var(--ui-zoom, 1)), 36px);
   font-weight: 600;
   letter-spacing: -0.03em;
   margin: 0;
@@ -682,7 +682,7 @@
 
 .admin-modal--wide {
   max-width: 860px;
-  max-height: 92vh;
+  max-height: calc(92vh / var(--ui-zoom, 1));
   display: flex;
   flex-direction: column;
   overflow: hidden;

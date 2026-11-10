@@ -79,11 +79,11 @@
   font-weight: 900;
   text-wrap: balance;
 }
-.cm-type-hero { font-size: clamp(72px, 12.9vw, 184px); line-height: 0.88; letter-spacing: -0.073em; }
-.cm-type-display { font-size: clamp(44px, 6.7vw, 96px); line-height: 0.98; letter-spacing: -0.065em; text-transform: uppercase; }
-.cm-type-display-sm { font-size: clamp(40px, 5.4vw, 76px); line-height: 1.03; letter-spacing: -0.065em; }
-.cm-type-title { font-size: clamp(30px, 3.7vw, 53px); line-height: 1.02; letter-spacing: -0.065em; }
-.cm-type-subtitle { font: 700 clamp(19px, 2.15vw, 30px)/1.25 var(--caramelo-font-display); letter-spacing: -0.045em; }
+.cm-type-hero { font-size: clamp(72px, calc(12.9vw / var(--ui-zoom, 1)), 184px); line-height: 0.88; letter-spacing: -0.073em; }
+.cm-type-display { font-size: clamp(44px, calc(6.7vw / var(--ui-zoom, 1)), 96px); line-height: 0.98; letter-spacing: -0.065em; text-transform: uppercase; }
+.cm-type-display-sm { font-size: clamp(40px, calc(5.4vw / var(--ui-zoom, 1)), 76px); line-height: 1.03; letter-spacing: -0.065em; }
+.cm-type-title { font-size: clamp(30px, calc(3.7vw / var(--ui-zoom, 1)), 53px); line-height: 1.02; letter-spacing: -0.065em; }
+.cm-type-subtitle { font: 700 clamp(19px, calc(2.15vw / var(--ui-zoom, 1)), 30px)/1.25 var(--caramelo-font-display); letter-spacing: -0.045em; }
 .cm-type-heading { font: 800 24px/1.1 var(--caramelo-font-display); letter-spacing: -0.04em; }
 .cm-type-lead { font: 400 15px/1.65 var(--caramelo-font-sans); color: rgb(var(--cm-fg-muted)); text-wrap: pretty; }
 .cm-type-support { font: 400 13px/1.6 var(--caramelo-font-sans); color: rgb(var(--cm-fg-muted)); }
@@ -97,7 +97,7 @@
 }
 .cm-type-hand {
   display: inline-block;
-  font: 400 clamp(23px, 2.2vw, 32px)/1.15 var(--caramelo-font-handwriting);
+  font: 400 clamp(23px, calc(2.2vw / var(--ui-zoom, 1)), 32px)/1.15 var(--caramelo-font-handwriting);
   color: rgb(var(--cm-accent-ink));
   transform: rotate(-3deg);
 }
@@ -1854,12 +1854,12 @@ html[data-motion="full"] [data-cm-reveal="calm"]:not([data-cm-shown]) { transfor
 
 /* Pilha de cartões sticky (Work): um por vez, troca espacial 300ms */
 .cm-deck { position: relative; --cm-deck-count: 4; }
-.cm-deck[data-mode="scrub"] { height: calc(var(--cm-deck-count) * 100svh); }
+.cm-deck[data-mode="scrub"] { height: calc(var(--cm-deck-count) * calc(100svh / var(--ui-zoom, 1))); }
 .cm-deck__stage { position: relative; }
 .cm-deck[data-mode="scrub"] .cm-deck__stage {
   position: sticky;
   top: var(--cm-header-height, 0px);
-  height: calc(100svh - var(--cm-header-height, 0px));
+  height: calc(calc(100svh / var(--ui-zoom, 1)) - var(--cm-header-height, 0px));
   padding: 22px 0 18px;
   display: flex;
   flex-direction: column;

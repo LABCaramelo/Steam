@@ -39,8 +39,8 @@ body.pelicula-body {
 .pelicula-app-root {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  width: 100vw;
+  height: calc(100vh / var(--ui-zoom, 1));
+  width: calc(100vw / var(--ui-zoom, 1));
   background-color: var(--cm-stage);
   overflow: hidden;
 }
@@ -1258,7 +1258,7 @@ body.pelicula-body {
 
 .engine-modal-card {
   width: 580px;
-  max-width: 95vw;
+  max-width: calc(95vw / var(--ui-zoom, 1));
   background: var(--cm-surface-1);
   border: 1px solid var(--cm-border-strong);
   border-radius: 12px;

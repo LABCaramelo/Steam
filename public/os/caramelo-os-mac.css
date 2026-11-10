@@ -46,7 +46,7 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
 /* ================= BOOT: logo, barra fina, fundo preto ================= */
 .boot { background: #000; color: #F5F5F7; font-family: var(--apple-font-text); }
 .boot-orbit { display: none; }
-.boot-art { width: min(150px, 40vw); }
+.boot-art { width: min(150px, calc(40vw / var(--ui-zoom, 1))); }
 .boot-art img { filter: none; }
 .boot-logo {
   margin-top: 18px;
@@ -60,7 +60,7 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
 .boot-sub { margin-top: 6px; font-size: 12px; letter-spacing: 0; color: rgba(255, 255, 255, 0.55); }
 .boot-status { margin: 48px 0 12px; font-size: 11px; letter-spacing: 0; color: rgba(255, 255, 255, 0.55); text-transform: none; }
 .boot-bar {
-  width: min(200px, 60vw); height: 5px; padding: 0;
+  width: min(200px, calc(60vw / var(--ui-zoom, 1))); height: 5px; padding: 0;
   border: 0; border-radius: var(--apple-radius-capsule);
   background: rgba(255, 255, 255, 0.22);
   overflow: hidden;
@@ -282,7 +282,7 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
 .consent input { accent-color: var(--focus); }
 
 /* Tipos */
-.eyebrow, .sys-label, .wiz-k, .proj-tag, .forwho h4, .pass small {
+.eyebrow, .sys-label, .wiz-k, .proj-tag, .forwho h4 {
   font-family: var(--apple-font-text);
   font-size: 11px;
   font-weight: var(--apple-weight-semibold);
@@ -293,29 +293,22 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
 .muted, .statusbar, .file small, .explorer-intro p, .trash-msg p, .devices p, .sys-note, .card p { color: var(--mac-label-2); }
 
 /* Cartões e listas (Boxes, Lists) */
-.card, .devices li, .drive, .chips li, .coat, .photo-grid button {
+.card, .devices li, .drive, .chips li, .photo-grid button {
   background: #FFFFFF;
   border: 0;
   border-radius: var(--apple-radius-group);
   box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 .card-num { color: var(--caramel-lo); }
-.drive:hover, .photo-grid button:hover, .coat:hover { background: #FAFAFA; box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.1); }
-.photo-grid button[aria-pressed="true"], .coat[aria-checked="true"] {
+.drive:hover, .photo-grid button:hover { background: #FAFAFA; box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.1); }
+.photo-grid button[aria-pressed="true"] {
   background: rgba(0, 136, 255, 0.08);
   box-shadow: 0 0 0 2px var(--focus);
 }
 .ok { background: var(--apple-green); border: 0; color: #FFFFFF; }
 .forwho { background: rgba(0, 0, 0, 0.03); border-left: 0; border-radius: var(--apple-radius-group); }
 .tip { background: rgba(0, 0, 0, 0.03); border: 0; border-radius: var(--apple-radius-group); }
-.pass {
-  background: linear-gradient(135deg, #FFF1E3, #FFFFFF);
-  border: 0;
-  border-radius: var(--apple-radius-window);
-  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-.pass-avatar, .start-avatar { background: #FFFFFF; border: 0; border-radius: var(--apple-radius-icon); box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12); }
-.pass-num { color: rgba(179, 82, 0, 0.3); }
+.start-avatar { background: #FFFFFF; border: 0; border-radius: var(--apple-radius-icon); box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12); }
 
 /* Ícones de arquivo no Finder */
 .file { border: 0; border-radius: var(--apple-radius-menu-item); }
@@ -385,18 +378,6 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
   box-shadow: none;
   color: #1D1D1F;
 }
-
-/* Balão do cachorro: tooltip do macOS */
-.pet-bubble {
-  background: rgba(246, 246, 246, 0.86);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 0;
-  border-radius: 8px;
-  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 4px 14px rgba(0, 0, 0, 0.18);
-  font: var(--apple-weight-medium) 12px/1.3 var(--apple-font-text);
-}
-.pet-bubble::after { border-top-color: rgba(246, 246, 246, 0.86); }
 
 /* ================= DOCK ================= */
 .taskbar {

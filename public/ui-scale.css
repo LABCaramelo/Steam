@@ -1,0 +1,15 @@
+/*
+ * Escala da interface: em telas a partir de 1024px, a home, o LAB e as ferramentas
+ * aparecem como se o navegador estivesse com zoom de 80%.
+ *
+ * Com `zoom` na raiz, medidas de tela (vh, vw, dvh, svh) também encolhem para 80%.
+ * Por isso, quem precisa ocupar a tela inteira divide pela escala:
+ *   height: calc(100vh / var(--ui-zoom, 1));
+ * As medidas do JavaScript (mouse, getBoundingClientRect, innerWidth) são acertadas por
+ * /ui-scale.js, que deve vir logo depois deste arquivo em cada página.
+ */
+:root { --ui-zoom: 1; }
+
+@media (min-width: 1024px) {
+  :root { --ui-zoom: 0.8; zoom: 0.8; }
+}

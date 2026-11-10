@@ -11,11 +11,13 @@
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Um Cara Caramelo — Estúdio criativo"><meta name="twitter:description" content="Conteúdo e experiências digitais com direção, estratégia e personalidade."><meta name="twitter:image" content="https://www.umcaracaramelo.com.br/assets/images/video-posters/work-02.webp">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.umcaracaramelo.com.br/#studio","name":"Um Cara Caramelo","url":"https://www.umcaracaramelo.com.br/","logo":"https://www.umcaracaramelo.com.br/assets/icons/caramelo-mark.svg","description":"Estúdio criativo de direção de conteúdo e experiências digitais."},{"@type":"WebSite","@id":"https://www.umcaracaramelo.com.br/#website","url":"https://www.umcaracaramelo.com.br/","name":"Um Cara Caramelo","inLanguage":"pt-BR","publisher":{"@id":"https://www.umcaracaramelo.com.br/#studio"}}]}</script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="preload" href="/assets/images/caramelo-os/wallpaper.jpg" as="image">
+<link rel="preload" href="/assets/images/caramelo-os/hero-poster.jpg" as="image">
 <link rel="stylesheet" href="/fonts.css">
 <link rel="stylesheet" href="/os/caramelo-os.css">
 <link rel="stylesheet" href="/apple/tokens.css">
 <link rel="stylesheet" href="/os/caramelo-os-mac.css">
+<link rel="stylesheet" href="/ui-scale.css">
+<script src="/ui-scale.js"></script>
 <script defer src="/os/caramelo-os.js"></script>
 </head>
 <body>
@@ -33,7 +35,6 @@
       <symbol id="i-wizard" viewBox="0 0 32 32"><rect x="4" y="5" width="24" height="22" rx="2" fill="#FFF4E8" stroke="#101014" stroke-width="2"/><rect x="4" y="5" width="9" height="22" fill="#FF701A" stroke="#101014" stroke-width="2"/><path d="M17 12h7M17 16h7M17 20h4" stroke="#101014" stroke-width="2"/><path d="M8.5 10l1 2 2 .3-1.5 1.4.4 2-1.9-1-1.9 1 .4-2-1.5-1.4 2-.3z" fill="#FFF4E8"/></symbol>
       <symbol id="i-photo" viewBox="0 0 32 32"><rect x="3" y="6" width="26" height="20" rx="2" fill="#FFF4E8" stroke="#101014" stroke-width="2"/><circle cx="11" cy="12" r="3" fill="#FF701A"/><path d="M4 24l8-8 5 5 4-4 7 7" fill="#FFB27A" stroke="#101014" stroke-width="2"/></symbol>
       <symbol id="i-box" viewBox="0 0 32 32"><path d="M4 10l12-6 12 6v13l-12 6-12-6z" fill="#FF8A3D" stroke="#101014" stroke-width="2"/><path d="M4 10l12 6 12-6M16 16v13" stroke="#101014" stroke-width="2" fill="none"/><path d="M10 7l12 6" stroke="#FFF4E8" stroke-width="2"/></symbol>
-      <symbol id="i-dog" viewBox="0 0 32 32"><path d="M7 8l-3 9h4l2-7zM25 8l3 9h-4l-2-7z" fill="#A9531A" stroke="#101014" stroke-width="1.8"/><path d="M9 9h14l2 9a9 9 0 0 1-18 0z" fill="#E8892F" stroke="#101014" stroke-width="2"/><circle cx="12.5" cy="15" r="1.5" fill="#101014"/><circle cx="19.5" cy="15" r="1.5" fill="#101014"/><path d="M13 20h6l-3 3z" fill="#101014"/><path d="M15 23.5h2v3a1 1 0 0 1-2 0z" fill="#FF6B8A"/></symbol>
       <symbol id="i-link" viewBox="0 0 32 32"><rect x="4" y="4" width="24" height="24" rx="3" fill="#FFF4E8" stroke="#101014" stroke-width="2"/><rect x="4" y="4" width="24" height="6" fill="#FF701A" stroke="#101014" stroke-width="2"/><path d="M12 22l8-8M14 14h6v6" stroke="#101014" stroke-width="2.2" fill="none"/></symbol>
       <symbol id="i-kut" viewBox="0 0 32 32"><path d="M4 7a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H14l-6 6v-6H7a3 3 0 0 1-3-3z" fill="#7FA3D6" stroke="#101014" stroke-width="2"/><path d="M16 18s-6-3.6-6-7.4A3 3 0 0 1 16 9a3 3 0 0 1 6 1.6C22 14.4 16 18 16 18z" fill="#FF701A" stroke="#101014" stroke-width="1.6"/></symbol>
       <symbol id="i-power" viewBox="0 0 32 32"><circle cx="16" cy="17" r="10" fill="none" stroke="#101014" stroke-width="2.6"/><path d="M16 4v11" stroke="#101014" stroke-width="2.6"/></symbol>
@@ -61,7 +62,7 @@
   <!-- ===== Desktop ===== -->
   <div class="os" id="os" inert>
     <div class="wallpaper" aria-hidden="true">
-      <img src="/assets/images/caramelo-os/wallpaper.jpg" alt="" width="1920" height="1080">
+      <video src="/assets/videos/caramelo-os-hero.mp4" poster="/assets/images/caramelo-os/hero-poster.jpg" width="1920" height="1080" autoplay muted loop playsinline preload="auto" disablepictureinpicture tabindex="-1"></video>
     </div>
     <div class="crt" aria-hidden="true"></div>
     <!-- Barra de menus (macOS) -->
@@ -96,26 +97,22 @@
         <li><button class="icon" type="button" data-open="lixeira"><svg><use href="#i-trash"/></svg><span>Lixeira</span></button></li>
       </ul>
 
-      <aside class="postit" aria-label="Lembrete">
-        <p>Primeiro a intenção.<br>Depois, o jeito de fazer.</p>
-        <small>— lembrete do Luiz</small>
+      <aside class="postit" aria-label="Pergunta para você">
+        <p>Sua landing page expressa a qualidade do seu produto?</p>
+        <small>— pergunta do Luiz</small>
       </aside>
 
       <div class="windows" id="windows"></div>
 
-      <button class="pet" id="pet" type="button" aria-label="Cachorro caramelo: clique para fazer carinho">
-        <span class="pet-bubble" id="petBubble" aria-live="polite"></span>
-        <svg class="pet-sprite" id="petSprite" aria-hidden="true"></svg>
-      </button>
     </main>
 
     <!-- Menu Iniciar -->
     <nav class="start-menu" id="startMenu" aria-label="Menu Iniciar" hidden>
       <div class="start-head">
-        <svg class="start-avatar" id="startAvatar" aria-hidden="true"></svg>
+        <svg class="start-avatar" aria-hidden="true"><use href="#i-isotipo"/></svg>
         <div>
-          <strong id="startName">Visitante</strong>
-          <small>Visitante no CarameloOS 96</small>
+          <strong>Um Cara Caramelo</strong>
+          <small>Estúdio criativo · CarameloOS 96</small>
         </div>
         <span class="start-num" aria-hidden="true">96</span>
       </div>
@@ -131,7 +128,6 @@
         <li><button type="button" data-open="jogo"><svg><use href="#i-game"/></svg>Pega a Bolinha</button></li>
         <li><button type="button" data-open="scraps"><svg><use href="#i-kut"/></svg>Carakut — scraps</button></li>
         <li class="sep"><a href="/library/home" target="_blank" rel="noopener"><svg><use href="#i-link"/></svg>Entrar no LAB</a></li>
-        <li><button type="button" data-open="perfil"><svg><use href="#i-dog"/></svg>Perfil de visitante</button></li>
         <li><a href="/estudio" target="_blank" rel="noopener"><svg><use href="#i-link"/></svg>Versão clássica do site</a></li>
         <li><button type="button" id="btnRestart"><svg><use href="#i-power"/></svg>Reiniciar CarameloOS</button></li>
       </ul>
@@ -185,7 +181,7 @@
         </div>
         <div class="tip">
           <svg><use href="#i-help"/></svg>
-          <p><strong>Dica:</strong> este site é um computador. Dê dois cliques nos ícones da área de trabalho, arraste as janelas pela barra de título e use o botão <strong>iniciar</strong> lá embaixo. O caramelo pixelado aceita carinho.</p>
+          <p><strong>Dica:</strong> este site é um computador. Dê dois cliques nos ícones da área de trabalho, arraste as janelas pela barra de título e use o botão <strong>iniciar</strong> lá embaixo. E deixe um scrap no <strong>Carakut</strong>.</p>
         </div>
       </div>
       <div class="statusbar"><span>Documento de texto</span><span>Leia-me.txt</span></div>
@@ -219,7 +215,7 @@
           <div>
             <strong>CarameloOS 96</strong>
             <span>Edição Estúdio · Um Cara Caramelo®</span>
-            <span>Registrado para: <b data-guest-name>Visitante</b></span>
+            <span>Registrado para: Luiz</span>
           </div>
         </div>
         <p class="sys-label">Programas instalados</p>
@@ -517,7 +513,7 @@
       <header class="kut-top">
         <span class="kut-logo" aria-hidden="true">carakut<sup>beta</sup></span>
         <span class="kut-nav" aria-hidden="true"><span>Início</span><span class="is-on">Recados</span><span>Amigos</span><span>Comunidades</span></span>
-        <span class="kut-me">Olá, <b data-guest-name>Visitante</b></span>
+        <span class="kut-me">Olá, visitante</span>
       </header>
       <div class="kut-scroll">
         <div class="kut-grid">
@@ -552,8 +548,8 @@
             <form class="kut-card kut-form" id="kutForm" novalidate>
               <div class="kut-as">
                 <svg class="kut-avatar" id="kutAvatar" aria-hidden="true"></svg>
-                <span>Escrevendo como <b data-guest-name>Visitante</b></span>
-                <button type="button" class="kut-link" data-open="perfil">trocar</button>
+                <label for="kutName">Seu nome</label>
+                <input class="kut-name" id="kutName" maxlength="24" placeholder="Visitante" autocomplete="nickname">
               </div>
               <label class="sr-only" for="kutBody">Seu scrap para o Luiz</label>
               <textarea id="kutBody" maxlength="500" rows="3" placeholder="Deixe um scrap pro Luiz… (sem links)"></textarea>
@@ -594,29 +590,6 @@
       <footer class="statusbar"><span id="kutStatus">Conectando ao carakut…</span><span>carakut · edição caramelo</span></footer>
     </article>
 
-    <article class="app app-profile" id="app-perfil">
-      <div class="doc-scroll">
-        <p class="eyebrow">Um cantinho do CarameloOS</p>
-        <h3 class="profile-title">Fique à vontade.</h3>
-        <p class="muted">Escolha um caramelo, deixe seu nome. Você é visita no computador do Luiz.</p>
-        <div class="pass">
-          <svg class="pass-avatar" id="passAvatar" aria-hidden="true"></svg>
-          <div><small>Seu crachá de visitante</small><strong id="passName">Visitante</strong><span>Visitante no CarameloOS 96</span></div>
-          <span class="pass-num" aria-hidden="true">96</span>
-        </div>
-        <fieldset class="coats">
-          <legend>Escolha seu companheiro</legend>
-          <div class="coat-grid" id="coatGrid"></div>
-        </fieldset>
-        <label class="field-label" for="guestName">Quem está usando o CarameloOS hoje?</label>
-        <input class="field" id="guestName" maxlength="24" placeholder="Visitante" autocomplete="nickname">
-        <p class="muted small">Fica salvo só neste navegador.</p>
-        <div class="profile-actions">
-          <button type="button" class="btn" data-act="close-self">Agora não</button>
-          <button type="button" class="btn btn-primary" id="btnSaveProfile">Salvar e continuar →</button>
-        </div>
-      </div>
-    </article>
   </div>
 
   <noscript><style>.boot,.os{display:none}.app-store{display:block!important}</style></noscript>

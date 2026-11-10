@@ -117,7 +117,7 @@ export function PromptLibraryApp() {
       title="Biblioteca de prompts"
       srcDoc={document}
       onLoad={() => frame.current?.contentWindow?.postMessage({ type: "lab:prompts:ready" }, window.location.origin)}
-      style={{ display: "block", border: 0, width: "100%", height: "100dvh" }}
+      style={{ display: "block", border: 0, width: "100%", height: "calc(100dvh / var(--ui-zoom, 1))" }}
       allow="clipboard-write"
     />
   );
