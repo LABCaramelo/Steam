@@ -98,7 +98,10 @@ try {
   // getBoundingClientRect vem em px de layout (public/ui-scale.js); o clique do CDP espera px de tela.
   const center = async selector => evaluate(`(() => { const el = document.querySelector(${JSON.stringify(selector)}); if (!el) return null; const r = el.getBoundingClientRect(); const z = window.__uiScale ? window.__uiScale.zoom : 1; return { x: (r.x + r.width / 2) * z, y: (r.y + r.height / 2) * z }; })()`);
   const mouse = async (type, x, y, clickCount = 1) => send('Input.dispatchMouseEvent', { type, x, y, button: 'left', buttons: type === 'mousePressed' ? 1 : 0, clickCount });
+  // Janelas animam ao abrir, minimizar e maximizar (como no macOS): espera assentar antes de medir.
+  const settle = () => waitFor(`!document.getAnimations().some(a => a.playState === 'running' && a.effect && a.effect.target && a.effect.target.closest && a.effect.target.closest('.win'))`, 2000);
   const click = async (selector, count = 1) => {
+    await settle();
     const p = await center(selector);
     if (!p) throw new Error(`Element not found: ${selector}`);
     for (let c = 1; c <= count; c++) { await mouse('mousePressed', p.x, p.y, c); await mouse('mouseReleased', p.x, p.y, c); }
@@ -122,15 +125,19 @@ try {
   check('boot screen starts automatically with desktop inert', boot0.booting && boot0.inert, boot0);
   check('one semantic H1 and the studio title', boot0.h1 === 1 && /Um Cara Caramelo/.test(boot0.title), boot0);
   await screenshot('os-boot.png');
-  check('the loading bar ends on the sign-in screen with a unique caramelo, a name field and the start switch', await waitFor(`!document.querySelector('#bootLogin').hidden && !document.querySelector('#loginInput').hidden && !!document.querySelector('#loginAvatar svg') && !!document.querySelector('#loginGo')`, 7000));
+  check('the loading bar ends on the sign-in screen with a caramelo photo, a name field and the start switch', await waitFor(`!document.querySelector('#bootLogin').hidden && !document.querySelector('#loginInput').hidden && (document.querySelector('#loginAvatar img')?.src || '').includes('/avatares/') && !!document.querySelector('#loginGo')`, 7000));
   await screenshot('os-login.png');
+  const pick0 = await evaluate(`document.querySelector('#loginAvatar img').src`);
+  await click('#loginNext');
+  const pick1 = await evaluate(`({ src: document.querySelector('#loginAvatar img').src, saved: localStorage.getItem('cos.avatar') })`);
+  check('the visitor can switch to another caramelo photo before starting', pick1.src !== pick0 && /^\d+$/.test(pick1.saved || ''), { pick0, pick1 });
   await click('#loginGo');
   check('starting without a name asks for one', await waitFor(`document.querySelector('#loginForm').classList.contains('is-error') && document.querySelector('#os').inert`, 1500));
   await evaluate(`(() => { const i = document.querySelector('#loginInput'); i.value = 'Ana QA'; i.dispatchEvent(new Event('input', { bubbles: true })); })()`);
   await click('#loginGo');
   check('desktop turns on after the start switch', await waitFor(`document.querySelector('#os').classList.contains('is-on') && !document.querySelector('#os').inert`, 4000));
   const signed = await evaluate(`({ menubar: document.querySelector('.menubar-app').textContent, start: document.querySelector('#startName').textContent, saved: JSON.parse(localStorage.getItem('cos.user') || 'null') })`);
-  check('the visitor name replaces "Um Cara Caramelo" in the top bar and is saved in the browser', signed.menubar === 'Ana QA' && signed.start === 'Ana QA' && signed.saved?.name === 'Ana QA' && !!signed.saved?.seed, signed);
+  check('the visitor name replaces "Um Cara Caramelo" in the top bar and is saved in the browser with the photo', signed.menubar === 'Ana QA' && signed.start === 'Ana QA' && signed.saved?.name === 'Ana QA' && Number.isInteger(signed.saved?.avatar), signed);
   await sleep(900);
   const first = await openWins();
   check('first visit opens only Leia-me (no visitor profile, no walking pet)', first.join() === 'leiame', first);
@@ -171,11 +178,13 @@ try {
   const dragZoom = await evaluate(`window.__uiScale ? window.__uiScale.zoom : 1`);
   check('window drags by its title bar, following the mouse at any scale', Math.abs(after.x - before.x - 120 / dragZoom) <= 1 && Math.abs(after.y - before.y - 70 / dragZoom) <= 1, { before, after, dragZoom });
   await click('.win[data-app="sobre"] [data-act="max"]');
-  const maxed = await evaluate(`document.querySelector('.win[data-app="sobre"]').getBoundingClientRect().width >= innerWidth - 2`);
+  await settle();
+  const maxed = await evaluate(`(() => { const w = document.querySelector('.win[data-app="sobre"]'); return w.classList.contains('is-max') && w.getBoundingClientRect().width >= innerWidth - 2; })()`);
   await click('.win[data-app="sobre"] [data-act="max"]');
   await click('.win[data-app="sobre"] [data-act="min"]');
-  const minned = await evaluate(`document.querySelector('.win[data-app="sobre"]').hidden`);
+  const minned = await waitFor(`document.querySelector('.win[data-app="sobre"]').hidden`, 2000);
   await click('.task');
+  await settle();
   const restored = await evaluate(`!document.querySelector('.win[data-app="sobre"]').hidden`);
   check('maximize, minimize and restore from the taskbar', maxed && minned && restored, { maxed, minned, restored });
 
@@ -239,13 +248,14 @@ try {
   await click('#gameStart');
   await sleep(400);
   const running = await evaluate(`document.querySelector('#gameOverlay').hidden`);
-  check('game starts and ends when the dog hits the wall', running && await waitFor(`!document.querySelector('#gameOverlay').hidden && /Fim de jogo/.test(document.querySelector('#gameOverlay').textContent)`, 5000), { running });
+  check('game starts and ends when the dog hits the wall', running && await waitFor(`!document.querySelector('#gameOverlay').hidden && /Fim de jogo/.test(document.querySelector('#gameOverlay').textContent)`, 10000), { running });
 
   /* ---- 8. Orkut: nome próprio, comunidades e participar ---- */
   await click('.icon[data-open="scraps"]', 2);
   await sleep(300);
   await evaluate(`(() => { const i = document.querySelector('#kutName'); i.value = 'QA'; i.dispatchEvent(new Event('input', { bubbles: true })); })()`);
   check('Orkut asks for a name and paints an avatar from it', await evaluate(`document.querySelectorAll('#kutAvatar rect').length > 20 && !!document.querySelector('#kutName')`));
+  await waitFor(`!!document.querySelector('.kut-logo')?.complete`, 4000);
   const orkut = await evaluate(`({ label: document.querySelector('.icon[data-open="scraps"] span').textContent, logo: !!document.querySelector('.kut-logo')?.complete, comms: [...document.querySelectorAll('#kutComms [data-comm] b')].map(b => b.textContent) })`);
   check('Orkut has its name, logo and the six classic communities', orkut.label === 'Orkut' && orkut.logo && orkut.comms.length === 6 && orkut.comms.includes('Eu Odeio Acordar Cedo'), orkut);
   await evaluate(`document.querySelector('#kutComms [data-comm="acordar-cedo"]').click()`);

@@ -641,3 +641,27 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
   .icons.is-free > li { position: static; width: auto; }
   .win-rs { display: none; }
 }
+
+/* Fotos de caramelo na entrada: setas, botão de escolher e grade */
+.login-face { display: flex; align-items: center; gap: 14px; }
+.login-arrow {
+  width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1); color: #F5F5F7; font: 400 24px/1 var(--apple-font-text);
+  display: grid; place-items: center; cursor: pointer; transition: background .2s;
+}
+.login-arrow:hover { background: rgba(255, 255, 255, 0.22); }
+.login-pick { padding: 0; border: 0; background: none; color: rgba(255, 255, 255, 0.55); font-size: 12px; text-decoration: underline; cursor: pointer; }
+.login-pick:hover { color: rgba(255, 255, 255, 0.85); }
+.login-picker {
+  display: grid; grid-template-columns: repeat(6, 56px); gap: 8px; padding: 12px;
+  max-width: calc(100vw / var(--ui-zoom, 1) - 32px); overflow: auto;
+  background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 14px;
+}
+.login-picker button { width: 56px; height: 56px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; cursor: pointer; background: #1C1C1E; box-shadow: 0 0 0 2px transparent; transition: box-shadow .15s, transform .15s; }
+.login-picker button:hover { transform: scale(1.06); }
+.login-picker button[aria-pressed="true"] { box-shadow: 0 0 0 3px #FF8A3D; }
+.login-picker img { display: block; width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 420px) { .login-picker { grid-template-columns: repeat(5, 48px); } .login-picker button { width: 48px; height: 48px; } }
+/* Com a grade de fotos aberta, a entrada pode passar da altura da tela: rola em vez de cortar o topo. */
+.boot { display: flex; overflow-y: auto; }
+.boot-splash, .boot-login { margin: auto; }
