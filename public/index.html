@@ -582,9 +582,9 @@
                 <div><dt>fotos</dt><dd><svg class="kut-ico" viewBox="0 0 14 14" aria-hidden="true"><rect x="1.5" y="4" width="11" height="8" rx="1" fill="#fff" stroke="currentColor"/><path d="M5 4l1-1.5h2L9 4" fill="none" stroke="currentColor"/><circle cx="7" cy="8" r="2" fill="none" stroke="currentColor"/></svg><span id="kutPhotos">–</span></dd></div>
                 <div><dt>vídeos</dt><dd><svg class="kut-ico" viewBox="0 0 14 14" aria-hidden="true"><rect x="1.5" y="3" width="11" height="8" rx="1" fill="#fff" stroke="currentColor"/><path d="M6 5.2v3.6L9 7z" fill="currentColor"/></svg><span>4</span></dd></div>
                 <div><dt>comunidades</dt><dd><svg class="kut-ico" viewBox="0 0 14 14" aria-hidden="true"><circle cx="5" cy="5" r="2" fill="#fff" stroke="currentColor"/><circle cx="9.5" cy="5.5" r="1.7" fill="#fff" stroke="currentColor"/><path d="M1.5 12c0-2.2 1.6-3.6 3.5-3.6S8.5 9.8 8.5 12M8 9c.5-.4 1-.6 1.5-.6 1.7 0 3 1.3 3 3.3" fill="none" stroke="currentColor"/></svg><span id="kutCommsCount">6</span></dd></div>
-                <div><dt>confiável</dt><dd class="kut-rate is-smile" aria-label="3 de 3"><i></i><i></i><i></i></dd></div>
-                <div><dt>legal</dt><dd class="kut-rate is-blue" aria-label="3 de 3"><i></i><i></i><i></i></dd></div>
-                <div><dt>criativo</dt><dd class="kut-rate is-heart" aria-label="3 de 3"><i></i><i></i><i></i></dd></div>
+                <div><dt>confiável</dt><dd class="kut-rate is-smile" style="--p:100%"><span class="kut-rate-icons" aria-hidden="true"><span><i></i><i></i><i></i></span><span class="is-on"><i></i><i></i><i></i></span></span><span class="kut-rate-pct">100%</span></dd></div>
+                <div><dt>legal</dt><dd class="kut-rate is-blue" style="--p:20%"><span class="kut-rate-icons" aria-hidden="true"><span><i></i><i></i><i></i></span><span class="is-on"><i></i><i></i><i></i></span></span><span class="kut-rate-pct">20%</span></dd></div>
+                <div><dt>sexy</dt><dd class="kut-rate is-heart" style="--p:70%"><span class="kut-rate-icons" aria-hidden="true"><span><i></i><i></i><i></i></span><span class="is-on"><i></i><i></i><i></i></span></span><span class="kut-rate-pct">70%</span></dd></div>
               </dl>
 
               <div class="kut-tabs" role="tablist" aria-label="Perfil do Luiz">
@@ -596,11 +596,11 @@
                 <table class="kut-table"><tbody>
                   <tr><th scope="row">sexo:</th><td>masculino</td></tr>
                   <tr><th scope="row">país:</th><td>Brasil</td></tr>
-                  <tr><th scope="row">idiomas que falo:</th><td>Português (Brasil)</td></tr>
+                  <tr><th scope="row">idiomas que falo:</th><td>português, espanhol, inglês e bobagens</td></tr>
                   <tr><th scope="row">estou aqui para:</th><td>scraps, comunidades e boas ideias</td></tr>
                   <tr><th scope="row">quem sou eu:</th><td><p>Sou Luiz. O cara por trás do Caramelo.</p><p>Sou Head de Conteúdo e criador de experiências digitais. Uno repertório visual, escrita estratégica e tecnologia para resolver um problema simples: fazer boas marcas serem percebidas como merecem.</p></td></tr>
                   <tr><th scope="row">paixões:</th><td>repertório visual, escrita estratégica e tecnologia</td></tr>
-                  <tr><th scope="row">mascote:</th><td>um vira-lata caramelo (deixe um scrap e ganhe o seu)</td></tr>
+                  <tr><th scope="row">mascote:</th><td>um vira-lata caramelo (você ganhou o seu na entrada)</td></tr>
                   <tr><th scope="row">página da web:</th><td><a href="https://www.umcaracaramelo.com.br/">www.umcaracaramelo.com.br</a></td></tr>
                 </tbody></table>
               </div>
@@ -626,8 +626,9 @@
 
             <form class="kut-card kut-form" id="kutForm" novalidate>
               <div class="kut-as">
-                <svg class="kut-avatar" id="kutAvatar" aria-hidden="true"></svg>
-                <label for="kutName">Seu nome</label>
+                <span class="kut-me-face" id="kutAvatar"></span>
+                <b class="kut-me-name" id="kutMeName" hidden></b>
+                <label for="kutName" id="kutNameLabel">Seu nome</label>
                 <input class="kut-name" id="kutName" maxlength="24" placeholder="Visitante" autocomplete="nickname">
               </div>
               <label class="sr-only" for="kutBody">Seu scrap para o Luiz</label>

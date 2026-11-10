@@ -707,19 +707,18 @@ a.drive { text-decoration: none; color: inherit; }
 .kut-stats div { display: grid; gap: 1px; }
 .kut-stats dt { font-size: 10.5px; color: #666; }
 .kut-stats dd { margin: 0; font-size: 11.5px; color: var(--kut-blue); font-weight: 700; min-height: 14px; }
-.kut-rate { display: flex; gap: 2px; align-items: center; }
-.kut-rate i { width: 11px; height: 11px; border-radius: 50%; background: #F5C542; border: 1px solid #B88A10; }
-.kut-rate.is-blue i { border-radius: 2px; background: #A8CBEF; border-color: #5D8CC0; }
-.kut-rate.is-heart i { width: 10px; height: 10px; border-radius: 0 50% 50% 50%; transform: rotate(-135deg) scale(.85); background: var(--kut-pink); border-color: #A83D72; }
-/* Confiável: carinhas amarelas, como no Orkut clássico. */
-.kut-rate.is-smile i {
-  width: 12px; height: 12px;
-  background:
-    radial-gradient(circle at 34% 40%, #5A3E00 0 .9px, transparent 1.3px),
-    radial-gradient(circle at 66% 40%, #5A3E00 0 .9px, transparent 1.3px),
-    radial-gradient(ellipse 3.2px 2px at 50% 62%, transparent 0 60%, #5A3E00 62% 82%, transparent 86%) 0 1px / 100% 100% no-repeat,
-    #F5C542;
-}
+/* Notas do perfil (confiável, legal, sexy): três ícones que enchem até a porcentagem, como no Orkut clássico.
+   A camada .is-on (colorida) é recortada em --p por cima da camada apagada. */
+.kut-rate { display: flex; gap: 5px; align-items: center; }
+.kut-rate-icons { position: relative; display: inline-flex; }
+.kut-rate-icons > span { display: inline-flex; gap: 2px; }
+.kut-rate-icons > span:first-child { filter: grayscale(1); opacity: .3; }
+.kut-rate-icons > .is-on { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--p, 100%)) 0 0); }
+.kut-rate i { display: block; width: 13px; height: 13px; background: center / contain no-repeat; }
+.kut-rate.is-smile i { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Ccircle cx='6' cy='6' r='5.4' fill='%23F7C948' stroke='%23C08A00' stroke-width='.8'/%3E%3Ccircle cx='4.2' cy='4.7' r='.8' fill='%235A3E00'/%3E%3Ccircle cx='7.8' cy='4.7' r='.8' fill='%235A3E00'/%3E%3Cpath d='M3.6 7.1q2.4 2.3 4.8 0' fill='none' stroke='%235A3E00' stroke-width='.9' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.kut-rate.is-blue i { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Crect x='1' y='1' width='10' height='10' rx='2.2' fill='%23A8CBEF' stroke='%235D8CC0' stroke-width='.8'/%3E%3Cpath d='M3.2 3.4h3.2M3.2 5.2h1.6' stroke='%23fff' stroke-width='.9' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.kut-rate.is-heart i { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 10.6 1.7 6.4A2.6 2.6 0 0 1 6 3.1a2.6 2.6 0 0 1 4.3 3.3z' fill='%23E26EA6' stroke='%23A83D72' stroke-width='.8' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.kut-rate-pct { font-size: 10.5px; font-weight: 400; color: #666; }
 
 /* Perfil clássico: nome, caminho de amigos, status, números e abas */
 .kut-perfil .kut-title { font-size: 22px; }
@@ -797,7 +796,17 @@ a.drive { text-decoration: none; color: inherit; }
 
 .kut-friends { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 6px; margin: 0; padding: 0; list-style: none; }
 .kut-friends li { display: grid; justify-items: center; gap: 3px; text-align: center; font-size: 10.5px; color: var(--kut-blue); min-width: 0; }
-.kut-friends svg { width: 100%; max-width: 50px; aspect-ratio: 5 / 3; background: var(--kut-soft); border: 1px solid var(--kut-line); border-radius: 3px; padding: 3px; }
+.kut-friends .kut-face { width: 100%; max-width: 54px; height: auto; aspect-ratio: 1; }
+/* Rosto de quem escreve: foto de caramelo da entrada (quadradinha, como no Orkut) ou o caramelo de pixel dos scraps antigos. */
+.kut-face {
+  display: grid; place-items: center; flex: none; width: 44px; height: 44px; overflow: hidden;
+  background: var(--kut-soft); border: 1px solid var(--kut-line); border-radius: 3px;
+}
+.kut-face img { width: 100%; height: 100%; object-fit: cover; }
+.kut-face.is-pixel svg { width: 86%; height: auto; aspect-ratio: 5 / 3; }
+.kut-me-face { display: contents; }
+.kut-as .kut-face { width: 32px; height: 32px; }
+.kut-me-name { color: var(--kut-blue); font-size: 12.5px; }
 .kut-friends span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .kut-friends .kut-none { grid-column: 1 / -1; color: #777; }
 /* Comunidades: lista lateral, grade e página */

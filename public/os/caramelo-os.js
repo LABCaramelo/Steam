@@ -643,6 +643,12 @@
     return COATS[h % COATS.length];
   };
 
+  /* ---------------- Fotos de caramelo (avatares) ---------------- */
+  const AVATAR_COUNT = 30;
+  const avatarSrc = n => `/assets/images/caramelo-os/avatares/${String(n).padStart(2, '0')}.webp`;
+  const validAvatar = n => Number.isInteger(n) && n >= 1 && n <= AVATAR_COUNT;
+  const hashAvatar = text => { let h = 0; for (const ch of String(text)) h = (h * 31 + ch.codePointAt(0)) >>> 0; return (h % AVATAR_COUNT) + 1; };
+
   /* ---------------- Orkut: recados (scraps) ---------------- */
   // Mural público no Supabase. O navegador só chama as funções de supabase/os-scraps.sql.
   (() => {
@@ -691,11 +697,36 @@
       return fmtDay.format(d).replace('.', '');
     }
 
+    // Rosto de quem escreveu: a foto de caramelo da entrada (coat "av-7") ou, nos scraps antigos, o caramelo de pixel.
+    function faceEl(coat, photo) {
+      const box = document.createElement('span');
+      box.className = 'kut-face';
+      box.setAttribute('aria-hidden', 'true');
+      const m = /^av-(\d{1,2})$/.exec(coat || '');
+      const n = m ? Number(m[1]) : null;
+      if (photo || validAvatar(n)) {
+        const img = document.createElement('img');
+        img.alt = '';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        const fallback = avatarSrc(validAvatar(n) ? n : 1);
+        img.src = photo || fallback;
+        img.onerror = () => { if (img.getAttribute('src') !== fallback) img.src = fallback; };
+        box.append(img);
+      } else {
+        box.classList.add('is-pixel');
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        dogSVG(svg, coatById(coat));
+        box.append(svg);
+      }
+      return box;
+    }
+
     function scrapItem(s) {
       const li = document.createElement('li');
       li.className = 'kut-scrap';
-      li.innerHTML = '<svg class="kut-avatar" aria-hidden="true"></svg><div class="kut-scrap-body"><p class="kut-scrap-head"><b></b><time></time></p><p class="kut-scrap-text"></p></div>';
-      dogSVG(li.firstElementChild, coatById(s.coat));
+      li.innerHTML = '<div class="kut-scrap-body"><p class="kut-scrap-head"><b></b><time></time></p><p class="kut-scrap-text"></p></div>';
+      li.prepend(faceEl(s.coat));
       $('b', li).textContent = s.name;
       const t = $('time', li);
       t.dateTime = s.created_at;
@@ -716,8 +747,8 @@
       const ul = $('#kutFriends');
       ul.replaceChildren(...friends.map(s => {
         const li = document.createElement('li');
-        li.innerHTML = '<svg aria-hidden="true"></svg><span></span>';
-        dogSVG(li.firstElementChild, coatById(s.coat));
+        li.innerHTML = '<span class="kut-friend-name"></span>';
+        li.prepend(faceEl(s.coat));
         li.lastElementChild.textContent = s.name;
         return li;
       }));
@@ -790,12 +821,14 @@
       const text = body.value.trim();
       if (!text) { note('Escreva alguma coisa antes de postar.', true); body.focus(); return; }
       if (/(https?:\/\/|www\.)/i.test(text)) { note('Scraps não aceitam links.', true); return; }
-      const name = kutName.value.trim().replace(/\s+/g, ' ').slice(0, 24) || 'Visitante';
-      store.set('cos96.kutName', name === 'Visitante' ? '' : name);
+      // Quem entrou no CarameloOS escreve com o próprio nome e a foto de caramelo da entrada.
+      const name = (me ? me.name : kutName.value).trim().replace(/\s+/g, ' ').slice(0, 24) || 'Visitante';
+      if (!me) store.set('cos96.kutName', name === 'Visitante' ? '' : name);
+      const coat = me ? `av-${myAvatar()}` : coatForName(name).id;
       send.disabled = true;
       note('Enviando…');
       try {
-        const s = await rpc('os_scrap_post', { p_name: name, p_coat: coatForName(name).id, p_body: text });
+        const s = await rpc('os_scrap_post', { p_name: name, p_coat: coat, p_body: text });
         scraps = [s, ...scraps.filter(x => x.id !== s.id)];
         if (total != null) total += 1;
         renderList();
@@ -824,20 +857,31 @@
       } catch { photosCounted = false; }
     }
 
+    // Quem escreve: o usuário da tela de entrada. Sem ele (raro), volta o campo de nome com o caramelo de pixel.
     const kutName = $('#kutName');
-    document.addEventListener('cos:user', e => {
-      const who = e.detail;
-      $('.kut-me').textContent = who ? `Olá, ${who.name}` : 'Olá, visitante';
-      if (who && !kutName.value.trim()) { kutName.value = who.name; kutName.dispatchEvent(new Event('input')); }
-    });
-    const paintAvatar = () => {
-      const who = kutName.value.trim() || 'Visitante';
-      dogSVG($('#kutAvatar'), coatForName(who));
+    let me = null;
+    const myAvatar = () => {
+      if (validAvatar(me?.avatar)) return me.avatar;
+      const saved = store.get('cos.avatar', null);
+      return validAvatar(saved) ? saved : hashAvatar(me?.name || 'Visitante');
+    };
+    const paintMe = () => {
+      const who = me ? me.name : (kutName.value.trim() || 'Visitante');
+      $('#kutAvatar').replaceChildren(me ? faceEl(`av-${myAvatar()}`, me.photo) : faceEl(coatForName(who).id));
+      $('#kutMeName').textContent = me ? me.name : '';
+      $('#kutMeName').hidden = !me;
+      $('#kutNameLabel').hidden = !!me;
+      kutName.hidden = !!me;
       $('#kutCrumbMe').textContent = who;
     };
+    document.addEventListener('cos:user', e => {
+      me = e.detail || null;
+      $('.kut-me').textContent = me ? `Olá, ${me.name}` : 'Olá, visitante';
+      paintMe();
+    });
     kutName.value = store.get('cos96.kutName', '') || '';
-    kutName.addEventListener('input', paintAvatar);
-    paintAvatar();
+    kutName.addEventListener('input', paintMe);
+    paintMe();
 
     hooks.open.scraps = () => {
       countPhotos();
@@ -885,7 +929,7 @@
     ];
     const joined = new Set(store.get('cos.orkut.comunidades', []));
     // Capa: foto da comunidade (public/assets/images/orkut/comunidades/<id>.webp) ou um adesivo do site.
-    const COVERS = new Set(['acordar-cedo', 'geladeira', 'pega-no-olho', 'duplas', 'ja-entrei-na-internet', 'amo-minha-mae', 'borracha']);
+    const COVERS = new Set(['acordar-cedo', 'geladeira', 'pega-no-olho', 'duplas', 'ja-entrei-na-internet', 'amo-minha-mae', 'borracha', 'mae-me-mata']);
     const art = c => COVERS.has(c.id) ? `/assets/images/orkut/comunidades/${c.id}.webp` : `/caramelo/stickers/${c.sticker}.webp`;
     const count = c => c.members == null ? null : c.members + (joined.has(c.id) ? 1 : 0);
     const membersText = c => count(c) == null ? '' : `${count(c).toLocaleString('pt-BR')} membros`;
@@ -1288,10 +1332,7 @@
   // 30 caramelos em public/assets/images/caramelo-os/avatares/01.webp…30.webp.
   // Visitante novo recebe a próxima foto da fila do Supabase (os_avatar_next): os 30 primeiros
   // não repetem e depois a fila recomeça por igual. Sem rede, sorteia. A pessoa pode trocar.
-  const AVATAR_COUNT = 30;
-  const avatarSrc = n => `/assets/images/caramelo-os/avatares/${String(n).padStart(2, '0')}.webp`;
-  const validAvatar = n => Number.isInteger(n) && n >= 1 && n <= AVATAR_COUNT;
-  const hashAvatar = text => { let h = 0; for (const ch of String(text)) h = (h * 31 + ch.codePointAt(0)) >>> 0; return (h % AVATAR_COUNT) + 1; };
+  // (AVATAR_COUNT, avatarSrc, validAvatar e hashAvatar ficam lá em cima, antes do Orkut, que também usa.)
   async function nextAvatar() {
     const saved = store.get('cos.avatar', null);
     if (validAvatar(saved)) return saved;
