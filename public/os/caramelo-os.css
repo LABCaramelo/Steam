@@ -867,3 +867,41 @@ a.drive { text-decoration: none; color: inherit; }
   .kut-table td { padding-top: 2px; }
 }
 @media (prefers-reduced-motion: reduce) { .kut-scrap.is-new { transition: none; } }
+
+/* ================= NAVEGADOR (páginas do site dentro do OS) ================= */
+.app-web { background: #fff; container-type: inline-size; }
+.web-bar {
+  display: flex; align-items: center; gap: 4px; flex: none;
+  padding: 6px 10px; background: #F3F3F5; border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+.web-btn {
+  display: grid; place-items: center; flex: none; width: 30px; height: 28px; padding: 0;
+  border: 0; border-radius: 6px; background: none; color: #4A4A50; cursor: pointer;
+}
+.web-btn:hover:not(:disabled) { background: rgba(0, 0, 0, .07); }
+.web-btn:active:not(:disabled) { background: rgba(0, 0, 0, .12); }
+.web-btn:disabled { opacity: .3; cursor: default; }
+.web-btn:focus-visible { outline: 2px solid #0A73F5; outline-offset: 1px; }
+.web-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.web-url {
+  display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; height: 30px; margin: 0 6px;
+  padding: 0 12px; background: rgba(0, 0, 0, .06); border-radius: 8px; color: #6E6E73;
+}
+.web-url:focus-within { background: #fff; box-shadow: 0 0 0 3px rgba(10, 115, 245, .35); }
+.web-url svg { width: 12px; height: 12px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.web-url input {
+  flex: 1; min-width: 0; padding: 0; border: 0; background: none; outline: none;
+  font: 13px/1 var(--font-ui); color: #1D1D1F; text-align: center; text-overflow: ellipsis;
+}
+.web-url input:focus { text-align: left; }
+.web-view { position: relative; flex: 1; min-height: 0; background: #fff; }
+.web-view iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; }
+.web-progress {
+  position: absolute; z-index: 1; top: 0; left: 0; width: 100%; height: 2px; background: #0A73F5;
+  transform-origin: left; animation: web-load 1.6s cubic-bezier(.2, .8, .2, 1) forwards;
+}
+@keyframes web-load { from { transform: scaleX(.05); } to { transform: scaleX(.85); } }
+/* Ao arrastar a borda da janela, o iframe não pode engolir o ponteiro. */
+.win.is-resizing iframe { pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .web-progress { animation: none; transform: scaleX(.6); } }
+@container (max-width: 520px) { .web-bar .web-btn#webOut { display: none; } }
