@@ -869,7 +869,7 @@
     ];
     const joined = new Set(store.get('cos.orkut.comunidades', []));
     // Capa: foto da comunidade (public/assets/images/orkut/comunidades/<id>.webp) ou um adesivo do site.
-    const COVERS = new Set(['acordar-cedo', 'pega-no-olho', 'duplas']);
+    const COVERS = new Set(['acordar-cedo', 'geladeira', 'pega-no-olho', 'duplas']);
     const art = c => COVERS.has(c.id) ? `/assets/images/orkut/comunidades/${c.id}.webp` : `/caramelo/stickers/${c.sticker}.webp`;
     const count = c => c.members == null ? null : c.members + (joined.has(c.id) ? 1 : 0);
     const membersText = c => count(c) == null ? '' : `${count(c).toLocaleString('pt-BR')} membros`;
