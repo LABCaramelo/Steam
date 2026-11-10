@@ -30,7 +30,7 @@
     recursos:   { title: 'Aprender & Recursos', icon: 'i-folder', w: 620, h: 400 },
     lixeira:    { title: 'Lixeira', icon: 'i-trash', w: 620, h: 470 },
     jogo:       { title: 'Pega a Bolinha', icon: 'i-game', w: 420, h: 530 },
-    scraps:     { title: 'Orkut — Perfil do Luiz', task: 'Orkut', icon: 'i-orkut', w: 920, h: 660 }
+    scraps:     { title: 'Orkut — Página de recados', task: 'Orkut', icon: 'i-orkut', w: 920, h: 660 }
   };
 
   const layer = $('#windows');
@@ -830,11 +830,7 @@
       $('.kut-me').textContent = who ? `Olá, ${who.name}` : 'Olá, visitante';
       if (who && !kutName.value.trim()) { kutName.value = who.name; kutName.dispatchEvent(new Event('input')); }
     });
-    const paintAvatar = () => {
-      const who = kutName.value.trim() || 'Visitante';
-      dogSVG($('#kutAvatar'), coatForName(who));
-      $('#kutCrumbMe').textContent = who;
-    };
+    const paintAvatar = () => dogSVG($('#kutAvatar'), coatForName(kutName.value.trim() || 'Visitante'));
     kutName.value = store.get('cos96.kutName', '') || '';
     kutName.addEventListener('input', paintAvatar);
     paintAvatar();
@@ -906,7 +902,6 @@
       $('#kutComms').replaceChildren(...COMMS.slice(0, 6).map(c => { const li = document.createElement('li'); li.append(commButton(c, 'kut-comm-item')); return li; }));
       $('#kutCommGrid').replaceChildren(...COMMS.map(c => { const li = document.createElement('li'); li.append(commButton(c, 'kut-comm-tile')); return li; }));
       $('#kutCommsN').textContent = `(${COMMS.length})`;
-      $('#kutCommsCount').textContent = String(COMMS.length);
     }
 
     let current = null;
@@ -939,27 +934,7 @@
     }
 
     const views = { home: $('#kutViewHome'), comunidades: $('#kutViewComunidades'), comm: $('#kutViewComm') };
-    // Abas do perfil clássico: social / profissional / pessoal.
-    const tabs = $$('[data-kut-tab]', app);
-    function selectTab(name, focus = false) {
-      tabs.forEach(t => {
-        const on = t.dataset.kutTab === name;
-        t.setAttribute('aria-selected', String(on));
-        t.tabIndex = on ? 0 : -1;
-        $('#' + t.getAttribute('aria-controls')).hidden = !on;
-        if (on && focus) t.focus();
-      });
-    }
-    $('.kut-tabs', app)?.addEventListener('keydown', e => {
-      const i = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
-      const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
-      if (step) { e.preventDefault(); selectTab(tabs[(i + step + tabs.length) % tabs.length].dataset.kutTab, true); }
-      else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); selectTab(tabs[e.key === 'Home' ? 0 : tabs.length - 1].dataset.kutTab, true); }
-    });
-
     function show(view, commId) {
-      const navKey = view;
-      if (view === 'perfil') view = 'home';
       if (view === 'comm') {
         current = COMMS.find(c => c.id === commId) || COMMS[0];
         renderComm();
@@ -968,7 +943,7 @@
       $('#kutLeftProfile').hidden = view === 'comm';
       $('#kutLeftComm').hidden = view !== 'comm';
       $$('.kut-nav [data-kut]', app).forEach(b => {
-        const on = b.dataset.kut === navKey || (view === 'comm' && b.dataset.kut === 'comunidades');
+        const on = b.dataset.kut === view || (view === 'comm' && b.dataset.kut === 'comunidades') || (view === 'home' && b.dataset.kut === 'home');
         b.classList.toggle('is-on', on);
       });
       $('#kutScroll').scrollTop = 0;
@@ -977,8 +952,6 @@
     app.addEventListener('click', e => {
       const comm = e.target.closest('[data-comm]');
       if (comm) { show('comm', comm.dataset.comm); return; }
-      const tab = e.target.closest('[data-kut-tab]');
-      if (tab) { selectTab(tab.dataset.kutTab); return; }
       const nav = e.target.closest('[data-kut]');
       if (!nav) return;
       if (nav.dataset.kut === 'scraps') {
