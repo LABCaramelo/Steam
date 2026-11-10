@@ -12,6 +12,7 @@ import { EntitlementsProvider } from "./entitlements";
 import { UiProvider } from "./ui";
 import "@caramelo/design-system/styles.css";
 import "./styles.css";
+import "./theme/apple.css";
 import { installPlatformThemeSync } from "./theme/platformTheme";
 
 installPlatformThemeSync();

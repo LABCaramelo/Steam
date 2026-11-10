@@ -1,27 +1,27 @@
 /* ==========================================================================
    VOICE STUDIO — LAB CARAMELO DESIGN SYSTEM V1 2026
-   Cores: #101014 (Ink), #18181D (Surface), #FFF4E8 (Cream), #FF701A (Caramel)
+   Cores: #161617 (Ink), #18181D (Surface), #F5F5F7 (Cream), #FF9230 (Caramel)
    ========================================================================== */
 
 :root {
-  --vs-ink: #101014;
+  --vs-ink: #161617;
   --vs-surface: #18181d;
   --vs-surface-elevated: #222228;
   --vs-surface-hover: #2a2a32;
-  --vs-border: rgba(255, 244, 232, 0.1);
-  --vs-border-strong: rgba(255, 244, 232, 0.2);
-  --vs-cream: #fff4e8;
-  --vs-cream-dim: rgba(255, 244, 232, 0.65);
-  --vs-cream-faint: rgba(255, 244, 232, 0.35);
-  --vs-caramel: #ff701a;
-  --vs-caramel-glow: rgba(255, 112, 26, 0.25);
-  --vs-sky: #25bfff;
-  --vs-pink: #ff3d8d;
-  --vs-yellow: #ffd52a;
-  --vs-violet: #7657ff;
+  --vs-border: rgba(255, 255, 255, 0.1);
+  --vs-border-strong: rgba(255, 255, 255, 0.2);
+  --vs-cream: #F5F5F7;
+  --vs-cream-dim: rgba(255, 255, 255, 0.65);
+  --vs-cream-faint: rgba(255, 255, 255, 0.35);
+  --vs-caramel: #FF9230;
+  --vs-caramel-glow: rgba(255, 146, 48, 0.25);
+  --vs-sky: #0091FF;
+  --vs-pink: #FF375F;
+  --vs-yellow: #FFD600;
+  --vs-violet: #6D7CFF;
   --vs-mint: #2ee59d;
   --vs-red: #ff4d4d;
-  --vs-font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --vs-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --vs-font-display: "Montserrat", "Space Grotesk", var(--vs-font-sans);
   --vs-font-mono: "JetBrains Mono", monospace;
   --vs-radius-sm: 6px;
@@ -55,7 +55,7 @@ body.voicestudio-body {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(16, 16, 20, 0.88);
+  background: rgba(22, 22, 23, 0.88);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--vs-border);
 }
@@ -107,8 +107,8 @@ body.voicestudio-body {
   font-weight: 600;
   letter-spacing: 1px;
   color: var(--vs-caramel);
-  background: rgba(255, 112, 26, 0.12);
-  border: 1px solid rgba(255, 112, 26, 0.3);
+  background: rgba(255, 146, 48, 0.12);
+  border: 1px solid rgba(255, 146, 48, 0.3);
   padding: 0.15rem 0.45rem;
   border-radius: 4px;
 }
@@ -165,8 +165,8 @@ body.voicestudio-body {
   align-items: center;
   gap: 0.5rem;
   padding: 0.45rem 0.95rem;
-  background: rgba(255, 112, 26, 0.14);
-  border: 1px solid rgba(255, 112, 26, 0.4);
+  background: rgba(255, 146, 48, 0.14);
+  border: 1px solid rgba(255, 146, 48, 0.4);
   border-radius: 20px;
   color: var(--vs-cream);
   font-size: 0.82rem;
@@ -176,7 +176,7 @@ body.voicestudio-body {
 }
 
 .vs-takes-trigger:hover {
-  background: rgba(255, 112, 26, 0.24);
+  background: rgba(255, 146, 48, 0.24);
   border-color: var(--vs-caramel);
 }
 
@@ -193,7 +193,7 @@ body.voicestudio-body {
 .vs-nav {
   padding: 0 1.5rem;
   overflow-x: auto;
-  border-top: 1px solid rgba(255, 244, 232, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .vs-nav__scroll {
@@ -254,8 +254,8 @@ body.voicestudio-body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(90deg, rgba(255, 112, 26, 0.12), rgba(37, 191, 255, 0.06));
-  border: 1px solid rgba(255, 112, 26, 0.25);
+  background: linear-gradient(90deg, rgba(255, 146, 48, 0.12), rgba(0, 145, 255, 0.06));
+  border: 1px solid rgba(255, 146, 48, 0.25);
   border-radius: var(--vs-radius-lg);
   padding: 1.25rem 1.6rem;
   margin-bottom: 1.5rem;
@@ -281,7 +281,7 @@ body.voicestudio-body {
   font-weight: 600;
   letter-spacing: 0.5px;
   color: var(--vs-caramel);
-  background: rgba(255, 112, 26, 0.15);
+  background: rgba(255, 146, 48, 0.15);
   border: 1px solid var(--vs-caramel);
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
@@ -298,8 +298,8 @@ body.voicestudio-body {
 }
 
 .vs-panel--highlight {
-  border-color: rgba(255, 112, 26, 0.4);
-  background: linear-gradient(180deg, rgba(255, 112, 26, 0.06), var(--vs-surface));
+  border-color: rgba(255, 146, 48, 0.4);
+  background: linear-gradient(180deg, rgba(255, 146, 48, 0.06), var(--vs-surface));
 }
 
 .vs-panel__title {
@@ -396,13 +396,13 @@ body.voicestudio-body {
 
 @keyframes vs-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 112, 26, 0.5);
+    box-shadow: 0 0 0 0 rgba(255, 146, 48, 0.5);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(255, 112, 26, 0);
+    box-shadow: 0 0 0 10px rgba(255, 146, 48, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(255, 112, 26, 0);
+    box-shadow: 0 0 0 0 rgba(255, 146, 48, 0);
   }
 }
 
@@ -442,7 +442,7 @@ body.voicestudio-body {
 
 .vs-chip:hover,
 .vs-chip--active {
-  background: rgba(255, 112, 26, 0.2);
+  background: rgba(255, 146, 48, 0.2);
   border-color: var(--vs-caramel);
   color: var(--vs-caramel);
 }
@@ -473,9 +473,9 @@ body.voicestudio-body {
 }
 
 .vs-badge--warn {
-  background: rgba(255, 213, 42, 0.15);
+  background: rgba(255, 214, 0, 0.15);
   color: var(--vs-yellow);
-  border: 1px solid rgba(255, 213, 42, 0.3);
+  border: 1px solid rgba(255, 214, 0, 0.3);
 }
 
 .vs-badge--danger {
@@ -693,8 +693,8 @@ input[type="range"] {
 }
 
 .vs-tag-pill {
-  background: rgba(255, 112, 26, 0.1);
-  border: 1px solid rgba(255, 112, 26, 0.25);
+  background: rgba(255, 146, 48, 0.1);
+  border: 1px solid rgba(255, 146, 48, 0.25);
   color: var(--vs-caramel);
   font-size: 0.72rem;
   font-weight: 700;
@@ -734,7 +734,7 @@ input[type="range"] {
   gap: 1.25rem;
   margin-top: 0.85rem;
   padding-top: 0.85rem;
-  border-top: 1px solid rgba(255, 244, 232, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .vs-slider-group label {
@@ -871,8 +871,8 @@ input[type="range"] {
 
 .vs-biometrics-card {
   margin-top: 1.25rem;
-  background: linear-gradient(135deg, rgba(37, 191, 255, 0.08), rgba(255, 112, 26, 0.08));
-  border: 1px solid rgba(37, 191, 255, 0.3);
+  background: linear-gradient(135deg, rgba(0, 145, 255, 0.08), rgba(255, 146, 48, 0.08));
+  border: 1px solid rgba(0, 145, 255, 0.3);
   border-radius: var(--vs-radius);
   padding: 1.1rem;
 }
@@ -1426,7 +1426,7 @@ input[type="range"] {
 
 .vs-engine-card--active {
   border-color: var(--vs-caramel);
-  background: rgba(255, 112, 26, 0.08);
+  background: rgba(255, 146, 48, 0.08);
 }
 
 .vs-engine-card__name {

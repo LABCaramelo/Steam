@@ -251,7 +251,7 @@
   overflow: auto;
   font-size: 13px;
   line-height: 1.5;
-  color: #101014;
+  color: #161617;
   user-select: text;
 }
 .note h1,
@@ -295,7 +295,7 @@
   background: #ff8fbd;
 }
 .note-white {
-  background: #fff4e8;
+  background: #F5F5F7;
 }
 .note-green {
   background: #cfe3b5;

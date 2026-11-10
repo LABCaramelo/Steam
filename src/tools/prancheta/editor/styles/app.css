@@ -132,7 +132,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 .pp-title {
   font-weight: 600;
   font-size: 12px;
-  color: #FFF4E8;
+  color: #F5F5F7;
 }
 
 /* Custom Type Selector (Elimina <select> nativo e texto branco-no-branco) */
@@ -148,7 +148,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #FFF4E8;
+  color: #F5F5F7;
   font-size: 12px;
   font-weight: 550;
   cursor: pointer;
@@ -195,7 +195,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   border-radius: 6px;
   font-size: 12px;
   font-weight: 500;
-  color: #FFF4E8;
+  color: #F5F5F7;
   cursor: pointer;
   background: transparent;
   text-align: left;
@@ -366,7 +366,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 .cp-hex-input {
   width: 100%;
   background: transparent;
-  color: #FFF4E8;
+  color: #F5F5F7;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -415,15 +415,15 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   font-weight: 500;
   border-radius: 6px;
   cursor: pointer;
-  border: 1px solid rgba(255, 112, 26, 0.3);
-  background: rgba(255, 112, 26, 0.08);
+  border: 1px solid rgba(255, 146, 48, 0.3);
+  background: rgba(255, 146, 48, 0.08);
   color: #ff9b50;
   transition: opacity 0.14s ease, transform 0.14s ease, background 0.14s ease, border-color 0.14s ease;
 }
 
 .cp-ai-btn:hover:not(:disabled) {
-  background: rgba(255, 112, 26, 0.18);
-  border-color: #ff701a;
+  background: rgba(255, 146, 48, 0.18);
+  border-color: #FF9230;
   color: #fff;
 }
 
@@ -552,7 +552,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 
 .cp-grad-btn:hover {
   background: rgba(255, 255, 255, 0.12);
-  color: #FFF4E8;
+  color: #F5F5F7;
 }
 
 .cp-grad-btn.active {
@@ -605,12 +605,12 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 }
 
 .pp-scale-mode-btn:hover {
-  color: #FFF4E8;
+  color: #F5F5F7;
 }
 
 .pp-scale-mode-btn.active {
   background: rgba(255, 255, 255, 0.14);
-  color: #FFF4E8;
+  color: #F5F5F7;
   font-weight: 600;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
@@ -1066,8 +1066,8 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 
 /* Carousel Controls & Badges (Caramelo V1 2026) */
 .carousel-card {
-  background: rgba(255, 112, 26, 0.08);
-  border: 1px solid rgba(255, 112, 26, 0.28);
+  background: rgba(255, 146, 48, 0.08);
+  border: 1px solid rgba(255, 146, 48, 0.28);
   border-radius: 8px;
   padding: 10px 12px;
   margin: 4px 0 10px;
@@ -1085,7 +1085,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 .carousel-title {
   font-weight: 650;
   font-size: 12px;
-  color: #FF701A;
+  color: #FF9230;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1094,8 +1094,8 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 .carousel-badge {
   font-size: 10px;
   font-weight: 600;
-  background: rgba(255, 112, 26, 0.2);
-  color: #FFF4E8;
+  background: rgba(255, 146, 48, 0.2);
+  color: #F5F5F7;
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -1118,14 +1118,14 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   justify-content: center;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.08);
-  color: #FFF4E8;
+  color: #F5F5F7;
   border: none;
   cursor: pointer;
   transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
 .carousel-stepper-btn:hover:not(:disabled) {
-  background: #FF701A;
+  background: #FF9230;
   color: #FFF;
 }
 
@@ -1144,7 +1144,7 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
 .carousel-stepper-pages {
   font-size: 12px;
   font-weight: 600;
-  color: #FFF4E8;
+  color: #F5F5F7;
 }
 
 .carousel-stepper-dim {
@@ -1164,19 +1164,19 @@ input[type='checkbox'] { accent-color: var(--blue); margin: 0; width: 12px; heig
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #FFF4E8;
+  color: #F5F5F7;
   cursor: pointer;
   transition: opacity 0.12s ease, transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .carousel-chip:hover {
-  background: rgba(255, 112, 26, 0.2);
-  border-color: rgba(255, 112, 26, 0.4);
+  background: rgba(255, 146, 48, 0.2);
+  border-color: rgba(255, 146, 48, 0.4);
 }
 
 .carousel-chip.active {
-  background: #FF701A;
+  background: #FF9230;
   color: #FFFFFF;
-  border-color: #FF701A;
+  border-color: #FF9230;
   font-weight: 600;
 }

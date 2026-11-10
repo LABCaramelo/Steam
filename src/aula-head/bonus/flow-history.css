@@ -97,7 +97,7 @@
 .history-page-top b { letter-spacing: .12em; font-size: inherit; }
 .history-page-hero { position: relative; padding: 1.2cqw; display: flex; flex-direction: column; gap: .5cqw; min-height: 0; flex: 1; justify-content: center; }
 .history-page-kicker { color: var(--page-accent); font-size: .5cqw; font-weight: 750; letter-spacing: .08em; }
-.history-page-hero > strong { display: block; font-family: Montserrat,Inter,sans-serif; font-size: 1.8cqw; font-weight: 850; letter-spacing: -.05em; line-height: 1.05; max-width: 75%; z-index: 1; }
+.history-page-hero > strong { display: block; font-family: Montserrat,-apple-system, BlinkMacSystemFont, "SF Pro Text", Inter,sans-serif; font-size: 1.8cqw; font-weight: 850; letter-spacing: -.05em; line-height: 1.05; max-width: 75%; z-index: 1; }
 .experiment .history-page-hero > p { font-size: .63cqw; line-height: 1.4; margin: 0; max-width: 75%; opacity: .75; }
 .history-page-cta { font-size: .54cqw; background: var(--page-accent); color: #1b1b1e; padding: .5cqw .7cqw; width: fit-content; font-weight: 750; }
 .history-page-orbit { position: absolute; right: 7%; top: 16%; font-size: 5cqw; line-height: 1; color: var(--page-accent); font-style: normal; opacity: .45; }

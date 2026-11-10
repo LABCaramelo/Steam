@@ -132,27 +132,27 @@
 :root,
 [data-caramelo-theme="dark"] {
   /* ============ 1. MARCA (V1, inalterado) ============ */
-  --caramelo-color-ink: #101014;
+  --caramelo-color-ink: #161617;
   --caramelo-color-ink-muted: #18181D;
   --caramelo-color-ink-surface: #1F1F26;
   --caramelo-color-ink-border: #27272F;
 
-  --caramelo-color-cream: #FFF4E8;
+  --caramelo-color-cream: #F5F5F7;
   --caramelo-color-cream-muted: #F5E6D4;
   --caramelo-color-cream-border: #E8D2BB;
 
-  --caramelo-color-caramel: #FF701A;
+  --caramelo-color-caramel: #FF9230;
   --caramelo-color-caramel-hover: #E55E0D;
   --caramelo-color-caramel-light: #FFEFE6;
-  --caramelo-color-caramel-bright: #FF8A3D;
+  --caramelo-color-caramel-bright: #FF9E33;
   --caramelo-color-caramel-deep: #AB3B00;
 
-  --caramelo-color-sky: #25BFFF;
+  --caramelo-color-sky: #0091FF;
   --caramelo-color-sky-hover: #0DA8EA;
-  --caramelo-color-pink: #FF3D8D;
-  --caramelo-color-violet: #7657FF;
-  --caramelo-color-yellow: #FFD52A;
-  --caramelo-color-mint: #3DDC97;
+  --caramelo-color-pink: #FF375F;
+  --caramelo-color-violet: #6D7CFF;
+  --caramelo-color-yellow: #FFD600;
+  --caramelo-color-mint: #30D158;
 
   /* Semântica V1 (mantida para compatibilidade) */
   --caramelo-bg: var(--caramelo-color-ink);
@@ -163,14 +163,14 @@
   --caramelo-border: var(--caramelo-color-ink-border);
 
   /* Sombras Gráficas (Print) */
-  --caramelo-shadow-sm: 2px 2px 0px #101014;
-  --caramelo-shadow-md: 4px 4px 0px #101014;
-  --caramelo-shadow-caramel: 4px 4px 0px #FF701A;
-  --caramelo-shadow-sky: 4px 4px 0px #25BFFF;
+  --caramelo-shadow-sm: 2px 2px 0px #161617;
+  --caramelo-shadow-md: 4px 4px 0px #161617;
+  --caramelo-shadow-caramel: 4px 4px 0px #FF9230;
+  --caramelo-shadow-sky: 4px 4px 0px #0091FF;
 
   /* Fontes — Montserrat · Inter · Covered By Your Grace (+ mono do sistema) */
-  --caramelo-font-display: "Montserrat", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --caramelo-font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --caramelo-font-display: "Montserrat", -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --caramelo-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --caramelo-font-handwriting: "Covered By Your Grace", cursive;
   --caramelo-font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
 
@@ -216,12 +216,12 @@
   --cm-on-status: 16 16 20;
 
   /* Elevação Lumen */
-  --cm-highlight: inset 0 1px 0 rgba(255, 244, 232, 0.05);
-  --cm-elev-1: inset 0 1px 0 rgba(255, 244, 232, 0.04), 0 1px 2px rgba(0, 0, 0, 0.4);
-  --cm-elev-2: inset 0 1px 0 rgba(255, 244, 232, 0.05), 0 8px 20px -6px rgba(0, 0, 0, 0.55);
-  --cm-elev-3: inset 0 1px 0 rgba(255, 244, 232, 0.06), 0 16px 34px -8px rgba(0, 0, 0, 0.6);
-  --cm-elev-4: inset 0 1px 0 rgba(255, 244, 232, 0.06), 0 0 0 1px rgba(255, 244, 232, 0.06), 0 24px 60px -12px rgba(0, 0, 0, 0.72);
-  --cm-pressed: inset 0 2px 4px rgba(0, 0, 0, 0.6), inset 0 -1px 1px rgba(255, 244, 232, 0.05);
+  --cm-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --cm-elev-1: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --cm-elev-2: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 20px -6px rgba(0, 0, 0, 0.55);
+  --cm-elev-3: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 16px 34px -8px rgba(0, 0, 0, 0.6);
+  --cm-elev-4: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.06), 0 24px 60px -12px rgba(0, 0, 0, 0.72);
+  --cm-pressed: inset 0 2px 4px rgba(0, 0, 0, 0.6), inset 0 -1px 1px rgba(255, 255, 255, 0.05);
   --cm-glow-sm: var(--cm-spectrum-glow);
   --cm-glow: var(--cm-spectrum-glow-strong);
   --cm-focus-ring: 0 0 0 2px rgb(var(--cm-stage)), 0 0 0 4px rgb(var(--cm-focus));
@@ -305,11 +305,11 @@
   --cm-on-status: 255 244 232;
 
   --cm-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  --cm-elev-1: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 2px rgba(16, 16, 20, 0.08);
-  --cm-elev-2: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 20px -8px rgba(16, 16, 20, 0.18);
-  --cm-elev-3: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 16px 34px -10px rgba(16, 16, 20, 0.22);
-  --cm-elev-4: 0 0 0 1px rgba(16, 16, 20, 0.06), 0 24px 60px -16px rgba(16, 16, 20, 0.28);
-  --cm-pressed: inset 0 2px 4px rgba(16, 16, 20, 0.12);
+  --cm-elev-1: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 2px rgba(22, 22, 23, 0.08);
+  --cm-elev-2: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 20px -8px rgba(22, 22, 23, 0.18);
+  --cm-elev-3: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 16px 34px -10px rgba(22, 22, 23, 0.22);
+  --cm-elev-4: 0 0 0 1px rgba(22, 22, 23, 0.06), 0 24px 60px -16px rgba(22, 22, 23, 0.28);
+  --cm-pressed: inset 0 2px 4px rgba(22, 22, 23, 0.12);
   --cm-glow-sm: var(--cm-spectrum-glow);
   --cm-glow: var(--cm-spectrum-glow-strong);
 }
@@ -412,7 +412,7 @@
 /* Retícula Halftone / Ben-Day pontilhada */
 .caramelo-halftone {
   background-image: radial-gradient(
-    rgba(255, 112, 26, 0.15) 1px,
+    rgba(255, 146, 48, 0.15) 1px,
     transparent 1px
   );
   background-size: 8px 8px;
@@ -420,7 +420,7 @@
 
 .caramelo-halftone-subtle {
   background-image: radial-gradient(
-    rgba(255, 244, 232, 0.07) 1px,
+    rgba(255, 255, 255, 0.07) 1px,
     transparent 1px
   );
   background-size: 6px 6px;
@@ -428,7 +428,7 @@
 
 .caramelo-halftone-dense {
   background-image: radial-gradient(
-    rgba(16, 16, 20, 0.25) 1.5px,
+    rgba(22, 22, 23, 0.25) 1.5px,
     transparent 1.5px
   );
   background-size: 5px 5px;
@@ -457,8 +457,8 @@
 
 .caramelo-misregistration:hover {
   text-shadow: 
-    -1.5px -0.5px 0px rgba(37, 191, 255, 0.75),
-    1.5px 0.5px 0px rgba(255, 61, 141, 0.75);
+    -1.5px -0.5px 0px rgba(0, 145, 255, 0.75),
+    1.5px 0.5px 0px rgba(255, 55, 95, 0.75);
 }
 
 /* Borda Gráfica / Hard Edge */
@@ -480,12 +480,12 @@
 
 .caramelo-layer-split:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 2px 2px 0 #FF701A, -2px 2px 0 #25BFFF, 4px 4px 0 #FF3D8D, -4px 3px 0 #7657FF, 5px 5px 0 #FFD52A;
+  box-shadow: 2px 2px 0 #FF9230, -2px 2px 0 #0091FF, 4px 4px 0 #FF375F, -4px 3px 0 #6D7CFF, 5px 5px 0 #FFD600;
 }
 
 .caramelo-layer-split:active {
   transform: translate(1px, 1px);
-  box-shadow: 1px 0 0 #FF701A, -1px 0 0 #25BFFF, 0 1px 0 #FF3D8D, 1px 1px 0 #7657FF, -1px 1px 0 #FFD52A;
+  box-shadow: 1px 0 0 #FF9230, -1px 0 0 #0091FF, 0 1px 0 #FF375F, 1px 1px 0 #6D7CFF, -1px 1px 0 #FFD600;
 }
 
 /* Movimento reduzido: camadas permanecem alinhadas, apenas a sombra responde */
@@ -915,7 +915,7 @@
   --cm-btn-fg: rgb(var(--cm-fg));
   --cm-btn-line: rgb(var(--cm-line));
   --cm-btn-fill: var(--cm-spectrum-soft);
-  --cm-btn-fill-fg: #101014;
+  --cm-btn-fill-fg: #161617;
   position: relative;
   isolation: isolate;
   display: inline-flex;
@@ -956,11 +956,11 @@
 .cm-btn--block { display: flex; width: 100%; }
 
 .cm-btn--accent {
-  --cm-btn-bg: #101014;
-  --cm-btn-fg: #FFF4E8;
+  --cm-btn-bg: #161617;
+  --cm-btn-fg: #F5F5F7;
   --cm-btn-line: transparent;
   --cm-btn-fill: var(--cm-spectrum-soft);
-  --cm-btn-fill-fg: #101014;
+  --cm-btn-fill-fg: #161617;
   box-shadow: var(--cm-highlight), 0 1px 2px rgb(0 0 0 / 0.4);
 }
 .cm-btn--accent:hover { border-color: transparent; box-shadow: var(--cm-glow-sm); }
@@ -1025,11 +1025,11 @@
   font: 700 0.8125rem/1 var(--caramelo-font-sans);
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #101014;
+  color: #161617;
   background: linear-gradient(180deg, #FFFAF4, #EFDFCC);
   border: 0;
   border-radius: var(--cm-radius-pill);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8), inset 0 -2px 0 rgb(16 16 20 / 0.08), 0 1px 2px rgb(0 0 0 / 0.4);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8), inset 0 -2px 0 rgb(22 22 23 / 0.08), 0 1px 2px rgb(0 0 0 / 0.4);
   cursor: pointer;
   text-decoration: none;
   transition: transform var(--cm-dur-quick) var(--cm-ease-out);
@@ -1053,11 +1053,11 @@
   inset: -2px;
   padding: 2px;
   background:
-    radial-gradient(100px circle at calc(var(--mx) - 28px) var(--my), #FF701A, transparent 68%),
-    radial-gradient(100px circle at calc(var(--mx) + 28px) var(--my), #25BFFF, transparent 68%),
-    radial-gradient(90px circle at var(--mx) calc(var(--my) + 22px), #FF3D8D, transparent 68%),
-    radial-gradient(90px circle at var(--mx) var(--my), #7657FF, transparent 68%),
-    radial-gradient(90px circle at var(--mx) calc(var(--my) - 22px), #FFD52A, transparent 68%);
+    radial-gradient(100px circle at calc(var(--mx) - 28px) var(--my), #FF9230, transparent 68%),
+    radial-gradient(100px circle at calc(var(--mx) + 28px) var(--my), #0091FF, transparent 68%),
+    radial-gradient(90px circle at var(--mx) calc(var(--my) + 22px), #FF375F, transparent 68%),
+    radial-gradient(90px circle at var(--mx) var(--my), #6D7CFF, transparent 68%),
+    radial-gradient(90px circle at var(--mx) calc(var(--my) - 22px), #FFD600, transparent 68%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -1889,7 +1889,7 @@ html[data-motion="full"] [data-cm-reveal="calm"]:not([data-cm-shown]) { transfor
   transition: background-color 200ms, color 200ms, border-color 200ms;
   cursor: pointer;
 }
-.cm-deck__steps button[aria-pressed="true"] { background: var(--cm-spectrum-soft); border-color: transparent; color: #101014; }
+.cm-deck__steps button[aria-pressed="true"] { background: var(--cm-spectrum-soft); border-color: transparent; color: #161617; }
 .cm-deck__steps button:focus-visible { outline: none; box-shadow: var(--cm-focus-ring); }
 /* Fluxo (touch, telas baixas, movimento reduzido): lista simples, sem contador nem passos (LP) */
 .cm-deck:not([data-mode="scrub"]) .cm-deck__toolbar,
@@ -2033,13 +2033,13 @@ html:is([data-motion="reduced"], [data-motion="off"]) .cm-tilt { transform: none
 
 :root,
 [data-caramelo-theme="dark"] {
-  --cm-spectrum: linear-gradient(110deg, #FF701A 0%, #FF3D8D 24%, #7657FF 48%, #25BFFF 72%, #FFD52A 100%);
+  --cm-spectrum: linear-gradient(110deg, #FF9230 0%, #FF375F 24%, #6D7CFF 48%, #0091FF 72%, #FFD600 100%);
   --cm-spectrum-gradient: var(--cm-spectrum);
-  --cm-spectrum-vertical: linear-gradient(180deg, #FF701A 0%, #FF3D8D 24%, #7657FF 48%, #25BFFF 72%, #FFD52A 100%);
+  --cm-spectrum-vertical: linear-gradient(180deg, #FF9230 0%, #FF375F 24%, #6D7CFF 48%, #0091FF 72%, #FFD600 100%);
   --cm-spectrum-soft: linear-gradient(110deg, #FFAE7B 0%, #FF8FBD 24%, #B6A5FF 48%, #8ADEFF 72%, #FFE889 100%);
   --cm-spectrum-glow: 0 0 16px #FF701A26, 5px 0 22px #FF3D8D22, -5px 0 22px #25BFFF22, 0 5px 24px #7657FF20, 0 -3px 18px #FFD52A1A;
   --cm-spectrum-glow-strong: -6px 0 22px #FF701A45, 6px 0 22px #25BFFF45, 0 6px 26px #FF3D8D3D, 0 0 32px #7657FF40, 0 -6px 24px #FFD52A33;
-  --cm-spectrum-print: 0.8px 0.8px 0 #FF701A, 1.6px 1.6px 0 #FF3D8D, 2.4px 2.4px 0 #7657FF, 3.2px 3.2px 0 #25BFFF, 4px 4px 0 #FFD52A;
+  --cm-spectrum-print: 0.8px 0.8px 0 #FF9230, 1.6px 1.6px 0 #FF375F, 2.4px 2.4px 0 #6D7CFF, 3.2px 3.2px 0 #0091FF, 4px 4px 0 #FFD600;
   --cm-spectrum-text-image: var(--cm-spectrum-soft);
   --cm-spectrum-text-color: transparent;
 }
@@ -2062,7 +2062,7 @@ html:is([data-motion="reduced"], [data-motion="off"]) .cm-tilt { transform: none
   border: 1px solid rgb(var(--cm-fg) / 0.22);
   border-radius: var(--cm-radius-pill);
   background: var(--cm-spectrum);
-  box-shadow: inset 0 0 0 1px rgb(255 244 232 / 0.12), var(--cm-spectrum-glow);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), var(--cm-spectrum-glow);
 }
 
 .cm-spectrum-swatch::before {
@@ -2081,7 +2081,7 @@ html:is([data-motion="reduced"], [data-motion="off"]) .cm-tilt { transform: none
 }
 
 .cm-spectrum-text[data-cm-spectrum-surface="dark"] {
-  color: #FFF4E8;
+  color: #F5F5F7;
 }
 
 @supports (background-clip: text) or (-webkit-background-clip: text) {
@@ -2146,8 +2146,8 @@ html:is([data-motion="reduced"], [data-motion="off"]) .cm-tilt { transform: none
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  color: #FFF4E8;
-  background: #101014;
+  color: #F5F5F7;
+  background: #161617;
   text-shadow: 0 2px 14px #10101466;
 }
 
@@ -2163,11 +2163,11 @@ html:is([data-motion="reduced"], [data-motion="off"]) .cm-tilt { transform: none
   z-index: -2;
   inset: -15%;
   background:
-    radial-gradient(ellipse at 8% 28%, #FF701A 0%, transparent 48%),
-    radial-gradient(ellipse at 76% 12%, #25BFFF 0%, transparent 46%),
-    radial-gradient(ellipse at 95% 68%, #FF3D8D 0%, transparent 48%),
-    radial-gradient(ellipse at 44% 72%, #7657FF 0%, transparent 50%),
-    radial-gradient(ellipse at 20% 100%, #FFD52A 0%, transparent 43%);
+    radial-gradient(ellipse at 8% 28%, #FF9230 0%, transparent 48%),
+    radial-gradient(ellipse at 76% 12%, #0091FF 0%, transparent 46%),
+    radial-gradient(ellipse at 95% 68%, #FF375F 0%, transparent 48%),
+    radial-gradient(ellipse at 44% 72%, #6D7CFF 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 100%, #FFD600 0%, transparent 43%);
   filter: blur(18px);
   opacity: 0.92;
   rotate: calc(var(--cm-chromatic-phase, 0) * 12deg);
@@ -2230,15 +2230,15 @@ html:is([data-motion="reduced"], [data-motion="off"]) .cm-tilt { transform: none
 /* Cor combinada nos controles: o rótulo permanece sobre tinta uniforme. */
 .cm-btn {
   --cm-btn-fill: var(--cm-spectrum-soft);
-  --cm-btn-fill-fg: #101014;
+  --cm-btn-fill-fg: #161617;
 }
 
 .cm-btn--accent {
-  --cm-btn-bg: #101014;
-  --cm-btn-fg: #FFF4E8;
+  --cm-btn-bg: #161617;
+  --cm-btn-fg: #F5F5F7;
   --cm-btn-fill: var(--cm-spectrum-soft);
-  --cm-btn-fill-fg: #101014;
-  background: linear-gradient(#101014, #101014) padding-box, var(--cm-spectrum) border-box;
+  --cm-btn-fill-fg: #161617;
+  background: linear-gradient(#161617, #161617) padding-box, var(--cm-spectrum) border-box;
   border-color: transparent;
   box-shadow: inset 0 1px 0 #FFF4E80D, var(--cm-spectrum-glow);
 }
@@ -2260,7 +2260,7 @@ html:is([data-motion="reduced"], [data-motion="off"]) .cm-tilt { transform: none
 
 .cm-btn--cream {
   --cm-btn-fill: var(--cm-spectrum-soft);
-  --cm-btn-fill-fg: #101014;
+  --cm-btn-fill-fg: #161617;
 }
 
 .cm-btn--ghost {
@@ -2270,18 +2270,18 @@ html:is([data-motion="reduced"], [data-motion="off"]) .cm-tilt { transform: none
 
 /* Aparência compartilhada para CTAs Print, Lumen e interfaces convertidas. */
 .cm-brand-action {
-  --cm-btn-bg: #FFF4E8;
-  --cm-btn-fg: #101014;
+  --cm-btn-bg: #F5F5F7;
+  --cm-btn-fg: #161617;
   --cm-btn-fill: var(--cm-spectrum-soft);
-  --cm-btn-fill-fg: #101014;
-  color: #101014;
+  --cm-btn-fill-fg: #161617;
+  color: #161617;
   background: var(--cm-spectrum-soft);
-  border: 1px solid rgb(255 244 232 / 0.3);
+  border: 1px solid rgb(255 255 255 / 0.3);
   box-shadow: inset 0 1px 0 #FFF4E84D, var(--cm-spectrum-glow);
 }
 
 .cm-brand-action:is(:hover, :focus-visible) {
-  color: #101014;
+  color: #161617;
   box-shadow: inset 0 1px 0 #FFF4E84D, var(--cm-spectrum-glow-strong);
 }
 
@@ -2305,11 +2305,11 @@ html:is([data-motion="reduced"], [data-motion="off"]) .cm-tilt { transform: none
 .cm-print-interactive {
   --cm-print-step: 0.8px;
   --cm-print-shadow:
-    var(--cm-print-step) var(--cm-print-step) 0 #FF701A,
-    calc(var(--cm-print-step) * 2) calc(var(--cm-print-step) * 2) 0 #FF3D8D,
-    calc(var(--cm-print-step) * 3) calc(var(--cm-print-step) * 3) 0 #7657FF,
-    calc(var(--cm-print-step) * 4) calc(var(--cm-print-step) * 4) 0 #25BFFF,
-    calc(var(--cm-print-step) * 5) calc(var(--cm-print-step) * 5) 0 #FFD52A;
+    var(--cm-print-step) var(--cm-print-step) 0 #FF9230,
+    calc(var(--cm-print-step) * 2) calc(var(--cm-print-step) * 2) 0 #FF375F,
+    calc(var(--cm-print-step) * 3) calc(var(--cm-print-step) * 3) 0 #6D7CFF,
+    calc(var(--cm-print-step) * 4) calc(var(--cm-print-step) * 4) 0 #0091FF,
+    calc(var(--cm-print-step) * 5) calc(var(--cm-print-step) * 5) 0 #FFD600;
   box-shadow: var(--cm-print-shadow);
 }
 
@@ -2337,11 +2337,11 @@ html:is([data-motion="reduced"], [data-motion="off"]) .cm-tilt { transform: none
   0%, 100% { text-shadow: none; translate: 0; }
   16% {
     translate: -1px 0;
-    text-shadow: 3px 0 #FF701A, -3px 0 #25BFFF, 0 2px #FF3D8D, 1px -2px #7657FF, -1px 1px #FFD52A;
+    text-shadow: 3px 0 #FF9230, -3px 0 #0091FF, 0 2px #FF375F, 1px -2px #6D7CFF, -1px 1px #FFD600;
   }
   34% {
     translate: 1px 0;
-    text-shadow: -2px 0 #FF701A, 3px 1px #25BFFF, 1px -1px #FF3D8D, -1px 2px #7657FF, 2px -2px #FFD52A;
+    text-shadow: -2px 0 #FF9230, 3px 1px #0091FF, 1px -1px #FF375F, -1px 2px #6D7CFF, 2px -2px #FFD600;
   }
   56% {
     translate: 0;

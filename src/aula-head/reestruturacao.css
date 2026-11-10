@@ -48,7 +48,7 @@
   border-radius: 4px;
 }
 .experiment::-webkit-scrollbar-thumb:hover {
-  background: var(--accent, #ff701a);
+  background: var(--accent, #FF9230);
 }
 
 /* TOPBAR: CENTRALIZAÇÃO DA BARRA DE MOMENTOS DA AULA */
@@ -97,13 +97,13 @@
 }
 
 .lecture-mode-bar .mode-btn:hover {
-  color: #fff4e8;
+  color: #F5F5F7;
   background: rgba(255, 255, 255, 0.06);
 }
 
 .lecture-mode-bar .mode-btn.active {
-  background: var(--accent, #ff701a);
-  color: #101014;
+  background: var(--accent, #FF9230);
+  color: #161617;
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
@@ -163,8 +163,8 @@
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #ff701a;
-  background: rgba(255, 112, 26, 0.12);
+  color: #FF9230;
+  background: rgba(255, 146, 48, 0.12);
   padding: 2px 7px;
   border-radius: 4px;
 }
@@ -182,7 +182,7 @@
   height: clamp(52px, 5.2cqw, 76px);
   border-radius: 10px;
   overflow: hidden;
-  border: 2px solid var(--accent, #ff701a);
+  border: 2px solid var(--accent, #FF9230);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
   background: #1e1e24;
 }
@@ -199,8 +199,8 @@
   position: absolute;
   bottom: 2px;
   right: 2px;
-  background: #ff701a;
-  color: #101014;
+  background: #FF9230;
+  color: #161617;
   font-size: 0.62rem;
   font-weight: 600;
   padding: 1px 4px;
@@ -223,7 +223,7 @@
 .bio-col .bio-name {
   font-family: Anton, sans-serif;
   font-size: clamp(17px, 1.95cqw, 30px);
-  color: #fff4e8;
+  color: #F5F5F7;
   margin: 0;
   letter-spacing: 0.02em;
 }
@@ -231,7 +231,7 @@
 .bio-quote {
   font-size: clamp(12px, 1.05cqw, 16px);
   line-height: 1.45;
-  color: #fff4e8;
+  color: #F5F5F7;
   margin: 0;
 }
 
@@ -244,15 +244,15 @@
 
 .bio-mission {
   padding: 0.9cqw 1.1cqw;
-  background: rgba(255, 112, 26, 0.08);
-  border-left: 3px solid #ff701a;
+  background: rgba(255, 146, 48, 0.08);
+  border-left: 3px solid #FF9230;
   border-radius: 4px;
 }
 
 .bio-mission small {
   font-size: 0.65rem;
   font-weight: 700;
-  color: #ff701a;
+  color: #FF9230;
   display: block;
 }
 
@@ -277,7 +277,7 @@
 /* Coluna 2: Expectativas & Prática */
 .expect-box h3 {
   font-size: clamp(13px, 1.25cqw, 18px);
-  color: #fff4e8;
+  color: #F5F5F7;
   margin: 6px 0 10px 0;
   font-weight: 700;
 }
@@ -337,7 +337,7 @@
 .starter-header label {
   font-size: clamp(11px, 0.95cqw, 14px);
   font-weight: 600;
-  color: #fff4e8;
+  color: #F5F5F7;
 }
 
 .starter-input-row {
@@ -352,14 +352,14 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 6px;
   padding: 6px 10px;
-  color: #fff4e8;
+  color: #F5F5F7;
   font-size: clamp(11px, 0.92cqw, 14px);
 }
 
 .starter-input-row input:focus {
   outline: none;
-  border-color: #ff701a;
-  background: rgba(255, 112, 26, 0.06);
+  border-color: #FF9230;
+  background: rgba(255, 146, 48, 0.06);
 }
 
 .starter-tip {
@@ -383,7 +383,7 @@
 
 .roadmap-modal-card {
   background: #17171d;
-  border: 1px solid rgba(255, 112, 26, 0.3);
+  border: 1px solid rgba(255, 146, 48, 0.3);
   border-radius: 14px;
   max-width: 840px;
   width: 100%;
@@ -403,7 +403,7 @@
 .roadmap-modal-header h2 {
   font-family: Anton, sans-serif;
   font-size: 1.8rem;
-  color: #fff4e8;
+  color: #F5F5F7;
   margin: 4px 0 0 0;
 }
 
@@ -435,7 +435,7 @@
 .roadmap-card-item {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-top: 3px solid var(--step-accent, #ff701a);
+  border-top: 3px solid var(--step-accent, #FF9230);
   border-radius: 8px;
   padding: 12px;
   display: flex;
@@ -446,12 +446,12 @@
 .card-step-badge {
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--step-accent, #ff701a);
+  color: var(--step-accent, #FF9230);
 }
 
 .roadmap-card-item strong {
   font-size: 0.95rem;
-  color: #fff4e8;
+  color: #F5F5F7;
 }
 
 .card-step-q {
@@ -503,7 +503,7 @@
 
 .wireframe-form .form-header h3 {
   font-size: clamp(13px, 1.25cqw, 18px);
-  color: #fff4e8;
+  color: #F5F5F7;
   margin: 4px 0 0 0;
 }
 
@@ -522,7 +522,7 @@
 .wireframe-form label span {
   font-size: clamp(9px, 0.72cqw, 11px);
   font-weight: 700;
-  color: #ff701a;
+  color: #FF9230;
   letter-spacing: 0.04em;
 }
 
@@ -531,14 +531,14 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   padding: 5px 8px;
-  color: #fff4e8;
+  color: #F5F5F7;
   font-size: clamp(10px, 0.85cqw, 13px);
 }
 
 .wireframe-form input:focus {
   outline: none;
-  border-color: #ff701a;
-  background: rgba(255, 112, 26, 0.05);
+  border-color: #FF9230;
+  background: rgba(255, 146, 48, 0.05);
 }
 
 .wireframe-actions {
@@ -594,14 +594,14 @@
 .wf-tag {
   font-size: 0.62rem;
   font-weight: 700;
-  color: #ff701a;
+  color: #FF9230;
   letter-spacing: 0.05em;
   display: block;
 }
 
 .wf-block strong {
   font-size: clamp(11px, 0.95cqw, 14px);
-  color: #fff4e8;
+  color: #F5F5F7;
   display: block;
 }
 
@@ -616,8 +616,8 @@
   display: inline-block;
   margin-top: 4px;
   padding: 2px 8px;
-  background: #ff701a;
-  color: #101014;
+  background: #FF9230;
+  color: #161617;
   font-weight: 700;
   font-size: 0.72rem;
   border-radius: 3px;
@@ -625,15 +625,15 @@
 
 .lesson1-conclusion-card {
   padding: 6px 10px;
-  background: rgba(255, 112, 26, 0.08);
+  background: rgba(255, 146, 48, 0.08);
   border-radius: 4px;
-  border-left: 2px solid #ff701a;
+  border-left: 2px solid #FF9230;
 }
 
 .lesson1-conclusion-card small {
   font-size: 0.65rem;
   font-weight: 700;
-  color: #ff701a;
+  color: #FF9230;
 }
 
 .lesson1-conclusion-card p {
@@ -651,9 +651,9 @@
   gap: 1.2cqw;
   padding: 1.6cqw;
   background: #141419;
-  border: 1px solid rgba(255, 112, 26, 0.25);
+  border: 1px solid rgba(255, 146, 48, 0.25);
   border-radius: 10px;
-  color: #fff4e8;
+  color: #F5F5F7;
   height: 100%;
   justify-content: space-between;
 }
@@ -690,12 +690,12 @@
 .practice-card .card-kicker {
   font-size: 0.65rem;
   font-weight: 700;
-  color: var(--accent, #ff701a);
+  color: var(--accent, #FF9230);
 }
 
 .practice-card strong {
   font-size: clamp(11px, 0.98cqw, 15px);
-  color: #fff4e8;
+  color: #F5F5F7;
 }
 
 .practice-list,
@@ -740,9 +740,9 @@
   gap: 1.2cqw;
   padding: 1.6cqw;
   background: #141419;
-  border: 1px solid rgba(37, 191, 255, 0.3);
+  border: 1px solid rgba(0, 145, 255, 0.3);
   border-radius: 10px;
-  color: #fff4e8;
+  color: #F5F5F7;
   height: 100%;
   justify-content: space-between;
 }
@@ -786,8 +786,8 @@
 }
 
 .return-check-item.checked {
-  background: rgba(37, 191, 255, 0.08);
-  border-color: #25bfff;
+  background: rgba(0, 145, 255, 0.08);
+  border-color: #0091FF;
   color: #ffffff;
 }
 
@@ -957,7 +957,7 @@
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  font-family: Montserrat, Inter, sans-serif !important;
+  font-family: Montserrat, -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif !important;
   font-size: 10px !important;
   font-weight: 600 !important;
   letter-spacing: 0.12em !important;
@@ -970,8 +970,8 @@
   width: 5px !important;
   height: 5px !important;
   border-radius: 50% !important;
-  background: var(--lesson-accent, #ff701a) !important;
-  box-shadow: 0 0 8px var(--lesson-accent, #ff701a) !important;
+  background: var(--lesson-accent, #FF9230) !important;
+  box-shadow: 0 0 8px var(--lesson-accent, #FF9230) !important;
   flex: none !important;
 }
 

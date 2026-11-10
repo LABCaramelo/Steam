@@ -576,6 +576,13 @@
     const now = new Date();
     clock.textContent = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     clock.dateTime = now.toISOString();
+    // Tela de bloqueio: data por extenso e hora grande, como no macOS.
+    const lockTime = $('#lockTime'), lockDate = $('#lockDate');
+    if (lockTime) lockTime.textContent = clock.textContent;
+    if (lockDate) {
+      const d = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+      lockDate.textContent = d.charAt(0).toUpperCase() + d.slice(1);
+    }
   };
   tick();
   setInterval(tick, 15000);

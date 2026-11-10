@@ -1,0 +1,291 @@
+/* ==========================================================================
+   LAB + ferramentas — Apple Design System (macOS)
+   Importado depois de @caramelo/design-system/styles.css e de src/styles.css
+   (main.tsx e tools/shared/kit.tsx). Traz os mesmos tokens das páginas
+   públicas e restiliza os componentes Lumen com o vocabulário do macOS:
+   botões em cápsula, segmented control, text fields, menus e superfícies
+   de janela. Os efeitos de ímã, inclinação e spotlight ficam bem sutis.
+   ========================================================================== */
+
+@import "../../public/apple/tokens.css";
+
+/* ---------- Tokens que o LAB usa além da ponte --cm-* ---------- */
+:root {
+  --cm-highlight: inset 0 0.5px 0 rgba(255, 255, 255, 0.08);
+  --cm-pressed: inset 0 0 0 0.5px rgba(255, 255, 255, 0.06), inset 0 1px 2px rgba(0, 0, 0, 0.35);
+  --cm-elev-1: 0 0 0 0.5px rgba(0, 0, 0, 0.5), 0 0.5px 1px rgba(0, 0, 0, 0.35);
+  --cm-elev-2: 0 0 0 0.5px rgba(0, 0, 0, 0.55), 0 4px 14px rgba(0, 0, 0, 0.35);
+  --cm-elev-3: 0 0 0 0.5px rgba(0, 0, 0, 0.6), 0 5px 20px rgba(0, 0, 0, 0.45);
+  --cm-elev-4: var(--apple-shadow-sheet);
+  --cm-glow-strong: var(--cm-spectrum-glow-strong);
+  --cm-focus-ring: var(--apple-focus-ring);
+
+  /* Variáveis de compatibilidade de src/styles.css */
+  --g-play: linear-gradient(180deg, var(--apple-accent-hover) 0%, var(--apple-orange) 100%);
+  --g-blue: linear-gradient(180deg, #3EA6FF 0%, var(--apple-blue) 100%);
+  --radius: var(--apple-radius-control);
+  --font: var(--apple-font-text);
+}
+[data-caramelo-theme="light"] {
+  --cm-highlight: inset 0 0.5px 0 rgba(255, 255, 255, 0.7);
+  --cm-pressed: inset 0 0 0 0.5px rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(0, 0, 0, 0.08);
+  --cm-elev-1: var(--apple-shadow-control);
+  --cm-elev-2: 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 4px 14px rgba(0, 0, 0, 0.08);
+  --cm-elev-3: var(--apple-shadow-window);
+  --cm-elev-4: var(--apple-shadow-sheet);
+}
+
+body {
+  font-family: var(--apple-font-text);
+  letter-spacing: var(--apple-tracking-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+::selection { background: rgb(var(--apple-accent-rgb) / 0.35); }
+
+/* ==========================================================================
+   Componentes Lumen
+   ========================================================================== */
+
+/* Botões (Buttons): cápsula, texto semibold, sombra fina. O ímã fica sutil. */
+.cm-btn {
+  --cm-btn-h: 34px;
+  --cm-btn-bg: var(--apple-fill);
+  --cm-btn-fg: var(--apple-label-strong);
+  --cm-btn-line: transparent;
+  --cm-btn-fill: var(--apple-fill);
+  --cm-btn-fill-fg: var(--apple-label-strong);
+  font: var(--apple-weight-semibold) 0.8125rem/1 var(--apple-font-text);
+  letter-spacing: var(--apple-tracking-tight);
+  border-width: 0.5px;
+  border-radius: var(--apple-radius-capsule);
+  box-shadow: var(--apple-shadow-control);
+  transform:
+    translate3d(calc(var(--cm-mag-x, 0px) * 0.35), calc(var(--cm-mag-y, 0px) * 0.35), 0)
+    scale(var(--cm-press, 1));
+}
+.cm-btn:hover { border-color: transparent; filter: brightness(1.08); }
+.cm-btn--sm { --cm-btn-h: 28px; font-size: 0.75rem; }
+.cm-btn--lg { --cm-btn-h: 40px; font-size: 0.9375rem; }
+.cm-btn--accent {
+  --cm-btn-bg: linear-gradient(180deg, var(--apple-accent-hover) 0%, var(--apple-orange) 100%);
+  --cm-btn-fg: var(--apple-on-accent);
+  --cm-btn-fill: linear-gradient(180deg, #FFB060 0%, var(--apple-accent-hover) 100%);
+  --cm-btn-fill-fg: var(--apple-on-accent);
+  box-shadow: 0 4px 16px rgb(var(--apple-accent-rgb) / 0.28), inset 0 0.5px 0 rgba(255, 255, 255, 0.45);
+}
+.cm-btn--accent:hover { box-shadow: 0 6px 22px rgb(var(--apple-accent-rgb) / 0.38), inset 0 0.5px 0 rgba(255, 255, 255, 0.45); }
+.cm-btn--cream {
+  --cm-btn-bg: var(--apple-label-strong);
+  --cm-btn-fg: rgb(var(--cm-stage));
+  --cm-btn-fill: var(--apple-label-strong);
+  --cm-btn-fill-fg: rgb(var(--cm-stage));
+}
+.cm-btn--ghost {
+  --cm-btn-bg: transparent;
+  --cm-btn-fg: var(--apple-label);
+  --cm-btn-fill: var(--apple-fill);
+  box-shadow: none;
+}
+/* O preenchimento "líquido" vira um realce discreto, sem a onda colorida. */
+.cm-btn__fill { border-radius: inherit; transform: translateY(0); opacity: 0; transition: opacity var(--cm-dur-micro) var(--apple-ease); }
+.cm-btn--fill:hover .cm-btn__fill,
+.cm-btn--fill:focus-visible .cm-btn__fill { opacity: 1; border-radius: inherit; }
+.cm-btn:focus-visible { outline: none; box-shadow: var(--apple-focus-ring); }
+
+/* Abas (Segmented Controls): trilho de fill e segmento elevado. */
+.cm-tabs {
+  gap: 0;
+  padding: 2px;
+  background: var(--apple-fill-2);
+  border: 0;
+  border-radius: var(--apple-radius-control-lg);
+  box-shadow: inset 0 0 0 0.5px var(--apple-separator);
+}
+.cm-tabs__tab {
+  height: 28px;
+  padding: 0 14px;
+  font: var(--apple-weight-medium) 0.8125rem/1 var(--apple-font-text);
+  color: var(--apple-label-2);
+  border-radius: 7px;
+}
+.cm-tabs__tab:hover { color: var(--apple-label); }
+.cm-tabs__tab[aria-selected="true"] { color: var(--apple-label-strong); }
+.cm-tabs__indicator {
+  top: 2px;
+  bottom: 2px;
+  background: var(--apple-bg-control);
+  border-radius: 7px;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+[data-caramelo-theme="light"] .cm-tabs__indicator { background: #FFFFFF; }
+.cm-tabs__indicator::after { display: none; }
+.cm-tabs--underline { background: none; box-shadow: none; border-radius: 0; border-bottom: 0.5px solid var(--apple-separator); padding: 0; }
+.cm-tabs--underline .cm-tabs__tab { border-radius: var(--apple-radius-control) var(--apple-radius-control) 0 0; }
+.cm-tabs--underline .cm-tabs__indicator { background: var(--apple-orange); box-shadow: none; border-radius: 2px; top: auto; bottom: -0.5px; height: 2px; }
+
+/* Campos (Text Fields): raio de 9px, anel de foco azul, sem o traço de luz. */
+.cm-field__input {
+  background: var(--apple-fill-3);
+  border: 0;
+  border-radius: var(--apple-radius-control-lg);
+  box-shadow: inset 0 0 0 0.5px var(--apple-separator-strong);
+  font-family: var(--apple-font-text);
+}
+.cm-field__input:hover { box-shadow: inset 0 0 0 0.5px var(--apple-label-3); }
+.cm-field__input:focus {
+  background: var(--apple-fill-3);
+  box-shadow: inset 0 0 0 0.5px rgb(var(--cm-focus)), var(--apple-focus-ring);
+}
+.cm-field__label { font-family: var(--apple-font-text); }
+.cm-field__beam { display: none; }
+.cm-liquid-field { border-radius: var(--apple-radius-control-lg); }
+
+/* Menus (Menus): vidro, raio 13px, linha destacada no azul do sistema. */
+.cm-menu {
+  padding: 5px;
+  background: var(--apple-material-thick);
+  -webkit-backdrop-filter: saturate(180%) blur(var(--apple-blur-menu));
+  backdrop-filter: saturate(180%) blur(var(--apple-blur-menu));
+  border: 0.5px solid var(--apple-glass-edge);
+  border-radius: var(--apple-radius-menu);
+  box-shadow: var(--apple-shadow-menu);
+}
+.cm-menu__header { font-family: var(--apple-font-text); border-color: var(--apple-separator); }
+.cm-menu__item {
+  height: 28px;
+  padding: 0 9px;
+  font: 400 0.8125rem/1 var(--apple-font-text);
+  color: var(--apple-label);
+  border-radius: var(--apple-radius-menu-item);
+}
+.cm-menu__item[data-active], .cm-menu__item:focus-visible { color: #FFFFFF; }
+.cm-menu__item[data-active] .cm-menu__icon, .cm-menu__item[data-active] .cm-menu__trail { color: rgba(255, 255, 255, 0.85); }
+.cm-menu__highlight {
+  height: var(--cm-hl-h, 28px);
+  background: rgb(var(--cm-focus));
+  border-radius: var(--apple-radius-menu-item);
+  box-shadow: none;
+}
+.cm-menu__sep { margin: 5px 9px; background: var(--apple-separator); }
+
+/* GlideMenu: o realce deslizante vira a seleção cinza de sidebar. */
+.cm-glide__highlight {
+  background: var(--apple-fill);
+  border-radius: var(--cm-glide-radius, var(--apple-radius-menu-item));
+  box-shadow: none;
+}
+.cm-glide__item { border-radius: var(--cm-glide-radius, var(--apple-radius-menu-item)); }
+
+/* Superfícies (Windows / Boxes): fundo de janela, aresta fina, sombra macia. */
+.cm-surface {
+  border: 0.5px solid var(--apple-separator);
+  border-radius: var(--apple-radius-group);
+  box-shadow: var(--cm-elev-2);
+}
+.cm-surface--glow { border-color: var(--apple-separator-strong); box-shadow: var(--cm-elev-2); }
+.cm-surface--interactive:hover { transform: translateY(-1px); border-color: var(--apple-separator-strong); }
+/* Spotlight: só um brilho neutro e fraco, sem o espectro de cinco cores. */
+.cm-surface--spotlight::before {
+  background: radial-gradient(320px circle at var(--mx) var(--my), rgb(255 255 255 / 0.05), transparent 60%);
+}
+.cm-surface--spotlight::after {
+  background: radial-gradient(240px circle at var(--mx) var(--my), rgb(255 255 255 / 0.22), transparent 60%);
+}
+[data-caramelo-theme="light"] .cm-surface--spotlight::before { background: radial-gradient(320px circle at var(--mx) var(--my), rgb(0 0 0 / 0.03), transparent 60%); }
+[data-caramelo-theme="light"] .cm-surface--spotlight::after { background: radial-gradient(240px circle at var(--mx) var(--my), rgb(0 0 0 / 0.12), transparent 60%); }
+
+/* Inclinação: um terço do ângulo original. */
+.cm-tilt { transform: rotateX(calc(var(--cm-tilt-x, 0deg) * 0.35)) rotateY(calc(var(--cm-tilt-y, 0deg) * 0.35)); }
+
+/* Chips, teclas e o botão de tema */
+.cm-chip {
+  height: 20px;
+  padding: 0 8px;
+  font: var(--apple-weight-medium) 11px/1 var(--apple-font-text);
+  color: var(--apple-label-2);
+  background: var(--apple-fill-2);
+  border: 0;
+  border-radius: var(--apple-radius-capsule);
+}
+.cm-kbd { font-family: var(--apple-font-text); border-radius: var(--apple-radius-control-sm); }
+.cm-theme-toggle {
+  border: 0;
+  border-radius: var(--apple-radius-capsule);
+  background: var(--apple-fill);
+  box-shadow: var(--apple-shadow-control);
+}
+.cm-copy { border-radius: var(--apple-radius-control); }
+.cm-progress { border-radius: var(--apple-radius-capsule); }
+
+/* Textos com o espectro de cinco cores passam a usar o laranja do sistema. */
+.cm-spectrum-text, .cm-text-gradient {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: currentColor;
+  color: var(--apple-orange);
+}
+
+/* O pacote desenha o botão de destaque com fundo escuro e borda em espectro: volta ao laranja. */
+.cm-btn--accent {
+  background: var(--cm-btn-bg);
+  border-color: transparent;
+}
+.cm-btn--accent:hover,
+.cm-btn--accent:focus-visible { border-color: transparent; }
+.cm-btn--accent:focus-visible { outline: none; box-shadow: var(--apple-focus-ring); }
+.cm-brand-action {
+  --cm-btn-bg: var(--apple-label-strong);
+  --cm-btn-fg: rgb(var(--cm-stage));
+  --cm-btn-fill: var(--apple-label-strong);
+  --cm-btn-fill-fg: rgb(var(--cm-stage));
+}
+
+/* ==========================================================================
+   LAB: tela de login como janela do macOS
+   ========================================================================== */
+.login-screen__ambient {
+  background:
+    radial-gradient(60% 50% at 50% 30%, rgb(var(--apple-accent-rgb) / 0.12), transparent 70%),
+    radial-gradient(50% 40% at 70% 80%, rgb(0 145 255 / 0.08), transparent 70%);
+}
+.login-modal {
+  background: rgb(var(--cm-surface-1));
+  border: 0.5px solid var(--apple-separator-strong);
+  border-radius: var(--apple-radius-sheet);
+  box-shadow: var(--apple-shadow-sheet);
+}
+.login-modal__titlebar {
+  height: 38px;
+  background: transparent;
+  border-bottom: 0.5px solid var(--apple-separator);
+}
+.login-modal__brand { font: var(--apple-weight-semibold) 13px/1 var(--apple-font-text); letter-spacing: 0; color: var(--apple-label-2); }
+.login-modal__badge { border-radius: var(--apple-radius-icon); box-shadow: 0 6px 20px rgb(var(--apple-accent-rgb) / 0.3); }
+.login-modal__title { letter-spacing: -0.01em; font-size: 20px; font-weight: 800; }
+.login-modal__modes .cm-tabs__tab {
+  font: var(--apple-weight-medium) 13px/1 var(--apple-font-text);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.login-modal__submit.cm-btn {
+  font-family: var(--apple-font-text);
+  font-weight: var(--apple-weight-semibold);
+  letter-spacing: 0;
+}
+.login-modal__error, .login-modal__success { border-width: 0.5px; border-radius: var(--apple-radius-control-lg); }
+.login-checkbox__box { border-radius: 4px; }
+.login-checkbox input:checked + .login-checkbox__box { background: rgb(var(--cm-focus)); border-color: rgb(var(--cm-focus)); }
+
+/* CTAs de marca, selos e medidores do pacote: sem espectro. */
+.cm-brand-action {
+  background: var(--cm-btn-bg);
+  color: var(--cm-btn-fg);
+  border: 0;
+  box-shadow: var(--apple-shadow-control);
+}
+.cm-brand-action:is(:hover, :focus-visible) { box-shadow: var(--apple-shadow-control), 0 0 0 4px rgb(var(--apple-accent-rgb) / 0.22); }
+.cm-brand-action:focus-visible { outline: none; box-shadow: var(--apple-focus-ring); }
+.cm-brand-badge { background: var(--apple-fill); border: 0.5px solid var(--apple-separator-strong); border-radius: var(--apple-radius-capsule); }
+.cm-brand-meter { background: var(--apple-orange); }

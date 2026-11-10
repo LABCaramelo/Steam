@@ -336,7 +336,7 @@ a {
 
 .tk-switch.is-on .tk-switch__thumb {
   transform: translateX(16px);
-  background: #101014;
+  background: #161617;
 }
 
 .tk-switch:disabled {

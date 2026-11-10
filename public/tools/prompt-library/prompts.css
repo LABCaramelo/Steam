@@ -51,7 +51,7 @@
 .result-line button{background:transparent;border:0;color:var(--orange);padding:8px 0;font-size:11px!important}
 .popularity-note{margin:8px 0 28px}
 .prompt-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:42px 24px}
-.prompt-card{min-width:0;position:relative;isolation:isolate;display:flex;flex-direction:column;border-radius:20px;--card-gradient:linear-gradient(137deg,#ff701a,#fff4e8,#ff701a)}
+.prompt-card{min-width:0;position:relative;isolation:isolate;display:flex;flex-direction:column;border-radius:20px;--card-gradient:linear-gradient(137deg,#FF9230,#F5F5F7,#FF9230)}
 .prompt-card::before{content:'';position:absolute;inset:12px;z-index:0;border-radius:30px;background:var(--card-gradient);filter:blur(32px);opacity:0;pointer-events:none}
 .prompt-card.in-view::before{opacity:.28}
 .prompt-card.in-view:has(.card-open:hover)::before{opacity:.4}
@@ -134,7 +134,7 @@ html[data-embedded] .library{scroll-margin-top:20px;padding-bottom:48px}
 }
 
 /* Caramelo (MCP): the main action combines the five colors; every control answers hover, press and focus. */
-.button:not(.secondary){background:var(--cm-spectrum-soft);border-color:rgb(255 244 232 / .3);color:rgb(var(--cm-accent-contrast));box-shadow:inset 0 1px 0 #fff4e84d,var(--cm-spectrum-glow)}
+.button:not(.secondary){background:var(--cm-spectrum-soft);border-color:rgb(255 255 255 / .3);color:rgb(var(--cm-accent-contrast));box-shadow:inset 0 1px 0 #fff4e84d,var(--cm-spectrum-glow)}
 .button:not(.secondary):hover{box-shadow:inset 0 1px 0 #fff4e84d,var(--cm-spectrum-glow-strong)}
 .tab:not([aria-pressed="true"]):hover{color:var(--cream)}
 .select-trigger:hover,.save-prompt:hover{border-color:rgb(var(--cm-fg) / .5)}
@@ -163,8 +163,8 @@ html[data-embedded] .library{scroll-margin-top:20px;padding-bottom:48px}
 :is(.button,.load-more).cm-magnetic{translate:var(--cm-mag-x,0px) var(--cm-mag-y,0px);transition:transform var(--cm-dur-micro) var(--cm-ease-out),background-color var(--cm-dur-micro) var(--cm-ease-out),border-color var(--cm-dur-micro) var(--cm-ease-out),box-shadow var(--cm-dur-micro) var(--cm-ease-out),color var(--cm-dur-micro) var(--cm-ease-out),translate var(--cm-dur-base) var(--cm-ease-out)}
 :is(.button,.load-more) .cm-btn__label{gap:inherit}
 :is(.button,.load-more).cm-btn--fill:is(:hover,:focus-visible):not(:disabled){color:var(--cm-btn-fill-fg)}
-#copyDialogPrompt{--cm-btn-fill:#101014;--cm-btn-fill-fg:#fff4e8}
-.load-more{--cm-btn-fill:var(--cm-spectrum-soft);--cm-btn-fill-fg:#101014}
+#copyDialogPrompt{--cm-btn-fill:#161617;--cm-btn-fill-fg:#F5F5F7}
+.load-more{--cm-btn-fill:var(--cm-spectrum-soft);--cm-btn-fill-fg:#161617}
 /* copy-swap: o botão mantém a aparência da biblioteca; só os ícones trocam. */
 .button.cm-copy{width:auto;height:auto}
 .card-actions .card-copy.cm-copy{width:100%;height:auto}
@@ -174,10 +174,10 @@ html[data-embedded] .library{scroll-margin-top:20px;padding-bottom:48px}
 @media(max-width:700px){.search-field .cm-field__input{height:56px;padding:22px 16px 6px 50px;font-size:12px}.search-field .cm-field__label{left:51px;top:18px;max-width:calc(100% - 70px);font-size:12px}.search-field__icon{left:18px}.search-field kbd{display:none}}
 
 /* Caramelo Dialog Auth Gate */
-.dialog-auth-gate{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 24px;margin-top:16px;background:radial-gradient(circle at 50% 0%,rgba(255,112,26,0.12) 0%,rgba(16,16,20,0.65) 75%);border:1px solid rgba(255,112,26,0.25);border-radius:var(--cm-radius-lg,16px);position:relative;overflow:hidden}
-.auth-gate-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:rgba(255,112,26,0.15);color:var(--cm-color-caramel,#FF701A);font-family:var(--cm-font-mono,monospace);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;border:1px solid rgba(255,112,26,0.3)}
-.auth-gate-title{font-size:1.35rem;font-weight:700;color:var(--cm-color-cream,#FFF4E8);margin:0 0 10px;line-height:1.3}
+.dialog-auth-gate{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 24px;margin-top:16px;background:radial-gradient(circle at 50% 0%,rgba(255, 146, 48,0.12) 0%,rgba(22, 22, 23,0.65) 75%);border:1px solid rgba(255, 146, 48,0.25);border-radius:var(--cm-radius-lg,16px);position:relative;overflow:hidden}
+.auth-gate-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:rgba(255, 146, 48,0.15);color:var(--cm-color-caramel,#FF9230);font-family:var(--cm-font-mono,monospace);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;border:1px solid rgba(255, 146, 48,0.3)}
+.auth-gate-title{font-size:1.35rem;font-weight:700;color:var(--cm-color-cream,#F5F5F7);margin:0 0 10px;line-height:1.3}
 .auth-gate-desc{font-size:0.95rem;color:var(--cm-color-muted,#9E9EA7);max-width:440px;margin:0 0 24px;line-height:1.5}
 .auth-gate-actions{display:flex;justify-content:center}
-.auth-gate-btn{padding:12px 28px;font-size:0.95rem;font-weight:600;text-decoration:none;background:#FF701A;color:#101014 !important;border-radius:999px;display:inline-flex;align-items:center;gap:8px;transition:transform 0.2s cubic-bezier(0.2,0.8,0.2,1),box-shadow 0.2s ease;box-shadow:0 4px 20px rgba(255,112,26,0.35)}
-.auth-gate-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(255,112,26,0.5)}
+.auth-gate-btn{padding:12px 28px;font-size:0.95rem;font-weight:600;text-decoration:none;background:#FF9230;color:#161617 !important;border-radius:999px;display:inline-flex;align-items:center;gap:8px;transition:transform 0.2s cubic-bezier(0.2,0.8,0.2,1),box-shadow 0.2s ease;box-shadow:0 4px 20px rgba(255, 146, 48,0.35)}
+.auth-gate-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(255, 146, 48,0.5)}

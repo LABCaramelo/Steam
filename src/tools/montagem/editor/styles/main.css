@@ -8,9 +8,9 @@
   --border-color: #272732;
   --border-light: #363644;
   
-  --color-primary: #FF701A;
-  --color-primary-hover: #FF8A3D;
-  --color-primary-dim: rgba(255, 112, 26, 0.15);
+  --color-primary: #FF9230;
+  --color-primary-hover: #FF9E33;
+  --color-primary-dim: rgba(255, 146, 48, 0.15);
   --color-secondary: #00b4d8;
   --color-danger: #ff4757;
   --color-warning: #ffa502;
@@ -20,7 +20,7 @@
   --text-muted: #6b7280;
 
   --playhead-color: #ff3b30;
-  --clip-selected-border: #FF701A;
+  --clip-selected-border: #FF9230;
   
   --header-height: 50px;
   --rail-width: 68px;
@@ -28,7 +28,7 @@
   --inspector-width: 320px;
   --timeline-height: 270px;
   
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
@@ -133,9 +133,9 @@ body.montagem-dark-theme {
   font-size: 11px;
   padding: 2px 8px;
   border-radius: 12px;
-  background: rgba(255, 112, 26, 0.1);
+  background: rgba(255, 146, 48, 0.1);
   color: var(--color-primary);
-  border: 1px solid rgba(255, 112, 26, 0.3);
+  border: 1px solid rgba(255, 146, 48, 0.3);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -212,11 +212,11 @@ body.montagem-dark-theme {
   align-items: center;
   gap: 6px;
   transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
-  box-shadow: 0 2px 10px rgba(255, 112, 26, 0.25);
+  box-shadow: 0 2px 10px rgba(255, 146, 48, 0.25);
 }
 .btn-export:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(255, 112, 26, 0.4);
+  box-shadow: 0 4px 14px rgba(255, 146, 48, 0.4);
 }
 
 /* ========================================================
@@ -399,7 +399,7 @@ body.montagem-dark-theme {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: rgba(255, 112, 26, 0.9);
+  background: rgba(255, 146, 48, 0.9);
   color: #000;
   border: none;
   display: none;
@@ -849,7 +849,7 @@ body.montagem-dark-theme {
 
 .timeline-clip.selected {
   border: 2px solid var(--clip-selected-border) !important;
-  box-shadow: 0 0 12px rgba(255, 112, 26, 0.5) !important;
+  box-shadow: 0 0 12px rgba(255, 146, 48, 0.5) !important;
   z-index: 8;
 }
 
@@ -1027,9 +1027,9 @@ body.montagem-dark-theme {
    MULTI-TRACK DRAG & DROP AND LAYER CONTROLS
 ======================================================== */
 .track-lane.drop-target-active {
-  background: rgba(255, 112, 26, 0.12) !important;
-  border-top: 2px dashed #FF701A !important;
-  border-bottom: 2px dashed #FF701A !important;
+  background: rgba(255, 146, 48, 0.12) !important;
+  border-top: 2px dashed #FF9230 !important;
+  border-bottom: 2px dashed #FF9230 !important;
   transition: background 0.1s ease;
 }
 
@@ -1042,7 +1042,7 @@ body.montagem-dark-theme {
 .timeline-clip.clip-dragging {
   opacity: 0.88;
   z-index: 100 !important;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 112, 26, 0.6) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 146, 48, 0.6) !important;
   cursor: grabbing !important;
   transition: none !important;
   pointer-events: none;
@@ -1102,7 +1102,7 @@ body.montagem-dark-theme {
 
 .track-menu-item:hover {
   background: #252532;
-  color: #FF701A;
+  color: #FF9230;
 }
 
 .track-dot {
@@ -1216,8 +1216,8 @@ body.montagem-dark-theme {
 
 .layer-btn:hover {
   background: #2c2c3a;
-  color: #FF701A;
-  border-color: #FF701A;
+  color: #FF9230;
+  border-color: #FF9230;
 }
 
 /* Asset Card Hover Actions in Sidebar */
@@ -1253,7 +1253,7 @@ body.montagem-dark-theme {
 }
 
 .asset-btn-main {
-  background: #FF701A;
+  background: #FF9230;
   color: #000;
 }
 
@@ -1277,8 +1277,8 @@ body.montagem-dark-theme {
 
 .pip-preset-btn:hover {
   background: #252534;
-  color: #FF701A;
-  border-color: #FF701A;
+  color: #FF9230;
+  border-color: #FF9230;
 }
 
 

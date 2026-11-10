@@ -3,21 +3,21 @@
    ============================================================================== */
 
 :root {
-  --cos-bg: #101014;
+  --cos-bg: #161617;
   --cos-surface-1: #15151a;
   --cos-surface-2: #1b1b22;
   --cos-surface-3: #22222b;
-  --cos-border: rgba(255, 244, 232, 0.1);
-  --cos-border-hover: rgba(255, 244, 232, 0.22);
-  --cos-text-primary: #fff4e8;
-  --cos-text-secondary: rgba(255, 244, 232, 0.65);
-  --cos-text-muted: rgba(255, 244, 232, 0.4);
-  --cos-accent: #ff701a;
-  --cos-accent-hover: #ff8533;
-  --cos-sky: #25bfff;
-  --cos-pink: #ff3d8d;
-  --cos-violet: #7657ff;
-  --cos-yellow: #ffd52a;
+  --cos-border: rgba(255, 255, 255, 0.1);
+  --cos-border-hover: rgba(255, 255, 255, 0.22);
+  --cos-text-primary: #F5F5F7;
+  --cos-text-secondary: rgba(255, 255, 255, 0.65);
+  --cos-text-muted: rgba(255, 255, 255, 0.4);
+  --cos-accent: #FF9230;
+  --cos-accent-hover: #FF9E33;
+  --cos-sky: #0091FF;
+  --cos-pink: #FF375F;
+  --cos-violet: #6D7CFF;
+  --cos-yellow: #FFD600;
   --cos-mint: #2ad587;
   --cos-danger: #ff4d4d;
   --cos-radius-sm: 8px;
@@ -27,15 +27,15 @@
 }
 
 [data-caramelo-theme="light"] {
-  --cos-bg: #fff4e8;
+  --cos-bg: #F5F5F7;
   --cos-surface-1: #ffffff;
   --cos-surface-2: #f7eee4;
   --cos-surface-3: #eee1d4;
-  --cos-border: rgba(16, 16, 20, 0.1);
-  --cos-border-hover: rgba(16, 16, 20, 0.22);
-  --cos-text-primary: #101014;
-  --cos-text-secondary: rgba(16, 16, 20, 0.72);
-  --cos-text-muted: rgba(16, 16, 20, 0.45);
+  --cos-border: rgba(22, 22, 23, 0.1);
+  --cos-border-hover: rgba(22, 22, 23, 0.22);
+  --cos-text-primary: #161617;
+  --cos-text-secondary: rgba(22, 22, 23, 0.72);
+  --cos-text-muted: rgba(22, 22, 23, 0.45);
 }
 
 .cos-shell {
@@ -44,7 +44,7 @@
   min-height: calc(100vh / var(--ui-zoom, 1));
   background-color: var(--cos-bg);
   color: var(--cos-text-primary);
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
 }
 
@@ -78,10 +78,10 @@
   height: 34px;
   background: linear-gradient(135deg, var(--cos-accent), #e65c00);
   border-radius: var(--cos-radius-sm);
-  color: #101014;
+  color: #161617;
   font-weight: 700;
   font-size: 18px;
-  box-shadow: 0 4px 12px rgba(255, 112, 26, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 146, 48, 0.3);
 }
 
 .cos-brand__title {
@@ -154,7 +154,7 @@
 }
 
 .cos-nav__item.is-active {
-  color: #101014;
+  color: #161617;
   background-color: var(--cos-accent);
   font-weight: 700;
 }
@@ -295,13 +295,13 @@
   line-height: 1;
 }
 
-.cos-badge--idea { background: rgba(255, 244, 232, 0.1); color: var(--cos-text-secondary); }
-.cos-badge--production { background: rgba(37, 191, 255, 0.15); color: var(--cos-sky); }
-.cos-badge--internal_review { background: rgba(255, 61, 141, 0.15); color: var(--cos-pink); }
-.cos-badge--client_review { background: rgba(255, 213, 42, 0.18); color: var(--cos-yellow); }
+.cos-badge--idea { background: rgba(255, 255, 255, 0.1); color: var(--cos-text-secondary); }
+.cos-badge--production { background: rgba(0, 145, 255, 0.15); color: var(--cos-sky); }
+.cos-badge--internal_review { background: rgba(255, 55, 95, 0.15); color: var(--cos-pink); }
+.cos-badge--client_review { background: rgba(255, 214, 0, 0.18); color: var(--cos-yellow); }
 .cos-badge--adjustments { background: rgba(255, 77, 77, 0.18); color: var(--cos-danger); }
 .cos-badge--approved { background: rgba(42, 213, 135, 0.18); color: var(--cos-mint); }
-.cos-badge--published { background: rgba(118, 87, 255, 0.18); color: var(--cos-violet); }
+.cos-badge--published { background: rgba(109, 124, 255, 0.18); color: var(--cos-violet); }
 
 /* Buttons */
 .cos-btn {
@@ -321,7 +321,7 @@
 
 .cos-btn--primary {
   background-color: var(--cos-accent);
-  color: #101014;
+  color: #161617;
   font-weight: 700;
 }
 
@@ -391,7 +391,7 @@
 .cos-textarea:focus {
   outline: none;
   border-color: var(--cos-accent);
-  box-shadow: 0 0 0 2px rgba(255, 112, 26, 0.2);
+  box-shadow: 0 0 0 2px rgba(255, 146, 48, 0.2);
 }
 
 .cos-textarea {
@@ -478,7 +478,7 @@
 .cos-modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(16, 16, 20, 0.75);
+  background-color: rgba(22, 22, 23, 0.75);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -532,7 +532,7 @@
 /* Client Portal Specifics */
 .cos-portal-header {
   padding: 32px 24px 24px;
-  background: radial-gradient(circle at 50% 0%, rgba(255, 112, 26, 0.12), transparent 70%);
+  background: radial-gradient(circle at 50% 0%, rgba(255, 146, 48, 0.12), transparent 70%);
   text-align: center;
   border-bottom: 1px solid var(--cos-border);
 }
@@ -553,7 +553,7 @@
   padding: 48px 24px;
   border: 1px dashed var(--cos-border);
   border-radius: var(--cos-radius-lg);
-  background-color: rgba(255, 244, 232, 0.02);
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
 .cos-empty-state__icon {

@@ -1,4 +1,4 @@
-:root{--ink:rgb(var(--cm-surface-1));--cream:rgb(var(--cm-fg));--orange:rgb(var(--cm-accent));--sky:rgb(var(--cm-focus));--violet:#7657ff;--line:rgb(var(--cm-fg) / .18);--muted:rgb(var(--cm-fg-dim));--display:'Montserrat',sans-serif;--body:'Inter',sans-serif;--hand:'Covered By Your Grace',cursive;--header-height:84px;color-scheme:dark}
+:root{--ink:rgb(var(--cm-surface-1));--cream:rgb(var(--cm-fg));--orange:rgb(var(--cm-accent));--sky:rgb(var(--cm-focus));--violet:#6D7CFF;--line:rgb(var(--cm-fg) / .18);--muted:rgb(var(--cm-fg-dim));--display:'Montserrat',sans-serif;--body:'Inter',sans-serif;--hand:'Covered By Your Grace',cursive;--header-height:84px;color-scheme:dark}
 .section-meta.section-context{justify-content:flex-end}
 /* Hide page chrome without disabling wheel, touch or keyboard scrolling. */
 html,body,.dialog-backdrop{scrollbar-width:none}

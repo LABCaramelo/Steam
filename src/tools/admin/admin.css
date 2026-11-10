@@ -93,7 +93,7 @@
 }
 
 .admin-tab.is-active {
-  color: #FFF4E8;
+  color: #F5F5F7;
   background: rgb(var(--cm-surface-3));
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
@@ -289,27 +289,27 @@
 }
 
 .admin-badge--published {
-  background: rgba(37, 191, 255, 0.15);
-  color: #25BFFF;
-  border: 1px solid rgba(37, 191, 255, 0.3);
+  background: rgba(0, 145, 255, 0.15);
+  color: #0091FF;
+  border: 1px solid rgba(0, 145, 255, 0.3);
 }
 
 .admin-badge--unreleased {
-  background: rgba(255, 213, 42, 0.12);
-  color: #FFD52A;
-  border: 1px solid rgba(255, 213, 42, 0.25);
+  background: rgba(255, 214, 0, 0.12);
+  color: #FFD600;
+  border: 1px solid rgba(255, 214, 0, 0.25);
 }
 
 .admin-badge--admin {
-  background: rgba(255, 112, 26, 0.15);
-  color: #FF701A;
-  border: 1px solid rgba(255, 112, 26, 0.35);
+  background: rgba(255, 146, 48, 0.15);
+  color: #FF9230;
+  border: 1px solid rgba(255, 146, 48, 0.35);
 }
 
 .admin-badge--beta {
-  background: rgba(118, 87, 255, 0.15);
+  background: rgba(109, 124, 255, 0.15);
   color: #a78bfa;
-  border: 1px solid rgba(118, 87, 255, 0.35);
+  border: 1px solid rgba(109, 124, 255, 0.35);
 }
 
 .admin-badge--member {
@@ -458,7 +458,7 @@
 
 .admin-switch input:checked + .admin-slider:before {
   transform: translateX(20px);
-  background-color: #101014;
+  background-color: #161617;
 }
 
 /* Modal */
@@ -564,11 +564,11 @@
 
 .admin-btn--primary {
   background: rgb(var(--cm-accent, 255 112 26));
-  color: #101014;
+  color: #161617;
 }
 
 .admin-btn--primary:hover {
-  background: #ff8533;
+  background: #FF9E33;
 }
 
 .admin-btn--ghost {
@@ -730,7 +730,7 @@
 
 .admin-banner-tab.is-active {
   background: rgb(var(--cm-accent, 255 112 26));
-  color: #101014;
+  color: #161617;
   border-color: rgb(var(--cm-accent, 255 112 26));
   font-weight: 600;
 }
@@ -744,7 +744,7 @@
 }
 
 .admin-banner-tab.is-active .admin-banner-tab__indicator {
-  background: #101014;
+  background: #161617;
 }
 
 .admin-banner-tab.has-custom .admin-banner-tab__indicator {
@@ -864,7 +864,7 @@
 .admin-banner-dropzone:hover,
 .admin-banner-dropzone.is-dragover {
   border-color: rgb(var(--cm-accent, 255 112 26));
-  background: rgba(255, 112, 26, 0.05);
+  background: rgba(255, 146, 48, 0.05);
 }
 
 .admin-banner-dropzone__icon {
@@ -924,7 +924,7 @@
 
 .admin-banner-strip-item.is-active {
   border-color: rgb(var(--cm-accent, 255 112 26));
-  box-shadow: 0 0 0 2px rgba(255, 112, 26, 0.2);
+  box-shadow: 0 0 0 2px rgba(255, 146, 48, 0.2);
 }
 
 .admin-banner-strip-item__thumb {
@@ -1056,7 +1056,7 @@
 
 .admin-range-btn.is-active {
   background: rgb(var(--cm-accent, 255 112 26));
-  color: #101014;
+  color: #161617;
 }
 
 .admin-seed-context {
@@ -1072,9 +1072,9 @@
 }
 
 .admin-badge--observed {
-  background: rgba(37, 191, 255, 0.15);
-  color: #25BFFF;
-  border: 1px solid rgba(37, 191, 255, 0.3);
+  background: rgba(0, 145, 255, 0.15);
+  color: #0091FF;
+  border: 1px solid rgba(0, 145, 255, 0.3);
 }
 
 .admin-badge--not_confirmed {
@@ -1142,7 +1142,7 @@
   padding: 12px;
   font-family: var(--caramelo-font-mono, monospace);
   font-size: 11px;
-  color: #FFF4E8;
+  color: #F5F5F7;
   line-height: 1.5;
   overflow-x: auto;
   white-space: pre-wrap;
@@ -1177,7 +1177,7 @@
 
 .admin-chip--more:hover {
   background: rgb(var(--cm-accent, 255 112 26));
-  color: #101014;
+  color: #161617;
   border-color: rgb(var(--cm-accent, 255 112 26));
 }
 
@@ -1252,8 +1252,8 @@
 }
 
 .admin-tab.is-active .admin-tab__badge {
-  background: rgba(255, 112, 26, 0.25);
-  color: #FF701A;
+  background: rgba(255, 146, 48, 0.25);
+  color: #FF9230;
 }
 
 /* Pílulas de Filtro Rápido (Cockpit) */
@@ -1288,9 +1288,9 @@
 }
 
 .admin-pill-filter.is-active {
-  background: rgba(255, 112, 26, 0.15);
-  color: #FF701A;
-  border-color: rgba(255, 112, 26, 0.45);
+  background: rgba(255, 146, 48, 0.15);
+  color: #FF9230;
+  border-color: rgba(255, 146, 48, 0.45);
 }
 
 .admin-pill-filter__count {
@@ -1303,7 +1303,7 @@
 }
 
 .admin-pill-filter.is-active .admin-pill-filter__count {
-  background: rgba(255, 112, 26, 0.25);
+  background: rgba(255, 146, 48, 0.25);
 }
 
 /* Kickers & Títulos de Seção */
@@ -1471,13 +1471,13 @@
 }
 
 .admin-stage-badge--beta {
-  background: rgba(118, 87, 255, 0.15);
+  background: rgba(109, 124, 255, 0.15);
   color: #a78bfa;
-  border-color: rgba(118, 87, 255, 0.35);
+  border-color: rgba(109, 124, 255, 0.35);
 }
 
 .admin-stage-badge--beta:hover {
-  background: rgba(118, 87, 255, 0.28);
+  background: rgba(109, 124, 255, 0.28);
 }
 
 .admin-stage-badge--stable {

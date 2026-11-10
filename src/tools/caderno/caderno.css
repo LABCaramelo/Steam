@@ -3,34 +3,34 @@
    ========================================================================== */
 
 :root {
-  --cad-bg: #101014;
+  --cad-bg: #161617;
   --cad-surface-1: #16161E;
   --cad-surface-2: #1C1C26;
   --cad-surface-3: #242432;
   --cad-border: #2A2A3A;
   --cad-border-subtle: #1F1F2B;
-  --cad-text: #FFF4E8;
-  --cad-text-muted: rgba(255, 244, 232, 0.65);
-  --cad-text-dim: rgba(255, 244, 232, 0.4);
-  --cad-caramel: #FF701A;
-  --cad-caramel-hover: #ff853a;
-  --cad-sky: #25BFFF;
-  --cad-pink: #FF3D8D;
-  --cad-violet: #7657FF;
-  --cad-yellow: #FFD52A;
+  --cad-text: #F5F5F7;
+  --cad-text-muted: rgba(255, 255, 255, 0.65);
+  --cad-text-dim: rgba(255, 255, 255, 0.4);
+  --cad-caramel: #FF9230;
+  --cad-caramel-hover: #FF9E33;
+  --cad-sky: #0091FF;
+  --cad-pink: #FF375F;
+  --cad-violet: #6D7CFF;
+  --cad-yellow: #FFD600;
   --cad-sidebar-width: 280px;
 }
 
 [data-caramelo-theme="light"] {
-  --cad-bg: #FFF4E8;
+  --cad-bg: #F5F5F7;
   --cad-surface-1: #F5EAE0;
   --cad-surface-2: #EADFD4;
   --cad-surface-3: #DFD4C8;
   --cad-border: #D0C4B8;
   --cad-border-subtle: #E2D6CB;
-  --cad-text: #101014;
-  --cad-text-muted: rgba(16, 16, 20, 0.7);
-  --cad-text-dim: rgba(16, 16, 20, 0.45);
+  --cad-text: #161617;
+  --cad-text-muted: rgba(22, 22, 23, 0.7);
+  --cad-text-dim: rgba(22, 22, 23, 0.45);
 }
 
 body.caderno-body {
@@ -38,7 +38,7 @@ body.caderno-body {
   padding: 0;
   background-color: var(--cad-bg);
   color: var(--cad-text);
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow: hidden;
   height: calc(100vh / var(--ui-zoom, 1));
   width: calc(100vw / var(--ui-zoom, 1));
@@ -90,7 +90,7 @@ body.caderno-body {
 
 .caderno-brand-badge {
   background-color: var(--cad-caramel);
-  color: #101014;
+  color: #161617;
   font-weight: 700;
   font-size: 11px;
   letter-spacing: 1px;
@@ -492,7 +492,7 @@ body.caderno-body {
 
 .caderno-btn-primary {
   background: var(--cad-caramel);
-  color: #101014;
+  color: #161617;
   border: none;
   font-size: 12px;
   font-weight: 700;
@@ -562,9 +562,9 @@ body.caderno-body {
 }
 
 .caderno-cover-ctl-btn {
-  background: rgba(16, 16, 20, 0.75);
+  background: rgba(22, 22, 23, 0.75);
   backdrop-filter: blur(8px);
-  color: #FFF4E8;
+  color: #F5F5F7;
   border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 5px 10px;
   border-radius: 6px;
@@ -573,7 +573,7 @@ body.caderno-body {
 }
 
 .caderno-cover-ctl-btn:hover {
-  background: #101014;
+  background: #161617;
   border-color: var(--cad-caramel);
 }
 
@@ -818,7 +818,7 @@ body.caderno-body {
   align-items: center;
   justify-content: center;
   font-size: 11px;
-  color: #101014;
+  color: #161617;
   background-color: var(--cad-surface-1);
   transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
@@ -1897,7 +1897,7 @@ body.caderno-body {
   font-size: 10px;
   font-weight: 700;
   color: var(--cad-caramel);
-  background-color: rgba(255, 112, 26, 0.12);
+  background-color: rgba(255, 146, 48, 0.12);
   padding: 2px 6px;
   border-radius: 4px;
 }

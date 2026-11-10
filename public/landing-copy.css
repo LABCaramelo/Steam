@@ -13,9 +13,9 @@
 
 /* Service cards follow their content instead of hiding copy behind a sticky peer. */
 .offers-section .offer-column-expanded{
-  --ink:rgb(16 16 20);
-  --cream:rgb(255 244 232);
-  --orange:rgb(255 112 26);
+  --ink:rgb(22 22 23);
+  --cream:rgb(255 255 255);
+  --orange:rgb(255 146 48);
   grid-template-rows:auto 1fr;
   min-height:0;
   row-gap:32px;

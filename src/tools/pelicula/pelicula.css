@@ -3,24 +3,24 @@
    ========================================================================== */
 
 :root {
-  --cm-stage: #101014;
+  --cm-stage: #161617;
   --cm-surface-1: #16161c;
   --cm-surface-2: #1e1e26;
   --cm-surface-3: #262632;
-  --cm-border-subtle: rgba(255, 244, 232, 0.08);
-  --cm-border-strong: rgba(255, 244, 232, 0.16);
-  --cm-text-main: #FFF4E8;
+  --cm-border-subtle: rgba(255, 255, 255, 0.08);
+  --cm-border-strong: rgba(255, 255, 255, 0.16);
+  --cm-text-main: #F5F5F7;
   --cm-text-muted: #A3A3B0;
   --cm-text-dim: #707080;
-  --cm-caramel: #FF701A;
-  --cm-sky: #25BFFF;
-  --cm-pink: #FF3D8D;
-  --cm-violet: #7657FF;
-  --cm-yellow: #FFD52A;
-  --cm-mint: #3DDC97;
-  --cm-spectrum: linear-gradient(110deg, #FF701A 0%, #FF3D8D 24%, #7657FF 48%, #25BFFF 72%, #FFD52A 100%);
+  --cm-caramel: #FF9230;
+  --cm-sky: #0091FF;
+  --cm-pink: #FF375F;
+  --cm-violet: #6D7CFF;
+  --cm-yellow: #FFD600;
+  --cm-mint: #30D158;
+  --cm-spectrum: linear-gradient(110deg, #FF9230 0%, #FF375F 24%, #6D7CFF 48%, #0091FF 72%, #FFD600 100%);
   --cm-font-display: 'Montserrat', system-ui, -apple-system, sans-serif;
-  --cm-font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --cm-font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, system-ui, -apple-system, sans-serif;
   --cm-font-mono: 'JetBrains Mono', monospace;
 }
 
@@ -78,7 +78,7 @@ body.pelicula-body {
   height: 32px;
   border-radius: 8px;
   background: var(--cm-caramel);
-  color: #101014;
+  color: #161617;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -133,7 +133,7 @@ body.pelicula-body {
 
 .tab-btn:hover {
   color: var(--cm-text-main);
-  background: rgba(255, 244, 232, 0.05);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .tab-btn.active {
@@ -168,14 +168,14 @@ body.pelicula-body {
 }
 
 .engine-status-pill.connected {
-  border-color: rgba(61, 220, 151, 0.3);
-  background: rgba(61, 220, 151, 0.08);
+  border-color: rgba(48, 209, 88, 0.3);
+  background: rgba(48, 209, 88, 0.08);
   color: var(--cm-mint);
 }
 
 .engine-status-pill.cloud {
-  border-color: rgba(37, 191, 255, 0.3);
-  background: rgba(37, 191, 255, 0.08);
+  border-color: rgba(0, 145, 255, 0.3);
+  background: rgba(0, 145, 255, 0.08);
   color: var(--cm-sky);
 }
 
@@ -193,7 +193,7 @@ body.pelicula-body {
   padding: 5px 12px;
   border-radius: 6px;
   background: var(--cm-caramel);
-  color: #101014;
+  color: #161617;
   font-family: var(--cm-font-display);
   font-size: 11.5px;
   font-weight: 800;
@@ -206,7 +206,7 @@ body.pelicula-body {
 }
 
 .nle-tag {
-  background: #101014;
+  background: #161617;
   color: var(--cm-caramel);
   font-size: 9px;
   padding: 1px 4px;
@@ -312,7 +312,7 @@ body.pelicula-body {
 }
 
 .btn-pill-toggle.active {
-  background: rgba(255, 112, 26, 0.15);
+  background: rgba(255, 146, 48, 0.15);
   border-color: var(--cm-caramel);
   color: var(--cm-caramel);
   font-weight: 700;
@@ -343,7 +343,7 @@ body.pelicula-body {
 
 .model-card.active {
   border-color: var(--cm-caramel);
-  background: rgba(255, 112, 26, 0.06);
+  background: rgba(255, 146, 48, 0.06);
 }
 
 .model-header {
@@ -365,9 +365,9 @@ body.pelicula-body {
   border-radius: 3px;
 }
 
-.model-tag.hybrid { background: rgba(37, 191, 255, 0.2); color: var(--cm-sky); }
-.model-tag.local { background: rgba(61, 220, 151, 0.2); color: var(--cm-mint); }
-.model-tag.cloud { background: rgba(255, 61, 141, 0.2); color: var(--cm-pink); }
+.model-tag.hybrid { background: rgba(0, 145, 255, 0.2); color: var(--cm-sky); }
+.model-tag.local { background: rgba(48, 209, 88, 0.2); color: var(--cm-mint); }
+.model-tag.cloud { background: rgba(255, 55, 95, 0.2); color: var(--cm-pink); }
 
 .model-cat {
   font-size: 10.5px;
@@ -396,7 +396,7 @@ body.pelicula-body {
 
 .ratio-btn.active {
   border-color: var(--cm-caramel);
-  background: rgba(255, 112, 26, 0.08);
+  background: rgba(255, 146, 48, 0.08);
   color: var(--cm-caramel);
 }
 
@@ -432,7 +432,7 @@ body.pelicula-body {
 
 .motion-btn.active {
   border-color: var(--cm-caramel);
-  background: rgba(255, 112, 26, 0.08);
+  background: rgba(255, 146, 48, 0.08);
 }
 
 .motion-title {
@@ -471,7 +471,7 @@ body.pelicula-body {
 
 .btn-subtoggle.active {
   border-color: var(--cm-caramel);
-  background: rgba(255, 112, 26, 0.1);
+  background: rgba(255, 146, 48, 0.1);
   color: var(--cm-caramel);
 }
 
@@ -488,7 +488,7 @@ body.pelicula-body {
   gap: 8px;
   padding: 12px 20px;
   background: var(--cm-caramel);
-  color: #101014;
+  color: #161617;
   border: none;
   border-radius: 8px;
   font-family: var(--cm-font-display);
@@ -502,7 +502,7 @@ body.pelicula-body {
 
 .btn-generate-main:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 4px 18px rgba(255, 112, 26, 0.35);
+  box-shadow: 0 4px 18px rgba(255, 146, 48, 0.35);
 }
 
 .btn-generate-main:disabled {
@@ -577,7 +577,7 @@ body.pelicula-body {
   position: absolute;
   top: 12px;
   left: 12px;
-  background: rgba(16, 16, 20, 0.85);
+  background: rgba(22, 22, 23, 0.85);
   backdrop-filter: blur(8px);
   border: 1px solid var(--cm-border-subtle);
   padding: 4px 10px;
@@ -595,12 +595,12 @@ body.pelicula-body {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: rgba(255, 112, 26, 0.85);
-  color: #101014;
+  background: rgba(255, 146, 48, 0.85);
+  color: #161617;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 30px rgba(255, 112, 26, 0.5);
+  box-shadow: 0 0 30px rgba(255, 146, 48, 0.5);
 }
 
 .stage-info-bar {
@@ -650,7 +650,7 @@ body.pelicula-body {
 
 .btn-stage-action.primary {
   background: var(--cm-caramel);
-  color: #101014;
+  color: #161617;
 }
 
 .btn-stage-action.secondary {
@@ -752,7 +752,7 @@ body.pelicula-body {
 
 .btn-wf-action.primary {
   background: var(--cm-caramel);
-  color: #101014;
+  color: #161617;
 }
 
 .btn-wf-action.secondary {
@@ -765,7 +765,7 @@ body.pelicula-body {
   flex: 1;
   position: relative;
   background-color: #0d0d10;
-  background-image: radial-gradient(rgba(255, 244, 232, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
   background-size: 24px 24px;
   overflow: auto;
 }
@@ -780,7 +780,7 @@ body.pelicula-body {
 }
 
 .connector-line {
-  filter: drop-shadow(0 0 4px rgba(255, 112, 26, 0.4));
+  filter: drop-shadow(0 0 4px rgba(255, 146, 48, 0.4));
 }
 
 .wf-node-card {
@@ -797,7 +797,7 @@ body.pelicula-body {
 
 .wf-node-card.active-step {
   border-color: var(--cm-caramel);
-  box-shadow: 0 0 20px rgba(255, 112, 26, 0.4);
+  box-shadow: 0 0 20px rgba(255, 146, 48, 0.4);
 }
 
 .wf-node-card.completed-step {
@@ -902,7 +902,7 @@ body.pelicula-body {
   padding: 11px;
   border-radius: 6px;
   background: var(--cm-caramel);
-  color: #101014;
+  color: #161617;
   border: none;
   font-family: var(--cm-font-display);
   font-size: 12px;
@@ -959,7 +959,7 @@ body.pelicula-body {
   font-size: 10px;
   font-weight: 800;
   color: var(--cm-caramel);
-  background: rgba(255, 112, 26, 0.1);
+  background: rgba(255, 146, 48, 0.1);
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -971,9 +971,9 @@ body.pelicula-body {
   border-radius: 4px;
 }
 
-.energy-badge.antecipação { background: rgba(37, 191, 255, 0.2); color: var(--cm-sky); }
-.energy-badge.ação { background: rgba(255, 112, 26, 0.2); color: var(--cm-caramel); }
-.energy-badge.impacto { background: rgba(255, 61, 141, 0.2); color: var(--cm-pink); }
+.energy-badge.antecipação { background: rgba(0, 145, 255, 0.2); color: var(--cm-sky); }
+.energy-badge.ação { background: rgba(255, 146, 48, 0.2); color: var(--cm-caramel); }
+.energy-badge.impacto { background: rgba(255, 55, 95, 0.2); color: var(--cm-pink); }
 
 .shot-card-title {
   font-family: var(--cm-font-display);
@@ -1049,7 +1049,7 @@ body.pelicula-body {
 
 .btn-card-action.primary {
   background: var(--cm-caramel);
-  color: #101014;
+  color: #161617;
 }
 
 .btn-card-action.secondary {
@@ -1117,7 +1117,7 @@ body.pelicula-body {
 
 .filter-pill.active {
   border-color: var(--cm-caramel);
-  background: rgba(255, 112, 26, 0.1);
+  background: rgba(255, 146, 48, 0.1);
   color: var(--cm-caramel);
 }
 
@@ -1158,7 +1158,7 @@ body.pelicula-body {
   position: absolute;
   top: 8px;
   left: 8px;
-  background: rgba(16, 16, 20, 0.85);
+  background: rgba(22, 22, 23, 0.85);
   font-size: 9px;
   font-weight: 800;
   padding: 2px 6px;
@@ -1174,7 +1174,7 @@ body.pelicula-body {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(255, 112, 26, 0.9);
+  background: rgba(255, 146, 48, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1425,8 +1425,8 @@ body.pelicula-body {
 
 .engine-help-box {
   padding: 12px;
-  background: rgba(255, 112, 26, 0.05);
-  border: 1px solid rgba(255, 112, 26, 0.2);
+  background: rgba(255, 146, 48, 0.05);
+  border: 1px solid rgba(255, 146, 48, 0.2);
   border-radius: 8px;
 }
 
@@ -1446,7 +1446,7 @@ body.pelicula-body {
 }
 
 .engine-help-box code {
-  background: #101014;
+  background: #161617;
   padding: 1px 4px;
   border-radius: 3px;
   color: var(--cm-text-main);
@@ -1495,7 +1495,7 @@ body.pelicula-body {
   background: var(--cm-caramel);
   border: none;
   border-radius: 6px;
-  color: #101014;
+  color: #161617;
   font-family: var(--cm-font-display);
   font-size: 12px;
   font-weight: 800;
