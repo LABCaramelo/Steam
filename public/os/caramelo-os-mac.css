@@ -561,51 +561,43 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
 .login-change:hover { color: rgba(255, 255, 255, 0.8); }
 .login-hint { margin-top: 10px; font-size: 11px; color: rgba(255, 255, 255, 0.35); }
 
-/* Interruptor: trilho escuro, peça de vidro com pontinhos e lente, brilho laranja ao ligar */
+/* Botão de entrar: o círculo com seta dentro do campo, como na tela de bloqueio do macOS.
+   O botão continua sendo o #loginGo (submit); as peças do interruptor antigo ficam escondidas. */
 .login-switch {
-  --sw-w: 300px; --sw-h: 84px; --knob: 186px;
-  position: relative; width: var(--sw-w); height: var(--sw-h); padding: 0; margin-top: 6px;
-  border: 5px solid #2C2C30; border-radius: 999px; cursor: pointer;
-  background: linear-gradient(180deg, #19191C, #0D0D0F);
-  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06), 0 14px 40px rgba(0, 0, 0, 0.5);
-  color: #F5F5F7; font-family: var(--apple-font-text);
+  position: absolute; right: 4px; top: 4px;
+  width: 28px; height: 28px; padding: 0; margin: 0;
+  border: 0; border-radius: 50%; cursor: pointer;
+  background: rgba(255, 255, 255, 0.24) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8h9M8.5 4l4 4-4 4' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat;
+  box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.35);
+  transition: background-color .15s, transform .15s;
 }
-.login-switch:focus-visible { outline: none; box-shadow: inset 0 3px 8px rgba(0,0,0,.7), var(--apple-focus-ring); }
-.sw-on, .sw-label { position: absolute; top: 50%; transform: translateY(-50%); transition: opacity .35s ease; pointer-events: none; }
-.sw-on { left: 34px; font: 600 30px/1 var(--apple-font-display); letter-spacing: 0.02em; color: #D6D6DA; opacity: 0; }
-.sw-label { right: 20px; width: 92px; text-align: center; font: 600 12px/1.25 var(--apple-font-text); color: rgba(255, 255, 255, 0.78); }
-.sw-glow {
-  position: absolute; top: 50%; left: 18px; width: 96px; height: 72px; transform: translateY(-50%);
-  border-radius: 50%; pointer-events: none; opacity: 0.18;
-  background: radial-gradient(closest-side, var(--apple-accent-hover) 0%, var(--apple-orange) 48%, rgb(var(--apple-accent-rgb) / 0) 100%);
-  filter: blur(6px); transition: opacity .45s ease, left .55s cubic-bezier(.2, .8, .2, 1);
+.login-switch:hover { background-color: rgba(255, 255, 255, 0.36); }
+.login-switch:active { transform: scale(0.94); }
+.login-switch:focus-visible { outline: none; box-shadow: var(--apple-focus-ring); }
+.sw-on, .sw-glow, .sw-knob, .sw-dots, .sw-lens { display: none; }
+.sw-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* Ao entrar, a seta vira o indicador de progresso do macOS. */
+.login-switch.is-on {
+  background-image: none;
+  background-color: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #FFFFFF;
+  animation: lock-spin .8s linear infinite;
 }
-.sw-knob {
-  position: absolute; top: -5px; left: -5px; width: var(--knob); height: calc(100% + 10px);
-  border-radius: 999px; overflow: hidden;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.08));
-  -webkit-backdrop-filter: blur(10px) saturate(1.2); backdrop-filter: blur(10px) saturate(1.2);
-  border: 1.5px solid rgba(255, 255, 255, 0.4);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 10px 26px rgba(0, 0, 0, 0.45);
-  transition: left .55s cubic-bezier(.2, .8, .2, 1), background .45s ease;
+@keyframes lock-spin { to { transform: rotate(360deg); } }
+/* Quem já tem nome salvo não vê o campo: o botão vira uma cápsula "Iniciar o sistema". */
+.login-input[hidden] ~ .login-switch {
+  position: static; width: auto; height: 34px; padding: 0 38px 0 16px;
+  border-radius: var(--apple-radius-capsule);
+  background-position: right 12px center;
+  -webkit-backdrop-filter: blur(var(--apple-blur)); backdrop-filter: blur(var(--apple-blur));
 }
-.sw-dots {
-  position: absolute; left: 30px; top: 50%; width: 70px; height: 42px; transform: translateY(-50%);
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.75) 0 2.2px, transparent 2.8px) 0 0 / 14px 14px;
+.login-input[hidden] ~ .login-switch .sw-label {
+  position: static; width: auto; height: auto; overflow: visible; clip: auto;
+  font: var(--apple-weight-medium) 13px/34px var(--apple-font-text); color: #FFFFFF;
 }
-.sw-lens {
-  position: absolute; right: 10px; top: 50%; width: 66px; height: 66px; transform: translateY(-50%); border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0 2px, rgba(255, 255, 255, 0.05) 2px 6px);
-}
-.login-switch:hover .sw-glow { opacity: 0.35; }
-.login-switch.is-on .sw-knob {
-  left: calc(var(--sw-w) - var(--knob) - 5px);
-  background: linear-gradient(90deg, rgb(var(--apple-accent-rgb) / 0.62), rgba(255, 255, 255, 0.12) 70%);
-}
-.login-switch.is-on .sw-glow { opacity: 1; left: calc(var(--sw-w) - var(--knob) - 34px); }
-.login-switch.is-on .sw-on { opacity: 1; }
-.login-switch.is-on .sw-label { opacity: 0; }
+.login-input[hidden] ~ .login-switch.is-on { width: 34px; padding: 0; }
+.login-input[hidden] ~ .login-switch.is-on .sw-label { display: none; }
 
 /* Avatar de quem entrou no menu Iniciar */
 .start-avatar { overflow: hidden; border-radius: 50%; padding: 0; }
@@ -682,3 +674,51 @@ body { font: 13px/1.45 var(--apple-font-text); letter-spacing: var(--apple-track
   border-radius: var(--apple-radius-capsule);
 }
 .login-arrow { -webkit-backdrop-filter: blur(var(--apple-blur)); backdrop-filter: blur(var(--apple-blur)); }
+
+/* ================= BOOT E ENTRADA COMO NO MAC ================= */
+/* Boot: só o logo branco e a barra fina; a frase de status continua para leitores de tela. */
+.boot-art { width: auto; }
+.boot-mark { display: block; width: 74px; height: 82px; color: #F5F5F7; }
+.boot-logo, .boot-sub { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.boot-status { position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.boot-bar { margin-top: 64px; width: min(176px, calc(50vw / var(--ui-zoom, 1))); height: 5px; }
+
+/* Entrada: tela de bloqueio. Data e hora no topo, usuário e campo embaixo. */
+.boot-login {
+  display: flex; flex-direction: column; align-items: center;
+  width: 100%; min-height: 100%; margin: 0;
+  padding: clamp(40px, 9vh, 96px) 16px clamp(20px, 5vh, 48px);
+  gap: 10px;
+}
+.lock-clock { margin-bottom: auto; text-align: center; color: rgba(255, 255, 255, 0.92); text-shadow: 0 1px 12px rgba(0, 0, 0, 0.25); }
+.lock-date { margin: 0; font: var(--apple-weight-semibold) clamp(17px, 2.1vw, 24px)/1.2 var(--apple-font-text); }
+.lock-time {
+  margin: 0; font: 700 clamp(84px, 11vw, 150px)/1 var(--apple-font-rounded);
+  letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.86);
+}
+.login-face { gap: 12px; }
+.login-avatar { width: 84px; height: 84px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18), 0 10px 30px rgba(0, 0, 0, 0.35); }
+.login-arrow { width: 28px; height: 28px; font-size: 18px; background: rgba(255, 255, 255, 0.16); }
+.login-arrow:hover { background: rgba(255, 255, 255, 0.28); }
+.login-pick { font-size: 12px; text-decoration: none; color: rgba(255, 255, 255, 0.7); }
+.login-pick:hover { color: #FFFFFF; text-decoration: underline; }
+.login-name { margin: 2px 0 0; font: var(--apple-weight-semibold) 15px/1.2 var(--apple-font-text); color: #FFFFFF; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3); }
+.login-lab { margin: -4px 0 0; color: rgba(255, 255, 255, 0.7); }
+.login-form { position: relative; width: 240px; gap: 8px; margin-top: 4px; }
+.login-input {
+  width: 240px; height: 36px; padding: 0 40px 0 16px; text-align: left;
+  font: 400 14px/1 var(--apple-font-text);
+  background: rgba(255, 255, 255, 0.18);
+  border: 0.5px solid rgba(255, 255, 255, 0.28);
+}
+.login-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+.login-error { margin: 0; color: #FFFFFF; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4); }
+.login-form.is-error .login-input { animation: lock-shake .35s ease; border-color: rgba(255, 255, 255, 0.5); }
+@keyframes lock-shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+.login-change { color: rgba(255, 255, 255, 0.7); text-decoration: none; }
+.login-change:hover { color: #FFFFFF; }
+.login-hint { margin-top: 18px; color: rgba(255, 255, 255, 0.55); }
+@media (prefers-reduced-motion: reduce) {
+  .login-switch.is-on, .login-form.is-error .login-input { animation: none; }
+}
